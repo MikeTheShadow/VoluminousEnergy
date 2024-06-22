@@ -2,7 +2,7 @@
   "type": "voluminousenergy:implosion_compressing",
   "ingredients": [
     {
-      "tag": "forge:dusts/coal",
+      "tag": "c:dusts/coal",
       "count": 1
     }
   ],

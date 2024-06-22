@@ -6,13 +6,13 @@
   ],
   "key": {
     "#": {
-      "tag": "forge:dusts/coal"
+      "tag": "c:dusts/coal"
     },
     "x": {
-      "tag": "forge:silicon"
+      "tag": "c:silicon"
     },
     "*": {
-      "tag": "forge:dusts/lapis"
+      "tag": "c:dusts/lapis"
     }
   },
   "result": {

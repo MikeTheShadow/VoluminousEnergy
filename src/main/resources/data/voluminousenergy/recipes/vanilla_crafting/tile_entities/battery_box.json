@@ -7,19 +7,19 @@
   ],
   "key": {
     "#": {
-      "tag": "forge:ingots/aluminum"
+      "tag": "c:ingots/aluminum"
     },
     "*": {
       "item": "voluminousenergy:carbon_shielded_aluminum_machine_frame"
     },
     "a": {
-      "tag": "forge:microchips"
+      "tag": "c:microchips"
     },
     "b": {
-      "tag": "forge:ingots/lead"
+      "tag": "c:ingots/lead"
     },
     "c": {
-      "tag": "forge:ingots/silver"
+      "tag": "c:ingots/silver"
     }
   },
   "result": {

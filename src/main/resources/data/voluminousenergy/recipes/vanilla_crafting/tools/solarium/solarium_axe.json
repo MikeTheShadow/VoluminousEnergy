@@ -10,7 +10,7 @@
       "item": "minecraft:stick"
     },
     "X": {
-      "tag": "forge:ingots/solarium"
+      "tag": "c:ingots/solarium"
     }
   },
   "result": {

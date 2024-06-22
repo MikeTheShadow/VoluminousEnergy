@@ -1,7 +1,0 @@
-{
-  "replace": false,
-  "values": [
-    "#forge:ore_bearing_ground/sand/red_sand",
-    "#forge:ore_bearing_ground/sand/colorless_sand"
-  ]
-}

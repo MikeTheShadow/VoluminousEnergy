@@ -1,7 +1,7 @@
 {
   "type": "minecraft:smelting",
   "ingredient": {
-    "tag": "forge:dusts/silver"
+    "tag": "c:dusts/silver"
   },
   "result": "voluminousenergy:silver_ingot",
   "experience": 1.0,

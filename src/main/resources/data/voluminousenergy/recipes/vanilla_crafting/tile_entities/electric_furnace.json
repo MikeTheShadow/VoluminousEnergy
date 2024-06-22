@@ -7,10 +7,10 @@
   ],
   "key": {
     "#": {
-      "tag": "forge:plates/aluminum"
+      "tag": "c:plates/aluminum"
     },
     "a": {
-      "tag": "forge:microchips"
+      "tag": "c:microchips"
     },
     "b": {
       "item": "voluminousenergy:carbon_shielded_aluminum_machine_frame"

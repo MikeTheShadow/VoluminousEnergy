@@ -7,7 +7,7 @@
   ],
   "key": {
     "#": {
-      "tag": "forge:plates/carbon"
+      "tag": "c:plates/carbon"
     },
     "*": {
       "item": "voluminousenergy:aluminum_shell"

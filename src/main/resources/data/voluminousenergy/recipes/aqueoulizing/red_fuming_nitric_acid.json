@@ -3,13 +3,13 @@
   "process_time": 200,
   "ingredients": [
     {
-      "tag": "forge:dusts/niter",
+      "tag": "c:dusts/niter",
       "count": 1
     }
   ],
   "fluid_ingredients": [
     {
-      "tag": "forge:sulfuric_acid",
+      "tag": "c:sulfuric_acid",
       "amount": 250
     }
   ],

@@ -2,7 +2,7 @@
   "type": "voluminousenergy:implosion_compressing",
   "ingredients": [
     {
-      "tag": "forge:dusts/lapis",
+      "tag": "c:dusts/lapis",
       "count": 1
     }
   ],

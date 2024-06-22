@@ -3,7 +3,7 @@
   "process_time": 200,
   "fluid_ingredients": [
     {
-      "tag": "forge:red_fuming_nitric_acid",
+      "tag": "c:red_fuming_nitric_acid",
       "amount": 250
     }
   ],

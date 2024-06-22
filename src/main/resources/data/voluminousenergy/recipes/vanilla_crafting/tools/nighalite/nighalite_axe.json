@@ -10,7 +10,7 @@
       "item": "minecraft:stick"
     },
     "X": {
-      "tag": "forge:ingots/nighalite"
+      "tag": "c:ingots/nighalite"
     }
   },
   "result": {

@@ -13,10 +13,10 @@
       "item": "minecraft:iron_block"
     },
     "a": {
-      "tag": "forge:gears/stone"
+      "tag": "c:gears/stone"
     },
     "b": {
-      "tag": "forge:gears/iron"
+      "tag": "c:gears/iron"
     },
     "c": {
       "item": "minecraft:iron_ingot"

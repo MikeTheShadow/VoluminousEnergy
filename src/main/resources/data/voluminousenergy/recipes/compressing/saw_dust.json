@@ -2,7 +2,7 @@
   "type": "voluminousenergy:compressing",
   "ingredients": [
     {
-      "tag": "forge:dusts/saw",
+      "tag": "c:dusts/saw",
       "count": 1
     }
   ],

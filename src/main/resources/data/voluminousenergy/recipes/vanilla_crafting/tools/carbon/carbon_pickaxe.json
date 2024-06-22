@@ -10,7 +10,7 @@
       "item": "minecraft:stick"
     },
     "X": {
-      "tag": "forge:ingots/carbon"
+      "tag": "c:ingots/carbon"
     }
   },
   "result": {

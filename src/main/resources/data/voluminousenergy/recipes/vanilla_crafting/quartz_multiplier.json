@@ -7,13 +7,13 @@
   ],
   "key": {
     "#": {
-      "tag": "forge:ingots/silver"
+      "tag": "c:ingots/silver"
     },
     "x": {
-      "tag": "forge:dusts/quartz"
+      "tag": "c:dusts/quartz"
     },
     "*": {
-      "tag": "forge:ingots/aluminum"
+      "tag": "c:ingots/aluminum"
     }
   },
   "result": {

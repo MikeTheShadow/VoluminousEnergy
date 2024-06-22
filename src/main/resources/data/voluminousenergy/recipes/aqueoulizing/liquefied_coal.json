@@ -3,7 +3,7 @@
   "process_time": 200,
   "ingredients": [
     {
-      "tag": "forge:dusts/coal",
+      "tag": "c:dusts/coal",
       "count": 1
     }
   ],

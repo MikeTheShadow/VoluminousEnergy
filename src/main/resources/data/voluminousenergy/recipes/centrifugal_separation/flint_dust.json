@@ -2,7 +2,7 @@
   "type": "voluminousenergy:centrifugal_separation",
   "ingredients": [
     {
-      "tag": "forge:dusts/flint",
+      "tag": "c:dusts/flint",
       "count": 16
     }
   ],

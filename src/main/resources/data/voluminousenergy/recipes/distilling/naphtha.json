@@ -3,7 +3,7 @@
   "process_time": 200,
   "fluid_ingredients": [
     {
-      "tag": "forge:naphtha",
+      "tag": "c:naphtha",
       "amount": 500
     }
   ],

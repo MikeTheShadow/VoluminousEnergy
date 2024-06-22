@@ -2,7 +2,7 @@
   "type": "voluminousenergy:implosion_compressing",
   "ingredients": [
     {
-      "tag": "forge:dusts/quartz",
+      "tag": "c:dusts/quartz",
       "count": 1
     }
   ],

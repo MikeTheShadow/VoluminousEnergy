@@ -7,13 +7,13 @@
   ],
   "key": {
     "#": {
-      "tag": "forge:ingots/aluminum"
+      "tag": "c:ingots/aluminum"
     },
     "x": {
       "item": "voluminousenergy:mercury_bucket"
     },
     "*": {
-      "tag": "forge:ingots/silver"
+      "tag": "c:ingots/silver"
     }
   },
   "result": {

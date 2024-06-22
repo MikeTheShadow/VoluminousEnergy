@@ -7,7 +7,7 @@
   ],
   "key": {
     "#": {
-      "tag": "forge:tallow"
+      "tag": "c:tallow"
     },
     "*": {
       "item": "minecraft:stick"

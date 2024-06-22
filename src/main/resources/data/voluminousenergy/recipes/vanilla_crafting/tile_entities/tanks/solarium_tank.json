@@ -7,16 +7,16 @@
   ],
   "key": {
     "#": {
-      "tag": "forge:tank_frames/solarium"
+      "tag": "c:tank_frames/solarium"
     },
     "*": {
-      "tag": "forge:ingots/solarium"
+      "tag": "c:ingots/solarium"
     },
     "1": {
-      "tag": "forge:plates/carbon"
+      "tag": "c:plates/carbon"
     },
     "2": {
-      "tag": "forge:glass_panes"
+      "tag": "c:glass_panes"
     }
   },
   "result": {

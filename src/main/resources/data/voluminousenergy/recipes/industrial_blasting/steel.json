@@ -2,11 +2,11 @@
   "type": "voluminousenergy:industrial_blasting",
   "ingredients": [
     {
-      "tag": "forge:ingots/iron",
+      "tag": "c:ingots/iron",
       "count": 1
     },
     {
-      "tag": "forge:ingots/carbon",
+      "tag": "c:ingots/carbon",
       "count": 1
     }
   ],

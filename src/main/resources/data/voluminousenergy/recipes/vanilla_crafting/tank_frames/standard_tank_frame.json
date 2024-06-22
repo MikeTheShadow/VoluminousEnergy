@@ -7,10 +7,10 @@
   ],
   "key": {
     "#": {
-      "tag": "forge:plates/aluminum"
+      "tag": "c:plates/aluminum"
     },
     "*": {
-      "tag": "forge:gears/aluminum"
+      "tag": "c:gears/aluminum"
     },
     "0": {
       "item": "voluminousenergy:aluminum_machine_casing"

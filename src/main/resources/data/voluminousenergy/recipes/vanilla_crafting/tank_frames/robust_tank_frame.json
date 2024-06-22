@@ -7,10 +7,10 @@
   ],
   "key": {
     "#": {
-      "tag": "forge:plates/titanium"
+      "tag": "c:plates/titanium"
     },
     "*": {
-      "tag": "forge:gears/titanium"
+      "tag": "c:gears/titanium"
     },
     "0": {
       "item": "voluminousenergy:titanium_machine_casing"

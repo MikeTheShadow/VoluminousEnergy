@@ -1,0 +1,16 @@
+{
+  "replace": false,
+  "values": [
+    "#c:ingots/aluminum",
+    "#c:ingots/titanium",
+    "#c:ingots/carbon",
+    "#c:ingots/lead",
+    "#c:ingots/silver",
+    "#c:ingots/steel",
+    "#c:ingots/tungsten",
+    "#c:ingots/tungsten_steel",
+    "#c:ingots/nighalite",
+    "#c:ingots/eighzo",
+    "#c:ingots/solarium"
+  ]
+}

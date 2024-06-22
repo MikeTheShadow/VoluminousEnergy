@@ -13,10 +13,10 @@
       "item": "minecraft:iron_block"
     },
     "a": {
-      "tag": "forge:gears/stone"
+      "tag": "c:gears/stone"
     },
     "b": {
-      "tag": "forge:microchips"
+      "tag": "c:microchips"
     },
     "c": {
       "item": "minecraft:redstone"

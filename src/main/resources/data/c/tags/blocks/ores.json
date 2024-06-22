@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "#c:ores/saltpeter",
+    "#c:ores/bauxite",
+    "#c:ores/cinnabar",
+    "#c:ores/rutile",
+    "#c:ores/galena",
+    "#c:ores/eighzo"
+  ]
+}

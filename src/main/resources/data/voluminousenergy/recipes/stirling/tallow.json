@@ -2,7 +2,7 @@
   "type": "voluminousenergy:stirling",
   "ingredients": [
     {
-      "tag": "forge:tallow",
+      "tag": "c:tallow",
       "count": 1
     }
   ],

@@ -7,13 +7,13 @@
   ],
   "key": {
     "#": {
-      "tag": "forge:ingots/lead"
+      "tag": "c:ingots/lead"
     },
     "x": {
       "item": "voluminousenergy:sulfuric_acid_bucket"
     },
     "*": {
-      "tag": "forge:ingots/silver"
+      "tag": "c:ingots/silver"
     }
   },
   "result": {

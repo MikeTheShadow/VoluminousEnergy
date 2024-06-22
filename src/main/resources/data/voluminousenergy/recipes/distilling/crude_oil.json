@@ -3,7 +3,7 @@
   "process_time": 200,
   "fluid_ingredients": [
     {
-      "tag": "forge:crude_oil",
+      "tag": "c:crude_oil",
       "amount": 250
     }
   ],

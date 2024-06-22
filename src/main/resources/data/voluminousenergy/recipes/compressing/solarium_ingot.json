@@ -2,7 +2,7 @@
   "type": "voluminousenergy:compressing",
   "ingredients": [
     {
-      "tag": "forge:ingots/solarium",
+      "tag": "c:ingots/solarium",
       "count": 1
     }
   ],

@@ -2,7 +2,7 @@
   "type": "voluminousenergy:crushing",
   "ingredients": [
     {
-      "tag": "forge:storage_blocks/bone",
+      "tag": "c:storage_blocks/bone",
       "count": 1
     }
   ],

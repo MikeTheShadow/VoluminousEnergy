@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "#c:ores_in_ground/deepslate",
+    "#c:ores_in_ground/end_stone",
+    "#c:ores_in_ground/red_sand",
+    "#c:ores_in_ground/colorless_sand",
+    "#c:ores_in_ground/stone"
+  ]
+}

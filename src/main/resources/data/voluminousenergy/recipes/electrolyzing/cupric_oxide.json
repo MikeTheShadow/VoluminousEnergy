@@ -2,7 +2,7 @@
   "type": "voluminousenergy:electrolyzing",
   "ingredients": [
     {
-      "tag": "forge:dusts/cupric_oxide",
+      "tag": "c:dusts/cupric_oxide",
       "count": 2
     },
     {

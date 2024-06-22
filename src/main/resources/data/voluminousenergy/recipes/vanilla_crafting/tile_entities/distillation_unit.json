@@ -13,16 +13,16 @@
       "item": "voluminousenergy:carbon_shielded_aluminum_machine_frame"
     },
     "*": {
-      "tag": "forge:plates/titanium"
+      "tag": "c:plates/titanium"
     },
     "1": {
-      "tag": "forge:glass_panes"
+      "tag": "c:glass_panes"
     },
     "2": {
-      "tag": "forge:gears/titanium"
+      "tag": "c:gears/titanium"
     },
     "3": {
-      "tag": "forge:microchips"
+      "tag": "c:microchips"
     }
   },
   "result": {

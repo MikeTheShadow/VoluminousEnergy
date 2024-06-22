@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "#c:tiny/charcoal",
+    "#c:tiny/coal",
+    "#c:tiny/coal_coke",
+    "#c:tiny/petcoke",
+    "#c:tiny/rosin"
+  ]
+}

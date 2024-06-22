@@ -2,7 +2,7 @@
   "type": "voluminousenergy:implosion_compressing",
   "ingredients": [
     {
-      "tag": "forge:dusts/flint",
+      "tag": "c:dusts/flint",
       "count": 1
     }
   ],

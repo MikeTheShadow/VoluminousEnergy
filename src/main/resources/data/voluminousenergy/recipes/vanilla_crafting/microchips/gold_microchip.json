@@ -10,7 +10,7 @@
       "item": "minecraft:gold_ingot"
     },
     "#": {
-      "tag": "forge:silicon"
+      "tag": "c:silicon"
     },
     "0": {
       "item": "minecraft:redstone"

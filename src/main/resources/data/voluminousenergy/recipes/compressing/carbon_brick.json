@@ -2,7 +2,7 @@
   "type": "voluminousenergy:compressing",
   "ingredients": [
     {
-      "tag": "forge:ingots/carbon",
+      "tag": "c:ingots/carbon",
       "count": 1
     }
   ],

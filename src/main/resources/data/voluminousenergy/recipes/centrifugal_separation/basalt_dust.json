@@ -2,7 +2,7 @@
   "type": "voluminousenergy:centrifugal_separation",
   "ingredients": [
     {
-      "tag": "forge:dusts/basalt",
+      "tag": "c:dusts/basalt",
       "count": 16
     }
   ],

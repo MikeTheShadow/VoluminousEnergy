@@ -7,10 +7,10 @@
   ],
   "key": {
     "#": {
-      "tag": "forge:ingots/nighalite"
+      "tag": "c:ingots/nighalite"
     },
     "*": {
-      "tag": "forge:gears/titanium"
+      "tag": "c:gears/titanium"
     }
   },
   "result": {

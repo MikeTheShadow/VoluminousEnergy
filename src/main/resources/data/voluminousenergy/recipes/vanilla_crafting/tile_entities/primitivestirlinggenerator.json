@@ -13,7 +13,7 @@
       "item": "minecraft:furnace"
     },
     "1": {
-      "tag": "forge:gears/iron"
+      "tag": "c:gears/iron"
     }
   },
   "result": {

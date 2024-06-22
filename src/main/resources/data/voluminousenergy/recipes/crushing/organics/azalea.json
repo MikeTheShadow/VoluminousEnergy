@@ -2,7 +2,7 @@
   "type": "voluminousenergy:crushing",
   "ingredients": [
     {
-      "tag": "forge:azalea",
+      "tag": "c:azalea",
       "count": 1
     }
   ],

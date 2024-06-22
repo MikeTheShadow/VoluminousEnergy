@@ -2,7 +2,7 @@
   "type": "voluminousenergy:centrifugal_separation",
   "ingredients": [
     {
-      "tag": "forge:dusts/soulsand",
+      "tag": "c:dusts/soulsand",
       "count": 16
     },
     {

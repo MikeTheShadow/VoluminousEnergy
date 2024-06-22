@@ -6,7 +6,7 @@
   ],
   "key": {
     "#": {
-      "tag": "forge:rosin"
+      "tag": "c:rosin"
     },
     "*": {
       "item": "minecraft:stick"

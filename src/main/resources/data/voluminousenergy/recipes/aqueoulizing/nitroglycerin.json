@@ -3,13 +3,13 @@
   "process_time": 200,
   "ingredients": [
     {
-      "tag": "forge:dusts/sulfur",
+      "tag": "c:dusts/sulfur",
       "count": 1
     }
   ],
   "fluid_ingredients": [
     {
-      "tag": "forge:white_fuming_nitric_acid",
+      "tag": "c:white_fuming_nitric_acid",
       "amount": 250
     }
   ],

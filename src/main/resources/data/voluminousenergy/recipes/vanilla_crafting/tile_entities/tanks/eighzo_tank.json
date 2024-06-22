@@ -7,16 +7,16 @@
   ],
   "key": {
     "#": {
-      "tag": "forge:tank_frames/titanium"
+      "tag": "c:tank_frames/titanium"
     },
     "*": {
-      "tag": "forge:ingots/eighzo"
+      "tag": "c:ingots/eighzo"
     },
     "1": {
-      "tag": "forge:plates/carbon"
+      "tag": "c:plates/carbon"
     },
     "2": {
-      "tag": "forge:glass_panes"
+      "tag": "c:glass_panes"
     }
   },
   "result": {

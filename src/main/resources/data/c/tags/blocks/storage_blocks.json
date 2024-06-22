@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "#c:storage_blocks/solarium",
+    "#c:storage_blocks/bone",
+    "#c:storage_blocks/raw_bauxite",
+    "#c:storage_blocks/raw_cinnabar",
+    "#c:storage_blocks/raw_eighzo",
+    "#c:storage_blocks/raw_galena",
+    "#c:storage_blocks/raw_rutile"
+  ]
+}

@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -47,10 +48,12 @@ public class VERecipeCodecs {
                 ResourceLocation res = ResourceLocation.of(tag, ':');
                 TagKey<Item> tag = TagKey.create(Registries.ITEM, res);
                 HolderSet<Item> holderSet = BuiltInRegistries.ITEM.getOrCreateTag(tag);
+
+                VoluminousEnergy.LOGGER.info("Value: " + tag);
+
                 AtomicReference<ArrayList<ItemStack>> itemSet = new AtomicReference<>(new ArrayList<>());
-                holderSet.stream().forEach(itemHolder -> {
-                    itemSet.get().add(new ItemStack(itemHolder.value(), this.count));
-                });
+                holderSet.stream().forEach(itemHolder ->
+                        itemSet.get().add(new ItemStack(itemHolder.value(), this.count)));
 
                 if (holderSet.size() == 0) {
                     throw new IllegalStateException("Holder size is zero for tag "
@@ -188,6 +191,12 @@ public class VERecipeCodecs {
                 HolderSet<Fluid> holderSet = BuiltInRegistries.FLUID.getOrCreateTag(tag);
                 AtomicReference<HashSet<Fluid>> fluidSet = new AtomicReference<>(new HashSet<>());
                 holderSet.stream().forEach(itemHolder -> fluidSet.get().add(itemHolder.value()));
+
+                if (holderSet.size() == 0) {
+                    throw new IllegalStateException("No values found for tag "
+                            + tag + ". Make sure that there are fluids with that tag in the registry.");
+                }
+
                 return new FluidSetWithValue(fluidSet.get(), value);
             } else if (!fluid.isBlank()) {
                 ResourceLocation res = ResourceLocation.of(fluid, ':');

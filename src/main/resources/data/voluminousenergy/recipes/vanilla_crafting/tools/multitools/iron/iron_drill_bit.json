@@ -10,7 +10,7 @@
       "item": "minecraft:iron_ingot"
     },
     "*": {
-      "tag": "forge:gears/iron"
+      "tag": "c:gears/iron"
     }
   },
   "result": {

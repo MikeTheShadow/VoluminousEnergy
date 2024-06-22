@@ -6,10 +6,10 @@
   ],
   "key": {
     "#": {
-      "tag": "forge:ingots/solarium"
+      "tag": "c:ingots/solarium"
     },
     "*": {
-      "tag": "forge:gears/solarium"
+      "tag": "c:gears/solarium"
     }
   },
   "result": {

@@ -7,7 +7,7 @@
   ],
   "key": {
     "#": {
-      "tag": "forge:ingots/titanium"
+      "tag": "c:ingots/titanium"
     },
     "*": {
       "item": "voluminousenergy:carbon_shielded_aluminum_machine_frame"
@@ -16,10 +16,10 @@
       "item": "voluminousenergy:primitiveblastfurnace"
     },
     "b": {
-      "tag": "forge:plates/titanium"
+      "tag": "c:plates/titanium"
     },
     "c": {
-      "tag": "forge:microchips"
+      "tag": "c:microchips"
     }
   },
   "result": {

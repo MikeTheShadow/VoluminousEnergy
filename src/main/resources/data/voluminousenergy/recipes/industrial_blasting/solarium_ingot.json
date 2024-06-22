@@ -2,11 +2,11 @@
   "type": "voluminousenergy:industrial_blasting",
   "ingredients": [
     {
-      "tag": "forge:ingots/eighzo",
+      "tag": "c:ingots/eighzo",
       "count": 1
     },
     {
-      "tag": "forge:ingots/nighalite",
+      "tag": "c:ingots/nighalite",
       "count": 1
     }
   ],

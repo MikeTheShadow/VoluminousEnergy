@@ -2,7 +2,7 @@
   "type": "voluminousenergy:crushing",
   "ingredients": [
     {
-      "tag": "forge:bones",
+      "tag": "c:bones",
       "count": 1
     }
   ],

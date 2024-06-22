@@ -2,7 +2,7 @@
   "type": "voluminousenergy:crushing",
   "ingredients": [
     {
-      "tag": "forge:storage_blocks/raw_eighzo",
+      "tag": "c:storage_blocks/raw_eighzo",
       "count": 1
     }
   ],

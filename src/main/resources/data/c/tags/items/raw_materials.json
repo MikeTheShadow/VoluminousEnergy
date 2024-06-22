@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "#c:raw_materials/saltpeter",
+    "#c:raw_materials/bauxite",
+    "#c:raw_materials/cinnabar",
+    "#c:raw_materials/rutile",
+    "#c:raw_materials/galena",
+    "#c:raw_materials/eighzo",
+    "#c:raw_materials/sulfur"
+  ]
+}

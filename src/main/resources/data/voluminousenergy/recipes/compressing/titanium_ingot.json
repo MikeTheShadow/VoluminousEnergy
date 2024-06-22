@@ -2,7 +2,7 @@
   "type": "voluminousenergy:compressing",
   "ingredients": [
     {
-      "tag": "forge:ingots/titanium",
+      "tag": "c:ingots/titanium",
       "count": 1
     }
   ],

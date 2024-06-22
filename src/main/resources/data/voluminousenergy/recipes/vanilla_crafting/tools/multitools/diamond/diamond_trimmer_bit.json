@@ -9,7 +9,7 @@
       "item": "minecraft:diamond"
     },
     "*": {
-      "tag": "forge:gears/aluminum"
+      "tag": "c:gears/aluminum"
     }
   },
   "result": {

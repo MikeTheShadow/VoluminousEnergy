@@ -2,7 +2,7 @@
   "type": "voluminousenergy:fuel_combustion",
   "fluid_ingredients": [
     {
-      "tag": "forge:treethanol",
+      "tag": "c:treethanol",
       "amount": 250
     },
     {

@@ -10,13 +10,13 @@
       "item": "minecraft:iron_ingot"
     },
     "1": {
-      "tag": "forge:glass_panes"
+      "tag": "c:glass_panes"
     },
     "2": {
-      "tag": "forge:gears/aluminum"
+      "tag": "c:gears/aluminum"
     },
     "3": {
-      "tag": "forge:gears/iron"
+      "tag": "c:gears/iron"
     }
   },
   "result": {

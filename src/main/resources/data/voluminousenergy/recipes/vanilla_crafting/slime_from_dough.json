@@ -5,7 +5,7 @@
   ],
   "key": {
     "#": {
-      "tag": "forge:dough"
+      "tag": "c:dough"
     },
     "*": {
       "item": "minecraft:lime_dye"

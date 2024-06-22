@@ -7,16 +7,16 @@
   ],
   "key": {
     "#": {
-      "tag": "forge:ingots/tungsten_steel"
+      "tag": "c:ingots/tungsten_steel"
     },
     "*": {
-      "tag": "forge:microchips"
+      "tag": "c:microchips"
     },
     "0": {
       "item": "voluminousenergy:titanium_machine_casing"
     },
     "1": {
-      "tag": "forge:ingots/solarium"
+      "tag": "c:ingots/solarium"
     }
   },
   "result": {

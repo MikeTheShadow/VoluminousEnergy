@@ -10,16 +10,16 @@
       "item": "minecraft:iron_ingot"
     },
     "a": {
-      "tag": "forge:microchips"
+      "tag": "c:microchips"
     },
     "b": {
       "item": "minecraft:iron_block"
     },
     "c": {
-      "tag": "forge:dusts/lapis"
+      "tag": "c:dusts/lapis"
     },
     "d": {
-      "tag": "forge:glass_panes"
+      "tag": "c:glass_panes"
     }
   },
   "result": {

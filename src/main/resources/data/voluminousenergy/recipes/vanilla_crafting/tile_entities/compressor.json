@@ -13,7 +13,7 @@
       "item": "minecraft:iron_block"
     },
     "a": {
-      "tag": "forge:microchips"
+      "tag": "c:microchips"
     }
   },
   "result": {

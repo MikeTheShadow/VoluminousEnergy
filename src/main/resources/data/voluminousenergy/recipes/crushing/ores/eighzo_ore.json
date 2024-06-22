@@ -2,7 +2,7 @@
   "type": "voluminousenergy:crushing",
   "ingredients": [
     {
-      "tag": "forge:ores/eighzo",
+      "tag": "c:ores/eighzo",
       "count": 1
     }
   ],

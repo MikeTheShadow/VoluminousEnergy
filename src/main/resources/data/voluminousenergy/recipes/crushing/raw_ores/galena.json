@@ -2,7 +2,7 @@
   "type": "voluminousenergy:crushing",
   "ingredients": [
     {
-      "tag": "forge:raw_materials/galena",
+      "tag": "c:raw_materials/galena",
       "count": 1
     }
   ],

@@ -10,7 +10,7 @@
       "item": "minecraft:stick"
     },
     "X": {
-      "tag": "forge:ingots/tungsten_steel"
+      "tag": "c:ingots/tungsten_steel"
     }
   },
   "result": {

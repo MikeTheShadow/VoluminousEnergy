@@ -6,10 +6,10 @@
   ],
   "key": {
     "#": {
-      "tag": "forge:ingots/eighzo"
+      "tag": "c:ingots/eighzo"
     },
     "*": {
-      "tag": "forge:gears/titanium"
+      "tag": "c:gears/titanium"
     }
   },
   "result": {

@@ -7,7 +7,7 @@
   ],
   "key": {
     "#": {
-      "tag": "forge:tiny"
+      "tag": "c:tiny"
     },
     "*": {
       "item": "minecraft:stick"

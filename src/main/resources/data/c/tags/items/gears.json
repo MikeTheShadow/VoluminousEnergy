@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "#c:gears/stone",
+    "#c:gears/iron",
+    "#c:gears/carbon",
+    "#c:gears/aluminum",
+    "#c:gears/titanium",
+    "#c:gears/solarium"
+  ]
+}

@@ -2,7 +2,7 @@
   "type": "voluminousenergy:centrifugal_separation",
   "ingredients": [
     {
-      "tag": "forge:dusts/endstone",
+      "tag": "c:dusts/endstone",
       "count": 16
     }
   ],

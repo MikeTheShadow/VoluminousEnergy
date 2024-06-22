@@ -2,7 +2,7 @@
   "type": "voluminousenergy:fuel_combustion",
   "fluid_ingredients": [
     {
-      "tag": "forge:naphtha",
+      "tag": "c:naphtha",
       "amount": 250
     },
     {

@@ -2,7 +2,7 @@
   "type": "voluminousenergy:stirling",
   "ingredients": [
     {
-      "tag": "forge:rosin",
+      "tag": "c:rosin",
       "count": 1
     }
   ],

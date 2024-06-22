@@ -2,7 +2,7 @@
   "type": "voluminousenergy:stirling",
   "ingredients": [
     {
-      "tag": "forge:tiny/petcoke",
+      "tag": "c:tiny/petcoke",
       "count": 1
     }
   ],

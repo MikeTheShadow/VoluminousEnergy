@@ -1,7 +1,7 @@
 {
   "type": "minecraft:smelting",
   "ingredient": {
-    "tag": "forge:dusts/carbon"
+    "tag": "c:dusts/carbon"
   },
   "result": "voluminousenergy:carbonbrick",
   "experience": 1.0,

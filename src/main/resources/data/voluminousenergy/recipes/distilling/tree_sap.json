@@ -3,7 +3,7 @@
   "process_time": 200,
   "fluid_ingredients": [
     {
-      "tag": "forge:tree_sap",
+      "tag": "c:tree_sap",
       "amount": 500
     }
   ],

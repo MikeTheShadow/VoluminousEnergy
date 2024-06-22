@@ -7,13 +7,13 @@
   ],
   "key": {
     "#": {
-      "tag": "forge:plates/solarium"
+      "tag": "c:plates/solarium"
     },
     "*": {
-      "tag": "forge:gears/solarium"
+      "tag": "c:gears/solarium"
     },
     "0": {
-      "tag": "forge:storage_blocks/solarium"
+      "tag": "c:storage_blocks/solarium"
     }
   },
   "result": {

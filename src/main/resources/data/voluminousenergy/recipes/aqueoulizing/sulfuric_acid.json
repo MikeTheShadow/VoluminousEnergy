@@ -3,7 +3,7 @@
   "process_time": 200,
   "ingredients": [
     {
-      "tag": "forge:dusts/sulfur",
+      "tag": "c:dusts/sulfur",
       "count": 1
     }
   ],

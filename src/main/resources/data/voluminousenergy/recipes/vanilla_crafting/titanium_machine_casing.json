@@ -7,10 +7,10 @@
   ],
   "key": {
     "#": {
-      "tag": "forge:plates/titanium"
+      "tag": "c:plates/titanium"
     },
     "*": {
-      "tag": "forge:microchips"
+      "tag": "c:microchips"
     },
     "0": {
       "item": "voluminousenergy:aluminum_machine_casing"

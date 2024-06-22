@@ -2,7 +2,7 @@
   "type": "voluminousenergy:electrolyzing",
   "ingredients": [
     {
-      "tag": "forge:dusts/copper_carbonate",
+      "tag": "c:dusts/copper_carbonate",
       "count": 1
     },
     {

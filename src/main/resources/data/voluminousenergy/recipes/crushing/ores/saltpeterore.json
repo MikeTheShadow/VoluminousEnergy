@@ -2,7 +2,7 @@
   "type": "voluminousenergy:crushing",
   "ingredients": [
     {
-      "tag": "forge:ores/saltpeter",
+      "tag": "c:ores/saltpeter",
       "count": 1
     }
   ],

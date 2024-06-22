@@ -5,7 +5,7 @@
   ],
   "key": {
     "#": {
-      "tag": "forge:dusts/flour"
+      "tag": "c:dusts/flour"
     },
     "*": {
       "item": "minecraft:water_bucket"

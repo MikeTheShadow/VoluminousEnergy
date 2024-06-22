@@ -6,13 +6,13 @@
   ],
   "key": {
     "#": {
-      "tag": "forge:dusts/niter"
+      "tag": "c:dusts/niter"
     },
     "x": {
-      "tag": "forge:dusts/coal"
+      "tag": "c:dusts/coal"
     },
     "*": {
-      "tag": "forge:dusts/sulfur"
+      "tag": "c:dusts/sulfur"
     }
   },
   "result": {

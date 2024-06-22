@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "#c:ore_bearing_ground/end_stone",
+    "#c:ore_bearing_ground/red_sand",
+    "#c:ore_bearing_ground/colorless_sand"
+  ]
+}

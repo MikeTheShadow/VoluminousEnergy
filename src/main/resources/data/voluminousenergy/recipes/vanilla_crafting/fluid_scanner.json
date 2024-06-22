@@ -6,10 +6,10 @@
   ],
   "key": {
     "#": {
-      "tag": "forge:ingots/tungsten_steel"
+      "tag": "c:ingots/tungsten_steel"
     },
     "*": {
-      "tag": "forge:microchips"
+      "tag": "c:microchips"
     },
     "0": {
       "item": "minecraft:amethyst_shard"
