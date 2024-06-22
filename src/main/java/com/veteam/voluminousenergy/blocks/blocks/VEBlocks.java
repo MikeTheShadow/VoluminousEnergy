@@ -358,7 +358,7 @@ public class VEBlocks {
 
     //public static VELandCrop LAND_CROP;
 
-    public static Supplier<Block> RICE_CROP = registerWithBlockItemSupport("rice_crop", RiceCrop::new);
+    public static Supplier<Block> RICE_CROP = registerWithNoBlockItemSupport("rice_crop", RiceCrop::new);
 
     // Material Storage Blocks
     public static Supplier<Block> SOLARIUM_BLOCK = registerWithBlockItemSupport("solarium_block", SolariumBlock::new);
@@ -441,6 +441,11 @@ public class VEBlocks {
     public static Supplier<Block> registerWithBlockItemSupport(String name, Supplier<Block> blockSupplier,boolean hasEnergy, boolean hasFluids, boolean hasInventory) {
         Supplier<Block> registryObject = VE_BLOCKS_REGISTRY.register(name, blockSupplier);
         REGISTERED_BLOCKS.add(new RegistryWithName(name, registryObject,hasEnergy, hasFluids, hasInventory));
+        return registryObject;
+    }
+
+    public static Supplier<Block> registerWithNoBlockItemSupport(String name, Supplier<Block> blockSupplier) {
+        Supplier<Block> registryObject = VE_BLOCKS_REGISTRY.register(name, blockSupplier);
         return registryObject;
     }
 }

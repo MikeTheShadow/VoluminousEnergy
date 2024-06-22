@@ -72,10 +72,6 @@ public class VoluminousEnergy {
     public VoluminousEnergy(IEventBus modEventBus, ModContainer modContainer) {
 //        modContainer.registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG);
 
-        modEventBus.addListener(this::setup);
-        modEventBus.addListener(this::setupWhenLoadingComplete);
-        NeoForge.EVENT_BUS.register(this);
-
 //        final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         /** Deferred registration **/
@@ -117,14 +113,6 @@ public class VoluminousEnergy {
         // Register Loot modifiers
         VELoot.VE_LOOT_MODIFIER_REGISTRY.register(modEventBus);
 
-        // TODO: Adding features due to BiomeLoadEvent being replaced
-        // TODO: Port registering of Features to use Deferred register
-        //MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH,VEOreGeneration::OreGeneration);
-        //MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH,VEFeatureGeneration::addFeaturesToBiomes);
-//        VELoot.registerLoot(modEventBus);
-
-        // Config Files to load
-//        String configDir = NeoForgeConfig.defaultConfigPath();
 
         getOrCreateDirectory(FMLPaths.CONFIGDIR.get(), VoluminousEnergy.MODID);
 //        Config.loadConfig(Config.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve(VoluminousEnergy.MODID + "-common.toml"));
@@ -132,8 +120,6 @@ public class VoluminousEnergy {
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG, VoluminousEnergy.MODID + "/" + VoluminousEnergy.MODID + "-common.toml");
         modContainer.registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_BUILDER.build(), VoluminousEnergy.MODID + "/" + VoluminousEnergy.MODID + "-client.toml");
 
-
-        modEventBus.addListener(this::registerRenderers); // Register renderer for Dimensional Laser
         modEventBus.addListener(VENetwork::onPayloadRegister); // Register network packets
 
         JEI_LOADED = ModList.get().isLoaded("jei");
@@ -160,48 +146,6 @@ public class VoluminousEnergy {
             LOGGER.debug("Found existing {} directory : {}", dirLabel, dirPath);
         }
         return dirPath;
-    }
-
-    private void setup(final FMLCommonSetupEvent event) {
-        setup.init();
-
-        //Register triggers
-        VECriteriaTriggers.init();
-    }
-
-    private static void registerCapabilities(RegisterCapabilitiesEvent event) {
-        for(VEBlocks.RegistryWithName b : VEBlocks.REGISTERED_BLOCKS) {
-
-            Block block = b.block().get();
-
-            if (b.hasInventory()) {
-                event.registerBlock(
-                        Capabilities.ItemHandler.BLOCK,
-                        (level, pos, state, be, side) -> ((VETileEntity) be).getCapabilityMap().getItemStackHandler(side,be),
-                        block);
-            }
-
-            if (b.hasEnergy()) {
-                event.registerBlock(
-                        Capabilities.EnergyStorage.BLOCK,
-                        (level, pos, state, be, side) -> ((VETileEntity) be).getCapabilityMap().getEnergyStorage(),
-                        block);
-            }
-
-            if (b.hasFluids()) {
-                event.registerBlock(
-                        Capabilities.FluidHandler.BLOCK,
-                        (level, pos, state, be, side) -> ((VETileEntity) be).getCapabilityMap().getFluidHandler(side,be),
-                        block);
-            }
-        }
-    }
-
-    private void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerBlockEntityRenderer(VEBlocks.DIMENSIONAL_LASER.tile().get(), LaserBlockEntityRenderer::new);
-    }
-
-    private void setupWhenLoadingComplete(final FMLLoadCompleteEvent event) {
     }
 
     public static MinecraftServer server;

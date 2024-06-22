@@ -5,15 +5,17 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 
+import java.util.function.Supplier;
+
 public class VEItemToolTier implements Tier {
     int uses;
     float speed;
     float attackDamageBonus;
     TagKey<Block> incorrectBlockTag;
     int enchantmentValue;
-    Ingredient repairIngredient;
+    Supplier<Ingredient> repairIngredient;
 
-    public VEItemToolTier(int uses, float speed, float attackDamageBonus, TagKey<Block> incorrectBlockTag, int enchantmentValue, Ingredient repairIngredient) {
+    public VEItemToolTier(int uses, float speed, float attackDamageBonus, TagKey<Block> incorrectBlockTag, int enchantmentValue, Supplier<Ingredient> repairIngredient) {
         this.uses = uses;
         this.speed = speed;
         this.attackDamageBonus = attackDamageBonus;
@@ -49,6 +51,6 @@ public class VEItemToolTier implements Tier {
 
     @Override
     public Ingredient getRepairIngredient() {
-        return this.repairIngredient;
+        return this.repairIngredient.get();
     }
 }

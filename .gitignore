@@ -30,3 +30,4 @@ forge*changelog.txt
 /logs/latest.log
 /src/generated/resources/.cache/
 /run-data/
+/runs/

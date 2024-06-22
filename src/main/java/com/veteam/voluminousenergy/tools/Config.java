@@ -2,13 +2,10 @@ package com.veteam.voluminousenergy.tools;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
-import com.veteam.voluminousenergy.VoluminousEnergy;
-import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.nio.file.Path;
 
-@EventBusSubscriber(modid = VoluminousEnergy.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class Config {
 
     public static final ModConfigSpec.Builder COMMON_BUILDER = new ModConfigSpec.Builder();
