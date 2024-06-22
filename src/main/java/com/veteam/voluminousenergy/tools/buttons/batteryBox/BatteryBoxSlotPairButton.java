@@ -3,8 +3,6 @@ package com.veteam.voluminousenergy.tools.buttons.batteryBox;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
-import com.veteam.voluminousenergy.tools.networking.VENetwork;
-import com.veteam.voluminousenergy.tools.networking.packets.BatteryBoxSlotPairPacket;
 import com.veteam.voluminousenergy.tools.networking.packets.BatteryBoxSlotPairPacket.BatteryBoxSlotPairPayload;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
