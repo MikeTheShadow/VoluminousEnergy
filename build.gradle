@@ -99,8 +99,8 @@ dependencies {
     // compile against the JEI API but do not include it at runtime
     compileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
     compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
-    // We add the full version to localRuntime, not runtimeOnly, so that we do not publish a dependency on it
-    localRunRuntime("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
+    // We add the full version to localRuntime, not runtimeOnly, so that we do not publish a dependency on it // DOESN'T WORK?
+    runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
 
     // Example mod dependency using a mod jar from ./libs with a flat dir repository
     // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar
