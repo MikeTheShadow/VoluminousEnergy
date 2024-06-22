@@ -6,7 +6,7 @@ import com.veteam.voluminousenergy.items.data.OxidizerFluidsData;
 import com.veteam.voluminousenergy.persistence.ChunkFluids;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
-import com.veteam.voluminousenergy.tools.networking.packets.ClientBoundFluidDataPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -19,6 +19,8 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 @EventBusSubscriber(modid = VoluminousEnergy.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.DEDICATED_SERVER)
 public class VEServerSideListener {
@@ -71,5 +73,16 @@ public class VEServerSideListener {
                 new ClientBoundFluidDataPacket.ClientBoundFluidDataPayload(
                         CombustibleFluidsData.getDataForNetworkTransfer(),
                         OxidizerFluidsData.getDataForNetworkTransfer()));
+    }
+
+    @SubscribeEvent
+    public static void onPayloadRegister(RegisterPayloadHandlersEvent event) {
+        PayloadRegistrar registrar = event.registrar("ve_1");
+        registrar.playBidirectional(BoolButtonPacket.BoolButtonPayload.TYPE, BoolButtonPacket.BoolButtonPayload.STREAM_CODEC,BoolButtonPacket::handle);
+        registrar.playBidirectional(DirectionButtonPacket.DirectionButtonPayload.TYPE, DirectionButtonPacket.DirectionButtonPayload.STREAM_CODEC,DirectionButtonPacket::handle);
+        registrar.playToServer(TankBoolPacket.TankBoolPacketPayload.TYPE, TankBoolPacket.TankBoolPacketPayload.STREAM_CODEC,TankBoolPacket::handle);
+        registrar.playToServer(TankDirectionPacket.TankDirectionPayload.TYPE, TankDirectionPacket.TankDirectionPayload.STREAM_CODEC,TankDirectionPacket::handle);
+        registrar.playToServer(BatteryBoxSendOutPowerPacket.BatteryBoxSendOutPowerPayload.TYPE, BatteryBoxSendOutPowerPacket.BatteryBoxSendOutPowerPayload.STREAM_CODEC,BatteryBoxSendOutPowerPacket::handle);
+        registrar.playToClient(ClientBoundFluidDataPacket.ClientBoundFluidDataPayload.TYPE, ClientBoundFluidDataPacket.ClientBoundFluidDataPayload.STREAM_CODEC,ClientBoundFluidDataPacket::handle);
     }
 }

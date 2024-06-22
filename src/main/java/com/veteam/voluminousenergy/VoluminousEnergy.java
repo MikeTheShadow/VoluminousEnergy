@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy;
 
+import com.veteam.voluminousenergy.achievements.triggers.VECriteriaTriggers;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.datagen.VEGlobalLootModifierData;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
@@ -83,6 +84,9 @@ public class VoluminousEnergy {
         VEBlockItems.VE_BLOCK_ITEM_REGISTRY.register(modEventBus);
         VEMultitools.VE_MULTITOOL_ITEM_REGISTRY.register(modEventBus);
         VETools.VE_TOOL_REGISTRY.register(modEventBus);
+
+        // Register triggers
+        VECriteriaTriggers.VE_TRIGGER_REGISTRY.register(modEventBus);
 
         // Register features
         VEFeatures.VE_FEATURE_REGISTRY.register(modEventBus);

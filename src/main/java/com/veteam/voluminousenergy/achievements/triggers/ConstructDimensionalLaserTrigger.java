@@ -48,11 +48,11 @@ public class ConstructDimensionalLaserTrigger extends SimpleCriterionTrigger<Con
         }
 
         public static Criterion<TriggerInstance> constructedBeacon() {
-            return VECriteriaTriggers.CONSTRUCT_DIMENSIONAL_LASER_TRIGGER.createCriterion(new TriggerInstance(Optional.empty(), MinMaxBounds.Ints.ANY));
+            return VECriteriaTriggers.CONSTRUCT_DIMENSIONAL_LASER_TRIGGER.get().createCriterion(new TriggerInstance(Optional.empty(), MinMaxBounds.Ints.ANY));
         }
 
         public static Criterion<TriggerInstance> constructedBeacon(MinMaxBounds.Ints p_22766_) {
-            return VECriteriaTriggers.CONSTRUCT_DIMENSIONAL_LASER_TRIGGER.createCriterion(new TriggerInstance(Optional.empty(), p_22766_));
+            return VECriteriaTriggers.CONSTRUCT_DIMENSIONAL_LASER_TRIGGER.get().createCriterion(new TriggerInstance(Optional.empty(), p_22766_));
         }
 
         public boolean matches(int p_148033_) {
