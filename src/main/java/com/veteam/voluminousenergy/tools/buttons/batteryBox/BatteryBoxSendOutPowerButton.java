@@ -4,8 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
-import com.veteam.voluminousenergy.tools.networking.VENetwork;
-import com.veteam.voluminousenergy.tools.networking.packets.BatteryBoxSendOutPowerPacket;
 import com.veteam.voluminousenergy.tools.networking.packets.BatteryBoxSendOutPowerPacket.BatteryBoxSendOutPowerPayload;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;

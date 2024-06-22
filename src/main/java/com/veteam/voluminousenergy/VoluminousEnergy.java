@@ -13,7 +13,6 @@ import com.veteam.voluminousenergy.loot.VELoot;
 import com.veteam.voluminousenergy.recipe.VERecipes;
 import com.veteam.voluminousenergy.setup.VESetup;
 import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.util.VEAttachments;
 import com.veteam.voluminousenergy.util.VEDataComponents;
 import com.veteam.voluminousenergy.world.feature.VEFeatures;
@@ -111,8 +110,6 @@ public class VoluminousEnergy {
 
         Config.loadConfig(Config.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve(VoluminousEnergy.MODID + "-common.toml"));
         Config.loadConfig(Config.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve(VoluminousEnergy.MODID + "-client.toml"));
-
-        modEventBus.addListener(VENetwork::onPayloadRegister); // Register network packets
 
         JEI_LOADED = ModList.get().isLoaded("jei");
     }
