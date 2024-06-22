@@ -1,9 +1,6 @@
 package com.veteam.voluminousenergy;
 
-import com.veteam.voluminousenergy.achievements.triggers.VECriteriaTriggers;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
-import com.veteam.voluminousenergy.client.renderers.entity.LaserBlockEntityRenderer;
 import com.veteam.voluminousenergy.datagen.VEGlobalLootModifierData;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import com.veteam.voluminousenergy.fluids.VEFluids;
@@ -26,7 +23,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.level.block.Block;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -36,14 +32,8 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.fml.loading.FMLPaths;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import org.apache.logging.log4j.LogManager;
@@ -115,10 +105,12 @@ public class VoluminousEnergy {
 
 
         getOrCreateDirectory(FMLPaths.CONFIGDIR.get(), VoluminousEnergy.MODID);
-//        Config.loadConfig(Config.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve(VoluminousEnergy.MODID + "-common.toml"));
-//        Config.loadConfig(Config.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve("voluminousenergy-client.toml"));
+
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG, VoluminousEnergy.MODID + "/" + VoluminousEnergy.MODID + "-common.toml");
         modContainer.registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_BUILDER.build(), VoluminousEnergy.MODID + "/" + VoluminousEnergy.MODID + "-client.toml");
+
+        Config.loadConfig(Config.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve(VoluminousEnergy.MODID + "/" + VoluminousEnergy.MODID + "-common.toml"));
+        Config.loadConfig(Config.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve(VoluminousEnergy.MODID + "/" + VoluminousEnergy.MODID + "-client.toml"));
 
         modEventBus.addListener(VENetwork::onPayloadRegister); // Register network packets
 
