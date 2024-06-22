@@ -129,8 +129,7 @@ public class FluidIngredient {
     }
 
     public static void write(RegistryFriendlyByteBuf buffer, FluidIngredient ingredient) {
-        VEFluidIngredientSerializer serializer = ingredient.getSerializer();
-        serializer.write(buffer, ingredient);
+        VEFluidIngredientSerializer.write(buffer, ingredient);
     }
 
     public boolean isEmpty() {
@@ -153,14 +152,6 @@ public class FluidIngredient {
     protected void invalidate() {
         this.fluidStacks = null;
         this.stackingIds = null;
-    }
-
-    public boolean isSimple() {
-        return true;
-    }
-
-    public VEFluidIngredientSerializer getSerializer() {
-        return VEFluidIngredientSerializer.INSTANCE;
     }
 
     public static FluidIngredient fromValues(Stream<? extends FluidIngredient.Value> stream) {
@@ -186,7 +177,7 @@ public class FluidIngredient {
     }
 
     public static FluidIngredient fromNetwork(RegistryFriendlyByteBuf byteBuf) {
-        return VEFluidIngredientSerializer.INSTANCE.read(byteBuf);
+        return VEFluidIngredientSerializer.read(byteBuf);
     }
 
     public record FluidValue(FluidStack stack, int amount, Fluid fluid) implements FluidIngredient.Value {

@@ -7,6 +7,7 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.SimpleFluidContent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -77,6 +78,16 @@ public class VEDataComponents {
                         DataComponentType.Builder<ChunkFluidData> stackBuilder = DataComponentType.builder();
                         return stackBuilder.persistent(CHUNK_FLUID_CODEC)
                                 .networkSynchronized(CHUNK_FLUID_STREAM_CODEC)
+                                .build();
+                    }
+            );
+
+    public static final Supplier<DataComponentType<SimpleFluidContent>> SIMPLE_FLUID_DATA_TYPE =
+            DATA_COMPONENT_TYPE_DEFERRED_REGISTER.register("item_fluid_data",
+                    () -> {
+                        DataComponentType.Builder<SimpleFluidContent> stackBuilder = DataComponentType.builder();
+                        return stackBuilder.persistent(SimpleFluidContent.CODEC)
+                                .networkSynchronized(SimpleFluidContent.STREAM_CODEC)
                                 .build();
                     }
             );

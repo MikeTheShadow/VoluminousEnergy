@@ -107,19 +107,20 @@ public class VESetup {
 
         for (DeferredHolder<Item,? extends Item> itemRegistryObject : deferredRegister.getEntries()) {
             Item item = itemRegistryObject.get();
-
-            if (item instanceof VEEnergyItem) {
-                ItemStack unchargedStack = new ItemStack(item);
-                ItemStack chargedStack = new ItemStack(item);
-
-                IEnergyStorage storage = chargedStack.getCapability(Capabilities.EnergyStorage.ITEM);
-                storage.receiveEnergy(storage.getMaxEnergyStored(),false);
-
-                List<ItemStack> energyItemCollection = List.of(unchargedStack, chargedStack);
-                stackStore.addAll(energyItemCollection);
-            } else {
-                stackStore.add(new ItemStack(item));
-            }
+            stackStore.add(new ItemStack(item));
+            //TODO FIX ME
+//            if (item instanceof VEEnergyItem) {
+//                ItemStack unchargedStack = new ItemStack(item);
+//                ItemStack chargedStack = new ItemStack(item);
+//
+//                IEnergyStorage storage = chargedStack.getCapability(Capabilities.EnergyStorage.ITEM);
+//                storage.receiveEnergy(storage.getMaxEnergyStored(),false);
+//
+//                List<ItemStack> energyItemCollection = List.of(unchargedStack, chargedStack);
+//                stackStore.addAll(energyItemCollection);
+//            } else {
+//                stackStore.add(new ItemStack(item));
+//            }
         }
 
         return stackStore;

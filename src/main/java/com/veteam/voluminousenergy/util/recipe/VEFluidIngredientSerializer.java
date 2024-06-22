@@ -7,9 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class VEFluidIngredientSerializer {
-    public static final VEFluidIngredientSerializer INSTANCE = new VEFluidIngredientSerializer();
 
-    public FluidIngredient read(RegistryFriendlyByteBuf buffer) {
+    public static FluidIngredient read(RegistryFriendlyByteBuf buffer) {
         int total = buffer.readVarInt();
         List<FluidStack> fluidStacks = new ArrayList<>();
         for (int i = 0; i < total; i++) {
@@ -18,7 +17,7 @@ public class VEFluidIngredientSerializer {
         return FluidIngredient.of(fluidStacks.stream());
     }
 
-    public void write(RegistryFriendlyByteBuf buffer, FluidIngredient ingredient) {
+    public static void write(RegistryFriendlyByteBuf buffer, FluidIngredient ingredient) {
         FluidStack[] fluids = ingredient.getFluids();
         buffer.writeVarInt(fluids.length);
 
