@@ -3,7 +3,9 @@
   "ingredient": {
     "tag": "c:dusts/aluminum"
   },
-  "result": "voluminousenergy:aluminum_ingot",
+  "result": {
+    "id": "voluminousenergy:aluminum_ingot"
+  },
   "experience": 1.0,
   "cookingtime": 200
 }

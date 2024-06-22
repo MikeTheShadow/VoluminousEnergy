@@ -3,7 +3,9 @@
   "ingredient": {
     "tag": "c:dusts/carbon"
   },
-  "result": "voluminousenergy:carbonbrick",
+  "result": {
+    "id": "voluminousenergy:carbonbrick"
+  },
   "experience": 1.0,
   "cookingtime": 200
 }

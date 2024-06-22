@@ -3,7 +3,9 @@
   "ingredient": {
     "tag": "c:dusts/lead"
   },
-  "result": "voluminousenergy:lead_ingot",
+  "result": {
+    "id": "voluminousenergy:lead_ingot"
+  },
   "experience": 1.0,
   "cookingtime": 200
 }

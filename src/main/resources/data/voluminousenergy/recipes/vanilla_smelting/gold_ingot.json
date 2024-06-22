@@ -3,7 +3,9 @@
   "ingredient": {
     "tag": "c:dusts/gold"
   },
-  "result": "minecraft:gold_ingot",
+  "result": {
+    "id": "minecraft:gold_ingot"
+  },
   "experience": 1.0,
   "cookingtime": 200
 }

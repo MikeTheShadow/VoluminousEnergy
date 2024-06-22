@@ -3,7 +3,9 @@
   "ingredient": {
     "tag": "c:dough"
   },
-  "result": "minecraft:bread",
+  "result": {
+    "id": "minecraft:bread"
+  },
   "experience": 1.0,
   "cookingtime": 200
 }

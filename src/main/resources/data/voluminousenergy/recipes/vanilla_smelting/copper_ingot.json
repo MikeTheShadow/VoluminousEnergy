@@ -3,7 +3,9 @@
   "ingredient": {
     "tag": "c:dusts/copper"
   },
-  "result": "minecraft:copper_ingot",
+  "result": {
+    "id": "minecraft:copper_ingot"
+  },
   "experience": 1.0,
   "cookingtime": 200
 }

@@ -3,7 +3,9 @@
   "ingredient": {
     "tag": "c:dusts/silver"
   },
-  "result": "voluminousenergy:silver_ingot",
+  "result": {
+    "id": "voluminousenergy:silver_ingot"
+  },
   "experience": 1.0,
   "cookingtime": 200
 }

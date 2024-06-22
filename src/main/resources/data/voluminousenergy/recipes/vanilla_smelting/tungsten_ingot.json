@@ -3,7 +3,9 @@
   "ingredient": {
     "tag": "c:dusts/tungsten"
   },
-  "result": "voluminousenergy:tungsten_ingot",
+  "result": {
+    "id": "voluminousenergy:tungsten_ingot"
+  },
   "experience": 1.0,
   "cookingtime": 200
 }

@@ -3,7 +3,9 @@
   "ingredient": {
     "tag": "c:dusts/titanium"
   },
-  "result": "voluminousenergy:titanium_ingot",
+  "result": {
+    "id": "voluminousenergy:titanium_ingot"
+  },
   "experience": 1.0,
   "cookingtime": 200
 }

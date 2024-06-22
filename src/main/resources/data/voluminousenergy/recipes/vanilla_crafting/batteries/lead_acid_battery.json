@@ -17,7 +17,7 @@
     }
   },
   "result": {
-    "item": "voluminousenergy:lead_acid_battery",
+    "id": "voluminousenergy:lead_acid_battery",
     "count": 1
   }
 }

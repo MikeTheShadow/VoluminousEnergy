@@ -38,7 +38,7 @@ public class VERecipeCodecs {
     public static final Codec<RegistryIngredient> VE_LAZY_INGREDIENT_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
             Codec.STRING.optionalFieldOf("tag", "").forGetter(t -> t.tag),
             Codec.STRING.optionalFieldOf("item", "").forGetter(t -> t.item),
-            Codec.INT.fieldOf("count").forGetter(t -> t.count)
+            Codec.INT.optionalFieldOf("count",1).forGetter(t -> t.count)
     ).apply(instance, RegistryIngredient::new));
 
     public record RegistryIngredient(String tag, String item, int count) {
@@ -81,12 +81,12 @@ public class VERecipeCodecs {
 
     public static final Codec<ItemStack> VE_OUTPUT_ITEM_CODEC = RecordCodecBuilder.create((instance) ->
             instance.group(ITEM_NONAIR_CODEC.fieldOf("item").forGetter(ItemStack::getItemHolder),
-                    Codec.INT.fieldOf("count")
+                    Codec.INT.optionalFieldOf("count",1)
                             .forGetter(ItemStack::getCount)).apply(instance, ItemStack::new));
 
     public static final Codec<VEChancedItemWithCount> VE_CHANCED_OUTPUT_ITEM_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
             ITEM_NONAIR_CODEC.fieldOf("item").forGetter(VEChancedItemWithCount::item),
-            Codec.INT.fieldOf("count").forGetter(VEChancedItemWithCount::count),
+            Codec.INT.optionalFieldOf("count",1).forGetter(VEChancedItemWithCount::count),
             Codec.FLOAT.optionalFieldOf("chance", 1.0F).forGetter(VEChancedItemWithCount::chance)
     ).apply(instance, VEChancedItemWithCount::new));
 

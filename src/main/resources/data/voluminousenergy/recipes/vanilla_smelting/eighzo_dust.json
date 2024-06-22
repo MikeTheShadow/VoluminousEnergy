@@ -3,7 +3,9 @@
   "ingredient": {
     "tag": "c:dusts/eighzo"
   },
-  "result": "voluminousenergy:eighzo_ingot",
+  "result": {
+    "id": "voluminousenergy:eighzo_ingot"
+  },
   "experience": 1.0,
   "cookingtime": 200
 }
