@@ -49,7 +49,7 @@ public class DimensionalLaserRecipeProcessor extends MultiBlockRecipeProcessor {
                 int y = tile.getBlockPos().getY();
                 int z = tile.getBlockPos().getZ();
                 for (ServerPlayer serverplayer : tile.getLevel().getEntitiesOfClass(ServerPlayer.class, (new AABB(x, y, z, x, y - 4, z)).inflate(50.0D, 50.0D, 50.0D))) {
-                    VECriteriaTriggers.CONSTRUCT_DIMENSIONAL_LASER_TRIGGER.trigger(serverplayer, 3);
+                    VECriteriaTriggers.CONSTRUCT_DIMENSIONAL_LASER_TRIGGER.get().trigger(serverplayer, 3);
                 }
             }
 

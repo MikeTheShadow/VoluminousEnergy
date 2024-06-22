@@ -128,7 +128,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     public void updateTankPacketFromGui(int direction, int id) {
         for (VERelationalTank tank : getRelationalTanks()) {
             if (id == tank.getSlotNum()) {
-                this.capabilityMap.moveFluidSlotManagerPos(tank, IntToDirection.IntegerToDirection(direction));
+                this.getCapabilityMap().moveFluidSlotManagerPos(tank, IntToDirection.IntegerToDirection(direction));
             }
         }
     }
@@ -424,7 +424,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     public void updatePacketFromGui(int direction, int slotId) {
         for (VESlotManager slot : getSlotManagers()) {
             if (slotId == slot.getSlotNum()) {
-                this.capabilityMap.moveSlotManagerPos(slot, direction);
+                this.getCapabilityMap().moveSlotManagerPos(slot, direction);
                 return;
             }
         }

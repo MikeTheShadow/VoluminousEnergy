@@ -10,6 +10,7 @@ import com.veteam.voluminousenergy.items.batteries.VEEnergyItem;
 import com.veteam.voluminousenergy.items.tools.multitool.CombustionMultitool;
 import com.veteam.voluminousenergy.items.tools.multitool.VEMultitools;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
+import com.veteam.voluminousenergy.tools.networking.packets.*;
 import com.veteam.voluminousenergy.util.VEDataComponents;
 import com.veteam.voluminousenergy.util.VERelationalTank;
 import net.minecraft.world.item.Item;
@@ -22,6 +23,8 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
 import java.util.function.Supplier;
@@ -88,11 +91,8 @@ public class VEGenericListener {
         VoluminousEnergy.LOGGER.info("Running: " + blockRegistryEvent.getRegistryKey()); // If you delete this you have to fix it
     }
 
+    @SubscribeEvent
     private static void setup(final FMLCommonSetupEvent event) {
         VoluminousEnergy.setup.init();
-
-        //Register triggers
-        VECriteriaTriggers.init();
     }
-
 }

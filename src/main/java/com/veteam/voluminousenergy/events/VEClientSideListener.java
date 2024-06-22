@@ -5,6 +5,7 @@ import com.veteam.voluminousenergy.items.data.CombustibleFluidsData;
 import com.veteam.voluminousenergy.items.data.OxidizerFluidsData;
 import com.veteam.voluminousenergy.persistence.ChunkFluids;
 import com.veteam.voluminousenergy.recipe.VERecipe;
+import com.veteam.voluminousenergy.tools.networking.packets.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.server.MinecraftServer;
@@ -17,6 +18,8 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RecipesUpdatedEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 @EventBusSubscriber(modid = VoluminousEnergy.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public class VEClientSideListener {

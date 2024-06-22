@@ -169,6 +169,7 @@ public abstract class VEContainer extends AbstractContainerMenu {
     }
 
     public void updateDirectionButton(int direction, int slotId) {
+        if(screen == null) return;
         screen.updateButtonDirection(direction, slotId);
     }
 

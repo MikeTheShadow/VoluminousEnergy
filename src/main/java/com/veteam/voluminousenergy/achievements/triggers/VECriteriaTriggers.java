@@ -1,17 +1,15 @@
 package com.veteam.voluminousenergy.achievements.triggers;
 
-import net.minecraft.advancements.CriteriaTriggers;
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import net.minecraft.advancements.CriterionTrigger;
+import net.minecraft.core.registries.Registries;
+import net.neoforged.neoforge.registries.DeferredRegister;
+
+import java.util.function.Supplier;
 
 public class VECriteriaTriggers {
 
-    public static final ConstructDimensionalLaserTrigger CONSTRUCT_DIMENSIONAL_LASER_TRIGGER = register(new ConstructDimensionalLaserTrigger());
+    public static final DeferredRegister<CriterionTrigger<?>> VE_TRIGGER_REGISTRY = DeferredRegister.create(Registries.TRIGGER_TYPE, VoluminousEnergy.MODID);
 
-    public static <T extends CriterionTrigger<?>> T register(T p_10596_) {
-        return CriteriaTriggers.register(ConstructDimensionalLaserTrigger.ID.toString(), p_10596_);
-    }
-
-    public static void init() {
-
-    }
+    public static final Supplier<ConstructDimensionalLaserTrigger> CONSTRUCT_DIMENSIONAL_LASER_TRIGGER = VE_TRIGGER_REGISTRY.register("construct_dimensional_laser", ConstructDimensionalLaserTrigger::new);
 }
