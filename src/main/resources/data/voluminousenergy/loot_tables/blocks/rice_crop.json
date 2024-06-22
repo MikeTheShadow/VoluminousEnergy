@@ -2,32 +2,26 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "name": "pool1",
-      "rolls": 1,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "function": "minecraft:copy_name",
-              "source": "block_entity"
-            }
-          ],
-          "name": "voluminousenergy:rice_grain"
-        }
-      ],
+      "bonus_rolls": 0.0,
       "conditions": [
         {
-          "condition": "minecraft:survives_explosion"
-        },
-        {
-          "condition": "minecraft:block_state_property",
           "block": "voluminousenergy:rice_crop",
+          "condition": "minecraft:block_state_property",
           "properties": {
             "half": "upper"
           }
+        },
+        {
+          "condition": "minecraft:survives_explosion"
         }
-      ]
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "voluminousenergy:rice_grain"
+        }
+      ],
+      "rolls": 1.0
     }
   ]
 }
