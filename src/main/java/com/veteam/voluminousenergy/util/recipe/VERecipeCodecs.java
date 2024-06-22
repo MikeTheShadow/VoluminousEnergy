@@ -49,8 +49,6 @@ public class VERecipeCodecs {
                 TagKey<Item> tag = TagKey.create(Registries.ITEM, res);
                 HolderSet<Item> holderSet = BuiltInRegistries.ITEM.getOrCreateTag(tag);
 
-                VoluminousEnergy.LOGGER.info("Value: " + tag);
-
                 AtomicReference<ArrayList<ItemStack>> itemSet = new AtomicReference<>(new ArrayList<>());
                 holderSet.stream().forEach(itemHolder ->
                         itemSet.get().add(new ItemStack(itemHolder.value(), this.count)));

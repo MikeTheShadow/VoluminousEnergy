@@ -1,4 +1,4 @@
 {
-  "tag": "forge:liquefied_coal",
+  "tag" :"c:liquefied_coal",
   "energy_per_tick" : 64
 }

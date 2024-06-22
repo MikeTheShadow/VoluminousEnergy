@@ -1,4 +1,4 @@
 {
-  "tag": "forge:crude_oil",
+  "tag": "c:crude_oil",
   "energy_per_tick" : 16
 }

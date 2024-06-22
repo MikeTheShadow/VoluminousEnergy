@@ -54,11 +54,6 @@ public class VoluminousEnergy {
 
     public static final Logger LOGGER = LogManager.getLogger();
 
-    static {
-        System.out.println("Hello World!");
-        LOGGER.info("Hello World!");
-    }
-
     public VoluminousEnergy(IEventBus modEventBus, ModContainer modContainer) {
 //        modContainer.registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG);
 

@@ -16,7 +16,6 @@ public class IngredientSerializerHelper<T extends VERecipe> {
 
     @Nullable
     public T fromNetwork(T recipe, RegistryFriendlyByteBuf buffer) {
-
         // Read ingredients
         int ingredientSize = buffer.readInt();
         NonNullList<Ingredient> ingredients = NonNullList.create();

@@ -1,4 +1,4 @@
 {
-  "tag": "forge:gasoline",
+  "tag" :"c:gasoline",
   "energy_per_tick" : 128
 }

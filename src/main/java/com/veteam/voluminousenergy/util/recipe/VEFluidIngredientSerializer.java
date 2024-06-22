@@ -1,17 +1,21 @@
 package com.veteam.voluminousenergy.util.recipe;
 
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.neoforged.neoforge.fluids.FluidStack;
 
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class VEFluidIngredientSerializer {
     public static final VEFluidIngredientSerializer INSTANCE = new VEFluidIngredientSerializer();
 
-    public FluidIngredient parse(RegistryFriendlyByteBuf buffer) {
-        FluidStack stack = FluidStack.STREAM_CODEC.decode(buffer);
-        return FluidIngredient.fromValues(Stream.generate(() -> new FluidIngredient.FluidValue(FluidStack.STREAM_CODEC.decode(buffer), stack.getAmount(), stack.getFluid())).limit(buffer.readVarInt()));
+    public FluidIngredient read(RegistryFriendlyByteBuf buffer) {
+        int total = buffer.readVarInt();
+        List<FluidStack> fluidStacks = new ArrayList<>();
+        for (int i = 0; i < total; i++) {
+            fluidStacks.add(FluidStack.STREAM_CODEC.decode(buffer));
+        }
+        return FluidIngredient.of(fluidStacks.stream());
     }
 
     public void write(RegistryFriendlyByteBuf buffer, FluidIngredient ingredient) {

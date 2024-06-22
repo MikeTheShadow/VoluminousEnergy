@@ -1,10 +1,8 @@
 package com.veteam.voluminousenergy.util.recipe;
 
 import com.google.common.collect.Lists;
-import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparators;
@@ -12,9 +10,7 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.material.Fluid;
@@ -190,11 +186,7 @@ public class FluidIngredient {
     }
 
     public static FluidIngredient fromNetwork(RegistryFriendlyByteBuf byteBuf) {
-        var size = byteBuf.readVarInt();
-        VEFluidIngredientSerializer serializer = VEFluidIngredientSerializer.INSTANCE;
-        if (size == -1) return serializer.parse(byteBuf);
-        FluidStack stack = FluidStack.STREAM_CODEC.decode(byteBuf);
-        return fromValues(Stream.generate(() -> new FluidIngredient.FluidValue(stack, stack.getAmount(), stack.getFluid())).limit(size));
+        return VEFluidIngredientSerializer.INSTANCE.read(byteBuf);
     }
 
     public record FluidValue(FluidStack stack, int amount, Fluid fluid) implements FluidIngredient.Value {
