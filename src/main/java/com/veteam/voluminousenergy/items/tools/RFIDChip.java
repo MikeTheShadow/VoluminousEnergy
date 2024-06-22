@@ -21,7 +21,7 @@ public class RFIDChip extends Item {
     public RFIDChip() {
         super(new Item.Properties()
                 .stacksTo(16)
-                .rarity(Rarity.create("ELECTRONIC", ResourceLocation.tryBuild(VoluminousEnergy.MODID,"ELECTRONIC"), ChatFormatting.GREEN))
+                .rarity(Rarity.create("electronic", ResourceLocation.tryBuild(VoluminousEnergy.MODID,"electronic"), ChatFormatting.GREEN))
         );
     }
 

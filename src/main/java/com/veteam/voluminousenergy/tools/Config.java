@@ -710,6 +710,8 @@ public class Config {
                 .define("Shorten Tank Tooltip Values", true);
 
         CLIENT_BUILDER.pop();
+
+        CLIENT_CONFIG = CLIENT_BUILDER.build();
     }
 
     public static void loadConfig(ModConfigSpec spec, Path path){

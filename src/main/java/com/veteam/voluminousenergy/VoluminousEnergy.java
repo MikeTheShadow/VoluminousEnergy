@@ -104,13 +104,14 @@ public class VoluminousEnergy {
         VELoot.VE_LOOT_MODIFIER_REGISTRY.register(modEventBus);
 
 
+
         getOrCreateDirectory(FMLPaths.CONFIGDIR.get(), VoluminousEnergy.MODID);
 
-        modContainer.registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG, VoluminousEnergy.MODID + "/" + VoluminousEnergy.MODID + "-common.toml");
-        modContainer.registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_BUILDER.build(), VoluminousEnergy.MODID + "/" + VoluminousEnergy.MODID + "-client.toml");
+        modContainer.registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG, VoluminousEnergy.MODID + "-common.toml");
+        modContainer.registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_CONFIG, VoluminousEnergy.MODID + "-client.toml");
 
-        Config.loadConfig(Config.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve(VoluminousEnergy.MODID + "/" + VoluminousEnergy.MODID + "-common.toml"));
-        Config.loadConfig(Config.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve(VoluminousEnergy.MODID + "/" + VoluminousEnergy.MODID + "-client.toml"));
+        Config.loadConfig(Config.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve(VoluminousEnergy.MODID + "-common.toml"));
+        Config.loadConfig(Config.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve(VoluminousEnergy.MODID + "-client.toml"));
 
         modEventBus.addListener(VENetwork::onPayloadRegister); // Register network packets
 
