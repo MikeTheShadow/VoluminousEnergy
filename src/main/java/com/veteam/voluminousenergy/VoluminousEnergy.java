@@ -101,20 +101,25 @@ public class VoluminousEnergy {
         // Register Loot modifiers
         VELoot.VE_LOOT_MODIFIER_REGISTRY.register(modEventBus);
 
-
-
+        // Config loading and (if necessary) file preparation
         getOrCreateDirectory(FMLPaths.CONFIGDIR.get(), VoluminousEnergy.MODID);
 
-        modContainer.registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG, VoluminousEnergy.MODID + "-common.toml");
-        modContainer.registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_CONFIG, VoluminousEnergy.MODID + "-client.toml");
+        modContainer.registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG, VoluminousEnergy.MODID + "/" + VoluminousEnergy.MODID + "-common.toml");
+        modContainer.registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_CONFIG, VoluminousEnergy.MODID + "/" + VoluminousEnergy.MODID + "-client.toml");
 
-        Config.loadConfig(Config.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve(VoluminousEnergy.MODID + "-common.toml"));
-        Config.loadConfig(Config.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve(VoluminousEnergy.MODID + "-client.toml"));
+        Config.loadConfig(Config.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve(VoluminousEnergy.MODID + "/" + VoluminousEnergy.MODID + "-common.toml"));
+        Config.loadConfig(Config.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve(VoluminousEnergy.MODID + "/" + VoluminousEnergy.MODID + "-client.toml"));
 
         JEI_LOADED = ModList.get().isLoaded("jei");
     }
 
     private static Path getOrCreateDirectory(Path dirPath, String dirLabel) { // Extracted from Forge 45
+
+        String configDir = dirPath.toString();
+        configDir = configDir.concat("/");
+        configDir = configDir.concat(dirLabel);
+        dirPath = Path.of(configDir);
+
         if (!Files.isDirectory(dirPath.getParent())) {
             getOrCreateDirectory(dirPath.getParent(), "parent of " + dirLabel);
         }

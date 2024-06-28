@@ -22,8 +22,6 @@ public class RiceFeature extends Feature<BlockStateConfiguration> {
         BlockPos pos = context.origin();
         WorldGenLevel worldIn = context.level();
 
-        if (!worldIn.canSeeSky(pos)) return false;
-
         if (worldIn.isWaterAt(pos.below()) && worldIn.getBlockState(pos).isAir()) {
             generateRice(worldIn, pos);
             return true;
