@@ -38,7 +38,7 @@ public class VEGlobalLootModifierData extends GlobalLootModifierProvider {
     private void mysteriousMultiplierModifierProvider(LootItemCondition lootCondition) {
 
         for (ResourceKey<LootTable> lootTabe : LootSpawns.SPAWN_MYSTERIOUS_MULTIPLIERS_IN) {
-            String lootTableString = "mysterious_multiplier/" + lootTabe.location();
+            String lootTableString = "mysterious_multiplier/" + lootTabe.location().getPath();
 
             add(lootTableString,
                     new MysteriousMultiplierModifier(new LootItemCondition[]{
@@ -56,7 +56,7 @@ public class VEGlobalLootModifierData extends GlobalLootModifierProvider {
         // Sheep
         for (ResourceKey<LootTable> lootTable : LootSpawns.SHEEP_THAT_DROP_ANIMAL_FAT) {
 
-            add(lootTableString + lootTable.location(),
+            add(lootTableString + lootTable.location().getPath(),
                     new AnimalFatLootModifier(new LootItemCondition[]{
                             lootCondition,
                             LootTableIdCondition.builder(lootTable.location()).build()
