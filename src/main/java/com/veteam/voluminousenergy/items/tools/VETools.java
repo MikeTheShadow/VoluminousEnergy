@@ -16,22 +16,6 @@ public class VETools {
 
     public static final DeferredRegister<Item> VE_TOOL_REGISTRY = DeferredRegister.create(Registries.ITEM, VoluminousEnergy.MODID);
 
-    // Tool Constants
-//    final static int SWORD_1 = 3;
-//    final static float SWORD_2 = -2.4F;
-//
-//    final static float SHOVEL_1 = 1.5F;
-//    final static float SHOVEL_2 = -3.0F;
-//
-//    final static int PICKAXE_1 = 1;
-//    final static float PICKAXE_2 = -2.8F;
-//
-//    final static float AXE_1 = 6.0F;
-//    final static float AXE_2 = -3.2F;
-//
-//    final static int HOE_1 = -1;
-//    final static float HOE_2 = -2.0F;
-
     // Material Tiers
     public static final TagKey<Block> ALUMINUM_TIER_TAG = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "needs_aluminum_tool"));
     public static final Tier ALUMINUM = new VEItemToolTier(250, 6.6F, 2.0F, ALUMINUM_TIER_TAG, 14, () -> Ingredient.of(VEItems.ALUMINUM_INGOT.get())); // Actual tier
