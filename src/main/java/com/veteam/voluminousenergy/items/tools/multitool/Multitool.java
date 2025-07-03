@@ -1,9 +1,14 @@
 package com.veteam.voluminousenergy.items.tools.multitool;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.items.VEItem;
+import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.MultitoolBit;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.TrimmerBit;
+import com.veteam.voluminousenergy.items.tools.multitool.bits.VEMultitoolBits;
+import com.veteam.voluminousenergy.util.VEDataComponents;
 import net.minecraft.core.BlockPos;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -11,12 +16,21 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Random;
 
 public class Multitool extends VEItem /*implements Vanishable*/ {
     protected MultitoolBit bit;
+
+    private final MultiToolItemStackHandler handler = new MultiToolItemStackHandler();
+
+    private Block lastBlock = null;
 
     public Multitool(MultitoolBit bit, String registryName, Item.Properties itemProperties) {
         super(itemProperties);
@@ -24,19 +38,62 @@ public class Multitool extends VEItem /*implements Vanishable*/ {
         setRegistryName(registryName);
     }
 
+    public Multitool() {
+        super(new Item.Properties()
+                .stacksTo(1));
+        setRegistryName("multitool");
+    }
+
+    boolean test = false;
+
+    public void setToolState(@NotNull ItemStack itemStack,@Nullable BlockState blockState) {
+        if (!test) {
+            test = true;
+            this.handler.insertItem(0, new ItemStack(VEMultitools.DIAMOND_SCOOPER_BIT.get(), 1), false);
+            this.handler.insertItem(1, new ItemStack(VEMultitools.DIAMOND_CHAIN_BIT.get(), 1), false);
+            this.handler.insertItem(2, new ItemStack(VEMultitools.DIAMOND_DRILL_BIT.get(), 1), false);
+            this.handler.insertItem(3, new ItemStack(VEMultitools.DIAMOND_TRIMMER_BIT.get(), 1), false);
+        }
+
+        if(blockState == null) {
+            itemStack.set(VEDataComponents.TOOL_TYPE,0);
+            itemStack.set(VEDataComponents.TOOL_TIER,0);
+            return;
+        }
+
+        Block lastBlock = blockState.getBlock();
+
+        if (this.lastBlock != lastBlock) {
+            this.lastBlock = lastBlock;
+            if (blockState.is(BlockTags.MINEABLE_WITH_PICKAXE)) {
+                itemStack.set(VEDataComponents.TOOL_TYPE,1);
+                itemStack.set(VEDataComponents.TOOL_TIER,3);
+            } else if (blockState.is(BlockTags.MINEABLE_WITH_SHOVEL)) {
+                itemStack.set(VEDataComponents.TOOL_TYPE,3);
+                itemStack.set(VEDataComponents.TOOL_TIER,3);
+            } else if(blockState.is(BlockTags.MINEABLE_WITH_AXE)) {
+                itemStack.set(VEDataComponents.TOOL_TYPE,2);
+                itemStack.set(VEDataComponents.TOOL_TIER,2);
+            } else if (blockState.is(BlockTags.MINEABLE_WITH_HOE)) {
+                itemStack.set(VEDataComponents.TOOL_TYPE,4);
+                itemStack.set(VEDataComponents.TOOL_TIER,4);
+            }
+        }
+    }
+
     @Override
-    public float getDestroySpeed(ItemStack itemStack, BlockState blockStateToMine) {
+    public float getDestroySpeed(@NotNull ItemStack itemStack, BlockState blockStateToMine) {
         return this.bit != null ? this.bit.getDestroySpeed(itemStack, blockStateToMine) : 0;
     }
 
     @Override
-    public boolean hurtEnemy(ItemStack stack, LivingEntity attackee, LivingEntity attacker) {
+    public boolean hurtEnemy(ItemStack stack, @NotNull LivingEntity attackee, @NotNull LivingEntity attacker) {
         stack.hurtAndBreak(2, attacker, EquipmentSlot.MAINHAND);
         return true;
     }
 
     @Override
-    public boolean mineBlock(ItemStack stack, Level level, BlockState blockState, BlockPos pos, LivingEntity player) {
+    public boolean mineBlock(@NotNull ItemStack stack, Level level, @NotNull BlockState blockState, @NotNull BlockPos pos, @NotNull LivingEntity player) {
         if (!level.isClientSide && blockState.getDestroySpeed(level, pos) != 0.0F) {
             stack.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
         }
@@ -57,7 +114,7 @@ public class Multitool extends VEItem /*implements Vanishable*/ {
 //    }
 
     @Override
-    public float getAttackDamageBonus(Player pPlayer, float pBaseAttackDamage) {
+    public float getAttackDamageBonus(@NotNull Player pPlayer, float pBaseAttackDamage) {
         return this.bit != null ? this.bit.getAttackDamage() : 0F;
     }
 
@@ -138,18 +195,18 @@ public class Multitool extends VEItem /*implements Vanishable*/ {
 //    }
 
     @Override
-    public boolean canPerformAction(ItemStack stack, net.neoforged.neoforge.common.ToolAction toolAction) {
-        return this.bit != null ? this.bit.canPerformAction(toolAction) : false;
+    public boolean canPerformAction(@NotNull ItemStack stack, net.neoforged.neoforge.common.@NotNull ToolAction toolAction) {
+        return this.bit != null && this.bit.canPerformAction(toolAction);
     }
 
     @Override
-    public boolean isCorrectToolForDrops(ItemStack stack, BlockState blockState) {
-        return this.bit != null ? this.bit.isCorrectToolForDrops(stack, blockState) : false;
+    public boolean isCorrectToolForDrops(@NotNull ItemStack stack, @NotNull BlockState blockState) {
+        return this.bit != null && this.bit.isCorrectToolForDrops(stack, blockState);
     }
 
     // Trimmer Multitool stuff
     @Override
-    public net.minecraft.world.InteractionResult interactLivingEntity(ItemStack stack, net.minecraft.world.entity.player.Player playerIn, LivingEntity entity, net.minecraft.world.InteractionHand hand) {
+    public net.minecraft.world.@NotNull InteractionResult interactLivingEntity(@NotNull ItemStack stack, net.minecraft.world.entity.player.@NotNull Player playerIn, @NotNull LivingEntity entity, net.minecraft.world.@NotNull InteractionHand hand) {
         if (this.bit != null && this.bit instanceof TrimmerBit && entity instanceof net.neoforged.neoforge.common.IShearable target) {
             if (entity.level().isClientSide) return net.minecraft.world.InteractionResult.SUCCESS;
             BlockPos pos = new BlockPos(Mth.floor(entity.getX()), Mth.floor(entity.getY()), Mth.floor(entity.getZ()));

@@ -18,8 +18,8 @@ public class TrimmerBit extends MultitoolBit {
     private Tier tier;
     private float destroySpeedMultiplier;
 
-    public TrimmerBit(Set<ToolAction> action, Tier bitTier, float destroySpeedMultiplier, float attackDamage, float attackSpeed) {
-        super(action, bitTier, null, destroySpeedMultiplier, attackDamage, attackSpeed);
+    public TrimmerBit(Set<ToolAction> action, Tier bitTier, float destroySpeedMultiplier, float attackDamage, float attackSpeed,int toolTier,int toolType) {
+        super(action, bitTier, null, destroySpeedMultiplier, attackDamage, attackSpeed,toolTier,toolType);
         this.tier = bitTier;
         this.destroySpeedMultiplier = destroySpeedMultiplier;
     }

@@ -21,6 +21,7 @@ import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -184,7 +185,7 @@ public class CombustionMultitool extends Multitool {
     }
 
     @Override
-    public float getDestroySpeed(ItemStack itemStack, BlockState blockStateToMine) {
+    public float getDestroySpeed(@NotNull ItemStack itemStack, BlockState blockStateToMine) {
         Integer mechanicalEnergy = itemStack.get(VEDataComponents.MECHANICAL_ENERGY);
         if (mechanicalEnergy != null) {
             if (mechanicalEnergy > 1) {

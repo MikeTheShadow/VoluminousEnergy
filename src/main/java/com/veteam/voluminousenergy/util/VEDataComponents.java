@@ -91,4 +91,22 @@ public class VEDataComponents {
                                 .build();
                     }
             );
+
+    public static final Supplier<DataComponentType<Integer>> TOOL_TYPE =
+            DATA_COMPONENT_TYPE_DEFERRED_REGISTER.register("tool_type",
+                    () -> {
+                        DataComponentType.Builder<Integer> stackBuilder = DataComponentType.builder();
+                        return stackBuilder.persistent(Codec.INT)
+                                .build();
+                    }
+            );
+
+    public static final Supplier<DataComponentType<Integer>> TOOL_TIER =
+            DATA_COMPONENT_TYPE_DEFERRED_REGISTER.register("tool_tier",
+                    () -> {
+                        DataComponentType.Builder<Integer> stackBuilder = DataComponentType.builder();
+                        return stackBuilder.persistent(Codec.INT)
+                                .build();
+                    }
+            );
 }

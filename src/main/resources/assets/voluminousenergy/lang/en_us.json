@@ -346,6 +346,7 @@
   "item.voluminousenergy.rfid_chip": "RFID Chip",
   "item.voluminousenergy.creative_fluid_scanner": "Creative Fluid Scanner",
   "_comment": "Multitool Items",
+  "item.voluminousenergy.multitool" : "Multitool",
   "item.voluminousenergy.empty_multitool": "Empty Multitool",
   "item.voluminousenergy.iron_drill_bit": "Iron Drill Bit",
   "item.voluminousenergy.iron_chain_bit": "Iron Chain Bit",

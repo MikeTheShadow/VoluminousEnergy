@@ -26,14 +26,22 @@ public class MultitoolBit {
     private float attackDamage;
     private float attackSpeed;
     private final Multimap<Attribute, AttributeModifier> defaultModifiers;
+    private final int toolTier;
+    private final int toolType;
 
-    public MultitoolBit(Set<ToolAction> action, Tier bitTier, TagKey<Block> mineableBlockTag, float destroySpeedMultiplier, float attackDamage, float attackSpeed) {
+    public MultitoolBit(Set<ToolAction> action, Tier bitTier, TagKey<Block> mineableBlockTag, float destroySpeedMultiplier, int toolTier, int toolType) {
+        this(action, bitTier, mineableBlockTag, destroySpeedMultiplier, 1, 1, toolTier, toolType);
+    }
+
+    public MultitoolBit(Set<ToolAction> action, Tier bitTier, TagKey<Block> mineableBlockTag, float destroySpeedMultiplier, float attackDamage, float attackSpeed, int toolTier, int toolType) {
         this.action = action;
         this.tier = bitTier;
         this.mineableBlocks = mineableBlockTag;
         this.destroySpeed = destroySpeedMultiplier * this.tier.getSpeed();
         this.attackDamage = attackDamage;
         this.attackSpeed = attackSpeed;
+        this.toolTier = toolTier;
+        this.toolType = toolType;
 
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
         builder.put(Attributes.ATTACK_DAMAGE.value(), new AttributeModifier(UUID.fromString("CB3F55D3-645C-4F38-A497-9C13A33DB5CF"), "Tool modifier", this.attackDamage, AttributeModifier.Operation.ADD_VALUE));
@@ -41,10 +49,10 @@ public class MultitoolBit {
         this.defaultModifiers = builder.build();
     }
 
-    /*public Tier getTier(){
+    public Tier getTier(){
         return this.tier;
     }
-
+    /*
     public Tag.Named<Block> getBlockTag(){
         return this.mineableBlocks;
     }*/
@@ -74,5 +82,13 @@ public class MultitoolBit {
         }
 
         return blockState.is(this.mineableBlocks) && toolValid;
+    }
+
+    public int getToolTier() {
+        return toolTier;
+    }
+
+    public int getToolType() {
+        return toolType;
     }
 }

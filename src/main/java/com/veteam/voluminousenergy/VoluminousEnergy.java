@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy;
 
+import com.mojang.serialization.Codec;
 import com.veteam.voluminousenergy.achievements.triggers.VECriteriaTriggers;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.datagen.VEGlobalLootModifierData;
@@ -14,14 +15,18 @@ import com.veteam.voluminousenergy.recipe.VERecipes;
 import com.veteam.voluminousenergy.setup.VESetup;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.VEAttachments;
+import com.veteam.voluminousenergy.util.VECodecs;
 import com.veteam.voluminousenergy.util.VEDataComponents;
 import com.veteam.voluminousenergy.world.feature.VEFeatures;
 import com.veteam.voluminousenergy.world.modifiers.VEModifiers;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryCodecs;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -160,6 +165,12 @@ public class VoluminousEnergy {
             event.enqueueWork(() -> ItemBlockRenderTypes.setRenderLayer(VEBlocks.RICE_CROP.get(), RenderType.cutout()));
             event.enqueueWork(() -> ItemBlockRenderTypes.setRenderLayer(VEBlocks.SAWMILL.block().get(), RenderType.cutout()));
             event.enqueueWork(() -> ItemBlockRenderTypes.setRenderLayer(VEBlocks.PRESSURE_LADDER.get(), RenderType.cutout()));
+
+            ItemProperties.register(VEItems.MULTI_TOOL.get(), new ResourceLocation(MODID, "tool_type"), (stack, level, entity, seed)
+                    -> stack.getOrDefault(VEDataComponents.TOOL_TYPE, 0));
+
+            ItemProperties.register(VEItems.MULTI_TOOL.get(), new ResourceLocation(MODID, "tool_tier"), (stack, level, entity, seed)
+                    -> stack.getOrDefault(VEDataComponents.TOOL_TIER, 0));
         }
 
         @SubscribeEvent
