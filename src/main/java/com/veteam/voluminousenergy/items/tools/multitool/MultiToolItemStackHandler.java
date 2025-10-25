@@ -4,6 +4,7 @@ import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItem;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
+//TODO DELETE ME
 public class MultiToolItemStackHandler extends ItemStackHandler {
 
     public MultiToolItemStackHandler() {

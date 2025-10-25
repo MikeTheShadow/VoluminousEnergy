@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.items.tools.multitool;
 
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
-import com.veteam.voluminousenergy.items.tools.multitool.bits.MultitoolBit;
+import com.veteam.voluminousenergy.items.tools.multitool.bits.MultitoolBitData;
 import com.veteam.voluminousenergy.recipe.CombustionGeneratorRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.util.NumberUtil;
@@ -31,7 +31,7 @@ public class CombustionMultitool extends Multitool {
 
     public final int TANK_CAPACITY = VETileEntity.DEFAULT_TANK_CAPACITY;
 
-    public CombustionMultitool(MultitoolBit bit, String registryName, Properties itemProperties) {
+    public CombustionMultitool(MultitoolBitData bit, String registryName, Properties itemProperties) {
         super(bit, registryName, itemProperties);
     }
 

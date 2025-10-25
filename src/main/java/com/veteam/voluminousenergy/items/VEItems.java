@@ -40,7 +40,7 @@ import java.util.function.Supplier;
 
 public class VEItems {
     public static final DeferredRegister<Item> VE_ITEM_REGISTRY = DeferredRegister.create(Registries.ITEM, VoluminousEnergy.MODID);
-    
+
     // Misc
     public static DeferredHolder<Item, Petcoke> PETCOKE = VE_ITEM_REGISTRY.register("petcoke", Petcoke::new);
     public static Supplier<CoalCoke> COALCOKE = VE_ITEM_REGISTRY.register("coalcoke", CoalCoke::new);

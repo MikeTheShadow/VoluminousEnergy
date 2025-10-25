@@ -3,7 +3,9 @@ package com.veteam.voluminousenergy.items.tools.multitool.bits;
 import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ShearsItem;
 import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -14,11 +16,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class TrimmerBit extends MultitoolBit {
+public class TrimmerBitData extends MultitoolBitData {
     private Tier tier;
     private float destroySpeedMultiplier;
 
-    public TrimmerBit(Set<ToolAction> action, Tier bitTier, float destroySpeedMultiplier, float attackDamage, float attackSpeed,int toolTier,int toolType) {
+    public TrimmerBitData(Set<ToolAction> action, Tier bitTier, float destroySpeedMultiplier, float attackDamage, float attackSpeed, int toolTier, int toolType) {
         super(action, bitTier, null, destroySpeedMultiplier, attackDamage, attackSpeed,toolTier,toolType);
         this.tier = bitTier;
         this.destroySpeedMultiplier = destroySpeedMultiplier;

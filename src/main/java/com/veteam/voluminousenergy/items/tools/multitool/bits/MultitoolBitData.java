@@ -18,7 +18,7 @@ import net.neoforged.neoforge.common.ToolAction;
 import java.util.Set;
 import java.util.UUID;
 
-public class MultitoolBit {
+public class MultitoolBitData {
     private Set<ToolAction> action;
     private Tier tier;
     private TagKey<Block> mineableBlocks;
@@ -29,11 +29,11 @@ public class MultitoolBit {
     private final int toolTier;
     private final int toolType;
 
-    public MultitoolBit(Set<ToolAction> action, Tier bitTier, TagKey<Block> mineableBlockTag, float destroySpeedMultiplier, int toolTier, int toolType) {
+    public MultitoolBitData(Set<ToolAction> action, Tier bitTier, TagKey<Block> mineableBlockTag, float destroySpeedMultiplier, int toolTier, int toolType) {
         this(action, bitTier, mineableBlockTag, destroySpeedMultiplier, 1, 1, toolTier, toolType);
     }
 
-    public MultitoolBit(Set<ToolAction> action, Tier bitTier, TagKey<Block> mineableBlockTag, float destroySpeedMultiplier, float attackDamage, float attackSpeed, int toolTier, int toolType) {
+    public MultitoolBitData(Set<ToolAction> action, Tier bitTier, TagKey<Block> mineableBlockTag, float destroySpeedMultiplier, float attackDamage, float attackSpeed, int toolTier, int toolType) {
         this.action = action;
         this.tier = bitTier;
         this.mineableBlocks = mineableBlockTag;
