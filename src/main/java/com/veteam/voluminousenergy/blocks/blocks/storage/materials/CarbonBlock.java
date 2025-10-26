@@ -14,6 +14,6 @@ public class CarbonBlock extends VEBlock {
         );
         setRName("carbon_block");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.addTierBasedOnInt(0, this);
+        VETagDataGenerator.setRequiresWoodAndBlacklistLowerTiers(this);
     }
 }

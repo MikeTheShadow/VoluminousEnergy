@@ -13,6 +13,6 @@ public class AluminumShellBlock extends VEBlock {
         );
         setRName("aluminum_shell");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresStone(this);
+        VETagDataGenerator.setRequiresStoneAndBlacklistLowerTiers(this);
     }
 }

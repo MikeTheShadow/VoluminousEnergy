@@ -25,7 +25,7 @@ public class AqueoulizerBlock extends VEFaceableMachineBlock {
         );
         setRName("aqueoulizer");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresIron(this);
+        VETagDataGenerator.setRequiresIronAndBlacklistLowerTiers(this);
     }
 
     @Nullable

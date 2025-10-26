@@ -31,7 +31,7 @@ public class DimensionalLaserBlock extends VEFaceableMachineBlock {
                 .lightLevel(value -> 7)
                 .noOcclusion()
         );
-        VETagDataGenerator.setRequiresSolarium(this);
+        VETagDataGenerator.setRequiresSolariumAndBlacklistLowerTiers(this);
         VETagDataGenerator.setRequiresPickaxe(this);
     }
 

@@ -24,7 +24,7 @@ public class ImplosionCompressorBlock extends VEFaceableMachineBlock {
         );
         setRName("implosion_compressor");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresIron(this);
+        VETagDataGenerator.setRequiresIronAndBlacklistLowerTiers(this);
     }
 
     @Nullable

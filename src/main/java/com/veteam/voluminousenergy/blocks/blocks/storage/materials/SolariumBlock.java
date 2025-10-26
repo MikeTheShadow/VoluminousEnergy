@@ -14,6 +14,6 @@ public class SolariumBlock extends VEBlock {
         );
         setRName("solarium_block");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.addTierBasedOnInt(7, this);
+        VETagDataGenerator.setRequiresSolariumAndBlacklistLowerTiers(this);
     }
 }

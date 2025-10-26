@@ -25,7 +25,7 @@ public class CentrifugalAgitatorBlock extends VEFaceableMachineBlock {
         );
         setRName("centrifugal_agitator");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresIron(this);
+        VETagDataGenerator.setRequiresIronAndBlacklistLowerTiers(this);
     }
 
     @Nullable

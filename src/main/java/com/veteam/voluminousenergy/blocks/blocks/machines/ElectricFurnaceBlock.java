@@ -25,7 +25,7 @@ public class ElectricFurnaceBlock extends VEFaceableMachineBlock {
         );
         setRName("electric_furnace");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresIron(this);
+        VETagDataGenerator.setRequiresIronAndBlacklistLowerTiers(this);
     }
 
     @Nullable

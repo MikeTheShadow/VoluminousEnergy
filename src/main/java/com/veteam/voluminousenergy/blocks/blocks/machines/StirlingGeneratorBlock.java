@@ -24,7 +24,7 @@ public class StirlingGeneratorBlock extends VEFaceableMachineBlock {
         );
         setRName("stirling_generator");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresStone(this);
+        VETagDataGenerator.setRequiresStoneAndBlacklistLowerTiers(this);
     }
 
     @Nullable

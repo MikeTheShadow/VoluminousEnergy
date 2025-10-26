@@ -28,7 +28,7 @@ public class EighzoTankBlock extends TankBlock implements EntityBlock {
         );
         setRName("eighzo_tank");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresEighzo(this);
+        VETagDataGenerator.setRequiresEighzoAndBlacklistLowerTiers(this);
     }
 
     @Nullable

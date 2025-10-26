@@ -28,7 +28,7 @@ public class SolariumTankBlock extends TankBlock implements EntityBlock {
         );
         setRName("solarium_tank");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresSolarium(this);
+        VETagDataGenerator.setRequiresSolariumAndBlacklistLowerTiers(this);
     }
 
     @Nullable

@@ -27,7 +27,7 @@ public class PrimitiveStirlingGeneratorBlock extends VEFaceableMachineBlock {
 
         setRName("primitivestirlinggenerator");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresWood(this);
+        VETagDataGenerator.setRequiresWoodAndBlacklistLowerTiers(this);
     }
 
     @Override

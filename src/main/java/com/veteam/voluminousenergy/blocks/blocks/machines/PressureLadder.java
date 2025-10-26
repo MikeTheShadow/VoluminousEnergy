@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.blocks.blocks.machines;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -9,7 +8,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
@@ -50,7 +48,7 @@ public class PressureLadder extends LadderBlock {
                 .setValue(POWERED, Boolean.valueOf(false))
         );
         VETagDataGenerator.setRequiresAxe(this);
-        VETagDataGenerator.setRequiresWood(this);
+        VETagDataGenerator.setRequiresWoodAndBlacklistLowerTiers(this);
         setRegistryName("pressure_ladder");
     }
 

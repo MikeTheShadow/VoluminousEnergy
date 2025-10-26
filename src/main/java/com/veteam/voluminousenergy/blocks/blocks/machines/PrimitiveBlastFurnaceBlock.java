@@ -31,7 +31,7 @@ public class PrimitiveBlastFurnaceBlock extends VEFaceableMachineBlock {
         );
         setRName("primitiveblastfurnace");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresWood(this);
+        VETagDataGenerator.setRequiresWoodAndBlacklistLowerTiers(this);
     }
 
     @Nullable
