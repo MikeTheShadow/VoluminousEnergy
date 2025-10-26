@@ -17,28 +17,28 @@ public class VETools {
     public static final DeferredRegister<Item> VE_TOOL_REGISTRY = DeferredRegister.create(Registries.ITEM, VoluminousEnergy.MODID);
 
     // Material Tiers
-    public static final TagKey<Block> ALUMINUM_TIER_TAG = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "needs_aluminum_tool"));
+    public static final TagKey<Block> ALUMINUM_TIER_TAG = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "incorrect_for_iron"));
     public static final Tier ALUMINUM = new VEItemToolTier(250, 6.6F, 2.0F, ALUMINUM_TIER_TAG, 14, () -> Ingredient.of(VEItems.ALUMINUM_INGOT.get())); // Actual tier
 
-    public static final TagKey<Block> CARBON_TIER_TAG = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "needs_carbon_tool"));
+    public static final TagKey<Block> CARBON_TIER_TAG = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "incorrect_for_stone"));
     public static final Tier CARBON = new VEItemToolTier(95, 4.0F, 0.8F, CARBON_TIER_TAG, 5, () -> Ingredient.of(VEItems.CARBON_BRICK.get())); // Actual tier
 
-    public static final TagKey<Block> TITANIUM_TIER_TAG = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "needs_titanium_tool"));
+    public static final TagKey<Block> TITANIUM_TIER_TAG = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "incorrect_for_netherite"));
     public static final Tier TITANIUM = new VEItemToolTier(2133, 8.5F, 3.5F, TITANIUM_TIER_TAG, 15, () -> Ingredient.of(VEItems.TITANIUM_INGOT.get())); // Actual tier
 
-    public static final TagKey<Block> TUNGSTEN_TIER_TAG = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "needs_tungsten_tool"));
+    public static final TagKey<Block> TUNGSTEN_TIER_TAG = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "incorrect_for_netherite"));
     public static final Tier TUNGSTEN = new VEItemToolTier(2666, 9.0F, 4.0F, TUNGSTEN_TIER_TAG, 15, () -> Ingredient.of(VEItems.TUNGSTEN_INGOT.get())); // Actual tier
 
-    public static final TagKey<Block> TUNGSTEN_STEEL_TIER_TAG = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "needs_tungsten_steel_tool"));
+    public static final TagKey<Block> TUNGSTEN_STEEL_TIER_TAG = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "incorrect_for_tungstensteel"));
     public static final Tier TUNGSTEN_STEEL = new VEItemToolTier(2933, 11.0F, 5.0F, TUNGSTEN_STEEL_TIER_TAG, 18, () -> Ingredient.of(VEItems.TUNGSTEN_STEEL_INGOT.get())); // Actual tier
 
-    public static final TagKey<Block> NIGHALITE_TIER_TAG = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "needs_nighalite_tool"));
+    public static final TagKey<Block> NIGHALITE_TIER_TAG = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "incorrect_for_nighalite"));
     public static final Tier NIGHALITE = new VEItemToolTier(2434, 13F, 4.6F, NIGHALITE_TIER_TAG, 18, () -> Ingredient.of(VEItems.NIGHALITE_INGOT.get())); // Actual tier
 
-    public static final TagKey<Block> EIGHZO_TIER_TAG = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "needs_eighzo_tool"));
+    public static final TagKey<Block> EIGHZO_TIER_TAG = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "incorrect_for_eighzo"));
     public static final Tier EIGHZO = new VEItemToolTier(7125, 17F, 6.5F, EIGHZO_TIER_TAG, 18, () -> Ingredient.of(VEItems.EIGHZO_INGOT.get())); // Actual tier
 
-    public static final TagKey<Block> SOLARIUM_TIER_TAG = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "needs_solarium_tool"));
+    public static final TagKey<Block> SOLARIUM_TIER_TAG = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "incorrect_for_solarium"));
     public static final Tier SOLARIUM = new VEItemToolTier(17815 /* or 25912 */, 20F, 8F, SOLARIUM_TIER_TAG, 22, () -> Ingredient.of(VEItems.SOLARIUM_INGOT.get())); // Actual tier
 
     /* TOOLS */

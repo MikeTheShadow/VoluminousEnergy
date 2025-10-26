@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "#voluminousenergy:needs_tungstensteel_tool",
+    "#voluminousenergy:needs_nighalite_tool",
+    "#voluminousenergy:needs_eighzo_tool",
+    "#voluminousenergy:needs_solarium_tool"
+  ]
+}
