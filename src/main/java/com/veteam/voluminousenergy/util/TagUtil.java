@@ -35,6 +35,10 @@ public class TagUtil {
         return blocks;
     }
 
+    public static TagKey<Block> getBlockTagKeyFromLocation(ResourceLocation blockTagLocation) {
+        return TagKey.create(Registries.BLOCK, blockTagLocation);
+    }
+
     public static ArrayList<Block> getBlocksFromTagKey(TagKey<Block> blockTagKey) {
         ArrayList<Block> blocks = new ArrayList<>();
 

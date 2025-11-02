@@ -2,14 +2,14 @@ package com.veteam.voluminousenergy.items.tools.multitool;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.items.VEItem;
-import com.veteam.voluminousenergy.items.tools.multitool.bits.MultitoolBitData;
-import com.veteam.voluminousenergy.items.tools.multitool.bits.TrimmerBitData;
-import com.veteam.voluminousenergy.recipe.VERecipe;
-import com.veteam.voluminousenergy.util.TagUtil;
-import com.veteam.voluminousenergy.util.VECodecs;
+import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItem;
+import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItemData;
+import com.veteam.voluminousenergy.items.tools.multitool.bits.ToolTier;
+import com.veteam.voluminousenergy.items.tools.multitool.bits.ToolType;
 import com.veteam.voluminousenergy.util.VEDataComponents;
-import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -18,6 +18,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -25,15 +26,16 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Multitool extends VEItem /*implements Vanishable*/ {
-    protected MultitoolBitData bit;
+    protected BitItemData bit;
 
     private final MultiToolItemStackHandler handler = new MultiToolItemStackHandler();
 
     private Block lastBlock = null;
 
-    public Multitool(MultitoolBitData bit, String registryName, Item.Properties itemProperties) {
+    public Multitool(BitItemData bit, String registryName, Item.Properties itemProperties) {
         super(itemProperties);
         this.bit = bit;
         setRegistryName(registryName);
@@ -45,48 +47,52 @@ public class Multitool extends VEItem /*implements Vanishable*/ {
         setRegistryName("multitool");
     }
 
+    //TODO REMOVE ME
     boolean test = false;
 
     public void setToolState(@NotNull ItemStack itemStack,@Nullable BlockState blockState) {
+
         if (!test) {
             test = true;
 
-            this.handler.insertItem(0, new ItemStack(VEMultitools.DIAMOND_SCOOPER_BIT.get(), 1), false);
-            this.handler.insertItem(1, new ItemStack(VEMultitools.DIAMOND_CHAIN_BIT.get(), 1), false);
-            this.handler.insertItem(2, new ItemStack(VEMultitools.DIAMOND_DRILL_BIT.get(), 1), false);
-            this.handler.insertItem(3, new ItemStack(VEMultitools.DIAMOND_TRIMMER_BIT.get(), 1), false);
+            ArrayList<ItemStack> mockInventory = new ArrayList<>();
+            mockInventory.add(new ItemStack(VEMultitools.DIAMOND_SCOOPER_BIT.get(), 1));
+            mockInventory.add(new ItemStack(VEMultitools.DIAMOND_CHAIN_BIT.get(), 1));
+            mockInventory.add(new ItemStack(VEMultitools.DIAMOND_DRILL_BIT.get(), 1));
+            mockInventory.add(new ItemStack(VEMultitools.DIAMOND_TRIMMER_BIT.get(), 1));
+            itemStack.set(VEDataComponents.ITEM_STACK_LIST_COMPONENT,mockInventory);
         }
 
-        if(blockState == null) {
+        if(blockState == null || blockState.isAir()) {
             itemStack.set(VEDataComponents.TOOL_TYPE,0);
             itemStack.set(VEDataComponents.TOOL_TIER,0);
+            VoluminousEnergy.LOGGER.info("Bit selected: None");
             return;
         }
 
-        Block lastBlock = blockState.getBlock();
+        List<ItemStack> inventory = itemStack.get(VEDataComponents.ITEM_STACK_LIST_COMPONENT);
 
-        for (int i = 0; i < this.handler.getSlots(); i++) {
+        float miningSpeed = 0;
+        BitItemData selected = null;
 
-        }
+        for(ItemStack stack : inventory) {
+            if (stack.getItem() instanceof BitItem bitItem) {
+                BitItemData data = bitItem.getBitItemData();
+                Tool tool = data.getTier().createToolProperties(data.getMineableBlocks());
 
-        if (this.lastBlock != lastBlock) {
-            this.lastBlock = lastBlock;
-            if (blockState.is(BlockTags.MINEABLE_WITH_PICKAXE)) {
-                itemStack.set(VEDataComponents.TOOL_TYPE,1);
-                itemStack.set(VEDataComponents.TOOL_TIER,3);
-            } else if (blockState.is(BlockTags.MINEABLE_WITH_SHOVEL)) {
-                itemStack.set(VEDataComponents.TOOL_TYPE,3);
-                itemStack.set(VEDataComponents.TOOL_TIER,3);
-            } else if(blockState.is(BlockTags.MINEABLE_WITH_AXE)) {
-                itemStack.set(VEDataComponents.TOOL_TYPE,2);
-                itemStack.set(VEDataComponents.TOOL_TIER,2);
-            } else if (blockState.is(BlockTags.MINEABLE_WITH_HOE)) {
-                itemStack.set(VEDataComponents.TOOL_TYPE,4);
-                itemStack.set(VEDataComponents.TOOL_TIER,4);
+                float tempSpeed = tool.getMiningSpeed(blockState);
+
+                if(tempSpeed > miningSpeed && tool.isCorrectForDrops(blockState)) {
+                    miningSpeed = tempSpeed;
+                    selected = data;
+                }
             }
         }
-    }
 
+        if (selected == null) return;
+        itemStack.set(VEDataComponents.TOOL_TYPE,selected.getToolType());
+        itemStack.set(VEDataComponents.TOOL_TIER,selected.getToolTier());
+    }
 
     @Override
     public float getDestroySpeed(@NotNull ItemStack itemStack, BlockState blockStateToMine) {
@@ -109,7 +115,7 @@ public class Multitool extends VEItem /*implements Vanishable*/ {
     }
 
     @Nullable
-    public MultitoolBitData getBit() {
+    public BitItemData getBit() {
         return this.bit != null ? this.bit : null;
     }
 
@@ -138,7 +144,7 @@ public class Multitool extends VEItem /*implements Vanishable*/ {
     // Trimmer Multitool stuff
     @Override
     public net.minecraft.world.@NotNull InteractionResult interactLivingEntity(@NotNull ItemStack stack, net.minecraft.world.entity.player.@NotNull Player playerIn, @NotNull LivingEntity entity, net.minecraft.world.@NotNull InteractionHand hand) {
-        if (this.bit != null && this.bit instanceof TrimmerBitData && entity instanceof net.neoforged.neoforge.common.IShearable target) {
+        if (this.bit != null && this.bit instanceof BitItemData bitItemData && bitItemData.getToolType() == ToolType.TRIMMER.value() && entity instanceof net.neoforged.neoforge.common.IShearable target) {
             if (entity.level().isClientSide) return net.minecraft.world.InteractionResult.SUCCESS;
             BlockPos pos = new BlockPos(Mth.floor(entity.getX()), Mth.floor(entity.getY()), Mth.floor(entity.getZ()));
             if (target.isShearable(playerIn, stack, entity.level(), pos)) {

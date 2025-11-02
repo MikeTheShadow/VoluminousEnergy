@@ -4,15 +4,13 @@ package com.veteam.voluminousenergy.util;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
-import com.veteam.voluminousenergy.util.records.BlastFurnaceData;
-import com.veteam.voluminousenergy.util.records.ChunkFluidData;
-import com.veteam.voluminousenergy.util.records.CounterLength;
-import com.veteam.voluminousenergy.util.records.FluidPumpData;
+import com.veteam.voluminousenergy.util.records.*;
 import io.netty.handler.codec.DecoderException;
 import io.netty.handler.codec.EncoderException;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -48,7 +46,6 @@ public class VECodecs {
                     Codec.INT.fieldOf("temp_kelvin").forGetter(BlastFurnaceData::temperatureKelvin)
             ).apply(instance, BlastFurnaceData::new)
     );
-
 
     public static final StreamCodec<RegistryFriendlyByteBuf, List<FluidStack>> FLUID_STACK_LIST_STREAM_CODEC = new StreamCodec<>() {
 
@@ -89,4 +86,6 @@ public class VECodecs {
             FLUID_STACK_LIST_STREAM_CODEC, ChunkFluidData::fluids,
             ChunkFluidData::new
     );
+
+
 }

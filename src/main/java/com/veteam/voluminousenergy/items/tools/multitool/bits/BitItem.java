@@ -4,16 +4,16 @@ import com.veteam.voluminousenergy.items.VEItem;
 import net.minecraft.world.item.Item;
 
 public class BitItem extends VEItem {
-    private MultitoolBitData multitoolBitData;
+    private BitItemData bitItemData;
 
-    public BitItem(MultitoolBitData bit, String registryName, Item.Properties itemProperties) {
+    public BitItem(BitItemData bit, String registryName, Item.Properties itemProperties) {
         super(itemProperties);
-        this.multitoolBitData = bit;
+        this.bitItemData = bit;
         setRegistryName(registryName);
     }
 
-    public MultitoolBitData getBit() {
-        return this.multitoolBitData;
+    public BitItemData getBitItemData() {
+        return this.bitItemData;
     }
 
 }

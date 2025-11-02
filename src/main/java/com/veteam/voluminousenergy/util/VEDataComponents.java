@@ -6,6 +6,7 @@ import com.veteam.voluminousenergy.util.records.ChunkFluidData;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.SimpleFluidContent;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -109,4 +110,12 @@ public class VEDataComponents {
                                 .build();
                     }
             );
+
+    public static final Supplier<DataComponentType<List<ItemStack>>> ITEM_STACK_LIST_COMPONENT =
+            DATA_COMPONENT_TYPE_DEFERRED_REGISTER.register("multi_tool_inventory", () -> {
+                DataComponentType.Builder<List<ItemStack>> stackBuilder = DataComponentType.builder();
+                return stackBuilder.persistent(ItemStack.CODEC.listOf())
+                        .networkSynchronized(ItemStack.LIST_STREAM_CODEC)
+                        .build();
+            });
 }

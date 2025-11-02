@@ -17,7 +17,7 @@ public class MultiToolItemStackHandler extends ItemStackHandler {
 
         for(ItemStack s : this.stacks) {
             if (s.getItem() instanceof BitItem inventoryBit) {
-                if (inventoryBit.getBit().getToolType() == bitItem.getBit().getToolType()) {
+                if (inventoryBit.getBitItemData().getToolType() == bitItem.getBitItemData().getToolType()) {
                     return false;
                 }
             }
