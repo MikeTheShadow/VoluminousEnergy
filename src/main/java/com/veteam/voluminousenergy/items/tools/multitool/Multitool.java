@@ -116,7 +116,7 @@ public class Multitool extends VEItem {
     @Override
     public float getDestroySpeed(@NotNull ItemStack itemStack, @NotNull BlockState blockStateToMine) {
         BitItem bit = getBestBitForBlock(itemStack, blockStateToMine);
-        return bit != null ? bit.getBitItemData().getTier().getSpeed() : 0;
+        return bit != null ? bit.getBitItemData().getTier().getSpeed() : 1;
     }
 
     @Override
