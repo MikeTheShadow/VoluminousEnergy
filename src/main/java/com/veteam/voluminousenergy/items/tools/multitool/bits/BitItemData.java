@@ -24,42 +24,27 @@ public class BitItemData {
     private TagKey<Block> mineableBlocks;
     private float destroySpeed;
     private float attackDamage;
-    private float attackSpeed;
-    private final Multimap<Attribute, AttributeModifier> defaultModifiers;
     private final int toolTier;
     private final int toolType;
+    protected static final float DESTROY_SPEED_MULTIPLIER = 0.9F;
 
-    public BitItemData(Set<ToolAction> action, Tier bitTier, TagKey<Block> mineableBlockTag, float destroySpeedMultiplier, int toolTier, int toolType) {
-        this(action, bitTier, mineableBlockTag, destroySpeedMultiplier, 1, 1, toolTier, toolType);
+    public BitItemData(Set<ToolAction> action, Tier bitTier, TagKey<Block> mineableBlockTag, ToolTier toolTier, ToolType toolType) {
+        this(action, bitTier, mineableBlockTag,  toolTier.value(), toolType.value());
     }
 
-    public BitItemData(Set<ToolAction> action, Tier bitTier, TagKey<Block> mineableBlockTag, float destroySpeedMultiplier, ToolTier toolTier, ToolType toolType) {
-        this(action, bitTier, mineableBlockTag, destroySpeedMultiplier, 1, 1, toolTier.value(), toolType.value());
-    }
-
-    public BitItemData(Set<ToolAction> action, Tier bitTier, TagKey<Block> mineableBlockTag, float destroySpeedMultiplier, float attackDamage, float attackSpeed, int toolTier, int toolType) {
+    public BitItemData(Set<ToolAction> action, Tier bitTier, TagKey<Block> mineableBlockTag, int toolTier, int toolType) {
         this.action = action;
         this.tier = bitTier;
         this.mineableBlocks = mineableBlockTag;
-        this.destroySpeed = destroySpeedMultiplier * this.tier.getSpeed();
-        this.attackDamage = attackDamage;
-        this.attackSpeed = attackSpeed;
+        this.destroySpeed =  DESTROY_SPEED_MULTIPLIER * this.tier.getSpeed();
+        this.attackDamage = tier.getAttackDamageBonus();
         this.toolTier = toolTier;
         this.toolType = toolType;
-
-        ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-        builder.put(Attributes.ATTACK_DAMAGE.value(), new AttributeModifier(UUID.fromString("CB3F55D3-645C-4F38-A497-9C13A33DB5CF"), "Tool modifier", this.attackDamage, AttributeModifier.Operation.ADD_VALUE));
-        builder.put(Attributes.ATTACK_SPEED.value(), new AttributeModifier(UUID.fromString("FA233E1C-4180-4865-B01B-BCCE9785ACA3"), "Tool modifier", this.attackSpeed, AttributeModifier.Operation.ADD_VALUE));
-        this.defaultModifiers = builder.build();
     }
 
     public Tier getTier(){
         return this.tier;
     }
-    /*
-    public Tag.Named<Block> getBlockTag(){
-        return this.mineableBlocks;
-    }*/
 
     public float getDestroySpeed(ItemStack itemStack, BlockState blockState) {
         return blockState.is(this.mineableBlocks) ? this.destroySpeed : 1.0F;
@@ -67,10 +52,6 @@ public class BitItemData {
 
     public float getAttackDamage() {
         return this.attackDamage;
-    }
-
-    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot equipmentSlot) {
-        return this.defaultModifiers;
     }
 
     public boolean canPerformAction(net.neoforged.neoforge.common.ToolAction action) {
