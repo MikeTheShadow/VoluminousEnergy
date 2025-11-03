@@ -185,7 +185,7 @@ public class CombustionMultitool extends Multitool {
     }
 
     @Override
-    public float getDestroySpeed(@NotNull ItemStack itemStack, BlockState blockStateToMine) {
+    public float getDestroySpeed(@NotNull ItemStack itemStack, @NotNull BlockState blockStateToMine) {
         Integer mechanicalEnergy = itemStack.get(VEDataComponents.MECHANICAL_ENERGY);
         if (mechanicalEnergy != null) {
             if (mechanicalEnergy > 1) {

@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.items.tools.multitool;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.items.VEItem;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItem;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItemData;
@@ -54,8 +55,6 @@ public class Multitool extends VEItem {
             return;
         }
 
-        List<ItemStack> inventory = itemStack.get(VEDataComponents.ITEM_STACK_LIST_COMPONENT);
-
         BitItem selected = getBestBitForBlock(itemStack, blockState);
 
         if (selected == null) {
@@ -78,9 +77,7 @@ public class Multitool extends VEItem {
 
         for (ItemStack stack : inventory) {
             if (stack.getItem() instanceof BitItem bitItem) {
-                BitItemData data = bitItem.getBitItemData();
-                Tool tool = data.getTier().createToolProperties(data.getMineableBlocks());
-
+                Tool tool = bitItem.getTool();
                 float tempSpeed = tool.getMiningSpeed(blockState);
 
                 if (tempSpeed > miningSpeed && tool.isCorrectForDrops(blockState)) {
@@ -117,9 +114,9 @@ public class Multitool extends VEItem {
     }
 
     @Override
-    public float getDestroySpeed(@NotNull ItemStack itemStack, BlockState blockStateToMine) {
+    public float getDestroySpeed(@NotNull ItemStack itemStack, @NotNull BlockState blockStateToMine) {
         BitItem bit = getBestBitForBlock(itemStack, blockStateToMine);
-        return bit != null ? bit.getDestroySpeed(itemStack, blockStateToMine) : 0;
+        return bit != null ? bit.getBitItemData().getTier().getSpeed() : 0;
     }
 
     @Override
@@ -168,7 +165,8 @@ public class Multitool extends VEItem {
     @Override
     public boolean isCorrectToolForDrops(@NotNull ItemStack stack, @NotNull BlockState blockState) {
         BitItem bit = getBestBitForBlock(stack, blockState);
-        return bit != null && bit.isCorrectToolForDrops(stack, blockState);
+        if(bit == null) return false;
+        return bit.getTool().isCorrectForDrops(blockState);
     }
 
     // Trimmer Multitool stuff
