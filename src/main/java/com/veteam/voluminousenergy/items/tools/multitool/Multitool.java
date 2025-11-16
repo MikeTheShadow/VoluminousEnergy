@@ -45,7 +45,7 @@ public class Multitool extends VEItem {
         ArrayList<ItemStack> mockInventory = new ArrayList<>();
         mockInventory.add(new ItemStack(VEMultitools.DIAMOND_SCOOPER_BIT.get(), 1));
         mockInventory.add(new ItemStack(VEMultitools.EIGHZO_CHAIN_BIT.get(), 1));
-        mockInventory.add(new ItemStack(VEMultitools.NIGHALITE_DRILL_BIT.get(), 1));
+        mockInventory.add(new ItemStack(VEMultitools.TITANIUM_DRILL_BIT.get(), 1));
         mockInventory.add(new ItemStack(VEMultitools.TITANIUM_TRIMMER_BIT.get(), 1));
         itemStack.set(VEDataComponents.ITEM_STACK_LIST_COMPONENT, mockInventory);
 
@@ -86,7 +86,7 @@ public class Multitool extends VEItem {
                 }
             }
         }
-        
+
         return selected;
     }
 
@@ -113,6 +113,7 @@ public class Multitool extends VEItem {
         return selected;
     }
 
+
     @Override
     public float getDestroySpeed(@NotNull ItemStack itemStack, @NotNull BlockState blockStateToMine) {
         BitItem bit = getBestBitForBlock(itemStack, blockStateToMine);
@@ -120,8 +121,6 @@ public class Multitool extends VEItem {
         if(bit == null) {
             return blockStateToMine.requiresCorrectToolForDrops() ? 0.0F : 1;
         }
-
-        if(!bit.getTool().isCorrectForDrops(blockStateToMine)) return 0.0F;
 
         return bit.getBitItemData().getTier().getSpeed();
     }
@@ -171,6 +170,7 @@ public class Multitool extends VEItem {
 
     @Override
     public boolean isCorrectToolForDrops(@NotNull ItemStack stack, @NotNull BlockState blockState) {
+        if(!blockState.requiresCorrectToolForDrops()) return true;
         BitItem bit = getBestBitForBlock(stack, blockState);
         if(bit == null) return false;
         return bit.getTool().isCorrectForDrops(blockState);

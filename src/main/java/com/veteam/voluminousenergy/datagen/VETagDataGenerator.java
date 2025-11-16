@@ -57,16 +57,16 @@ public class VETagDataGenerator extends BlockTagsProvider {
         final TagKey<Block> NEEDS_SOLARIUM_TOOL = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "needs_solarium_tool"));
 
         // Setup Incorrect tags
-        final TagKey<Block> INCORRECT_FOR_WOOD = TagKey.create(Registries.BLOCK, new ResourceLocation("minecraft", "incorrect_for_wood"));
-        final TagKey<Block> INCORRECT_FOR_GOLD = TagKey.create(Registries.BLOCK, new ResourceLocation("minecraft", "incorrect_for_gold"));
-        final TagKey<Block> INCORRECT_FOR_STONE = TagKey.create(Registries.BLOCK, new ResourceLocation("minecraft", "incorrect_for_stone"));
-        final TagKey<Block> INCORRECT_FOR_IRON = TagKey.create(Registries.BLOCK, new ResourceLocation("minecraft", "incorrect_for_iron"));
-        final TagKey<Block> INCORRECT_FOR_DIAMOND = TagKey.create(Registries.BLOCK, new ResourceLocation("minecraft", "incorrect_for_diamond"));
-        final TagKey<Block> INCORRECT_FOR_NETHERITE = TagKey.create(Registries.BLOCK, new ResourceLocation("minecraft", "incorrect_for_netherite"));
-        final TagKey<Block> INCORRECT_FOR_TUNGSTENSTEEL = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "incorrect_for_tungstensteel"));
-        final TagKey<Block> INCORRECT_FOR_NIGHALITE = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "incorrect_for_nighalite"));
-        final TagKey<Block> INCORRECT_FOR_EIGHZO = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "incorrect_for_eighzo"));
-        final TagKey<Block> INCORRECT_FOR_SOLARIUM = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "incorrect_for_solarium"));
+        final TagKey<Block> INCORRECT_FOR_WOOD = TagKey.create(Registries.BLOCK, new ResourceLocation("minecraft", "incorrect_for_wood_tool"));
+        final TagKey<Block> INCORRECT_FOR_GOLD = TagKey.create(Registries.BLOCK, new ResourceLocation("minecraft", "incorrect_for_gold_tool"));
+        final TagKey<Block> INCORRECT_FOR_STONE = TagKey.create(Registries.BLOCK, new ResourceLocation("minecraft", "incorrect_for_stone_tool"));
+        final TagKey<Block> INCORRECT_FOR_IRON = TagKey.create(Registries.BLOCK, new ResourceLocation("minecraft", "incorrect_for_iron_tool"));
+        final TagKey<Block> INCORRECT_FOR_DIAMOND = TagKey.create(Registries.BLOCK, new ResourceLocation("minecraft", "incorrect_for_diamond_tool"));
+        final TagKey<Block> INCORRECT_FOR_NETHERITE = TagKey.create(Registries.BLOCK, new ResourceLocation("minecraft", "incorrect_for_netherite_tool"));
+        final TagKey<Block> INCORRECT_FOR_TUNGSTENSTEEL = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "incorrect_for_tungstensteel_tool"));
+        final TagKey<Block> INCORRECT_FOR_NIGHALITE = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "incorrect_for_nighalite_tool"));
+        final TagKey<Block> INCORRECT_FOR_EIGHZO = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "incorrect_for_eighzo_tool"));
+        final TagKey<Block> INCORRECT_FOR_SOLARIUM = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "incorrect_for_solarium_tool"));
 
         // To Mine With Tool
         mineableWithAxe.forEach(toMineWithAxe -> tag(BlockTags.MINEABLE_WITH_AXE).add(toMineWithAxe));
