@@ -221,8 +221,10 @@ public class VEContainers {
             .addSlot(38, 18, new BucketInputSlot(UP, 0)) // Fluid input tilePos
             .addSlot(38, 49, new BucketOutputSlot(DOWN)) // Extract fluid from input
             .addSlot(86, 32, new ItemInputSlot(NORTH)) // Main Tool tilePos
-            .addSlot(134, 18, new ItemInputSlot(SOUTH)) // Bit Slot
-            .addSlot(134, 49, new ItemInputSlot(EAST)) // Base Slot
+            .addSlot(134, 7, new ItemInputSlot(SOUTH)) // Bit Slot 1
+            .addSlot(134, 25, new ItemInputSlot(EAST)) // Bit Slot 2
+            .addSlot(134, 43, new ItemInputSlot(EAST)) // Bit Slot 3
+            .addSlot(134, 61, new ItemInputSlot(EAST)) // Bit Slot 4
             .build();
 
     public static final VEContainerFactory ALUMINUM_TANK_FACTORY = new VEContainerFactoryBuilder()
