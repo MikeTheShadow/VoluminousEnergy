@@ -23,10 +23,10 @@ public class VETools {
     public static final TagKey<Block> CARBON_TIER_TAG = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "incorrect_for_stone_tool"));
     public static final Tier CARBON = new VEItemToolTier(95, 4.0F, 0.8F, CARBON_TIER_TAG, 5, () -> Ingredient.of(VEItems.CARBON_BRICK.get())); // Actual tier
 
-    public static final TagKey<Block> TITANIUM_TIER_TAG = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "incorrect_for_netherite_tool"));
+    public static final TagKey<Block> TITANIUM_TIER_TAG = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "incorrect_for_titanium_tool"));
     public static final Tier TITANIUM = new VEItemToolTier(2133, 8.5F, 3.5F, TITANIUM_TIER_TAG, 15, () -> Ingredient.of(VEItems.TITANIUM_INGOT.get())); // Actual tier
 
-    public static final TagKey<Block> TUNGSTEN_TIER_TAG = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "incorrect_for_netherite_tool"));
+    public static final TagKey<Block> TUNGSTEN_TIER_TAG = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "incorrect_for_tungsten_tool"));
     public static final Tier TUNGSTEN = new VEItemToolTier(2666, 9.0F, 4.0F, TUNGSTEN_TIER_TAG, 15, () -> Ingredient.of(VEItems.TUNGSTEN_INGOT.get())); // Actual tier
 
     public static final TagKey<Block> TUNGSTEN_STEEL_TIER_TAG = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "incorrect_for_tungstensteel_tool"));

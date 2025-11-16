@@ -37,6 +37,8 @@ public class VETagDataGenerator extends BlockTagsProvider {
     private static ArrayList<Block> incorrectForStone = new ArrayList<>();
     private static ArrayList<Block> incorrectForIron = new ArrayList<>();
     private static ArrayList<Block> incorrectForDiamond = new ArrayList<>();
+    private static ArrayList<Block> incorrectForTitanium = new ArrayList<>();
+    private static ArrayList<Block> incorrectForTungsten = new ArrayList<>();
     private static ArrayList<Block> incorrectForNetherite = new ArrayList<>();
     private static ArrayList<Block> incorrectForTungstensteel = new ArrayList<>();
     private static ArrayList<Block> incorrectForNighalite = new ArrayList<>();
@@ -62,6 +64,8 @@ public class VETagDataGenerator extends BlockTagsProvider {
         final TagKey<Block> INCORRECT_FOR_STONE = TagKey.create(Registries.BLOCK, new ResourceLocation("minecraft", "incorrect_for_stone_tool"));
         final TagKey<Block> INCORRECT_FOR_IRON = TagKey.create(Registries.BLOCK, new ResourceLocation("minecraft", "incorrect_for_iron_tool"));
         final TagKey<Block> INCORRECT_FOR_DIAMOND = TagKey.create(Registries.BLOCK, new ResourceLocation("minecraft", "incorrect_for_diamond_tool"));
+        final TagKey<Block> INCORRECT_FOR_TITANIUM = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "incorrect_for_titanium_tool"));
+        final TagKey<Block> INCORRECT_FOR_TUNGSTEN = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "incorrect_for_tungsten_tool"));
         final TagKey<Block> INCORRECT_FOR_NETHERITE = TagKey.create(Registries.BLOCK, new ResourceLocation("minecraft", "incorrect_for_netherite_tool"));
         final TagKey<Block> INCORRECT_FOR_TUNGSTENSTEEL = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "incorrect_for_tungstensteel_tool"));
         final TagKey<Block> INCORRECT_FOR_NIGHALITE = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "incorrect_for_nighalite_tool"));
@@ -90,6 +94,7 @@ public class VETagDataGenerator extends BlockTagsProvider {
         incorrectForStone.forEach(incorrectStone -> tag(INCORRECT_FOR_STONE).add(incorrectStone));
         incorrectForIron.forEach(incorrectIron -> tag(INCORRECT_FOR_IRON).add(incorrectIron));
         incorrectForDiamond.forEach(incorrectDiamond -> tag(INCORRECT_FOR_DIAMOND).add(incorrectDiamond));
+        incorrectForTitanium.forEach(incorrectTitanium -> tag(INCORRECT_FOR_TITANIUM).add(incorrectTitanium));
         incorrectForNetherite.forEach(incorrectNetherite -> tag(INCORRECT_FOR_NETHERITE).add(incorrectNetherite));
         incorrectForTungstensteel.forEach(incorrectTungstensteel -> tag(INCORRECT_FOR_TUNGSTENSTEEL).add(incorrectTungstensteel));
         incorrectForNighalite.forEach(incorrectNighalite -> tag(INCORRECT_FOR_NIGHALITE).add(incorrectNighalite));
@@ -105,73 +110,91 @@ public class VETagDataGenerator extends BlockTagsProvider {
 
     public static void setRequiresStoneAndBlacklistLowerTiers(Block block) {
         requiresStone.add(block);
-
-        incorrectForWood.add(block);
+        incorrectForGold(block);
     }
 
     public static void setRequiresIronAndBlacklistLowerTiers(Block block) {
         requiresIron.add(block);
-
-        incorrectForStone.add(block);
-        incorrectForGold.add(block);
-        incorrectForWood.add(block);
+        incorrectForStone(block);
     }
 
     public static void setRequiresDiamondAndBlacklistLowerTiers(Block block) {
         requiresDiamond.add(block);
-
-        incorrectForIron.add(block);
-        incorrectForStone.add(block);
-        incorrectForGold.add(block);
-        incorrectForWood.add(block);
+        incorrectForIron(block);
     }
 
     public static void setRequiresNetheriteAndBlacklistLowerTiers(Block block) {
         requiresNetherite.add(block);
-
-        incorrectForDiamond.add(block);
-        incorrectForIron.add(block);
-        incorrectForStone.add(block);
-        incorrectForGold.add(block);
-        incorrectForWood.add(block);
+        incorrectForTungsten(block);
     }
 
     public static void setRequiresNighaliteAndBlacklistLowerTiers(Block block) {
         requiresNighalite.add(block);
-
-        incorrectForTungstensteel.add(block);
-        incorrectForNetherite.add(block);
-        incorrectForDiamond.add(block);
-        incorrectForIron.add(block);
-        incorrectForStone.add(block);
-        incorrectForGold.add(block);
-        incorrectForWood.add(block);
+        incorrectForTungstensteel(block);
     }
 
     public static void setRequiresEighzoAndBlacklistLowerTiers(Block block) {
         requiresEighzo.add(block);
-
-        incorrectForNighalite.add(block);
-        incorrectForTungstensteel.add(block);
-        incorrectForNetherite.add(block);
-        incorrectForDiamond.add(block);
-        incorrectForIron.add(block);
-        incorrectForStone.add(block);
-        incorrectForGold.add(block);
-        incorrectForWood.add(block);
+        incorrectForNighalite(block);
     }
 
     public static void setRequiresSolariumAndBlacklistLowerTiers(Block block) {
         requiresSolarium.add(block);
+        incorrectForEighzo(block);
+    }
 
+
+    static void incorrectForEighzo(Block block) {
         incorrectForEighzo.add(block);
+        incorrectForNighalite(block);
+    }
+
+    static void incorrectForNighalite(Block block) {
         incorrectForNighalite.add(block);
+        incorrectForTungstensteel(block);
+    }
+
+    static void incorrectForTungstensteel(Block block) {
         incorrectForTungstensteel.add(block);
+        incorrectForNetherite(block);
+    }
+
+    static void incorrectForNetherite(Block block) {
         incorrectForNetherite.add(block);
+        incorrectForTungsten(block);
+    }
+
+    static void incorrectForTungsten(Block block) {
+        incorrectForTungsten.add(block);
+        incorrectForTitanium(block);
+    }
+
+    static void incorrectForTitanium(Block block) {
+        incorrectForTitanium.add(block);
+        incorrectForDiamond(block);
+    }
+
+    static void incorrectForDiamond(Block block) {
         incorrectForDiamond.add(block);
+        incorrectForIron(block);
+    }
+
+    static void incorrectForIron(Block block) {
         incorrectForIron.add(block);
+        incorrectForStone(block);
+    }
+
+    static void incorrectForStone(Block block) {
         incorrectForStone.add(block);
+        incorrectForGold(block);
+    }
+
+    static void incorrectForGold(Block block) {
         incorrectForGold.add(block);
+        incorrectForWood.add(block);
+    }
+
+    static void incorrectForWood(Block block) {
         incorrectForWood.add(block);
     }
 
