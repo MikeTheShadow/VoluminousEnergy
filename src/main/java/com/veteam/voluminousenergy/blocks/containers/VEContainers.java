@@ -216,7 +216,6 @@ public class VEContainers {
             .addSlot(80, 35, new ItemInputSlot(UP))
             .build();
 
-    // TOOLING STATION UNUSED
     public static final VEContainerFactory TOOLING_STATION_FACTORY = new VEContainerFactoryBuilder()
             .create(TOOLING_STATION.container(), TOOLING_STATION.block())
             .addSlot(38, 18, new BucketInputSlot(UP, 0)) // Fluid input tilePos
@@ -224,7 +223,6 @@ public class VEContainers {
             .addSlot(86, 32, new ItemInputSlot(NORTH)) // Main Tool tilePos
             .addSlot(134, 18, new ItemInputSlot(SOUTH)) // Bit Slot
             .addSlot(134, 49, new ItemInputSlot(EAST)) // Base Slot
-            .addUpgradeSlot(154, -14) // Upgrade Slot
             .build();
 
     public static final VEContainerFactory ALUMINUM_TANK_FACTORY = new VEContainerFactoryBuilder()

@@ -59,7 +59,7 @@ public class VETileEntityFactory {
             }
 
 
-
+//TODO fix me for the dim laser
 //            @Override
 //            public AABB getRenderBoundingBox() {
 //                if (infiniteRender) {

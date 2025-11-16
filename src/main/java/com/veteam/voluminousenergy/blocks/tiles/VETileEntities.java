@@ -9,6 +9,7 @@ import com.veteam.voluminousenergy.items.data.CombustibleFluidsData;
 import com.veteam.voluminousenergy.recipe.processor.*;
 import com.veteam.voluminousenergy.tools.Config;
 
+import static com.veteam.voluminousenergy.blocks.tiles.VETileEntityFactory.*;
 import static com.veteam.voluminousenergy.recipe.VERecipes.VERecipeTypes.*;
 
 public class VETileEntities {
@@ -278,37 +279,38 @@ public class VETileEntities {
     // TODO needs a custom processor
     public static final VETileEntityFactory TOOLING_STATION_FACTORY =
             new VETileEntityFactory(VEBlocks.TOOLING_STATION.tile(), VEContainers.TOOLING_STATION_FACTORY)
-                    .withRecipe(TOOLING)
-                    .withCustomRecipeProcessing(new BasicProcessor());
+                    // TODO decide if we want a custom capacity for the tooling station tank
+                    .addTanks(new FluidInputOutputTank(0,Config.ALUMINUM_TANK_CAPACITY.get() * 1000))
+                    .withCustomInventoryValidator(new ToolingStationInventoryValidator());
 
     // Tanks
     public static final VETileEntityFactory ALUMINUM_TANK_FACTORY =
             new VETileEntityFactory(VEBlocks.ALUMINUM_TANK.tile(), VEContainers.ALUMINUM_TANK_FACTORY)
                     .withCustomInventoryValidator(new TankInventoryValidator())
-                    .addTanks(new VETileEntityFactory.FluidInputOutputTank(0, Config.ALUMINUM_TANK_CAPACITY.get() * 1000));
+                    .addTanks(new FluidInputOutputTank(0, Config.ALUMINUM_TANK_CAPACITY.get() * 1000));
 
     public static final VETileEntityFactory EIGHZO_TANK_FACTORY =
             new VETileEntityFactory(VEBlocks.EIGHZO_TANK.tile(), VEContainers.EIGHZO_TANK_FACTORY)
                     .withCustomInventoryValidator(new TankInventoryValidator())
-                    .addTanks(new VETileEntityFactory.FluidInputOutputTank(0, Config.EIGHZO_TANK_CAPACITY.get() * 1000));
+                    .addTanks(new FluidInputOutputTank(0, Config.EIGHZO_TANK_CAPACITY.get() * 1000));
 
     public static final VETileEntityFactory NETHERITE_TANK_FACTORY =
             new VETileEntityFactory(VEBlocks.NETHERITE_TANK.tile(), VEContainers.NETHERITE_TANK_FACTORY)
                     .withCustomInventoryValidator(new TankInventoryValidator())
-                    .addTanks(new VETileEntityFactory.FluidInputOutputTank(0, Config.NETHERITE_TANK_CAPACITY.get() * 1000));
+                    .addTanks(new FluidInputOutputTank(0, Config.NETHERITE_TANK_CAPACITY.get() * 1000));
 
     public static final VETileEntityFactory NIGHALITE_TANK_FACTORY =
             new VETileEntityFactory(VEBlocks.NIGHALITE_TANK.tile(), VEContainers.NIGHALITE_TANK_FACTORY)
                     .withCustomInventoryValidator(new TankInventoryValidator())
-                    .addTanks(new VETileEntityFactory.FluidInputOutputTank(0, Config.NIGHALITE_TANK_CAPACITY.get() * 1000));
+                    .addTanks(new FluidInputOutputTank(0, Config.NIGHALITE_TANK_CAPACITY.get() * 1000));
 
     public static final VETileEntityFactory SOLARIUM_TANK_FACTORY =
             new VETileEntityFactory(VEBlocks.SOLARIUM_TANK.tile(), VEContainers.SOLARIUM_TANK_FACTORY)
                     .withCustomInventoryValidator(new TankInventoryValidator())
-                    .addTanks(new VETileEntityFactory.FluidInputOutputTank(0, Config.SOLARIUM_TANK_CAPACITY.get() * 1000));
+                    .addTanks(new FluidInputOutputTank(0, Config.SOLARIUM_TANK_CAPACITY.get() * 1000));
 
     public static final VETileEntityFactory TITANIUM_TANK_FACTORY =
             new VETileEntityFactory(VEBlocks.TITANIUM_TANK.tile(), VEContainers.TITANIUM_TANK_FACTORY)
                     .withCustomInventoryValidator(new TankInventoryValidator())
-                    .addTanks(new VETileEntityFactory.FluidInputOutputTank(0, Config.TITANIUM_TANK_CAPACITY.get() * 1000));
+                    .addTanks(new FluidInputOutputTank(0, Config.TITANIUM_TANK_CAPACITY.get() * 1000));
 }

@@ -61,9 +61,6 @@ public class ToolingStationScreen extends VEContainerScreen<VEContainer> {
 
     @Override
     protected void renderTooltip(GuiGraphics matrixStack, int mouseX, int mouseY) {
-        if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
-            matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(tileEntity.getEnergy(), tileEntity.getEnergy().getMaxEnergyStored()), mouseX, mouseY);
-        }
 
         if (isHovering(61, 18, 12, 50, mouseX, mouseY)) { // Input Tank
             int amount = tileEntity.getFluidStackFromTank(0).getAmount();
@@ -88,7 +85,6 @@ public class ToolingStationScreen extends VEContainerScreen<VEContainer> {
         matrixStack.blit(GUI, i, j, 0, 0, this.imageWidth, this.imageHeight);
         if (tileEntity != null) {
             boolean lightArrow = (tileEntity.getSelectedRecipe() == null);
-            int power = menu.powerScreen(49);
 
             /*Note for this.blit below:
                 p_blit_1_ = starting x for blit on screen
@@ -99,8 +95,6 @@ public class ToolingStationScreen extends VEContainerScreen<VEContainer> {
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
             if (lightArrow) matrixStack.blit(GUI, i + 109, j + 18, 188, 0, 22, 47);
-            matrixStack.blit(GUI, i + 11, j + (16 + (49 - power)), 176, 24 + (49 - power), 12, power);
-
             VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(0), tileEntity.getTankCapacity(), i + 61, j + 18, 0, 12, 50);
 
             /*try{
