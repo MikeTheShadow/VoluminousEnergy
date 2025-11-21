@@ -44,7 +44,6 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public abstract class VETileEntity extends BlockEntity implements MenuProvider {
@@ -82,7 +81,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         ItemStack input = tank.getInput().copy();
         ItemStack output = tank.getOutput().copy();
         FluidTank inputTank = tank.getTank();
-        ItemStackHandler handler = getInventoryHandler();
+        ItemStackHandler handler = getInventory();
         if (input.getItem() instanceof BucketItem && input.getItem() != Items.BUCKET) {
             if ((output.getItem() == Items.BUCKET && output.getCount() < 16) || checkOutputSlotForEmptyOrBucket(output)) {
                 Fluid fluid = ((BucketItem) input.getItem()).content;
@@ -103,7 +102,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         ItemStack inputSlot = tank.getInput();
         ItemStack outputSlot = tank.getOutput();
         FluidTank outputTank = tank.getTank();
-        ItemStackHandler handler = getInventoryHandler();
+        ItemStackHandler handler = getInventory();
         if (inputSlot.getItem() == Items.BUCKET && outputTank.getFluidAmount() >= 1000 && inputSlot.getCount() > 0 && outputSlot.copy() == ItemStack.EMPTY) {
 
             ItemStack bucketStack = new ItemStack(outputTank.getFluid().getFluid().getBucket(), 1);
@@ -149,7 +148,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         if (!fluidInputDirty) return;
         fluidInputDirty = false;
         for (VESlotManager manager : this.getSlotManagers()) {
-            ItemStackHandler inventory = this.getInventoryHandler();
+            ItemStackHandler inventory = this.getInventory();
             if (manager.getSlotType() == SlotType.FLUID_INPUT) {
 
                 VERelationalTank tank = this.getRelationalTanks().get(manager.getTankId());
@@ -296,7 +295,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     public void loadAdditional(CompoundTag tag,@NotNull HolderLookup.Provider registry) {
         CompoundTag inv = tag.getCompound("inv");
 
-        ItemStackHandler handler = getInventoryHandler();
+        ItemStackHandler handler = getInventory();
 
         if (handler != null) {
             handler.deserializeNBT(registry,inv);
@@ -328,7 +327,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
      */
     @Override
     public void saveAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registry) {
-        ItemStackHandler handler = getInventoryHandler();
+        ItemStackHandler handler = getInventory();
         if (handler != null) {
             CompoundTag compound =  handler.serializeNBT(registry);
             tag.put("inv", compound);
@@ -495,7 +494,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
      *
      * @return a ItemStackHandler or null if the object lacks an inventory
      */
-    public @Nullable ItemStackHandler getInventoryHandler() {
+    public @Nullable VEItemStackHandler getInventory() {
         return this.inventory;
     }
 
@@ -506,10 +505,6 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
      */
     public @Nonnull List<VESlotManager> getSlotManagers() {
         return this.managers;
-    }
-
-    public @Nonnull ItemStack getStackInSlot(int slot) {
-        return this.inventory.getStackInSlot(slot);
     }
 
     /*
@@ -600,10 +595,6 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         this.managers.addAll(managers);
     }
 
-    public VEItemStackHandler getInventory() {
-        return inventory;
-    }
-
     @Nullable
     public VERecipe getSelectedRecipe() {
         return selectedRecipe;
@@ -670,7 +661,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
     public int updateCounter(VERecipe recipe) {
         int newLength;
-        ItemStackHandler handler = this.getInventoryHandler();
+        ItemStackHandler handler = this.getInventory();
         if (energy != null && handler != null && energy.getUpgradeSlotId() != -1) {
             newLength = this.calculateCounter(recipe.getProcessTime(),
                     handler.getStackInSlot(energy.getUpgradeSlotId()).copy());
@@ -697,7 +688,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
      */
     public int updateCounter(int defaultProcessTime) {
         int newLength;
-        ItemStackHandler handler = this.getInventoryHandler();
+        ItemStackHandler handler = this.getInventory();
         if (this.getEnergy() != null && handler != null) {
             newLength = this.calculateCounter(defaultProcessTime,
                     handler.getStackInSlot(energy.getUpgradeSlotId()).copy());

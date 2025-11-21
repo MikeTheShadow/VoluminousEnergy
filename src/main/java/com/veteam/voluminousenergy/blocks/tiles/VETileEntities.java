@@ -276,7 +276,6 @@ public class VETileEntities {
                     .withRecipe(STIRLING)
                     .withCustomRecipeProcessing(new GeneratorProcessor());
 
-    // TODO needs a custom processor
     public static final VETileEntityFactory TOOLING_STATION_FACTORY =
             new VETileEntityFactory(VEBlocks.TOOLING_STATION.tile(), VEContainers.TOOLING_STATION_FACTORY)
                     // TODO decide if we want a custom capacity for the tooling station tank

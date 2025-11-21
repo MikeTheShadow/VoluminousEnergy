@@ -5,9 +5,7 @@ import com.veteam.voluminousenergy.blocks.screens.BatteryBoxScreen;
 import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
-import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RegistryLookups;
-import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
@@ -16,16 +14,13 @@ import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 import net.neoforged.neoforge.items.wrapper.InvWrapper;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
 
 public abstract class VEContainer extends AbstractContainerMenu {
 
@@ -51,7 +46,7 @@ public abstract class VEContainer extends AbstractContainerMenu {
 
         // we add slots to GUI here
         if(tileEntity.getInventory() != null) {
-            this.addSlotsToGUI(tileEntity.getInventoryHandler());
+            this.addSlotsToGUI(tileEntity.getInventory());
         }
 
         // layout player inventory slots here
@@ -194,26 +189,36 @@ public abstract class VEContainer extends AbstractContainerMenu {
         return 0;
     }
 
+
     @Nonnull
     @Override
     public ItemStack quickMoveStack(final @NotNull Player player, final int index) {
         ItemStack returnStack = ItemStack.EMPTY;
         final Slot slot = this.slots.get(index);
 
-        int numberOfSlots = this.tileEntity.getSlotManagers().size() + (this.tileEntity.getEnergy() != null ? 1 : 0);
-
-        // TODO why is this a dangling if?
-        if (this.tileEntity.getEnergy() != null) {
-        }
+        int tileEntitySlotCount = this.tileEntity.getSlotManagers().size();
 
         if (slot.hasItem()) {
             final ItemStack slotStack = slot.getItem();
             returnStack = slotStack.copy();
 
-            if (handleItemMove(index, numberOfSlots, slotStack, index) != null)
-                return ItemStack.EMPTY;
+            if (index <= tileEntitySlotCount) {
+                if (!this.moveItemStackTo(slotStack, tileEntitySlotCount, this.slots.size(), true)) {
+                    return ItemStack.EMPTY;
+                }
+                slot.onQuickCraft(slotStack, returnStack);
+            } else {
+                if (TagUtil.isTaggedMachineUpgradeItem(slotStack)) {
+                    int upgradeSlotId = getUpgradeSlotId();
+                    if (!this.moveItemStackTo(slotStack, upgradeSlotId, upgradeSlotId + 1, false)) {
+                        return ItemStack.EMPTY;
+                    }
+                } else if (!this.moveItemStackTo(slotStack, 0, tileEntitySlotCount, false)) {
+                    return ItemStack.EMPTY;
+                }
+            }
 
-            if (slotStack.getCount() == 0) {
+            if (slotStack.isEmpty()) {
                 slot.set(ItemStack.EMPTY);
             } else {
                 slot.setChanged();
@@ -223,109 +228,15 @@ public abstract class VEContainer extends AbstractContainerMenu {
                 return ItemStack.EMPTY;
             }
 
-            slot.onTake(player, slotStack);
+            int amountTaken = returnStack.getCount() - slotStack.getCount();
+            if (amountTaken > 0) {
+                ItemStack takenStack = returnStack.copy();
+                takenStack.setCount(amountTaken);
+                slot.onTake(player, takenStack);
+            }
         }
+
         return returnStack;
     }
 
-    public ItemStack handleItemMove(final int index, final int containerSlots, ItemStack slotStack, int slotId) {
-        if (index < containerSlots && !super.moveItemStackTo(slotStack, containerSlots, this.slots.size(), true)) {
-            this.tileEntity.markRecipeDirty();
-            return ItemStack.EMPTY;
-        } else if (!moveItemStackTo(slotStack, this.slots.size(), slotId)) {
-            this.tileEntity.markRecipeDirty();
-            return ItemStack.EMPTY;
-        }
-        return null;
-    }
-
-    protected boolean moveItemStackTo(@NotNull ItemStack stackToMove, int endPos, int slotId) {
-        boolean flag = false;
-        int currentPos = 0;
-
-        List<VESlotManager> slotManagers = this.tileEntity.getSlotManagers();
-        ItemStackHandler handler = this.tileEntity.getInventoryHandler();
-        int powerId = -1;
-        if (tileEntity.getEnergy() != null) powerId = tileEntity.getEnergy().getUpgradeSlotId();
-        if (stackToMove.isStackable()) {
-            while (!stackToMove.isEmpty()) {
-                if (currentPos >= endPos) {
-                    break;
-                }
-
-                Slot slot = this.slots.get(currentPos);
-                ItemStack itemInSlot = slot.getItem();
-
-                boolean isInput;
-
-                if (currentPos < slotManagers.size()) {
-                    VESlotManager manager = slotManagers.get(currentPos);
-                    isInput = manager.getSlotType() == SlotType.INPUT || manager.getSlotType() == SlotType.FLUID_INPUT;
-                    if (handler != null && isInput) {
-                        isInput = handler.isItemValid(currentPos, stackToMove.copy());
-                    }
-                } else if (currentPos == powerId) {
-                    isInput = TagUtil.isTaggedMachineUpgradeItem(stackToMove);
-                } else {
-                    isInput = true;
-                }
-                if (slotId != currentPos && isInput && !itemInSlot.isEmpty() && ItemStack.isSameItemSameComponents(stackToMove, itemInSlot)) {
-                    int j = itemInSlot.getCount() + stackToMove.getCount();
-                    int maxSize = Math.min(slot.getMaxStackSize(), stackToMove.getMaxStackSize());
-                    if (j <= maxSize) {
-                        stackToMove.setCount(0);
-                        itemInSlot.setCount(j);
-                        slot.setChanged();
-                        flag = true;
-                    } else if (itemInSlot.getCount() < maxSize) {
-                        stackToMove.shrink(maxSize - itemInSlot.getCount());
-                        itemInSlot.setCount(maxSize);
-                        slot.setChanged();
-                        flag = true;
-                    }
-                }
-                ++currentPos;
-            }
-        }
-        if (!stackToMove.isEmpty()) {
-            currentPos = 0;
-
-            while (true) {
-                if (currentPos >= endPos) {
-                    break;
-                }
-
-                Slot slot1 = this.slots.get(currentPos);
-                ItemStack itemstack1 = slot1.getItem();
-
-                boolean isInput;
-
-                if (currentPos < slotManagers.size()) {
-                    VESlotManager manager = slotManagers.get(currentPos);
-                    isInput = manager.getSlotType() == SlotType.INPUT || manager.getSlotType() == SlotType.FLUID_INPUT;
-                    if (handler != null && isInput) {
-                        isInput = handler.isItemValid(currentPos, stackToMove.copy());
-                    }
-                } else if (currentPos == powerId) {
-                    isInput = TagUtil.isTaggedMachineUpgradeItem(stackToMove);
-                } else {
-                    isInput = true;
-                }
-                if (isInput && itemstack1.isEmpty() && slot1.mayPlace(stackToMove)) {
-                    if (stackToMove.getCount() > slot1.getMaxStackSize()) {
-                        slot1.setByPlayer(stackToMove.split(slot1.getMaxStackSize()));
-                    } else {
-                        slot1.setByPlayer(stackToMove.split(stackToMove.getCount()));
-                    }
-
-                    slot1.setChanged();
-                    flag = true;
-                    break;
-                }
-
-                ++currentPos;
-            }
-        }
-        return flag;
-    }
 }

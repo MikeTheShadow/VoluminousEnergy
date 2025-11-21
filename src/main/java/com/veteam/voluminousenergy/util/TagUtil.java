@@ -78,20 +78,9 @@ public class TagUtil {
         return items;
     }
 
-    private static ArrayList<Item> cachedUpgrades;
+    private static final TagKey<Item> MACHINE_UPGRADE_TAG = TagKey.create(Registries.ITEM, new ResourceLocation(VoluminousEnergy.MODID, "machine_upgrades"));
 
-    public static ArrayList<Item> getTaggedMachineUpgradeItems() {
-        if (cachedUpgrades == null || cachedUpgrades.isEmpty()) {
-            cachedUpgrades = getItemListFromTagResourceLocation(new ResourceLocation(VoluminousEnergy.MODID, "machine_upgrades"));
-        }
-        return cachedUpgrades;
-    }
-
-    public static boolean isTaggedMachineUpgradeItem(Item item) {
-        return getTaggedMachineUpgradeItems().contains(item);
-    }
-
-    public static boolean isTaggedMachineUpgradeItem(ItemStack itemStack) {
-        return getTaggedMachineUpgradeItems().contains(itemStack.getItem());
+    public static boolean isTaggedMachineUpgradeItem(ItemStack stack) {
+        return stack.is(MACHINE_UPGRADE_TAG);
     }
 }

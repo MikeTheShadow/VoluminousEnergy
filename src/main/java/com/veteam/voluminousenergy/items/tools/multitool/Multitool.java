@@ -40,14 +40,6 @@ public class Multitool extends VEItem {
 
     public void setToolState(@NotNull ItemStack itemStack, @Nullable BlockState blockState) {
 
-        //TODO delete me
-        ArrayList<ItemStack> mockInventory = new ArrayList<>();
-        mockInventory.add(new ItemStack(VEMultitools.DIAMOND_SCOOPER_BIT.get(), 1));
-        mockInventory.add(new ItemStack(VEMultitools.EIGHZO_CHAIN_BIT.get(), 1));
-        mockInventory.add(new ItemStack(VEMultitools.TITANIUM_DRILL_BIT.get(), 1));
-        mockInventory.add(new ItemStack(VEMultitools.TITANIUM_TRIMMER_BIT.get(), 1));
-        itemStack.set(VEDataComponents.ITEM_STACK_LIST_COMPONENT, mockInventory);
-
         if (blockState == null || blockState.isAir()) {
             itemStack.set(VEDataComponents.TOOL_TYPE, 0);
             itemStack.set(VEDataComponents.TOOL_TIER, 0);

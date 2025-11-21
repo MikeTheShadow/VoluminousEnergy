@@ -1,6 +1,8 @@
 package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.blocks.containers.iolisteners.SlotWithIOListener;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntityFactory.ListenedItemInputSlot;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntityFactory.TileSlot;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.SlotType;
@@ -14,6 +16,7 @@ import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,10 +51,12 @@ public class VEContainerFactory {
                     energySlotId = this.tileEntity.getEnergy().getUpgradeSlotId();
                 }
 
+                boolean isClientSide = tileEntity.getLevel().isClientSide;
+
                 for (int i = 0; i < slots.size(); i++) {
                     if (i == energySlotId) {
                         Slot slot = slots.get(i);
-                        addSlot(new VESlot(h, slot.index, slot.x, slot.y, true));
+                        addSlot(new VESlot(h, slot.index, slot.x, slot.y, true,slot.listener,isClientSide));
                         continue;
                     }
                     if (i == this.tileEntity.getSlotManagers().size()) {
@@ -59,9 +64,9 @@ public class VEContainerFactory {
                         break;
                     }
                     SlotType slotType = this.tileEntity.getSlotManagers().get(i).getSlotType();
-                    boolean isOutput = slotType == SlotType.FLUID_OUTPUT || slotType == SlotType.OUTPUT;
+                    boolean isOutput = (slotType == SlotType.FLUID_OUTPUT || slotType == SlotType.OUTPUT);
                     Slot slot = slots.get(i);
-                    addSlot(new VESlot(h, slot.index, slot.x, slot.y, !isOutput));
+                    addSlot(new VESlot(h, slot.index, slot.x, slot.y, !isOutput,slot.listener,isClientSide));
                 }
             }
         };
@@ -86,13 +91,17 @@ public class VEContainerFactory {
         private int index = 0;
 
         public VEContainerFactoryBuilder addUpgradeSlot(int x, int y) {
-            this.factory.slots.add(new Slot(index, x, y));
+            this.factory.slots.add(new Slot(index, x, y, null));
             this.factory.upgradeSlotId = index++;
             return this;
         }
 
         public VEContainerFactoryBuilder addSlot(int x, int y, TileSlot slot) {
-            this.factory.slots.add(new Slot(index++, x, y));
+            if (slot instanceof ListenedItemInputSlot listenedItemInputSlot)
+                this.factory.slots.add(new Slot(index++, x, y, listenedItemInputSlot.listener()));
+            else
+                this.factory.slots.add(new Slot(index++, x, y, null));
+
             this.factory.tileSlots.add(slot);
             return this;
         }
@@ -102,26 +111,45 @@ public class VEContainerFactory {
         }
     }
 
-    private record Slot(int index, int x, int y) {
+    private record Slot(int index, int x, int y, @Nullable SlotWithIOListener listener) {
 
     }
 
     public static class VESlot extends SlotItemHandler {
 
-        private final IItemHandler handler;
-        private final int index;
         private final boolean allowInsertion;
+        private final @Nullable SlotWithIOListener listener;
+        private final boolean isClientSide;
 
-        public VESlot(IItemHandler itemHandler, int index, int xPos, int yPos, boolean allowInsertion) {
+        public VESlot(IItemHandler itemHandler, int index, int xPos, int yPos, boolean allowInsertion, @Nullable SlotWithIOListener listener, boolean isClientSide) {
             super(itemHandler, index, xPos, yPos);
-            this.handler = itemHandler;
-            this.index = index;
             this.allowInsertion = allowInsertion;
+            this.listener = listener;
+            this.isClientSide = isClientSide;
         }
 
         public boolean mayPlace(@NotNull ItemStack stack) {
-            if (stack.isEmpty()) return false;
-            return allowInsertion; // && handler.isItemValid(index, stack); TODO fix me
+            return allowInsertion;
+        }
+
+        @Override
+        public @NotNull ItemStack remove(int amount) {
+            if(listener != null) listener.onRemoved(getItemHandler(),amount,getSlotIndex(),isClientSide);
+            return super.remove(amount);
+        }
+
+        @Override
+        public void onTake(@NotNull Player pPlayer, @NotNull ItemStack stack) {
+            if(listener != null) {
+                listener.onTake(getItemHandler(),stack,isClientSide);
+            }
+            super.onTake(pPlayer, stack);
+        }
+
+        @Override
+        public void set(ItemStack stack) {
+            if(listener != null) listener.onSet(stack,getSlotIndex(),getItemHandler(),isClientSide);
+            super.set(stack);
         }
     }
 }

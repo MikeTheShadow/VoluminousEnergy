@@ -2,7 +2,6 @@ package com.veteam.voluminousenergy.compat.jei;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.containers.ToolingStationContainer;
 import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.blocks.screens.*;
@@ -193,7 +192,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.CENTRIFUGAL_SEPARATOR.container().get(), CentrifugalSeparationCategory.RECIPE_TYPE, 0, 2, VEContainers.CENTRIFUGAL_SEPARATOR_FACTORY.getNumberOfSlots(), 36);
         registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.IMPLOSION_COMPRESSOR.container().get(), ImplosionCompressionCategory.RECIPE_TYPE, 0, 2, VEContainers.IMPLOSION_COMPRESSOR_FACTORY.getNumberOfSlots(), 36);
         registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.BLAST_FURNACE.container().get(), IndustrialBlastingCategory.RECIPE_TYPE, 2, 3, VEContainers.BLAST_FURNACE_FACTORY.getNumberOfSlots(), 36);
-        registration.addRecipeTransferHandler(ToolingStationContainer.class, VEBlocks.TOOLING_STATION.container().get(), ToolingCategory.RECIPE_TYPE, 3, 2, ToolingStationContainer.NUMBER_OF_SLOTS, 36);
+        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.TOOLING_STATION.container().get(), ToolingCategory.RECIPE_TYPE, 3, 2, VEContainers.TOOLING_STATION_FACTORY.getNumberOfSlots(), 36);
         registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.SAWMILL.container().get(), SawmillCategory.RECIPE_TYPE, 0, 3, VEContainers.SAWMILL_FACTORY.getNumberOfSlots(), 36);
         registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.PRIMITIVE_BLAST_FURNACE.container().get(), PrimitiveBlastingCategory.RECIPE_TYPE, 0, 2, VEContainers.PRIMITIVE_BLAST_FURNACE_FACTORY.getNumberOfSlots(), 36);
         // TODO: Transfer helper for the Fluid Electrolyzer

@@ -11,7 +11,7 @@ import net.minecraft.world.level.material.Fluids;
 public class DimensionalLaserInventoryValidator implements AbstractItemStackValidator {
 
     @Override
-    public boolean isItemValid(int slot, ItemStack stack, VETileEntity tile) {
+    public boolean allowItemInsertion(int slot, ItemStack stack,boolean simulate, VETileEntity tile) {
         if (slot == 2) {
             return stack.has(VEDataComponents.MULTIPLIER_DATA);
         }
@@ -21,6 +21,11 @@ public class DimensionalLaserInventoryValidator implements AbstractItemStackVali
         if (slot == 0) {
             return stack.getItem() instanceof BucketItem bucketItem && bucketItem.content.isSame(Fluids.EMPTY);
         }
+        return true;
+    }
+
+    @Override
+    public boolean allowItemExtraction(int slot, int amount, boolean simulate, VETileEntity tile) {
         return true;
     }
 }

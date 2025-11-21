@@ -1,7 +1,17 @@
 package com.veteam.voluminousenergy.blocks.containers;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.VEContainerFactory.VEContainerFactoryBuilder;
+import com.veteam.voluminousenergy.blocks.containers.iolisteners.ToolingStationSlotWithIOListening;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntityFactory.*;
+import com.veteam.voluminousenergy.items.tools.multitool.Multitool;
+import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItem;
+import com.veteam.voluminousenergy.util.VEDataComponents;
+import net.minecraft.world.item.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.*;
 import static net.minecraft.core.Direction.*;
@@ -220,7 +230,7 @@ public class VEContainers {
             .create(TOOLING_STATION.container(), TOOLING_STATION.block())
             .addSlot(38, 18, new BucketInputSlot(UP, 0)) // Fluid input tilePos
             .addSlot(38, 49, new BucketOutputSlot(DOWN)) // Extract fluid from input
-            .addSlot(86, 32, new ItemInputSlot(NORTH)) // Main Tool tilePos
+            .addSlot(86, 32, new ListenedItemInputSlot(NORTH, new ToolingStationSlotWithIOListening())) // Main Tool tilePos
             .addSlot(134, 7, new ItemInputSlot(SOUTH)) // Bit Slot 1
             .addSlot(134, 25, new ItemInputSlot(EAST)) // Bit Slot 2
             .addSlot(134, 43, new ItemInputSlot(EAST)) // Bit Slot 3

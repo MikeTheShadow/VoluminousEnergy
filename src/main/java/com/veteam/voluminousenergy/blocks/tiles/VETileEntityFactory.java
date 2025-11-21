@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
+import com.veteam.voluminousenergy.blocks.containers.iolisteners.SlotWithIOListener;
 import com.veteam.voluminousenergy.blocks.containers.VEContainerFactory;
 import com.veteam.voluminousenergy.blocks.tiles.fluids.AbstractFluidValidator;
 import com.veteam.voluminousenergy.blocks.tiles.inventory.AbstractItemStackValidator;
@@ -13,7 +14,6 @@ import com.veteam.voluminousenergy.util.TankType;
 import com.veteam.voluminousenergy.util.VERelationalTank;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -149,6 +149,13 @@ public class VETileEntityFactory {
         @Override
         public VESlotManager asManager(int id) {
             return new VESlotManager(id, direction, true, SlotType.INPUT);
+        }
+    }
+
+    public record ListenedItemInputSlot(Direction direction, SlotWithIOListener listener) implements TileSlot {
+        @Override
+        public VESlotManager asManager(int id) {
+            return new VESlotManager(id, direction, false, SlotType.INPUT);
         }
     }
 
