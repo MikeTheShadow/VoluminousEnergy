@@ -71,7 +71,6 @@ public class VoluminousEnergy {
         // Register fluids and respective items/blocks (differed)
         VEFluids.VE_FLUIDS.register(modEventBus);
         VEFluids.VE_FLUID_BLOCKS.register(modEventBus);
-        VEFluids.VE_FLUID_ITEMS.register(modEventBus);
         VEFluids.VE_FLUID_TYPES.register(modEventBus);
 
         // Register Blocks, Tiles, and Containers
@@ -81,10 +80,9 @@ public class VoluminousEnergy {
 
         // Deferred Item registration
         VEItems.VE_ITEM_REGISTRY.register(modEventBus);
+        VETools.init();
+        VEMultitoolItems.init();
         VEBlockItems.VE_BLOCK_ITEM_REGISTRY.register(modEventBus);
-        VEMultitoolItems.VE_MULTITOOL_ITEM_REGISTRY.register(modEventBus);
-        VETools.VE_TOOL_REGISTRY.register(modEventBus);
-
         // Register triggers
         VECriteriaTriggers.VE_TRIGGER_REGISTRY.register(modEventBus);
 

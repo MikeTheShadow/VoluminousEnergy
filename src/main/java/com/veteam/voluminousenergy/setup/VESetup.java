@@ -40,20 +40,11 @@ public class VESetup {
                         .displayItems((featureFlags, output) -> {
                             ArrayList<ItemStack> creativeTabStacks = new ArrayList<>();
 
-                            // Fluid items
-                            creativeTabStacks.addAll(assembleItemsFromDeferredRegistry(VEFluids.VE_FLUID_ITEMS));
-
                             // Machine & block items
                             creativeTabStacks.addAll(assembleItemsFromDeferredRegistry(VEBlockItems.VE_BLOCK_ITEM_REGISTRY));
 
                             // Item items
                             creativeTabStacks.addAll(assembleItemsFromDeferredRegistry(VEItems.VE_ITEM_REGISTRY));
-
-                            // Multitool items
-                            creativeTabStacks.addAll(assembleItemsFromDeferredRegistry(VEMultitoolItems.VE_MULTITOOL_ITEM_REGISTRY));
-
-                            // Tool items
-                            creativeTabStacks.addAll(assembleItemsFromDeferredRegistry(VETools.VE_TOOL_REGISTRY));
 
                             output.acceptAll(creativeTabStacks);
                         })

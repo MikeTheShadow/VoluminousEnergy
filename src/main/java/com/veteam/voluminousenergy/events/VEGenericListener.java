@@ -7,6 +7,7 @@ import com.veteam.voluminousenergy.client.renderers.entity.LaserBlockEntityRende
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.batteries.VEEnergyItem;
 import com.veteam.voluminousenergy.items.tools.multitool.CombustionMultitool;
+import com.veteam.voluminousenergy.items.tools.multitool.Multitool;
 import com.veteam.voluminousenergy.items.tools.multitool.VEMultitoolItems;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.networking.packets.*;
@@ -20,6 +21,7 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;
+import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStackSimple;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.RegisterEvent;
@@ -68,15 +70,6 @@ public class VEGenericListener {
                     VEEnergyItem energyItem = (VEEnergyItem) stack.getItem();
                     return new VEEnergyStorage(energyItem.getMaxEnergy(), energyItem.getMaxTransfer());
                 }, item);
-            }
-        });
-
-        VEMultitoolItems.VE_MULTITOOL_ITEM_REGISTRY.getEntries().forEach(itemDeferredHolder -> {
-            Item item = itemDeferredHolder.get();
-            if (item instanceof CombustionMultitool multitool) {
-                event.registerItem(Capabilities.FluidHandler.ITEM, (stack, provider) ->
-                        new FluidHandlerItemStack(VEDataComponents.SIMPLE_FLUID_DATA_TYPE,
-                                stack, multitool.TANK_CAPACITY), item);
             }
         });
     }

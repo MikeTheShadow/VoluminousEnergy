@@ -28,7 +28,6 @@ import com.veteam.voluminousenergy.items.tank_frames.StandardTankFrame;
 import com.veteam.voluminousenergy.items.tools.CreativeFluidScanner;
 import com.veteam.voluminousenergy.items.tools.FluidScanner;
 import com.veteam.voluminousenergy.items.tools.RFIDChip;
-import com.veteam.voluminousenergy.items.tools.multitool.Multitool;
 import com.veteam.voluminousenergy.items.upgrades.MysteriousMultiplier;
 import com.veteam.voluminousenergy.items.upgrades.QuartzMultiplier;
 import net.minecraft.core.registries.Registries;
