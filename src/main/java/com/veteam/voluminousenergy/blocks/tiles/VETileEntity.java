@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.inventory.VEItemStackHandler;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.upgrades.MysteriousMultiplier;
@@ -357,33 +358,6 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         super.setChanged();
     }
 
-    @Deprecated
-    public ItemStackHandler createHandler(int size, VETileEntity tileEntity) {
-        return new ItemStackHandler(size) {
-            @Override
-            protected void onContentsChanged(int slot) {
-                setChanged();
-            }
-
-            @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                if (tileEntity.energy != null && tileEntity.energy.getUpgradeSlotId() == slot) {
-                    return TagUtil.isTaggedMachineUpgradeItem(stack);
-                }
-                return true;
-            }
-
-            @Nonnull
-            @Override
-            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-                if (tileEntity.energy != null && slot == tileEntity.energy.getUpgradeSlotId()) {
-                    return TagUtil.isTaggedMachineUpgradeItem(stack) ? super.insertItem(slot, stack, simulate) : stack;
-                }
-                return super.insertItem(slot, stack, simulate);
-            }
-        };
-    }
-
     public static int receiveEnergy(BlockEntity tileEntity, Direction from, int maxReceive) {
         if (tileEntity instanceof VETileEntity tile && tile.energy != null) {
             return tile.energy.receiveEnergy(maxReceive, false);
@@ -440,8 +414,8 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     }
 
     /**
-     * Call this to consume energy
-     * Note that tiles now require an upgrade slot and thus an inventory to properly function here
+     * Call this to consume energy.
+     * Note that tiles now require an upgrade slot and thus an inventory to properly function here.
      * If you need to consume energy WITHOUT an upgrade slot make a new method that does not have this.
      * Throws an error if missing the power consumeEnergy IMPL
      */

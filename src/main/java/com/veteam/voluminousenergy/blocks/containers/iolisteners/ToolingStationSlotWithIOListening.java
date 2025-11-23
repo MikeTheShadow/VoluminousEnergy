@@ -15,7 +15,6 @@ public class ToolingStationSlotWithIOListening implements SlotWithIOListener {
     @Override
     public void onRemoved(IItemHandler h,int slot, int amount, boolean isClientSide) {
         ItemStack multitool = h.getStackInSlot(slot);
-        if(!(multitool.getItem() instanceof Multitool)) return;
         onTake(h,multitool,isClientSide);
     }
 

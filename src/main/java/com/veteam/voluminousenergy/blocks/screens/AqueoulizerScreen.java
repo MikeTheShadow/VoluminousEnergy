@@ -28,7 +28,7 @@ public class AqueoulizerScreen extends VEContainerScreen<VEContainer> {
     public AqueoulizerScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
         tileEntity = screenContainer.getTileEntity();
-        screenContainer.setScreen(this);
+
     }
 
     @Override

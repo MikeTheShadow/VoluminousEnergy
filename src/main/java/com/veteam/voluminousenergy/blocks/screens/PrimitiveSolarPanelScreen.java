@@ -22,7 +22,6 @@ public class PrimitiveSolarPanelScreen extends VEContainerScreen<VEContainer> {
     public PrimitiveSolarPanelScreen(VEContainer container, Inventory inv, Component name) {
         super(container, inv, name);
         tileEntity = container.getTileEntity();
-        container.setScreen(this);
     }
 
     @Override

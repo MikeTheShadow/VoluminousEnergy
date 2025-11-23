@@ -36,7 +36,7 @@ public class DimensionalLaserScreen extends VEContainerScreen<VEContainer> {
     public DimensionalLaserScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
         tileEntity = screenContainer.getTileEntity();
-        screenContainer.setScreen(this);
+
     }
 
     @Override

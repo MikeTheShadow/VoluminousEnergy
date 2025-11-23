@@ -23,7 +23,7 @@ public class ToolingStationScreen extends VEContainerScreen<VEContainer> {
     public ToolingStationScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
         tileEntity = screenContainer.getTileEntity();
-        screenContainer.setScreen(this);
+
     }
 
     @Override

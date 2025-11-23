@@ -402,7 +402,7 @@ public class VEBlocks {
         Supplier<MenuType<VEContainer>> container;
 
         public BlockTileMenuRegistry(String name, Supplier<Block> blockSupplier, Supplier<VETileEntityFactory> tileEntityFactory, Supplier<VEContainerFactory> containerFactory,boolean hasEnergy, boolean hasFluids, boolean hasInventory) {
-            block = registerWithBlockItemSupport(name, blockSupplier);
+            block = registerWithBlockItemSupport(name, blockSupplier,hasEnergy,hasFluids,hasInventory);
             tile = VE_TILE_REGISTRY.register(name,
                     () -> BlockEntityType.Builder.of(tileEntityFactory.get()::create, block.get()).build(null));
             container = VE_CONTAINER_REGISTRY.register(name, () ->

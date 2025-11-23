@@ -26,7 +26,7 @@ public class CrusherScreen extends VEContainerScreen<VEContainer> {
     public CrusherScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
         tileEntity = screenContainer.getTileEntity();
-        screenContainer.setScreen(this);
+
     }
 
     @Override

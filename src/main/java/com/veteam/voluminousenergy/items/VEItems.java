@@ -157,7 +157,4 @@ public class VEItems {
     public static Supplier<Item> TINY_COAL_COKE = VE_ITEM_REGISTRY.register("tiny_coal_coke", TinyCoalCoke::new);
     public static Supplier<Item> TINY_PETCOKE = VE_ITEM_REGISTRY.register("tiny_petcoke", TinyPetcoke::new);
     public static Supplier<Item> TINY_ROSIN = VE_ITEM_REGISTRY.register("tiny_rosin", TinyRosin::new);
-
-    //Multitool
-    public static Supplier<Item> MULTI_TOOL = VE_ITEM_REGISTRY.register("multitool", Multitool::new);
 }

@@ -29,7 +29,6 @@ public abstract class VEContainer extends AbstractContainerMenu {
     Player playerEntity;
     IItemHandler playerInventory;
 
-    VEContainerScreen<?> screen;
     Block block;
 
     ContainerLevelAccess access;
@@ -119,65 +118,8 @@ public abstract class VEContainer extends AbstractContainerMenu {
         return (((stored * 100 / max * 100) / 100) * px) / 100;
     }
 
-    // For the battery box. Might remove later
-    public void updateSendOutPowerButton(boolean status) {
-        if (this.screen instanceof BatteryBoxScreen batteryBoxScreen) {
-            batteryBoxScreen.updateSendOutPowerButton(status);
-        }
-    }
-
-    public ItemStack handleCoreQuickMoveStackLogicWithUpgradeSlot(final int index, final int containerSlots, final int upgradeSlotId, ItemStack slotStack) {
-        if (index < containerSlots) { // Container --> Inventory
-            if (!moveItemStackTo(slotStack, containerSlots, this.slots.size(), true)) {
-                return ItemStack.EMPTY;
-            }
-        } else { // Inventory --> Container
-            if (/*slotStack.is(VEItems.QUARTZ_MULTIPLIER)*/ TagUtil.isTaggedMachineUpgradeItem(slotStack) && !moveItemStackTo(slotStack, upgradeSlotId, upgradeSlotId + 1, false)) {
-                return ItemStack.EMPTY;
-            }
-
-            if (/*!slotStack.is(VEItems.QUARTZ_MULTIPLIER)*/ !TagUtil.isTaggedMachineUpgradeItem(slotStack) && !moveItemStackTo(slotStack, 0, upgradeSlotId, false)) {
-                return ItemStack.EMPTY;
-            }
-        }
-        return null;
-    }
-
-    public ItemStack handleCoreQuickMoveStackLogic(final int index, final int containerSlots, ItemStack slotStack) {
-        if (index < containerSlots) { // Container --> Inventory
-            if (!moveItemStackTo(slotStack, containerSlots, this.slots.size(), true)) {
-                return ItemStack.EMPTY;
-            }
-        } else if (!moveItemStackTo(slotStack, 0, containerSlots, false)) { // Inventory --> Container
-            return ItemStack.EMPTY;
-        }
-        return null;
-    }
-
     public void setTileEntity(VETileEntity tileEntity) {
         this.tileEntity = tileEntity;
-    }
-
-    // Unauthorized call to this method can be dangerous. Can't not be public AFAIK. :(
-    public void setScreen(VEContainerScreen screen) {
-        this.screen = screen;
-    }
-
-    public void updateDirectionButton(int direction, int slotId) {
-        if(screen == null) return;
-        screen.updateButtonDirection(direction, slotId);
-    }
-
-    public void updateStatusButton(boolean status, int slotId) {
-        screen.updateBooleanButton(status, slotId);
-    }
-
-    public void updateStatusTank(boolean status, int id) {
-        screen.updateTankStatus(status, id);
-    }
-
-    public void updateDirectionTank(int direction, int id) {
-        screen.updateTankDirection(direction, id);
     }
 
     public int getUpgradeSlotId() {

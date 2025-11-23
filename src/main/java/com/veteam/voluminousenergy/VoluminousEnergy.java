@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy;
 
-import com.mojang.serialization.Codec;
 import com.veteam.voluminousenergy.achievements.triggers.VECriteriaTriggers;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.datagen.VEGlobalLootModifierData;
@@ -9,13 +8,12 @@ import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.items.VEBlockItems;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.tools.VETools;
-import com.veteam.voluminousenergy.items.tools.multitool.VEMultitools;
+import com.veteam.voluminousenergy.items.tools.multitool.VEMultitoolItems;
 import com.veteam.voluminousenergy.loot.VELoot;
 import com.veteam.voluminousenergy.recipe.VERecipes;
 import com.veteam.voluminousenergy.setup.VESetup;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.VEAttachments;
-import com.veteam.voluminousenergy.util.VECodecs;
 import com.veteam.voluminousenergy.util.VEDataComponents;
 import com.veteam.voluminousenergy.world.feature.VEFeatures;
 import com.veteam.voluminousenergy.world.modifiers.VEModifiers;
@@ -23,7 +21,6 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistryCodecs;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -40,7 +37,6 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
-import net.neoforged.neoforge.registries.RegisterEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -86,7 +82,7 @@ public class VoluminousEnergy {
         // Deferred Item registration
         VEItems.VE_ITEM_REGISTRY.register(modEventBus);
         VEBlockItems.VE_BLOCK_ITEM_REGISTRY.register(modEventBus);
-        VEMultitools.VE_MULTITOOL_ITEM_REGISTRY.register(modEventBus);
+        VEMultitoolItems.VE_MULTITOOL_ITEM_REGISTRY.register(modEventBus);
         VETools.VE_TOOL_REGISTRY.register(modEventBus);
 
         // Register triggers
@@ -149,14 +145,6 @@ public class VoluminousEnergy {
 
     public static MinecraftServer server;
 
-    @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
-    public static class RegisterEvents {
-        @SubscribeEvent
-        public static void onRegistry(final RegisterEvent blockRegistryEvent) {
-            LOGGER.info("Running: " + blockRegistryEvent.getRegistryKey()); // If you delete this you have to fix it
-        }
-    }
-
     @EventBusSubscriber(modid = VoluminousEnergy.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
     public static class ClientRegister {
 
@@ -166,10 +154,10 @@ public class VoluminousEnergy {
             event.enqueueWork(() -> ItemBlockRenderTypes.setRenderLayer(VEBlocks.SAWMILL.block().get(), RenderType.cutout()));
             event.enqueueWork(() -> ItemBlockRenderTypes.setRenderLayer(VEBlocks.PRESSURE_LADDER.get(), RenderType.cutout()));
 
-            ItemProperties.register(VEItems.MULTI_TOOL.get(), new ResourceLocation(MODID, "tool_type"), (stack, level, entity, seed)
+            ItemProperties.register(VEMultitoolItems.MULTI_TOOL.get(), new ResourceLocation(MODID, "tool_type"), (stack, level, entity, seed)
                     -> stack.getOrDefault(VEDataComponents.TOOL_TYPE, 0));
 
-            ItemProperties.register(VEItems.MULTI_TOOL.get(), new ResourceLocation(MODID, "tool_tier"), (stack, level, entity, seed)
+            ItemProperties.register(VEMultitoolItems.MULTI_TOOL.get(), new ResourceLocation(MODID, "tool_tier"), (stack, level, entity, seed)
                     -> stack.getOrDefault(VEDataComponents.TOOL_TIER, 0));
         }
 

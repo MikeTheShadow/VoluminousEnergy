@@ -1,20 +1,17 @@
 package com.veteam.voluminousenergy.events;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.achievements.triggers.VECriteriaTriggers;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.client.renderers.entity.LaserBlockEntityRenderer;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.batteries.VEEnergyItem;
 import com.veteam.voluminousenergy.items.tools.multitool.CombustionMultitool;
-import com.veteam.voluminousenergy.items.tools.multitool.VEMultitools;
+import com.veteam.voluminousenergy.items.tools.multitool.VEMultitoolItems;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.networking.packets.*;
 import com.veteam.voluminousenergy.util.VEDataComponents;
-import com.veteam.voluminousenergy.util.VERelationalTank;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -26,8 +23,6 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.RegisterEvent;
-
-import java.util.function.Supplier;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, modid = VoluminousEnergy.MODID)
 public class VEGenericListener {
@@ -76,7 +71,7 @@ public class VEGenericListener {
             }
         });
 
-        VEMultitools.VE_MULTITOOL_ITEM_REGISTRY.getEntries().forEach(itemDeferredHolder -> {
+        VEMultitoolItems.VE_MULTITOOL_ITEM_REGISTRY.getEntries().forEach(itemDeferredHolder -> {
             Item item = itemDeferredHolder.get();
             if (item instanceof CombustionMultitool multitool) {
                 event.registerItem(Capabilities.FluidHandler.ITEM, (stack, provider) ->

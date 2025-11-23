@@ -22,7 +22,6 @@ public class SolarPanelScreen extends VEContainerScreen<VEContainer> {
     public SolarPanelScreen(VEContainer container, Inventory inv, Component name) {
         super(container, inv, name);
         tileEntity = container.getTileEntity();
-        container.setScreen(this);
     }
 
     @Override

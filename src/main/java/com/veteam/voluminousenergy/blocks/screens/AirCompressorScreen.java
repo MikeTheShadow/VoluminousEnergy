@@ -23,7 +23,6 @@ public class AirCompressorScreen extends VEContainerScreen<VEContainer> {
     public AirCompressorScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
         tileEntity = screenContainer.getTileEntity();
-        screenContainer.setScreen(this);
     }
 
     @Override

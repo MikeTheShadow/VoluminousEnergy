@@ -27,7 +27,7 @@ public class CompressorScreen extends VEContainerScreen<VEContainer> {
     public CompressorScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
         tileEntity = screenContainer.getTileEntity();
-        screenContainer.setScreen(this);
+
     }
 
     @Override

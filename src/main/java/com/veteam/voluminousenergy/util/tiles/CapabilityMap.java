@@ -16,7 +16,6 @@ import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -69,7 +68,7 @@ public class CapabilityMap {
     public IItemHandler getItemStackHandler(@Nullable Direction side, BlockEntity tileEntity) {
         if (side == null) return this.inventory;
 
-        Direction normalizedSide = CapabilityMap.normalizeDirection(side, tileEntity);
+        Direction normalizedSide = normalizeDirection(side, tileEntity);
         return this.itemMap.get(normalizedSide);
     }
 
@@ -81,11 +80,11 @@ public class CapabilityMap {
     @Nullable
     public IFluidHandler getFluidHandler(@Nullable Direction side, BlockEntity tileEntity) {
         if(side == null) return null;
-        Direction normalizedSide = CapabilityMap.normalizeDirection(side, tileEntity);
+        Direction normalizedSide = normalizeDirection(side, tileEntity);
         return this.fluidMap.get(normalizedSide);
     }
 
-    public static Direction normalizeDirection(Direction direction, BlockEntity tileEntity) {
+    private static Direction normalizeDirection(Direction direction, BlockEntity tileEntity) {
         Direction currentDirection = tileEntity.getBlockState().getValue(BlockStateProperties.FACING);
         int directionInt = direction.get3DDataValue();
         if (directionInt == 0 || directionInt == 1) return direction;

@@ -26,7 +26,7 @@ public class ElectrolyzerScreen extends VEContainerScreen<VEContainer> {
     public ElectrolyzerScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
         tileEntity = screenContainer.getTileEntity();
-        screenContainer.setScreen(this);
+
     }
 
     @Override
