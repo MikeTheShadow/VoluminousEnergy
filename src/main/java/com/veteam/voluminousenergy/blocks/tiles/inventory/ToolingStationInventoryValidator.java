@@ -1,16 +1,23 @@
 package com.veteam.voluminousenergy.blocks.tiles.inventory;
 
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
+import com.veteam.voluminousenergy.items.data.CombustibleFluidsData;
 import com.veteam.voluminousenergy.items.tools.multitool.Multitool;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItem;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Fluids;
 
 public class ToolingStationInventoryValidator implements AbstractItemStackValidator {
 
     @Override
     public boolean allowItemInsertion(int slot, ItemStack stack, boolean simulate, VETileEntity tile) {
-        if(slot == 0 || slot == 1) return stack.getItem() instanceof BucketItem;
+        if(slot == 0 || slot == 1) {
+            if(!(stack.getItem() instanceof BucketItem bucketItem)) return false;
+            if(bucketItem.content == Fluids.EMPTY) return true;
+            if(slot == 0) return CombustibleFluidsData.isCombustible(bucketItem.content);
+            return true;
+        }
         if(slot == 2) {
             return stack.getItem() instanceof Multitool;
         }

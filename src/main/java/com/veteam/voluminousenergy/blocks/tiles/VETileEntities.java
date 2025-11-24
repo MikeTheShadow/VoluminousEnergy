@@ -280,7 +280,7 @@ public class VETileEntities {
             new VETileEntityFactory(VEBlocks.TOOLING_STATION.tile(), VEContainers.TOOLING_STATION_FACTORY)
                     // TODO decide if we want a custom capacity for the tooling station tank
                     .addTanks(new FluidInputOutputTank(0,Config.ALUMINUM_TANK_CAPACITY.get() * 1000,(fluidStack,tile)
-                            -> CombustibleFluidsData.isCombustible(fluidStack),false))
+                            -> CombustibleFluidsData.isCombustible(fluidStack)))
                     .withCustomInventoryValidator(new ToolingStationInventoryValidator())
                     .withCustomRecipeProcessing(new ToolingStationProcessor());
 

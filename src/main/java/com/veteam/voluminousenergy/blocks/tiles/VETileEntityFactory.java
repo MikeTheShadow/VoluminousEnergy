@@ -206,16 +206,16 @@ public class VETileEntityFactory {
         }
     }
 
-    public record FluidInputOutputTank(int recipePos, int capacity,@Nullable AbstractFluidValidator fluidValidator,boolean setAllowAny) implements TileTank {
+    public record FluidInputOutputTank(int recipePos, int capacity,@Nullable AbstractFluidValidator fluidValidator) implements TileTank {
 
         public FluidInputOutputTank(int recipePos, int capacity) {
-            this(recipePos,capacity,null,true);
+            this(recipePos,capacity,null);
         }
 
         @Override
         public VERelationalTank asTank(int id) {
             VERelationalTank tank = new VERelationalTank(new FluidTank(capacity), id, recipePos, TankType.BOTH, "both_tank_" + id + ":output_tank_gui",fluidValidator);
-            tank.setAllowAny(setAllowAny);
+            tank.setAllowAny((fluidValidator == null));
             return tank;
         }
     }

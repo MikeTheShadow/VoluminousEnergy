@@ -88,7 +88,10 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
                 Fluid fluid = ((BucketItem) input.getItem()).content;
 
                 if (inputTank.isEmpty() || FluidStack.isSameFluidSameComponents(inputTank.getFluid(),new FluidStack(fluid, 1000)) && inputTank.getFluidAmount() + 1000 <= inputTank.getTankCapacity(0)) {
-                    inputTank.fill(new FluidStack(fluid, 1000), IFluidHandler.FluidAction.EXECUTE);
+
+                    FluidStack fluidStack = new FluidStack(fluid, 1000);
+                    if(tank.getValidator() != null && !tank.getValidator().validateFluid(fluidStack,this)) return;
+                    inputTank.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
                     handler.extractItem(slot1, 1, false);
                     handler.insertItem(slot2, new ItemStack(Items.BUCKET, 1), false);
                     this.markRecipeDirty();

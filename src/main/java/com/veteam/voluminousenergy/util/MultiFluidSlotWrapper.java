@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.util;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.tools.Config;
@@ -41,8 +42,8 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
     @Override
     public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
         VERelationalTank relationalTank = tanks.get(tank);
-        if (relationalTank.isAllowAny() ||
-                (relationalTank.getValidator() != null && relationalTank.getValidator().validateFluid(stack,tileEntity))) return true;
+        if (relationalTank.isAllowAny()) return true;
+        if(relationalTank.getValidator() != null) return relationalTank.getValidator().validateFluid(stack,tileEntity);
         for (VERecipe recipe : tileEntity.getPotentialRecipes()) {
             if (recipe.getFluidIngredient(relationalTank.getRecipePos()).test(stack)) {
                 return true;
