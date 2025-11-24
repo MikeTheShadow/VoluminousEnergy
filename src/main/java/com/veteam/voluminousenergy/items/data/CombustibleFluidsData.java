@@ -55,7 +55,7 @@ public class CombustibleFluidsData {
         return combustibleFluidData.containsKey(fluid);
     }
 
-    public static int getEnergyProduced(FluidStack stack) {
+    public static int getEnergyPerTick(FluidStack stack) {
         buildCache();
         return combustibleFluidData.getOrDefault(stack.getFluid(), 0);
     }

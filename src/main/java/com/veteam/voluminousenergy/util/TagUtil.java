@@ -15,6 +15,9 @@ import java.util.ArrayList;
 
 public class TagUtil {
 
+    private static final TagKey<Item> MACHINE_UPGRADE_TAG = TagKey.create(Registries.ITEM, new ResourceLocation(VoluminousEnergy.MODID, "machine_upgrades"));
+
+
     public static ArrayList<Fluid> getFluidListFromTagResourceLocation(String fluidTagLocation) {
         TagKey<Fluid> fluidTagKey = TagKey.create(Registries.FLUID, new ResourceLocation(fluidTagLocation));
         ArrayList<Fluid> fluids = new ArrayList<>();
@@ -77,8 +80,6 @@ public class TagUtil {
         }
         return items;
     }
-
-    private static final TagKey<Item> MACHINE_UPGRADE_TAG = TagKey.create(Registries.ITEM, new ResourceLocation(VoluminousEnergy.MODID, "machine_upgrades"));
 
     public static boolean isTaggedMachineUpgradeItem(ItemStack stack) {
         return stack.is(MACHINE_UPGRADE_TAG);

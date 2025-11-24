@@ -7,6 +7,7 @@ import com.veteam.voluminousenergy.client.renderers.entity.LaserBlockEntityRende
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.batteries.VEEnergyItem;
 import com.veteam.voluminousenergy.items.tools.multitool.CombustionMultitool;
+import com.veteam.voluminousenergy.items.tools.multitool.MuiltiToolFluidHandler;
 import com.veteam.voluminousenergy.items.tools.multitool.Multitool;
 import com.veteam.voluminousenergy.items.tools.multitool.VEMultitoolItems;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
@@ -72,6 +73,12 @@ public class VEGenericListener {
                 }, item);
             }
         });
+
+        event.registerItem(Capabilities.FluidHandler.ITEM, (stack, provider) ->
+                new MuiltiToolFluidHandler(
+                        VEDataComponents.SIMPLE_FLUID_DATA_TYPE,
+                        stack),
+                VEMultitoolItems.MULTI_TOOL.get());
     }
 
     @SubscribeEvent

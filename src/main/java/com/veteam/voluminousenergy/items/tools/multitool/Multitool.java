@@ -1,11 +1,17 @@
 package com.veteam.voluminousenergy.items.tools.multitool;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.items.VEItem;
+import com.veteam.voluminousenergy.items.data.CombustibleFluidsData;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItem;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItemData;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.ToolType;
+import com.veteam.voluminousenergy.util.NumberUtil;
+import com.veteam.voluminousenergy.util.TextUtil;
 import com.veteam.voluminousenergy.util.VEDataComponents;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -13,10 +19,15 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.ToolAction;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,10 +36,8 @@ import java.util.List;
 
 public class Multitool extends VEItem {
 
-    public Multitool(BitItemData bit, String registryName, Item.Properties itemProperties) {
-        super(itemProperties);
-        setRegistryName(registryName);
-    }
+    //TODO add to config
+    private static final int TEMP_TANK_CAPACITY = VETileEntity.DEFAULT_TANK_CAPACITY;
 
     public Multitool() {
         super(new Item.Properties()
@@ -36,13 +45,52 @@ public class Multitool extends VEItem {
         setRegistryName("multitool");
     }
 
+    @Override
+    public boolean isBarVisible(ItemStack itemStack) {
+        return true;
+    }
+
+    @Override
+    public int getBarWidth(ItemStack itemStack) {
+        IFluidHandler fluidHandler = itemStack.getCapability(Capabilities.FluidHandler.ITEM);
+        return (int) Math.round(13 * (fluidHandler.getFluidInTank(0).getAmount() / (double) TEMP_TANK_CAPACITY));
+    }
+
+    @Override
+    public int getBarColor(ItemStack itemStack) {
+        IFluidHandler fluidHandler = itemStack.getCapability(Capabilities.FluidHandler.ITEM);
+        return Mth.hsvToRgb(fluidHandler.getFluidInTank(0).getAmount() / 3.0F, 1.0F, 1.0F);
+    }
+
+    @Override
+    public void appendHoverText(ItemStack itemStack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+
+        IFluidHandler fluidHandler = itemStack.getCapability(Capabilities.FluidHandler.ITEM);
+        FluidStack fluidStack = fluidHandler.getFluidInTank(0).copy();
+
+        if(fluidStack.isEmpty()) {
+            tooltip.add(TextUtil.translateString("tank.voluminousenergy.tank_empty").copy());
+        } else {
+            tooltip.add(
+                    TextUtil.translateString(fluidStack.getHoverName().getString()).copy()
+                            .append(": "
+                                    + NumberUtil.formatNumber(fluidStack.getAmount())
+                                    + " mB / "
+                                    + NumberUtil.formatNumber(TEMP_TANK_CAPACITY)
+                                    + " mB"
+                            )
+            );
+        }
+
+        Float energy = itemStack.getOrDefault(VEDataComponents.MULTI_TOOL_ENERGY,0f);
+
+        tooltip.add(TextUtil.translateString("text.voluminousenergy.energy").copy()
+                .append(": " + NumberUtil.formatNumber(energy)));
+    }
 
 
     public void setToolState(@NotNull ItemStack itemStack, @Nullable BlockState blockState) {
-
         if (blockState == null || blockState.isAir()) {
-            itemStack.set(VEDataComponents.TOOL_TYPE, 0);
-            itemStack.set(VEDataComponents.TOOL_TIER, 0);
             return;
         }
 
@@ -107,6 +155,18 @@ public class Multitool extends VEItem {
 
     @Override
     public float getDestroySpeed(@NotNull ItemStack itemStack, @NotNull BlockState blockStateToMine) {
+        Float energy = itemStack.getOrDefault(VEDataComponents.MULTI_TOOL_ENERGY,0f);
+        if(energy <= 0) {
+            IFluidHandlerItem capability = itemStack.getCapability(Capabilities.FluidHandler.ITEM);
+            FluidStack drainedFluid = capability.drain(50, IFluidHandler.FluidAction.EXECUTE);
+            if(drainedFluid.isEmpty()) {
+                return 0f;
+            }
+            float usages = (float) (CombustibleFluidsData.getEnergyPerTick(drainedFluid) * 5) / ((float) drainedFluid.getAmount() / 1000);
+            capability.drain(50, IFluidHandler.FluidAction.EXECUTE);
+            itemStack.set(VEDataComponents.MULTI_TOOL_ENERGY, usages);
+        }
+
         BitItem bit = getBestBitForBlock(itemStack, blockStateToMine);
 
         if(bit == null) {
@@ -118,16 +178,22 @@ public class Multitool extends VEItem {
 
     @Override
     public boolean hurtEnemy(ItemStack stack, @NotNull LivingEntity attackee, @NotNull LivingEntity attacker) {
-        stack.hurtAndBreak(2, attacker, EquipmentSlot.MAINHAND);
+        stack.hurtAndBreak(0, attacker, EquipmentSlot.MAINHAND);
         return true;
     }
 
     @Override
-    public boolean mineBlock(@NotNull ItemStack stack, Level level, @NotNull BlockState blockState, @NotNull BlockPos pos, @NotNull LivingEntity player) {
-        if (!level.isClientSide && blockState.getDestroySpeed(level, pos) != 0.0F) {
-            stack.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
+    public boolean mineBlock(@NotNull ItemStack stack, @NotNull Level level, @NotNull BlockState blockState, @NotNull BlockPos pos, @NotNull LivingEntity player) {
+        Float energy = stack.getOrDefault(VEDataComponents.MULTI_TOOL_ENERGY,0f);
+        stack.set(VEDataComponents.MULTI_TOOL_ENERGY,--energy);
+        BitItem selected = getBestBitForBlock(stack, blockState);
+        if (selected == null) {
+            stack.set(VEDataComponents.TOOL_TYPE, 0);
+            stack.set(VEDataComponents.TOOL_TIER, 0);
+        } else {
+            stack.set(VEDataComponents.TOOL_TYPE, selected.getBitItemData().getToolType());
+            stack.set(VEDataComponents.TOOL_TIER, selected.getBitItemData().getToolTier());
         }
-
         return true;
     }
 

@@ -9,6 +9,9 @@ public interface AbstractRecipeProcessor {
      * use processRecipe for extra checks if this tile requires
      * external checks that won't mark the tile as "dirty"
      *
+     * The idea behind this was for this recipe to validate the recipe as "good" then set VETileEntity#selectedRecipe.
+     * For recipes that don't require a recipe/configuration this can be left empty.
+     *
      * @param tile The tile to validate the recipe for
      */
     void validateRecipe(VETileEntity tile);
@@ -23,7 +26,7 @@ public interface AbstractRecipeProcessor {
      * method of validating state).
      *
      * @param tile The tile to process the recipe for
-     * @return
+     * @return if true then the tile will be marked as changed
      */
     boolean processRecipe(VETileEntity tile);
 
