@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.items.tools.multitool;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.items.VEItem;
 import com.veteam.voluminousenergy.items.data.CombustibleFluidsData;
@@ -88,7 +87,6 @@ public class Multitool extends VEItem {
                 .append(": " + NumberUtil.formatNumber(energy)));
     }
 
-
     public void setToolState(@NotNull ItemStack itemStack, @Nullable BlockState blockState) {
         if (blockState == null || blockState.isAir()) {
             return;
@@ -152,19 +150,22 @@ public class Multitool extends VEItem {
         return selected;
     }
 
-
     @Override
     public float getDestroySpeed(@NotNull ItemStack itemStack, @NotNull BlockState blockStateToMine) {
-        Float energy = itemStack.getOrDefault(VEDataComponents.MULTI_TOOL_ENERGY,0f);
-        if(energy <= 0) {
+        float energy = itemStack.getOrDefault(VEDataComponents.MULTI_TOOL_ENERGY,0f);
+        if(energy < 1) {
             IFluidHandlerItem capability = itemStack.getCapability(Capabilities.FluidHandler.ITEM);
             FluidStack drainedFluid = capability.drain(50, IFluidHandler.FluidAction.EXECUTE);
             if(drainedFluid.isEmpty()) {
                 return 0f;
             }
-            float usages = (float) (CombustibleFluidsData.getEnergyPerTick(drainedFluid) * 5) / ((float) drainedFluid.getAmount() / 1000);
-            capability.drain(50, IFluidHandler.FluidAction.EXECUTE);
-            itemStack.set(VEDataComponents.MULTI_TOOL_ENERGY, usages);
+
+            int energyPerTick = CombustibleFluidsData.getEnergyPerTick(drainedFluid);
+            int multiplier = 5;
+            int inputAmount = drainedFluid.getAmount();
+
+            float usages = inputAmount * ((energyPerTick * multiplier) / 1000f);
+            itemStack.set(VEDataComponents.MULTI_TOOL_ENERGY, usages + energy); // Add energy because if it's 0.2 for example we want to keep that
         }
 
         BitItem bit = getBestBitForBlock(itemStack, blockStateToMine);
@@ -195,12 +196,6 @@ public class Multitool extends VEItem {
             stack.set(VEDataComponents.TOOL_TIER, selected.getBitItemData().getToolTier());
         }
         return true;
-    }
-
-    @Nullable
-    @Deprecated
-    public BitItemData getBit() {
-        return null;
     }
 
     @Override
@@ -261,7 +256,6 @@ public class Multitool extends VEItem {
                     net.minecraft.world.entity.item.ItemEntity ent = entity.spawnAtLocation(d, 1.0F);
                     ent.setDeltaMovement(ent.getDeltaMovement().add((double) ((rand.nextFloat() - rand.nextFloat()) * 0.1F), (double) (rand.nextFloat() * 0.05F), (double) ((rand.nextFloat() - rand.nextFloat()) * 0.1F)));
                 });
-
 
                 switch (hand) {
                     case InteractionHand.MAIN_HAND -> multitool.hurtAndBreak(1, playerIn, EquipmentSlot.MAINHAND);

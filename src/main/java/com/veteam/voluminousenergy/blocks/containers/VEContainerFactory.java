@@ -129,7 +129,7 @@ public class VEContainerFactory {
         }
 
         public boolean mayPlace(@NotNull ItemStack stack) {
-            return allowInsertion;
+            return allowInsertion && super.mayPlace(stack);
         }
 
         @Override

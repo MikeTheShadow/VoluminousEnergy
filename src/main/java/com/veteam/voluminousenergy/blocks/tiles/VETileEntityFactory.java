@@ -35,7 +35,6 @@ public class VETileEntityFactory {
     private final Supplier<BlockEntityType<VETileEntity>> tileRegistry;
     private final VEContainerFactory containerFactory;
     private VEEnergyStorage storage;
-    private boolean infiniteRender = false;
     private AbstractItemStackValidator validator = null;
     private AbstractRecipeProcessor processor;
     private boolean sendsOutPower = false;
@@ -57,25 +56,6 @@ public class VETileEntityFactory {
                 this.markRecipeDirty();
                 return containerFactory.create(id, level, worldPosition, playerInventory, player);
             }
-
-
-//TODO fix me for the dim laser
-//            @Override
-//            public AABB getRenderBoundingBox() {
-//                if (infiniteRender) {
-//                    return INFINITE_EXTENT_AABB;
-//                } else {
-//                    AABB cbb = null;
-//                    try {
-//                        VoxelShape collisionShape = state.getCollisionShape(this.getLevel(), pos);
-//                        if (!collisionShape.isEmpty())
-//                            cbb = collisionShape.bounds().move(pos);
-//                    } catch (Exception e) {
-//                        cbb = AABB.encapsulatingFullBlocks(pos.offset(-1, 0, -1), pos.offset(1, 1, 1));
-//                    }
-//                    return cbb;
-//                }
-//            }
         };
 
         // Add our tanks and slots
