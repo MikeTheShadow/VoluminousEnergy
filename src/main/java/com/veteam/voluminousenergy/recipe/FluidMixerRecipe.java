@@ -7,7 +7,6 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.recipe.parser.BasicParser;
 import com.veteam.voluminousenergy.recipe.serializer.FluidSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
@@ -15,7 +14,6 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -36,11 +34,14 @@ public class FluidMixerRecipe extends VERecipe {
 
     public static final RecipeSerializer<FluidMixerRecipe> SERIALIZER = new RecipeSerializer<>() {
 
-        public static final MapCodec<FluidMixerRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
-                VERecipeCodecs.VE_FLUID_INGREDIENT_CODEC.listOf().fieldOf("fluid_ingredients").forGetter((getter) -> getter.registryFluidIngredients),
-                VERecipeCodecs.VE_OUTPUT_FLUID_CODEC.listOf().fieldOf("fluid_results").forGetter((getter) -> getter.fluidOutputList),
-                Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime)
-        ).apply(instance, FluidMixerRecipe::new));
+        public static final MapCodec<FluidMixerRecipe> VE_RECIPE_CODEC = RecordCodecBuilder
+                .mapCodec((instance) -> instance.group(
+                        VERecipeCodecs.VE_FLUID_INGREDIENT_CODEC.listOf().fieldOf("fluid_ingredients")
+                                .forGetter((getter) -> getter.registryFluidIngredients),
+                        VERecipeCodecs.VE_OUTPUT_FLUID_CODEC.listOf().fieldOf("fluid_results")
+                                .forGetter((getter) -> getter.fluidOutputList),
+                        Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime))
+                        .apply(instance, FluidMixerRecipe::new));
 
         private static final FluidSerializerHelper<FluidMixerRecipe> helper = new FluidSerializerHelper<>();
 
@@ -67,7 +68,6 @@ public class FluidMixerRecipe extends VERecipe {
         }
 
     };
-
 
     @Override
     public @NotNull RecipeSerializer<? extends VERecipe> getSerializer() {

@@ -1,7 +1,5 @@
 package com.veteam.voluminousenergy.recipe.serializer;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.recipe.CombustionGeneratorRecipe;
 import com.veteam.voluminousenergy.recipe.VERNGRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
@@ -19,10 +17,6 @@ public class FluidSerializerHelper<T extends VERecipe> {
 
     @NotNull
     public T fromNetwork(T recipe, RegistryFriendlyByteBuf buffer) {
-
-        VoluminousEnergy.LOGGER.info(buffer.maxCapacity());
-        VoluminousEnergy.LOGGER.info(buffer.capacity());
-        VoluminousEnergy.LOGGER.info("_");
 
         // Read ingredients
         int ingredientSize = buffer.readInt();
@@ -73,7 +67,7 @@ public class FluidSerializerHelper<T extends VERecipe> {
     public void toNetwork(RegistryFriendlyByteBuf buffer, T recipe) {
         buffer.writeInt(recipe.getIngredients().size());
         for (Ingredient ingredient : recipe.getIngredients()) {
-            Ingredient.CONTENTS_STREAM_CODEC.encode(buffer,ingredient);
+            Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, ingredient);
         }
 
         buffer.writeInt(recipe.getFluidIngredients().size());

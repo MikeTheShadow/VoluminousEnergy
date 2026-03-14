@@ -31,3 +31,6 @@ forge*changelog.txt
 /src/generated/resources/.cache/
 /run-data/
 /runs/
+
+.editorconfig
+.nvim.lua

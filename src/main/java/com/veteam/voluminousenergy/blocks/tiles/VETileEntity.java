@@ -60,7 +60,8 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     AbstractRecipeProcessor recipeProcessor;
     boolean sendsOutPower;
 
-    public VETileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, RecipeType<? extends Recipe<?>> recipeType) {
+    public VETileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state,
+            RecipeType<? extends Recipe<?>> recipeType) {
         super(type, pos, state);
         this.recipeType = recipeType;
     }
@@ -85,13 +86,17 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         FluidTank inputTank = tank.getTank();
         ItemStackHandler handler = getInventory();
         if (input.getItem() instanceof BucketItem && input.getItem() != Items.BUCKET) {
-            if ((output.getItem() == Items.BUCKET && output.getCount() < 16) || checkOutputSlotForEmptyOrBucket(output)) {
+            if ((output.getItem() == Items.BUCKET && output.getCount() < 16)
+                    || checkOutputSlotForEmptyOrBucket(output)) {
                 Fluid fluid = ((BucketItem) input.getItem()).content;
 
-                if (inputTank.isEmpty() || FluidStack.isSameFluidSameComponents(inputTank.getFluid(),new FluidStack(fluid, 1000)) && inputTank.getFluidAmount() + 1000 <= inputTank.getTankCapacity(0)) {
+                if (inputTank.isEmpty()
+                        || FluidStack.isSameFluidSameComponents(inputTank.getFluid(), new FluidStack(fluid, 1000))
+                                && inputTank.getFluidAmount() + 1000 <= inputTank.getTankCapacity(0)) {
 
                     FluidStack fluidStack = new FluidStack(fluid, 1000);
-                    if(tank.getValidator() != null && !tank.getValidator().validateFluid(fluidStack,this)) return;
+                    if (tank.getValidator() != null && !tank.getValidator().validateFluid(fluidStack, this))
+                        return;
                     inputTank.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
                     handler.extractItem(slot1, 1, false);
                     handler.insertItem(slot2, new ItemStack(Items.BUCKET, 1), false);
@@ -101,14 +106,14 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         }
     }
 
-
-    //use for when the input and output slot are different
+    // use for when the input and output slot are different
     public void outputFluid(VERelationalTank tank, int slot1, int slot2) {
         ItemStack inputSlot = tank.getInput();
         ItemStack outputSlot = tank.getOutput();
         FluidTank outputTank = tank.getTank();
         ItemStackHandler handler = getInventory();
-        if (inputSlot.getItem() == Items.BUCKET && outputTank.getFluidAmount() >= 1000 && inputSlot.getCount() > 0 && outputSlot.copy() == ItemStack.EMPTY) {
+        if (inputSlot.getItem() == Items.BUCKET && outputTank.getFluidAmount() >= 1000 && inputSlot.getCount() > 0
+                && outputSlot.copy() == ItemStack.EMPTY) {
 
             ItemStack bucketStack = new ItemStack(outputTank.getFluid().getFluid().getBucket(), 1);
             outputTank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
@@ -118,14 +123,14 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         }
     }
 
-
     public int getTankCapacity() {
         return DEFAULT_TANK_CAPACITY;
     }
 
     public void updateTankPacketFromGui(boolean status, int id) {
         for (VERelationalTank tank : getRelationalTanks()) {
-            if (id == tank.getSlotNum()) tank.setSideStatus(status);
+            if (id == tank.getSlotNum())
+                tank.setSideStatus(status);
         }
     }
 
@@ -142,7 +147,8 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     }
 
     public static boolean checkOutputSlotForEmptyOrBucket(ItemStack slotStack) {
-        return slotStack.copy() == ItemStack.EMPTY || ((slotStack.copy().getItem() == Items.BUCKET) && slotStack.copy().getCount() < 16);
+        return slotStack.copy() == ItemStack.EMPTY
+                || ((slotStack.copy().getItem() == Items.BUCKET) && slotStack.copy().getCount() < 16);
     }
 
     public void markFluidInputDirty() {
@@ -150,7 +156,8 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     }
 
     protected void processFluidIO() {
-        if (!fluidInputDirty) return;
+        if (!fluidInputDirty)
+            return;
         fluidInputDirty = false;
         for (VESlotManager manager : this.getSlotManagers()) {
             ItemStackHandler inventory = this.getInventory();
@@ -173,13 +180,12 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         return getRelationalTanks().get(num).getTank().getFluid();
     }
 
-    //  END OF FLUID STUFF
+    // END OF FLUID STUFF
 
     int counter = 0;
     int length = 0;
     int sound_tick = 0;
     boolean isRecipeDirty = true;
-
 
     /**
      * Must include a call to updateClients();
@@ -194,9 +200,11 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
                 recipeProcessor.validateRecipe(this);
                 this.isRecipeDirty = false;
             }
-            if(recipeProcessor.processRecipe(this)) this.setChanged();
+            if (recipeProcessor.processRecipe(this))
+                this.setChanged();
         }
-        if (this.sendsOutPower) sendOutPower();
+        if (this.sendsOutPower)
+            sendOutPower();
     }
 
     public void setLit(boolean lit) {
@@ -213,23 +221,25 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
      * if you wish to save to file call setChanged();
      */
     public void updateClients() {
-        if (level == null) return;
+        if (level == null)
+            return;
         level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 1);
     }
 
     public int getEnergyCostMultiplier() {
-        return this.consumptionMultiplier(this.energy.getConsumption(),this.energy.getUpgradeSlotId());
+        return this.consumptionMultiplier(this.energy.getConsumption(), this.energy.getUpgradeSlotId());
     }
 
     /**
      * This is for internal use only. Call this outside at your own peril
-     * @param processTime The base time it takes to process
+     * 
+     * @param processTime  The base time it takes to process
      * @param upgradeStack The stack to use to calculate it
      * @return the new counter int.
      */
     private int calculateCounter(int processTime, ItemStack upgradeStack) {
 
-        float multiplier = upgradeStack.getOrDefault(VEDataComponents.MULTIPLIER_DATA,0.0F);
+        float multiplier = upgradeStack.getOrDefault(VEDataComponents.MULTIPLIER_DATA, 0.0F);
 
         if (upgradeStack.getItem() == VEItems.QUARTZ_MULTIPLIER.get()) {
             int count = upgradeStack.getCount();
@@ -247,7 +257,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     protected int consumptionMultiplier(int consumption, int slot) {
         ItemStack upgradeStack = slot == -1 ? ItemStack.EMPTY : getInventory().getStackInSlot(slot);
 
-        float upgradeMulti = upgradeStack.getOrDefault(VEDataComponents.MULTIPLIER_DATA,0.0f);
+        float upgradeMulti = upgradeStack.getOrDefault(VEDataComponents.MULTIPLIER_DATA, 0.0f);
 
         if (upgradeStack.getItem() == VEItems.QUARTZ_MULTIPLIER.get()) {
             int count = upgradeStack.getCount();
@@ -284,7 +294,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     @Override
     public CompoundTag getUpdateTag(@NotNull HolderLookup.Provider registry) {
         CompoundTag compoundTag = new CompoundTag();
-        this.saveAdditional(compoundTag,registry);
+        this.saveAdditional(compoundTag, registry);
         return compoundTag;
     }
 
@@ -304,15 +314,16 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
      * @param tag CompoundTag
      */
     @Override
-    public void loadAdditional(CompoundTag tag,@NotNull HolderLookup.Provider registry) {
+    public void loadAdditional(CompoundTag tag, @NotNull HolderLookup.Provider registry) {
         CompoundTag inv = tag.getCompound("inv");
 
         ItemStackHandler handler = getInventory();
 
         if (handler != null) {
-            handler.deserializeNBT(registry,inv);
+            handler.deserializeNBT(registry, inv);
         }
-        if (energy != null) energy.deserializeNBT(tag);
+        if (energy != null)
+            energy.deserializeNBT(tag);
 
         for (VESlotManager manager : getSlotManagers()) {
             manager.read(tag);
@@ -320,11 +331,11 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
         for (VERelationalTank relationalTank : getRelationalTanks()) {
             CompoundTag compoundTag = tag.getCompound(relationalTank.getTankName());
-            relationalTank.getTank().readFromNBT(registry,compoundTag);
+            relationalTank.getTank().readFromNBT(registry, compoundTag);
             relationalTank.readGuiProperties(tag);
         }
 
-        if(tag.contains("sends_out_power")) {
+        if (tag.contains("sends_out_power")) {
             this.sendsOutPower = tag.getBoolean("sends_out_power");
         }
 
@@ -341,11 +352,12 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     public void saveAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registry) {
         ItemStackHandler handler = getInventory();
         if (handler != null) {
-            CompoundTag compound =  handler.serializeNBT(registry);
+            CompoundTag compound = handler.serializeNBT(registry);
             tag.put("inv", compound);
         }
 
-        if (energy != null) energy.serializeNBT(tag);
+        if (energy != null)
+            energy.serializeNBT(tag);
 
         for (VESlotManager manager : getSlotManagers()) {
             manager.write(tag);
@@ -353,14 +365,14 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
         for (VERelationalTank relationalTank : getRelationalTanks()) {
             CompoundTag compoundTag = new CompoundTag();
-            relationalTank.getTank().writeToNBT(registry,compoundTag);
+            relationalTank.getTank().writeToNBT(registry, compoundTag);
             tag.put(relationalTank.getTankName(), compoundTag);
             relationalTank.writeGuiProperties(tag);
         }
 
         tag.putBoolean("sends_out_power", sendsOutPower);
 
-        super.saveAdditional(tag,registry);
+        super.saveAdditional(tag, registry);
     }
 
     @Override
@@ -381,7 +393,8 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
             BlockEntity tileEntity = level.getBlockEntity(getBlockPos().relative(dir));
             Direction opposite = dir.getOpposite();
             if (tileEntity != null) {
-                // If less energy stored then max transfer send the all the energy stored rather than the max transfer amount
+                // If less energy stored then max transfer send the all the energy stored rather
+                // than the max transfer amount
                 int smallest = Math.min(Config.PRIMITIVE_STIRLING_GENERATOR_SEND.get(), energy.getEnergyStored());
                 int received = receiveEnergy(tileEntity, opposite, smallest);
                 energy.consumeEnergy(received);
@@ -416,33 +429,37 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
     CapabilityMap capabilityMap = null;
 
-
     public CapabilityMap getCapabilityMap() {
-        if(this.capabilityMap == null) {
-            capabilityMap = new CapabilityMap(inventory,getSlotManagers(),getRelationalTanks(),energy, this);
+        if (this.capabilityMap == null) {
+            capabilityMap = new CapabilityMap(inventory, getSlotManagers(), getRelationalTanks(), energy, this);
         }
         return this.capabilityMap;
     }
 
     /**
      * Call this to consume energy.
-     * Note that tiles now require an upgrade slot and thus an inventory to properly function here.
-     * If you need to consume energy WITHOUT an upgrade slot make a new method that does not have this.
+     * Note that tiles now require an upgrade slot and thus an inventory to properly
+     * function here.
+     * If you need to consume energy WITHOUT an upgrade slot make a new method that
+     * does not have this.
      * Throws an error if missing the power consumeEnergy IMPL
      */
     public void consumeEnergy() {
-        if (this.energy == null) return;
+        if (this.energy == null)
+            return;
         energy.consumeEnergy(this.consumptionMultiplier(energy.getConsumption(), energy.getUpgradeSlotId()));
     }
 
     /**
-     * @return True if the object has enough energy to be able to continue. Or the entity doesn't run on energy
+     * @return True if the object has enough energy to be able to continue. Or the
+     *         entity doesn't run on energy
      */
     public boolean canConsumeEnergy() {
         if (energy != null) {
-            if (energy.getMaxEnergyStored() == 0) return true; // For tiles that do not consume power
-            return energy.getEnergyStored()
-                    > this.consumptionMultiplier(energy.getConsumption(), energy.getUpgradeSlotId());
+            if (energy.getMaxEnergyStored() == 0)
+                return true; // For tiles that do not consume power
+            return energy.getEnergyStored() > this.consumptionMultiplier(energy.getConsumption(),
+                    energy.getUpgradeSlotId());
         }
         return true;
     }
@@ -470,7 +487,8 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
      */
     @Nullable
     @Override
-    public abstract AbstractContainerMenu createMenu(int id, @NotNull Inventory playerInventory, @NotNull Player player);
+    public abstract AbstractContainerMenu createMenu(int id, @NotNull Inventory playerInventory,
+            @NotNull Player player);
 
     /**
      * We do a null check on inventory so this can be null. Might change though
@@ -484,7 +502,8 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     }
 
     /**
-     * Important note. If the entity has no slot managers return a new ArrayList otherwise this will crash
+     * Important note. If the entity has no slot managers return a new ArrayList
+     * otherwise this will crash
      *
      * @return A not null List<VESlotManager> list
      */
@@ -496,11 +515,12 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
      * When a data packet is received load it.
      */
     @Override
-    public void onDataPacket(@NotNull Connection net, @NotNull ClientboundBlockEntityDataPacket pkt, @NotNull HolderLookup.Provider lookupProvider) {
+    public void onDataPacket(@NotNull Connection net, @NotNull ClientboundBlockEntityDataPacket pkt,
+            @NotNull HolderLookup.Provider lookupProvider) {
         if (energy != null && pkt.getTag().contains("energy"))
             energy.setEnergy(pkt.getTag().getInt("energy"));
-        this.loadAdditional(pkt.getTag(),lookupProvider);
-        super.onDataPacket(net, pkt,lookupProvider);
+        this.loadAdditional(pkt.getTag(), lookupProvider);
+        super.onDataPacket(net, pkt, lookupProvider);
     }
 
     public int progressBurnCounterPX(int px) {
@@ -509,12 +529,14 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
         int counter = counterLength.counter();
         int length = counterLength.length();
-        if (counter != 0 && length != 0) return (px * (((counter * 100) / length))) / 100;
+        if (counter != 0 && length != 0)
+            return (px * (((counter * 100) / length))) / 100;
         return 0;
     }
 
-    public int progressBurnCounterPX(int px,int counter, int length) {
-        if (counter != 0 && length != 0) return (px * (((counter * 100) / length))) / 100;
+    public int progressBurnCounterPX(int px, int counter, int length) {
+        if (counter != 0 && length != 0)
+            return (px * (((counter * 100) / length))) / 100;
         return 0;
     }
 
@@ -522,7 +544,8 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         CounterLength counterLength = this.getData(VEAttachments.COUNTER_LENGTH);
         int counter = counterLength.counter();
         int length = counterLength.length();
-        if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
+        if (counter != 0 && length != 0)
+            return (px * (100 - ((counter * 100) / length))) / 100;
         return 0;
     }
 
@@ -656,10 +679,9 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
         CounterLength counterLength = this.getData(VEAttachments.COUNTER_LENGTH);
 
-
         double ratio = (double) counterLength.length() / (double) newLength;
 
-        CounterLength newCounter = new CounterLength((int) (counterLength.counter() / ratio),newLength);
+        CounterLength newCounter = new CounterLength((int) (counterLength.counter() / ratio), newLength);
         this.setData(VEAttachments.COUNTER_LENGTH, newCounter);
         this.setChanged();
         return newLength;
@@ -668,8 +690,10 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     /**
      * This updates the counter and takes into account an upgrade slot if
      * it exists.
+     * 
      * @param defaultProcessTime The base processing time in ticks.
-     * @return The new length. Only need to use this if you potentially overwrite the changes here (this.setData("length") for example)
+     * @return The new length. Only need to use this if you potentially overwrite
+     *         the changes here (this.setData("length") for example)
      */
     public int updateCounter(int defaultProcessTime) {
         int newLength;
@@ -684,7 +708,6 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         CounterLength counterLength = this.getData(VEAttachments.COUNTER_LENGTH);
 
         double ratio = (double) counterLength.length() / (double) newLength;
-
 
         int ratioedCounter = (int) (counterLength.counter() / ratio);
 

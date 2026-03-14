@@ -28,17 +28,21 @@ public class FluidElectrolyzerRecipe extends VERecipe {
     public FluidElectrolyzerRecipe() {
     }
 
-    public FluidElectrolyzerRecipe(List<VERecipeCodecs.RegistryFluidIngredient> fi, List<FluidStack> of, int processTime) {
+    public FluidElectrolyzerRecipe(List<VERecipeCodecs.RegistryFluidIngredient> fi, List<FluidStack> of,
+            int processTime) {
         super(List.of(), fi, of, List.of(), processTime);
     }
 
     public static final RecipeSerializer<FluidElectrolyzerRecipe> SERIALIZER = new RecipeSerializer<>() {
 
-        public static final MapCodec<FluidElectrolyzerRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
-                VERecipeCodecs.VE_FLUID_INGREDIENT_CODEC.listOf().fieldOf("fluid_ingredients").forGetter((getter) -> getter.registryFluidIngredients),
-                VERecipeCodecs.VE_OUTPUT_FLUID_CODEC.listOf().fieldOf("fluid_results").forGetter((getter) -> getter.fluidOutputList),
-                Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime)
-        ).apply(instance, FluidElectrolyzerRecipe::new));
+        public static final MapCodec<FluidElectrolyzerRecipe> VE_RECIPE_CODEC = RecordCodecBuilder
+                .mapCodec((instance) -> instance.group(
+                        VERecipeCodecs.VE_FLUID_INGREDIENT_CODEC.listOf().fieldOf("fluid_ingredients")
+                                .forGetter((getter) -> getter.registryFluidIngredients),
+                        VERecipeCodecs.VE_OUTPUT_FLUID_CODEC.listOf().fieldOf("fluid_results")
+                                .forGetter((getter) -> getter.fluidOutputList),
+                        Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime))
+                        .apply(instance, FluidElectrolyzerRecipe::new));
 
         private static final FluidSerializerHelper<FluidElectrolyzerRecipe> helper = new FluidSerializerHelper<>();
 
@@ -65,7 +69,6 @@ public class FluidElectrolyzerRecipe extends VERecipe {
         }
 
     };
-
 
     @Override
     public @NotNull RecipeSerializer<? extends VERecipe> getSerializer() {
