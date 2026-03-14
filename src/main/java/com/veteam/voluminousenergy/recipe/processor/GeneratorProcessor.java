@@ -54,6 +54,7 @@ public class GeneratorProcessor implements AbstractRecipeProcessor {
 
 
         if (counter > 0) {
+            tile.setLit(true);
             if (energy.getEnergyStored() + energy.getProduction() <= energy.getCapacity() || allowOverflow) {
                 counter--;
                 tile.setData(VEAttachments.COUNTER_LENGTH,new CounterLength(counter,length));
@@ -86,6 +87,7 @@ public class GeneratorProcessor implements AbstractRecipeProcessor {
                 tile.setChanged();
             } else {
                 tile.getEnergy().setProduction(0);
+                tile.setLit(false);
             }
         }
         return true;

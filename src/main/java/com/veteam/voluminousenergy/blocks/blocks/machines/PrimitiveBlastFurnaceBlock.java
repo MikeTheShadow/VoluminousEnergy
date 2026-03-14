@@ -26,7 +26,7 @@ public class PrimitiveBlastFurnaceBlock extends VEFaceableMachineBlock {
         super(Properties.of()
                 .sound(SoundType.METAL)
                 .strength(2.0f)
-                .lightLevel(l -> 0)
+                .lightLevel(l -> l.getValue(LIT) ? 13 : 0)
                 .requiresCorrectToolForDrops()
         );
         setRName("primitiveblastfurnace");

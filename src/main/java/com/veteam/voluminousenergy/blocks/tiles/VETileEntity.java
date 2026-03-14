@@ -34,6 +34,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -196,6 +197,13 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
             if(recipeProcessor.processRecipe(this)) this.setChanged();
         }
         if (this.sendsOutPower) sendOutPower();
+    }
+
+    public void setLit(boolean lit) {
+        BlockState state = this.getBlockState();
+        if (state.hasProperty(BlockStateProperties.LIT) && state.getValue(BlockStateProperties.LIT) != lit) {
+            this.level.setBlock(this.worldPosition, state.setValue(BlockStateProperties.LIT, lit), 3);
+        }
     }
 
     /**
