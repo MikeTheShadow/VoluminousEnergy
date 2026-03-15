@@ -32,7 +32,8 @@ public abstract class VEContainer extends AbstractContainerMenu {
     ContainerLevelAccess access;
     Level world;
 
-    protected VEContainer(@Nullable MenuType<?> menuType, int id, Level world, BlockPos pos, Inventory inventory, Player player, Block block) {
+    protected VEContainer(@Nullable MenuType<?> menuType, int id, Level world, BlockPos pos, Inventory inventory,
+            Player player, Block block) {
         super(menuType, id);
         this.tileEntity = (VETileEntity) world.getBlockEntity(pos);
         this.playerEntity = player;
@@ -42,14 +43,15 @@ public abstract class VEContainer extends AbstractContainerMenu {
         this.world = world;
 
         // we add slots to GUI here
-        if(tileEntity.getInventory() != null) {
+        if (tileEntity.getInventory() != null) {
             this.addSlotsToGUI(tileEntity.getInventory());
         }
 
         // layout player inventory slots here
         layoutPlayerInventorySlots();
 
-        // We assume if it's a powered tile entity that it requires a dataslot for energy
+        // We assume if it's a powered tile entity that it requires a dataslot for
+        // energy
         if (this.tileEntity.getEnergy() != null) {
             addDataSlot(new DataSlot() {
                 @Override
@@ -68,7 +70,8 @@ public abstract class VEContainer extends AbstractContainerMenu {
     protected abstract void addSlotsToGUI(IItemHandler h);
 
     /**
-     * Override this if you wish to move where the inventory is displayed or disable the inventory display entirely
+     * Override this if you wish to move where the inventory is displayed or disable
+     * the inventory display entirely
      */
     void layoutPlayerInventorySlots() {
         // Player inventory
@@ -97,7 +100,8 @@ public abstract class VEContainer extends AbstractContainerMenu {
         return index;
     }
 
-    protected int addSlotBox(IItemHandler handler, int index, int x, int y, int horAmount, int dx, int verAmount, int dy) {
+    protected int addSlotBox(IItemHandler handler, int index, int x, int y, int horAmount, int dx, int verAmount,
+            int dy) {
         for (int j = 0; j < verAmount; j++) {
             index = addSlotRange(handler, index, x, y, horAmount, dx);
             y += dy;
@@ -125,10 +129,11 @@ public abstract class VEContainer extends AbstractContainerMenu {
         if (storage != null) {
             return storage.getUpgradeSlotId();
         }
-        VoluminousEnergy.LOGGER.error("A container called getUpgradeSlotId when tile doesn't support upgrade slots! Offending tile is: " + RegistryLookups.getBlockEntityTypeKey(tileEntity.getType()));
+        VoluminousEnergy.LOGGER.error(
+                "A container called getUpgradeSlotId when tile doesn't support upgrade slots! Offending tile is: "
+                        + RegistryLookups.getBlockEntityTypeKey(tileEntity.getType()));
         return 0;
     }
-
 
     @Nonnull
     @Override
@@ -143,6 +148,11 @@ public abstract class VEContainer extends AbstractContainerMenu {
             returnStack = slotStack.copy();
 
             if (index <= tileEntitySlotCount) {
+
+                if(slot instanceof VEContainerFactory.VESlot veSlot) {
+                    veSlot.preQuickMoveStack(slotStack);
+                }
+
                 if (!this.moveItemStackTo(slotStack, tileEntitySlotCount, this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }

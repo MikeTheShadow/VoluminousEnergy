@@ -18,4 +18,6 @@ public interface SlotWithIOListener {
      * @param isClientSide If we're on the client
      */
     void onSet(ItemStack stack, int slot, IItemHandler handler, boolean isClientSide);
+
+    void preQuickMoveStack(IItemHandler h, ItemStack multitool, boolean isClientSide);
 }

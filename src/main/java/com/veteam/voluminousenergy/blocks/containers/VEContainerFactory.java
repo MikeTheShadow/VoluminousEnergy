@@ -56,7 +56,7 @@ public class VEContainerFactory {
                 for (int i = 0; i < slots.size(); i++) {
                     if (i == energySlotId) {
                         Slot slot = slots.get(i);
-                        addSlot(new VESlot(h, slot.index, slot.x, slot.y, true,slot.listener,isClientSide));
+                        addSlot(new VESlot(h, slot.index, slot.x, slot.y, true, slot.listener, isClientSide));
                         continue;
                     }
                     if (i == this.tileEntity.getSlotManagers().size()) {
@@ -66,7 +66,7 @@ public class VEContainerFactory {
                     SlotType slotType = this.tileEntity.getSlotManagers().get(i).getSlotType();
                     boolean isOutput = (slotType == SlotType.FLUID_OUTPUT || slotType == SlotType.OUTPUT);
                     Slot slot = slots.get(i);
-                    addSlot(new VESlot(h, slot.index, slot.x, slot.y, !isOutput,slot.listener,isClientSide));
+                    addSlot(new VESlot(h, slot.index, slot.x, slot.y, !isOutput, slot.listener, isClientSide));
                 }
             }
         };
@@ -134,22 +134,26 @@ public class VEContainerFactory {
 
         @Override
         public @NotNull ItemStack remove(int amount) {
-            if(listener != null) listener.onRemoved(getItemHandler(),amount,getSlotIndex(),isClientSide);
+            if (listener != null) listener.onRemoved(getItemHandler(), amount, getSlotIndex(), isClientSide);
             return super.remove(amount);
         }
 
         @Override
         public void onTake(@NotNull Player pPlayer, @NotNull ItemStack stack) {
-            if(listener != null) {
-                listener.onTake(getItemHandler(),stack,isClientSide);
+            if (listener != null) {
+                listener.onTake(getItemHandler(), stack, isClientSide);
             }
             super.onTake(pPlayer, stack);
         }
 
         @Override
-        public void set(ItemStack stack) {
-            if(listener != null) listener.onSet(stack,getSlotIndex(),getItemHandler(),isClientSide);
+        public void set(@NotNull ItemStack stack) {
+            if (listener != null) listener.onSet(stack, getSlotIndex(), getItemHandler(), isClientSide);
             super.set(stack);
+        }
+
+        public void preQuickMoveStack(ItemStack stack) {
+            if (listener != null) listener.preQuickMoveStack(getItemHandler(), stack, isClientSide);
         }
     }
 }
