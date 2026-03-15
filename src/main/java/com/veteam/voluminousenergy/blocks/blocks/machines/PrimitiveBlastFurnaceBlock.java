@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.blocks.blocks.machines;
 
-
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntities;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
@@ -22,47 +21,46 @@ import javax.annotation.Nullable;
 
 public class PrimitiveBlastFurnaceBlock extends VEFaceableMachineBlock {
 
-    public PrimitiveBlastFurnaceBlock() {
-        super(Properties.of()
-                .sound(SoundType.METAL)
-                .strength(2.0f)
-                .lightLevel(l -> 0)
-                .requiresCorrectToolForDrops()
-        );
-        setRName("primitiveblastfurnace");
-        VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresWood(this);
-    }
+  public PrimitiveBlastFurnaceBlock() {
+    super(Properties.of()
+        .sound(SoundType.METAL)
+        .strength(2.0f)
+        .lightLevel(l -> l.getValue(LIT) ? 13 : 0)
+        .requiresCorrectToolForDrops());
+    VETagDataGenerator.setRequiresPickaxe(this);
+    VETagDataGenerator.setRequiresWoodAndBlacklistLowerTiers(this);
+  }
 
-    @Nullable
-    @Override
-    public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) { // Replaces old createBlockEntity method
-        return VETileEntities.PRIMITIVE_BLAST_FURNACE_FACTORY.create(pos, state);
-    }
+  @Nullable
+  @Override
+  public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
+    return VETileEntities.PRIMITIVE_BLAST_FURNACE_FACTORY.create(pos, state);
+  }
 
-    @Nullable
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> blockEntityType) {
-        return createTicker(level, blockEntityType, VEBlocks.PRIMITIVE_BLAST_FURNACE.tile().get());
-    }
+  @Nullable
+  public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState state,
+      @NotNull BlockEntityType<T> blockEntityType) {
+    return createTicker(level, blockEntityType, VEBlocks.PRIMITIVE_BLAST_FURNACE.tile().get());
+  }
 
-    @Override
-    public void animateTick(BlockState blockState, Level level, BlockPos pos, RandomSource random) {
-        if (blockState.getValue(LIT)) {
-            double d0 = (double) pos.getX() + 0.5D;
-            double d1 = pos.getY();
-            double d2 = (double) pos.getZ() + 0.5D;
-            if (random.nextDouble() < 0.1D) {
-                level.playLocalSound(d0, d1, d2, SoundEvents.FURNACE_FIRE_CRACKLE, SoundSource.BLOCKS, 1.0F, 1.0F, false);
-            }
+  @Override
+  public void animateTick(BlockState blockState, Level level, BlockPos pos, RandomSource random) {
+    if (blockState.getValue(LIT)) {
+      double d0 = (double) pos.getX() + 0.5D;
+      double d1 = pos.getY();
+      double d2 = (double) pos.getZ() + 0.5D;
+      if (random.nextDouble() < 0.1D) {
+        level.playLocalSound(d0, d1, d2, SoundEvents.FURNACE_FIRE_CRACKLE, SoundSource.BLOCKS, 1.0F, 1.0F, false);
+      }
 
-            Direction direction = blockState.getValue(FACING);
-            Direction.Axis direction$axis = direction.getAxis();
-            double d4 = random.nextDouble() * 0.6D - 0.3D;
-            double d5 = direction$axis == Direction.Axis.X ? (double) direction.getStepX() * 0.52D : d4;
-            double d6 = random.nextDouble() * 6.0D / 16.0D;
-            double d7 = direction$axis == Direction.Axis.Z ? (double) direction.getStepZ() * 0.52D : d4;
-            level.addParticle(ParticleTypes.SMOKE, d0 + d5, d1 + d6, d2 + d7, 0.0D, 0.0D, 0.0D);
-            level.addParticle(ParticleTypes.FLAME, d0 + d5, d1 + d6, d2 + d7, 0.0D, 0.0D, 0.0D);
-        }
+      Direction direction = blockState.getValue(FACING);
+      Direction.Axis direction$axis = direction.getAxis();
+      double d4 = random.nextDouble() * 0.6D - 0.3D;
+      double d5 = direction$axis == Direction.Axis.X ? (double) direction.getStepX() * 0.52D : d4;
+      double d6 = random.nextDouble() * 6.0D / 16.0D;
+      double d7 = direction$axis == Direction.Axis.Z ? (double) direction.getStepZ() * 0.52D : d4;
+      level.addParticle(ParticleTypes.SMOKE, d0 + d5, d1 + d6, d2 + d7, 0.0D, 0.0D, 0.0D);
+      level.addParticle(ParticleTypes.FLAME, d0 + d5, d1 + d6, d2 + d7, 0.0D, 0.0D, 0.0D);
     }
+  }
 }

@@ -24,7 +24,7 @@ public class CombustionGeneratorBlock extends VEFaceableMachineBlock {
         );
         setRName("combustion_generator");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresIron(this);
+        VETagDataGenerator.setRequiresIronAndBlacklistLowerTiers(this);
     }
 
     @Nullable

@@ -25,7 +25,7 @@ public class BatteryBoxBlock extends VEFaceableMachineBlock {
         );
         setRName("battery_box");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresIron(this);
+        VETagDataGenerator.setRequiresIronAndBlacklistLowerTiers(this);
     }
 
     @Nullable

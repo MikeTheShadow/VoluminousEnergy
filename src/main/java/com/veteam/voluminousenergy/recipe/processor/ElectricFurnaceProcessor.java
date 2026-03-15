@@ -30,7 +30,7 @@ public class ElectricFurnaceProcessor implements AbstractRecipeProcessor {
     }
 
     void processForRecipe(Recipe<?> recipe, VETileEntity tile) {
-        if (!canInsertIntoResult(recipe, tile.getLevel().registryAccess(), tile.getStackInSlot(1))) {
+        if (!canInsertIntoResult(recipe, tile.getLevel().registryAccess(), tile.getInventory().getStackInSlot(1))) {
             return;
         }
 
@@ -64,7 +64,7 @@ public class ElectricFurnaceProcessor implements AbstractRecipeProcessor {
     @Override
     public void validateRecipe(VETileEntity tile) {
         Level level = tile.getLevel();
-        ItemStack furnaceInput = tile.getStackInSlot(0);
+        ItemStack furnaceInput = tile.getInventory().getStackInSlot(0);
         var blastingRecipeNew = level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(furnaceInput.copy()), level).orElse(null);
         if (blastingRecipeNew != null) {
             blastingRecipe = blastingRecipeNew.value();

@@ -24,7 +24,7 @@ public class SolarPanelBlock extends VEFaceableMachineBlock {
         );
         setRName("solar_panel");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresStone(this);
+        VETagDataGenerator.setRequiresStoneAndBlacklistLowerTiers(this);
     }
 
     @Nullable

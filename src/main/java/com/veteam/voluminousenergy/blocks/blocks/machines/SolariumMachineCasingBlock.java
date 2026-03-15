@@ -12,6 +12,6 @@ public class SolariumMachineCasingBlock extends Block {
                 .requiresCorrectToolForDrops()
         );
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresSolarium(this);
+        VETagDataGenerator.setRequiresSolariumAndBlacklistLowerTiers(this);
     }
 }

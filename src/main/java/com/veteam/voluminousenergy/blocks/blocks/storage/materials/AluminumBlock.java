@@ -14,6 +14,6 @@ public class AluminumBlock extends VEBlock {
         );
         setRName("aluminum_block");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresStone(this);
+        VETagDataGenerator.setRequiresStoneAndBlacklistLowerTiers(this);
     }
 }

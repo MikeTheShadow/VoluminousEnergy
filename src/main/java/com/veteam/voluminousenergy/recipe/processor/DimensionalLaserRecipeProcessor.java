@@ -95,7 +95,7 @@ public class DimensionalLaserRecipeProcessor extends MultiBlockRecipeProcessor {
         }
 
         if (!tile.canConsumeEnergy()) return false;
-        ItemStack stack = tile.getStackInSlot(2);
+        ItemStack stack = tile.getInventory().getStackInSlot(2);
 
         ChunkFluidData data = stack.get(VEDataComponents.CHUNK_FLUID_DATA);
         if (data == null) {

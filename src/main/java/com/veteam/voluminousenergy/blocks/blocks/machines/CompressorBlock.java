@@ -24,7 +24,7 @@ public class CompressorBlock extends VEFaceableMachineBlock {
         );
         setRName("compressor");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresStone(this);
+        VETagDataGenerator.setRequiresStoneAndBlacklistLowerTiers(this);
     }
 
     @Nullable

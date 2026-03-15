@@ -25,7 +25,7 @@ public class PumpBlock extends VEFaceableMachineBlock {
         );
         setRName("pump");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresStone(this);
+        VETagDataGenerator.setRequiresStoneAndBlacklistLowerTiers(this);
     }
 
     @Nullable

@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
+import com.veteam.voluminousenergy.blocks.containers.iolisteners.SlotWithIOListener;
 import com.veteam.voluminousenergy.blocks.containers.VEContainerFactory;
 import com.veteam.voluminousenergy.blocks.tiles.fluids.AbstractFluidValidator;
 import com.veteam.voluminousenergy.blocks.tiles.inventory.AbstractItemStackValidator;
@@ -13,7 +14,6 @@ import com.veteam.voluminousenergy.util.TankType;
 import com.veteam.voluminousenergy.util.VERelationalTank;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -35,7 +35,6 @@ public class VETileEntityFactory {
     private final Supplier<BlockEntityType<VETileEntity>> tileRegistry;
     private final VEContainerFactory containerFactory;
     private VEEnergyStorage storage;
-    private boolean infiniteRender = false;
     private AbstractItemStackValidator validator = null;
     private AbstractRecipeProcessor processor;
     private boolean sendsOutPower = false;
@@ -57,25 +56,6 @@ public class VETileEntityFactory {
                 this.markRecipeDirty();
                 return containerFactory.create(id, level, worldPosition, playerInventory, player);
             }
-
-
-
-//            @Override
-//            public AABB getRenderBoundingBox() {
-//                if (infiniteRender) {
-//                    return INFINITE_EXTENT_AABB;
-//                } else {
-//                    AABB cbb = null;
-//                    try {
-//                        VoxelShape collisionShape = state.getCollisionShape(this.getLevel(), pos);
-//                        if (!collisionShape.isEmpty())
-//                            cbb = collisionShape.bounds().move(pos);
-//                    } catch (Exception e) {
-//                        cbb = AABB.encapsulatingFullBlocks(pos.offset(-1, 0, -1), pos.offset(1, 1, 1));
-//                    }
-//                    return cbb;
-//                }
-//            }
         };
 
         // Add our tanks and slots
@@ -152,6 +132,13 @@ public class VETileEntityFactory {
         }
     }
 
+    public record ListenedItemInputSlot(Direction direction, SlotWithIOListener listener) implements TileSlot {
+        @Override
+        public VESlotManager asManager(int id) {
+            return new VESlotManager(id, direction, false, SlotType.INPUT);
+        }
+    }
+
     public record InputSlot(Direction direction) implements TileSlot {
         @Override
         public VESlotManager asManager(int id) {
@@ -199,11 +186,16 @@ public class VETileEntityFactory {
         }
     }
 
-    public record FluidInputOutputTank(int recipePos, int capacity) implements TileTank {
+    public record FluidInputOutputTank(int recipePos, int capacity,@Nullable AbstractFluidValidator fluidValidator) implements TileTank {
+
+        public FluidInputOutputTank(int recipePos, int capacity) {
+            this(recipePos,capacity,null);
+        }
+
         @Override
         public VERelationalTank asTank(int id) {
-            VERelationalTank tank = new VERelationalTank(new FluidTank(capacity), id, recipePos, TankType.BOTH, "both_tank_" + id + ":output_tank_gui");
-            tank.setAllowAny(true);
+            VERelationalTank tank = new VERelationalTank(new FluidTank(capacity), id, recipePos, TankType.BOTH, "both_tank_" + id + ":output_tank_gui",fluidValidator);
+            tank.setAllowAny((fluidValidator == null));
             return tank;
         }
     }

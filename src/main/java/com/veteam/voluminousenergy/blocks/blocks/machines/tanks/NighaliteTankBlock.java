@@ -28,7 +28,7 @@ public class NighaliteTankBlock extends TankBlock implements EntityBlock {
         );
         setRName("nighalite_tank");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresNighalite(this);
+        VETagDataGenerator.setRequiresNighaliteAndBlacklistLowerTiers(this);
     }
 
     @Nullable

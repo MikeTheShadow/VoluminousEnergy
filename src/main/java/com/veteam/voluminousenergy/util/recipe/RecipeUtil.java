@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.veteam.voluminousenergy.recipe.CrusherRecipe;
 import com.veteam.voluminousenergy.recipe.StirlingGeneratorRecipe;
-import com.veteam.voluminousenergy.recipe.ToolingRecipe;
 import com.veteam.voluminousenergy.recipe.SawmillRecipe;
 import com.veteam.voluminousenergy.util.RegistryLookups;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -31,31 +30,6 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class RecipeUtil {
-
-    public static ToolingRecipe getToolingRecipeFromBitAndBase(Level world, ItemStack bitStack, ItemStack baseStack) {
-        if (baseStack.isEmpty() || bitStack.isEmpty()) return null;
-        for (RecipeHolder<?> recipe : world.getRecipeManager().getRecipes()) {
-            if (recipe.value() instanceof ToolingRecipe toolingRecipe) {
-                if (toolingRecipe.getBits().contains(bitStack.getItem())
-                        && toolingRecipe.getBases().contains(baseStack.getItem())) {
-                    return toolingRecipe;
-                }
-            }
-        }
-        return null;
-    }
-
-    public static ToolingRecipe getToolingRecipeFromResult(Level world, ItemStack resultStack) {
-        if (resultStack.isEmpty()) return null;
-        for (RecipeHolder<?> recipe : world.getRecipeManager().getRecipes()) {
-            if (recipe.value() instanceof ToolingRecipe toolingRecipe) {
-                if (toolingRecipe.getResult(0).is(resultStack.getItem())) {
-                    return toolingRecipe;
-                }
-            }
-        }
-        return null;
-    }
 
     private static final HashMap<Item, ItemStack> plankToRecipeMap = new HashMap<>();
 

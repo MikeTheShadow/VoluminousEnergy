@@ -23,7 +23,7 @@ public class AirCompressorBlock extends VEFaceableMachineBlock {
                 .requiresCorrectToolForDrops()
         );
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresStone(this);
+        VETagDataGenerator.setRequiresStoneAndBlacklistLowerTiers(this);
         setRName("air_compressor");
     }
 

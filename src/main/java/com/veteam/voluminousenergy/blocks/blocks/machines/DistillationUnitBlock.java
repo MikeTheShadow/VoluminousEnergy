@@ -25,7 +25,7 @@ public class DistillationUnitBlock extends VEFaceableMachineBlock {
         );
         setRName("distillation_unit");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresIron(this);
+        VETagDataGenerator.setRequiresIronAndBlacklistLowerTiers(this);
     }
 
     @Nullable

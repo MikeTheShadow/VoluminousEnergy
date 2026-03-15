@@ -25,7 +25,7 @@ public class BlastFurnaceBlock extends VEFaceableMachineBlock {
         );
         setRName("blast_furnace");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresDiamond(this);
+        VETagDataGenerator.setRequiresDiamondAndBlacklistLowerTiers(this);
     }
 
     @Nullable

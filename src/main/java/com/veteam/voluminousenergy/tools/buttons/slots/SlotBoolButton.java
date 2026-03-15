@@ -3,12 +3,15 @@ package com.veteam.voluminousenergy.tools.buttons.slots;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
+import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.TankBoolPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 @OnlyIn(Dist.CLIENT)
 public class SlotBoolButton extends VEIOButton {
@@ -49,7 +52,7 @@ public class SlotBoolButton extends VEIOButton {
     public void onPress() {
         if (!render) return;
         cycle();
-//        VENetwork.channel.send(new BoolButtonPacket(this.status(), this.getAssociatedSlotId()), PacketDistributor.SERVER.noArg());
+        PacketDistributor.sendToServer(new BoolButtonPacket.BoolButtonPayload(this.status(),this.getAssociatedSlotId()));
     }
 
     public boolean status() {

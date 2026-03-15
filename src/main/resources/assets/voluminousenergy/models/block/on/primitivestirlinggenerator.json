@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "minecraft:block/iron_block",
+    "down": "voluminousenergy:block/primitivestirlinggenerator_top",
+    "up": "voluminousenergy:block/primitivestirlinggenerator_top",
+    "east": "voluminousenergy:block/primitivestirlinggenerator_front_on",
+    "west": "voluminousenergy:block/primitivestirlinggenerator_front_on",
+    "north": "voluminousenergy:block/primitivestirlinggenerator_front_on",
+    "south": "voluminousenergy:block/primitivestirlinggenerator_front_on"
+  }
+}

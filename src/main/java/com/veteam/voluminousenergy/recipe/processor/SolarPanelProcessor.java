@@ -1,8 +1,12 @@
 package com.veteam.voluminousenergy.recipe.processor;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class SolarPanelProcessor implements AbstractRecipeProcessor{
 
@@ -20,7 +24,7 @@ public class SolarPanelProcessor implements AbstractRecipeProcessor{
     @Override
     public boolean processRecipe(VETileEntity tile) {
 
-        int generation = (int) (generationAmount * solarIntensity(tile.getLevel()));
+        int generation = (int) (generationAmount * solarIntensity(tile.getLevel(),tile.getBlockPos()));
         if(generation <= 0) return false;
         tile.getEnergy().setProduction(generation);
         tile.getEnergy().addEnergy(generation);
@@ -32,7 +36,8 @@ public class SolarPanelProcessor implements AbstractRecipeProcessor{
      * Noon is the Zenith, hence why we use a cosine curve, since cosine curves start at a max
      * amplitude, which of course is Noon/Zenith. We do manipulate the curve a bit to make it more "reasonable"
      */
-    protected float solarIntensity(Level level) {
+    protected float solarIntensity(Level level, BlockPos pos) {
+        if(!level.canSeeSky(pos.above())) return 0.0f;
 
         float celestialAngle = level.getSunAngle(1.0f); // Zenith = 0rad
 

@@ -5,8 +5,14 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
 
 public class BatteryBoxInventoryValidator implements AbstractItemStackValidator {
+
     @Override
-    public boolean isItemValid(int slot, ItemStack itemStack, VETileEntity tile) {
+    public boolean allowItemInsertion(int slot, ItemStack itemStack,boolean simulate, VETileEntity tile) {
         return itemStack.getCapability(Capabilities.EnergyStorage.ITEM) != null;
+    }
+
+    @Override
+    public boolean allowItemExtraction(int slot, int amount, boolean simulate, VETileEntity tile) {
+        return true;
     }
 }

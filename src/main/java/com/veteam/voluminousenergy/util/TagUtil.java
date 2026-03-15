@@ -15,6 +15,9 @@ import java.util.ArrayList;
 
 public class TagUtil {
 
+    private static final TagKey<Item> MACHINE_UPGRADE_TAG = TagKey.create(Registries.ITEM, new ResourceLocation(VoluminousEnergy.MODID, "machine_upgrades"));
+
+
     public static ArrayList<Fluid> getFluidListFromTagResourceLocation(String fluidTagLocation) {
         TagKey<Fluid> fluidTagKey = TagKey.create(Registries.FLUID, new ResourceLocation(fluidTagLocation));
         ArrayList<Fluid> fluids = new ArrayList<>();
@@ -33,6 +36,10 @@ public class TagUtil {
             blocks.add(holder.value());
         }
         return blocks;
+    }
+
+    public static TagKey<Block> getBlockTagKeyFromLocation(ResourceLocation blockTagLocation) {
+        return TagKey.create(Registries.BLOCK, blockTagLocation);
     }
 
     public static ArrayList<Block> getBlocksFromTagKey(TagKey<Block> blockTagKey) {
@@ -74,20 +81,7 @@ public class TagUtil {
         return items;
     }
 
-    private static ArrayList<Item> cachedUpgrades;
-
-    public static ArrayList<Item> getTaggedMachineUpgradeItems() {
-        if (cachedUpgrades == null || cachedUpgrades.isEmpty()) {
-            cachedUpgrades = getItemListFromTagResourceLocation(new ResourceLocation(VoluminousEnergy.MODID, "machine_upgrades"));
-        }
-        return cachedUpgrades;
-    }
-
-    public static boolean isTaggedMachineUpgradeItem(Item item) {
-        return getTaggedMachineUpgradeItems().contains(item);
-    }
-
-    public static boolean isTaggedMachineUpgradeItem(ItemStack itemStack) {
-        return getTaggedMachineUpgradeItems().contains(itemStack.getItem());
+    public static boolean isTaggedMachineUpgradeItem(ItemStack stack) {
+        return stack.is(MACHINE_UPGRADE_TAG);
     }
 }

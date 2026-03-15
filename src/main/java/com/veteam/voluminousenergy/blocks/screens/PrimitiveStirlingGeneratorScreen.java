@@ -30,7 +30,6 @@ public class PrimitiveStirlingGeneratorScreen extends VEContainerScreen<VEContai
     public PrimitiveStirlingGeneratorScreen(VEContainer container, Inventory inv, Component name) {
         super(container, inv, name);
         tileEntity = container.getTileEntity();
-        container.setScreen(this);
     }
 
     @Override

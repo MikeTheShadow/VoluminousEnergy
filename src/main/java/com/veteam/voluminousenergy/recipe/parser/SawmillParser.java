@@ -25,7 +25,7 @@ public class SawmillParser extends BasicParser {
     @Override
     public boolean isPartialRecipe(VETileEntity tile) {
         if (recipe.isLogRecipe()) {
-            ItemStack stack = tile.getStackInSlot(0);
+            ItemStack stack = tile.getInventory().getStackInSlot(0);
             if (stack.isEmpty()) return true;
             return getPlankFromLog(tile) != null;
         }
@@ -42,7 +42,7 @@ public class SawmillParser extends BasicParser {
 
     @Nullable
     ItemStack getPlankFromLog(VETileEntity tile) {
-        ItemStack stack = tile.getStackInSlot(0);
+        ItemStack stack = tile.getInventory().getStackInSlot(0);
         String path = RegistryLookups.lookupItem(stack).getPath();
         if (path.endsWith("_log")) {
             String id = path.replace("_log", "");
@@ -58,8 +58,8 @@ public class SawmillParser extends BasicParser {
     public boolean canCompleteRecipe(VETileEntity tile) {
         if (recipe.isLogRecipe()) {
             ItemStack plank = getPlankFromLog(tile);
-            ItemStack plankOutput = tile.getStackInSlot(1);
-            ItemStack dustOutput = tile.getStackInSlot(2);
+            ItemStack plankOutput = tile.getInventory().getStackInSlot(1);
+            ItemStack dustOutput = tile.getInventory().getStackInSlot(2);
             boolean plankValid = plankOutput.isEmpty() ||
                     (plank.is(plankOutput.getItem()) && plankOutput.getCount() + plank.getCount() <= plankOutput.getMaxStackSize());
             boolean dustValid = dustOutput.isEmpty() ||

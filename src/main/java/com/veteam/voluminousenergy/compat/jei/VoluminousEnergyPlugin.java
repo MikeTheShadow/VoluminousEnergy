@@ -2,7 +2,6 @@ package com.veteam.voluminousenergy.compat.jei;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.containers.ToolingStationContainer;
 import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.blocks.screens.*;
@@ -49,7 +48,6 @@ public class VoluminousEnergyPlugin implements IModPlugin {
     public static final ResourceLocation CENTRIFUGAL_SEPARATION_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/centrifugal_separation");
     public static final ResourceLocation IMPLOSION_COMPRESSION_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/implosion_compressing");
     public static final ResourceLocation INDUSTRIAL_BLASTING_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/industrial_blasting");
-    public static final ResourceLocation TOOLING_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/tooling");
     public static final ResourceLocation SAWMILL_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/sawmilling");
     public static final ResourceLocation DIMENSIONAL_LASER_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/dimensional_laser");
     public static final ResourceLocation FLUID_ELECTROLYZER_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/fluid_electrolyzing");
@@ -78,7 +76,6 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeCategories(new CentrifugalSeparationCategory(guiHelper));
         registration.addRecipeCategories(new ImplosionCompressionCategory(guiHelper));
         registration.addRecipeCategories(new IndustrialBlastingCategory(guiHelper));
-        registration.addRecipeCategories(new ToolingCategory(guiHelper));
         registration.addRecipeCategories(new SawmillCategory(guiHelper));
         registration.addRecipeCategories(new FluidElectrolyzingCategory(guiHelper));
         registration.addRecipeCategories(new FluidMixingCategory(guiHelper));
@@ -100,7 +97,6 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipes(CentrifugalSeparationCategory.RECIPE_TYPE, getRecipesOfType(CentrifugalSeparatorRecipe.RECIPE_TYPE));
         registration.addRecipes(ImplosionCompressionCategory.RECIPE_TYPE, getRecipesOfType(ImplosionCompressorRecipe.RECIPE_TYPE));
         registration.addRecipes(IndustrialBlastingCategory.RECIPE_TYPE, getRecipesOfType(IndustrialBlastingRecipe.RECIPE_TYPE));
-        registration.addRecipes(ToolingCategory.RECIPE_TYPE, getRecipesOfType(ToolingRecipe.RECIPE_TYPE));
         registration.addRecipes(SawmillCategory.RECIPE_TYPE, getRecipesOfType(SawmillRecipe.RECIPE_TYPE));
         registration.addRecipes(FluidElectrolyzingCategory.RECIPE_TYPE, getRecipesOfType(FluidElectrolyzerRecipe.RECIPE_TYPE));
         registration.addRecipes(FluidMixingCategory.RECIPE_TYPE, getRecipesOfType(FluidMixerRecipe.RECIPE_TYPE));
@@ -172,7 +168,6 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addGuiContainerHandler(CentrifugalSeparatorScreen.class, new CentrifugalSeparatorContainerHandler());
         registration.addGuiContainerHandler(ImplosionCompressorScreen.class, new ImplosionCompressorContainerHandler());
         registration.addGuiContainerHandler(BlastFurnaceScreen.class, new BlastFurnaceContainerHandler());
-        registration.addGuiContainerHandler(ToolingStationScreen.class, new ToolingStationContainerHandler());
         registration.addGuiContainerHandler(SawmillScreen.class, new SawmillContainerHandler());
         registration.addGuiContainerHandler(FluidElectrolyzerScreen.class, new FluidElectrolyzerContainerHandler());
         registration.addGuiContainerHandler(FluidMixerScreen.class, new FluidMixerContainerHandler());
@@ -193,7 +188,6 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.CENTRIFUGAL_SEPARATOR.container().get(), CentrifugalSeparationCategory.RECIPE_TYPE, 0, 2, VEContainers.CENTRIFUGAL_SEPARATOR_FACTORY.getNumberOfSlots(), 36);
         registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.IMPLOSION_COMPRESSOR.container().get(), ImplosionCompressionCategory.RECIPE_TYPE, 0, 2, VEContainers.IMPLOSION_COMPRESSOR_FACTORY.getNumberOfSlots(), 36);
         registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.BLAST_FURNACE.container().get(), IndustrialBlastingCategory.RECIPE_TYPE, 2, 3, VEContainers.BLAST_FURNACE_FACTORY.getNumberOfSlots(), 36);
-        registration.addRecipeTransferHandler(ToolingStationContainer.class, VEBlocks.TOOLING_STATION.container().get(), ToolingCategory.RECIPE_TYPE, 3, 2, ToolingStationContainer.NUMBER_OF_SLOTS, 36);
         registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.SAWMILL.container().get(), SawmillCategory.RECIPE_TYPE, 0, 3, VEContainers.SAWMILL_FACTORY.getNumberOfSlots(), 36);
         registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.PRIMITIVE_BLAST_FURNACE.container().get(), PrimitiveBlastingCategory.RECIPE_TYPE, 0, 2, VEContainers.PRIMITIVE_BLAST_FURNACE_FACTORY.getNumberOfSlots(), 36);
         // TODO: Transfer helper for the Fluid Electrolyzer
@@ -218,7 +212,6 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.CENTRIFUGAL_SEPARATOR.block().get()).copy(), CentrifugalSeparationCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.IMPLOSION_COMPRESSOR.block().get()).copy(), ImplosionCompressionCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.BLAST_FURNACE.block().get()).copy(), IndustrialBlastingCategory.RECIPE_TYPE);
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.TOOLING_STATION.block().get()).copy(), ToolingCategory.RECIPE_TYPE, CombustionCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.SAWMILL.block().get()).copy(), SawmillCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.FLUID_ELECTROLYZER.block().get()).copy(), FluidElectrolyzingCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.FLUID_MIXER.block().get()).copy(), FluidMixingCategory.RECIPE_TYPE);

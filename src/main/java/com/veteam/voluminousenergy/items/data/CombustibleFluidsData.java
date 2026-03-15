@@ -26,6 +26,8 @@ public class CombustibleFluidsData {
     static final List<VERecipeCodecs.RegistryFluidValue> rawData = new ArrayList<>();
     static HashMap<Fluid, Integer> combustibleFluidData = new HashMap<>();
 
+    //TODO I REALLY DON'T LIKE THE BUILDCACHE SPAM. TEST A FIX FOR CLIENT/SERVER BY CALLING IT AT THE END OF LOADDATA?
+
     public static void loadData(ResourceManager manager) {
         resetCache();
         ResourceLocation prefix = new ResourceLocation("voluminousenergy", "fluid_data/combustion");
@@ -55,7 +57,7 @@ public class CombustibleFluidsData {
         return combustibleFluidData.containsKey(fluid);
     }
 
-    public static int getEnergyProduced(FluidStack stack) {
+    public static int getEnergyPerTick(FluidStack stack) {
         buildCache();
         return combustibleFluidData.getOrDefault(stack.getFluid(), 0);
     }

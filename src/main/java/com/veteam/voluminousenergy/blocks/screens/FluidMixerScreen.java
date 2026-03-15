@@ -28,7 +28,7 @@ public class FluidMixerScreen extends VEContainerScreen<VEContainer> {
     public FluidMixerScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
         tileEntity = screenContainer.getTileEntity();
-        screenContainer.setScreen(this);
+
     }
 
     @Override

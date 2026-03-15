@@ -28,7 +28,7 @@ public class AluminumTankBlock extends TankBlock implements EntityBlock {
         );
         setRName("aluminum_tank");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresIron(this);
+        VETagDataGenerator.setRequiresIronAndBlacklistLowerTiers(this);
     }
 
     @Nullable

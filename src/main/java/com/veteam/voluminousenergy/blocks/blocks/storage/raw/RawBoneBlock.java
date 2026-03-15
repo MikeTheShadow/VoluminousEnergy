@@ -14,6 +14,6 @@ public class RawBoneBlock extends VEBlock {
         );
         setRName("raw_bone_block");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.addTierBasedOnInt(1, this);
+        VETagDataGenerator.setRequiresStoneAndBlacklistLowerTiers(this);
     }
 }

@@ -29,7 +29,7 @@ public class BlastFurnaceScreen extends VEContainerScreen<VEContainer> {
     public BlastFurnaceScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
         tileEntity = screenContainer.getTileEntity();
-        screenContainer.setScreen(this);
+
     }
 
     @Override

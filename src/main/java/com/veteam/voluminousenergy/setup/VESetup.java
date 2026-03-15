@@ -7,9 +7,8 @@ import com.veteam.voluminousenergy.blocks.screens.tank.*;
 import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.items.VEBlockItems;
 import com.veteam.voluminousenergy.items.VEItems;
-import com.veteam.voluminousenergy.items.batteries.VEEnergyItem;
 import com.veteam.voluminousenergy.items.tools.VETools;
-import com.veteam.voluminousenergy.items.tools.multitool.VEMultitools;
+import com.veteam.voluminousenergy.items.tools.multitool.VEMultitoolItems;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -17,9 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.RegisterEvent;
@@ -43,20 +40,11 @@ public class VESetup {
                         .displayItems((featureFlags, output) -> {
                             ArrayList<ItemStack> creativeTabStacks = new ArrayList<>();
 
-                            // Fluid items
-                            creativeTabStacks.addAll(assembleItemsFromDeferredRegistry(VEFluids.VE_FLUID_ITEMS));
-
                             // Machine & block items
                             creativeTabStacks.addAll(assembleItemsFromDeferredRegistry(VEBlockItems.VE_BLOCK_ITEM_REGISTRY));
 
                             // Item items
                             creativeTabStacks.addAll(assembleItemsFromDeferredRegistry(VEItems.VE_ITEM_REGISTRY));
-
-                            // Multitool items
-                            creativeTabStacks.addAll(assembleItemsFromDeferredRegistry(VEMultitools.VE_MULTITOOL_ITEM_REGISTRY));
-
-                            // Tool items
-                            creativeTabStacks.addAll(assembleItemsFromDeferredRegistry(VETools.VE_TOOL_REGISTRY));
 
                             output.acceptAll(creativeTabStacks);
                         })

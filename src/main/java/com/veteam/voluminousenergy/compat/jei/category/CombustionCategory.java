@@ -84,7 +84,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorRe
         );
 
         FluidStack input = recipe.getFluidIngredient(0).getFluids()[0];
-        int energy = CombustibleFluidsData.getEnergyProduced(input) * 1600;
+        int energy = CombustibleFluidsData.getEnergyPerTick(input) * 1600;
 
         // Actual Volumetric Energy value + FE/B units added on the end
         TextUtil.renderUnshadowedText(

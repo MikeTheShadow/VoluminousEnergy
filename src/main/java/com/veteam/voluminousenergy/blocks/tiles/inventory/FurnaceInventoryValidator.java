@@ -10,7 +10,7 @@ import net.minecraft.world.level.Level;
 public class FurnaceInventoryValidator implements AbstractItemStackValidator {
 
     @Override
-    public boolean isItemValid(int slot, ItemStack stack, VETileEntity tile) {
+    public boolean allowItemInsertion(int slot, ItemStack stack,boolean simulate, VETileEntity tile) {
         if(tile.getEnergy() != null && tile.getEnergy().getUpgradeSlotId() == slot) return TagUtil.isTaggedMachineUpgradeItem(stack);
         if(slot != 0) return true;
         Level level = tile.getLevel();
@@ -20,5 +20,10 @@ public class FurnaceInventoryValidator implements AbstractItemStackValidator {
         var blastingRecipeNew = level.getRecipeManager().getRecipeFor(RecipeType.BLASTING,
                 new SimpleContainer(stack.copy()), level).orElse(null);
         return blastingRecipeNew != null;
+    }
+
+    @Override
+    public boolean allowItemExtraction(int slot, int amount, boolean simulate, VETileEntity tile) {
+        return true;
     }
 }

@@ -48,7 +48,7 @@ public class BasicParser {
 
     public boolean isPartialRecipe(VETileEntity tile) {
         for (SlotAndRecipePos pos : ingredientPositions) {
-            ItemStack stackInSlot = tile.getStackInSlot(pos.tilePos());
+            ItemStack stackInSlot = tile.getInventory().getStackInSlot(pos.tilePos());
             Ingredient ingredient = recipe.getIngredient(pos.recipePos());
             if (stackInSlot.isEmpty()) continue;
             if (ingredient.test(stackInSlot)) continue;
@@ -67,7 +67,7 @@ public class BasicParser {
 
     public boolean isCompleteRecipe(VETileEntity tile) {
         for (SlotAndRecipePos pos : ingredientPositions) {
-            ItemStack stackInSlot = tile.getStackInSlot(pos.tilePos());
+            ItemStack stackInSlot = tile.getInventory().getStackInSlot(pos.tilePos());
             Ingredient ingredient = recipe.getIngredient(pos.recipePos());
             int amountNeeded = recipe.getIngredientCount(pos.recipePos());
             if (ingredient.isEmpty()) continue;
@@ -90,7 +90,7 @@ public class BasicParser {
     public boolean canCompleteRecipe(VETileEntity tile) {
 
         for (SlotAndRecipePos pos : itemResultPositions) {
-            ItemStack stack = tile.getStackInSlot(pos.tilePos());
+            ItemStack stack = tile.getInventory().getStackInSlot(pos.tilePos());
             ItemStack result = recipe.getResult(pos.recipePos());
             if (stack.isEmpty()) continue;
             if (!stack.is(result.getItem()) || result.getCount() + stack.getCount() > result.getMaxStackSize())

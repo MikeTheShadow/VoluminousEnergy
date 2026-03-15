@@ -22,7 +22,7 @@ public class BatteryBoxProcessor implements AbstractRecipeProcessor {
     @Override
     public boolean processRecipe(VETileEntity tile) {
 
-        ItemStack stack = tile.getStackInSlot(0);
+        ItemStack stack = tile.getInventory().getStackInSlot(0);
 
         IEnergyStorage itemEnergy = stack.getCapability(Capabilities.EnergyStorage.ITEM);
 
@@ -40,8 +40,8 @@ public class BatteryBoxProcessor implements AbstractRecipeProcessor {
     }
 
     void moveItem(VETileEntity tile) {
-        ItemStack stack = tile.getStackInSlot(0);
-        ItemStack output = tile.getStackInSlot(1);
+        ItemStack stack = tile.getInventory().getStackInSlot(0);
+        ItemStack output = tile.getInventory().getStackInSlot(1);
 
         if (!output.isEmpty()) return;
 

@@ -24,7 +24,6 @@ public class GeneratorProcessor implements AbstractRecipeProcessor {
         this.divisor = divisor;
     }
 
-
     public GeneratorProcessor() {
     }
 
@@ -45,18 +44,19 @@ public class GeneratorProcessor implements AbstractRecipeProcessor {
     public boolean processRecipe(VETileEntity tile) {
         VEEnergyStorage energy = tile.getEnergy();
 
-        if (energy == null) throw new NotImplementedException("Missing energy impl for " + tile.getDisplayName());
+        if (energy == null)
+            throw new NotImplementedException("Missing energy impl for " + tile.getDisplayName());
 
         CounterLength counterLength = tile.getData(VEAttachments.COUNTER_LENGTH);
 
         int counter = counterLength.counter();
         int length = counterLength.length();
 
-
         if (counter > 0) {
+            tile.setLit(true);
             if (energy.getEnergyStored() + energy.getProduction() <= energy.getCapacity() || allowOverflow) {
                 counter--;
-                tile.setData(VEAttachments.COUNTER_LENGTH,new CounterLength(counter,length));
+                tile.setData(VEAttachments.COUNTER_LENGTH, new CounterLength(counter, length));
                 energy.addEnergy(energy.getProduction());
             }
 
@@ -75,17 +75,22 @@ public class GeneratorProcessor implements AbstractRecipeProcessor {
         } else if (counter == 0) {
             if (tile.getSelectedRecipe() instanceof VEEnergyRecipe veEnergyRecipe) {
                 BasicParser parser = veEnergyRecipe.getParser();
-                if (!parser.canCompleteRecipe(tile)) return false;
+                if (!parser.canCompleteRecipe(tile))
+                    return false;
                 // Check to see if the energy produced will overflow the tile
-                if (tile.getEnergy().isFullyCharged()) return false;
-                // Since we're a generator we want to subtract the amounts at the start rather than at the end
+                if (tile.getEnergy().isFullyCharged())
+                    return false;
+                // Since we're a generator we want to subtract the amounts at the start rather
+                // than at the end
                 veEnergyRecipe.getParser().completeRecipe(tile);
                 tile.getEnergy().setProduction(veEnergyRecipe.getEnergyPerTick() / divisor);
-                tile.setData(VEAttachments.COUNTER_LENGTH,new CounterLength(veEnergyRecipe.getProcessTime(),veEnergyRecipe.getProcessTime()));
+                tile.setData(VEAttachments.COUNTER_LENGTH,
+                        new CounterLength(veEnergyRecipe.getProcessTime(), veEnergyRecipe.getProcessTime()));
                 tile.setSelectedRecipe(null);
                 tile.setChanged();
             } else {
                 tile.getEnergy().setProduction(0);
+                tile.setLit(false);
             }
         }
         return true;

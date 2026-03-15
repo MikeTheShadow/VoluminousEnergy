@@ -1,9 +1,16 @@
 package com.veteam.voluminousenergy.items.tools.multitool;
 
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.items.VEItem;
-import com.veteam.voluminousenergy.items.tools.multitool.bits.MultitoolBit;
-import com.veteam.voluminousenergy.items.tools.multitool.bits.TrimmerBit;
+import com.veteam.voluminousenergy.items.data.CombustibleFluidsData;
+import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItem;
+import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItemData;
+import com.veteam.voluminousenergy.items.tools.multitool.bits.ToolType;
+import com.veteam.voluminousenergy.util.NumberUtil;
+import com.veteam.voluminousenergy.util.TextUtil;
+import com.veteam.voluminousenergy.util.VEDataComponents;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -11,151 +18,235 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.common.ToolAction;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class Multitool extends VEItem /*implements Vanishable*/ {
-    protected MultitoolBit bit;
+import java.util.ArrayList;
+import java.util.List;
 
-    public Multitool(MultitoolBit bit, String registryName, Item.Properties itemProperties) {
-        super(itemProperties);
-        this.bit = bit;
-        setRegistryName(registryName);
+public class Multitool extends VEItem {
+
+    //TODO add to config
+    private static final int TEMP_TANK_CAPACITY = VETileEntity.DEFAULT_TANK_CAPACITY;
+
+    public Multitool() {
+        super(new Item.Properties()
+                .stacksTo(1));
+        setRegistryName("multitool");
     }
 
     @Override
-    public float getDestroySpeed(ItemStack itemStack, BlockState blockStateToMine) {
-        return this.bit != null ? this.bit.getDestroySpeed(itemStack, blockStateToMine) : 0;
-    }
-
-    @Override
-    public boolean hurtEnemy(ItemStack stack, LivingEntity attackee, LivingEntity attacker) {
-        stack.hurtAndBreak(2, attacker, EquipmentSlot.MAINHAND);
+    public boolean isBarVisible(ItemStack itemStack) {
         return true;
     }
 
     @Override
-    public boolean mineBlock(ItemStack stack, Level level, BlockState blockState, BlockPos pos, LivingEntity player) {
-        if (!level.isClientSide && blockState.getDestroySpeed(level, pos) != 0.0F) {
-            stack.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
+    public int getBarWidth(ItemStack itemStack) {
+        IFluidHandler fluidHandler = itemStack.getCapability(Capabilities.FluidHandler.ITEM);
+        return (int) Math.round(13 * (fluidHandler.getFluidInTank(0).getAmount() / (double) TEMP_TANK_CAPACITY));
+    }
+
+    @Override
+    public int getBarColor(ItemStack itemStack) {
+        IFluidHandler fluidHandler = itemStack.getCapability(Capabilities.FluidHandler.ITEM);
+        return Mth.hsvToRgb(fluidHandler.getFluidInTank(0).getAmount() / 3.0F, 1.0F, 1.0F);
+    }
+
+    @Override
+    public void appendHoverText(ItemStack itemStack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+
+        IFluidHandler fluidHandler = itemStack.getCapability(Capabilities.FluidHandler.ITEM);
+        FluidStack fluidStack = fluidHandler.getFluidInTank(0).copy();
+
+        if(fluidStack.isEmpty()) {
+            tooltip.add(TextUtil.translateString("tank.voluminousenergy.tank_empty").copy());
+        } else {
+            tooltip.add(
+                    TextUtil.translateString(fluidStack.getHoverName().getString()).copy()
+                            .append(": "
+                                    + NumberUtil.formatNumber(fluidStack.getAmount())
+                                    + " mB / "
+                                    + NumberUtil.formatNumber(TEMP_TANK_CAPACITY)
+                                    + " mB"
+                            )
+            );
         }
 
-        return true;
+        Float energy = itemStack.getOrDefault(VEDataComponents.MULTI_TOOL_ENERGY,0f);
+
+        tooltip.add(TextUtil.translateString("text.voluminousenergy.energy").copy()
+                .append(": " + NumberUtil.formatNumber(energy)));
+    }
+
+    public void setToolState(@NotNull ItemStack itemStack, @Nullable BlockState blockState) {
+        if (blockState == null || blockState.isAir()) {
+            return;
+        }
+
+        BitItem selected = getBestBitForBlock(itemStack, blockState);
+
+        if (selected == null) {
+            itemStack.set(VEDataComponents.TOOL_TYPE, 0);
+            itemStack.set(VEDataComponents.TOOL_TIER, 0);
+            return;
+        }
+
+        itemStack.set(VEDataComponents.TOOL_TYPE, selected.getBitItemData().getToolType());
+        itemStack.set(VEDataComponents.TOOL_TIER, selected.getBitItemData().getToolTier());
     }
 
     @Nullable
-    public MultitoolBit getBit() {
-        return this.bit != null ? this.bit : null;
+    private BitItem getBestBitForBlock(ItemStack multitool,BlockState blockState) {
+
+        List<ItemStack> inventory = multitool.getOrDefault(VEDataComponents.ITEM_STACK_LIST_COMPONENT,new ArrayList<>());
+
+        float miningSpeed = 0;
+        BitItem selected = null;
+
+        for (ItemStack stack : inventory) {
+            if (stack.getItem() instanceof BitItem bitItem) {
+                Tool tool = bitItem.getTool();
+                float tempSpeed = tool.getMiningSpeed(blockState);
+
+                if (tempSpeed > miningSpeed && tool.isCorrectForDrops(blockState)) {
+                    miningSpeed = tempSpeed;
+                    selected = bitItem;
+                }
+            }
+        }
+
+        return selected;
     }
 
-//    @Override // TODO: Test and fix or remove if not needed
-//    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot equipmentSlot) {
-//        if (this.bit != null)
-//            return equipmentSlot == EquipmentSlot.MAINHAND ? this.bit.getDefaultAttributeModifiers(equipmentSlot) : super.getDefaultAttributeModifiers(equipmentSlot);
-//        return super.getDefaultAttributeModifiers(equipmentSlot);
-//    }
+    @Nullable
+    private BitItem getBestBitForDamage(ItemStack multitool) {
 
-    @Override
-    public float getAttackDamageBonus(Player pPlayer, float pBaseAttackDamage) {
-        return this.bit != null ? this.bit.getAttackDamage() : 0F;
-    }
+        List<ItemStack> inventory = multitool.getOrDefault(VEDataComponents.ITEM_STACK_LIST_COMPONENT,new ArrayList<>());
 
-    // TODO: Test multitool
-//    @Override
-//    public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, Player player) {
-//        System.out.println("OnBlockStartBreak");
-//        if (player.level().isClientSide() || !(player instanceof ServerPlayer serverPlayer)) {
-//            System.out.println("Client side or player is not server player");
-//            return super.onBlockStartBreak(itemstack, pos, player);
-//        } else {
-//            System.out.println("Player is server side");
-//        }
-//
-//        CompoundTag tag = player.getMainHandItem().getTag();
-//
-//        if (!tag.contains("energy")) {
-//            System.out.println("Energy is empty or null");
-//            return super.onBlockStartBreak(itemstack, pos, player);
-//        }
-//
-//        int energyLeft = tag.getInt("energy");
-//        if (!(energyLeft > 0)) {
-//            System.out.println("Energy is not greater than zero: " + energyLeft);
-//            return super.onBlockStartBreak(itemstack, pos, player);
-//        }
-//
-//        ServerLevel level = serverPlayer.server.getLevel(player.level().dimension());
-//        BlockState miningBlock = level.getBlockState(pos);
-//
-//        // Tree Felling -- CHAIN BIT
-//        if (this.canPerformAction(new ItemStack(this), ToolActions.AXE_DIG)) {
-//
-//            ArrayList<Item> taggedAsWood = TagUtil.getItemListFromTagResourceLocation("minecraft:logs");
-//            if (taggedAsWood.contains(miningBlock.getBlock().asItem())) {
-//
-//                BlockPos offsetPos = pos;
-//
-//                System.out.println("Should be activating Tree Felling");
-//                for (int yOffset = pos.getY(); yOffset < 320; yOffset++) {
-//                    offsetPos = offsetPos.above();
-//                    BlockState potentialStateToFell = level.getBlockState(offsetPos);
-//
-//                    if (taggedAsWood.contains(potentialStateToFell.getBlock().asItem())) {
-//
-//                        if (potentialStateToFell.getBlock().canHarvestBlock(potentialStateToFell, level.getLevel(), offsetPos, player)) {
-//                            System.out.println("Calling player destroy");
-//                            potentialStateToFell.getBlock()
-//                                    .playerDestroy(
-//                                            level,
-//                                            player,
-//                                            offsetPos,
-//                                            potentialStateToFell,
-//                                            null,
-//                                            player.getMainHandItem()
-//                                    );
-//                            level.destroyBlock(offsetPos, true, player);
-//                        } else {
-//                            System.out.println("Cannot harvest block!");
-//                        }
-//
-//                    } else {
-//                        System.out.println("Found block is not present in taggedAsWood. Mined block is: " + potentialStateToFell + ", valid entries are: ");
-//                        taggedAsWood.forEach(System.out::println);
-//                        break;
-//                    }
-//
-//                }
-//
-//            } else {
-//                System.out.println("Mined block is not present in taggedAsWood. Mined block is: " + miningBlock + ", valid entries are: ");
-//                taggedAsWood.forEach(System.out::println);
-//            }
-//
-//        }
-//
-//        return super.onBlockStartBreak(itemstack, pos, player);
-//    }
+        float attackDamage = 0;
+        BitItem selected = null;
 
-    @Override
-    public boolean canPerformAction(ItemStack stack, net.neoforged.neoforge.common.ToolAction toolAction) {
-        return this.bit != null ? this.bit.canPerformAction(toolAction) : false;
+        for (ItemStack stack : inventory) {
+            if (stack.getItem() instanceof BitItem bitItem) {
+                BitItemData data = bitItem.getBitItemData();
+                float tempDamage = data.getAttackDamage();
+
+                if (tempDamage > attackDamage) {
+                    attackDamage = tempDamage;
+                    selected = bitItem;
+                }
+            }
+        }
+
+        return selected;
     }
 
     @Override
-    public boolean isCorrectToolForDrops(ItemStack stack, BlockState blockState) {
-        return this.bit != null ? this.bit.isCorrectToolForDrops(stack, blockState) : false;
+    public float getDestroySpeed(@NotNull ItemStack itemStack, @NotNull BlockState blockStateToMine) {
+        float energy = itemStack.getOrDefault(VEDataComponents.MULTI_TOOL_ENERGY,0f);
+        if(energy < 1) {
+            IFluidHandlerItem capability = itemStack.getCapability(Capabilities.FluidHandler.ITEM);
+            FluidStack drainedFluid = capability.drain(50, IFluidHandler.FluidAction.EXECUTE);
+            if(drainedFluid.isEmpty()) {
+                return 0f;
+            }
+
+            int energyPerTick = CombustibleFluidsData.getEnergyPerTick(drainedFluid);
+            int multiplier = 5;
+            int inputAmount = drainedFluid.getAmount();
+
+            float usages = inputAmount * ((energyPerTick * multiplier) / 1000f);
+            itemStack.set(VEDataComponents.MULTI_TOOL_ENERGY, usages + energy); // Add energy because if it's 0.2 for example we want to keep that
+        }
+
+        BitItem bit = getBestBitForBlock(itemStack, blockStateToMine);
+
+        if(bit == null) {
+            return blockStateToMine.requiresCorrectToolForDrops() ? 0.0F : 1;
+        }
+
+        return bit.getBitItemData().getTier().getSpeed();
+    }
+
+    @Override
+    public boolean hurtEnemy(ItemStack stack, @NotNull LivingEntity attackee, @NotNull LivingEntity attacker) {
+        stack.hurtAndBreak(0, attacker, EquipmentSlot.MAINHAND);
+        return true;
+    }
+
+    @Override
+    public boolean mineBlock(@NotNull ItemStack stack, @NotNull Level level, @NotNull BlockState blockState, @NotNull BlockPos pos, @NotNull LivingEntity player) {
+        Float energy = stack.getOrDefault(VEDataComponents.MULTI_TOOL_ENERGY,0f);
+        stack.set(VEDataComponents.MULTI_TOOL_ENERGY,--energy);
+        BitItem selected = getBestBitForBlock(stack, blockState);
+        if (selected == null) {
+            stack.set(VEDataComponents.TOOL_TYPE, 0);
+            stack.set(VEDataComponents.TOOL_TIER, 0);
+        } else {
+            stack.set(VEDataComponents.TOOL_TYPE, selected.getBitItemData().getToolType());
+            stack.set(VEDataComponents.TOOL_TIER, selected.getBitItemData().getToolTier());
+        }
+        return true;
+    }
+
+    @Override
+    public float getAttackDamageBonus(@NotNull Player pPlayer, float pBaseAttackDamage) {
+        ItemStack stack = pPlayer.getMainHandItem();
+        if(!(stack.getItem() instanceof Multitool)) return 0f;
+        
+        BitItem bit = getBestBitForDamage(stack);
+        return bit != null ? bit.getBitItemData().getAttackDamage() : 0;
+    }
+
+    @Override
+    public boolean canPerformAction(@NotNull ItemStack stack, @NotNull ToolAction toolAction) {
+
+        List<ItemStack> inventory = stack.getOrDefault(VEDataComponents.ITEM_STACK_LIST_COMPONENT,new ArrayList<>());
+
+        for(ItemStack itemStack : inventory) {
+            if(itemStack.getItem() instanceof BitItem bitItem) {
+                if(bitItem.getBitItemData().canPerformAction(toolAction)) return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isCorrectToolForDrops(@NotNull ItemStack stack, @NotNull BlockState blockState) {
+        if(!blockState.requiresCorrectToolForDrops()) return true;
+        BitItem bit = getBestBitForBlock(stack, blockState);
+        if(bit == null) return false;
+        return bit.getTool().isCorrectForDrops(blockState);
     }
 
     // Trimmer Multitool stuff
     @Override
-    public net.minecraft.world.InteractionResult interactLivingEntity(ItemStack stack, net.minecraft.world.entity.player.Player playerIn, LivingEntity entity, net.minecraft.world.InteractionHand hand) {
-        if (this.bit != null && this.bit instanceof TrimmerBit && entity instanceof net.neoforged.neoforge.common.IShearable target) {
+    public net.minecraft.world.@NotNull InteractionResult interactLivingEntity(@NotNull ItemStack multitool, net.minecraft.world.entity.player.@NotNull Player playerIn, @NotNull LivingEntity entity, net.minecraft.world.@NotNull InteractionHand hand) {
+
+        List<ItemStack> inventory = multitool.getOrDefault(VEDataComponents.ITEM_STACK_LIST_COMPONENT,new ArrayList<>());
+
+        BitItem bit = null;
+
+        for(ItemStack itemStack : inventory) {
+            if(itemStack.getItem() instanceof BitItem bitItem && bitItem.getBitItemData().getToolType() == ToolType.TRIMMER.value())
+                bit = bitItem;
+        }
+
+        if (bit != null && bit.getBitItemData().getToolType() == ToolType.TRIMMER.value() && entity instanceof net.neoforged.neoforge.common.IShearable target) {
             if (entity.level().isClientSide) return net.minecraft.world.InteractionResult.SUCCESS;
             BlockPos pos = new BlockPos(Mth.floor(entity.getX()), Mth.floor(entity.getY()), Mth.floor(entity.getZ()));
-            if (target.isShearable(playerIn, stack, entity.level(), pos)) {
+            if (target.isShearable(playerIn, multitool, entity.level(), pos)) {
 
-                java.util.List<ItemStack> drops = target.onSheared(playerIn, stack, entity.level(), pos);
+                java.util.List<ItemStack> drops = target.onSheared(playerIn, multitool, entity.level(), pos);
 
                 // TODO: Fortune for drops when shearing entities
 //                Integer fortuneLevel = net.minecraft.world.item.enchantment.EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FORTUNE, stack);
@@ -166,15 +257,14 @@ public class Multitool extends VEItem /*implements Vanishable*/ {
                     ent.setDeltaMovement(ent.getDeltaMovement().add((double) ((rand.nextFloat() - rand.nextFloat()) * 0.1F), (double) (rand.nextFloat() * 0.05F), (double) ((rand.nextFloat() - rand.nextFloat()) * 0.1F)));
                 });
 
-
                 switch (hand) {
-                    case InteractionHand.MAIN_HAND -> stack.hurtAndBreak(1, playerIn, EquipmentSlot.MAINHAND);
-                    case InteractionHand.OFF_HAND -> stack.hurtAndBreak(1, playerIn, EquipmentSlot.OFFHAND);
+                    case InteractionHand.MAIN_HAND -> multitool.hurtAndBreak(1, playerIn, EquipmentSlot.MAINHAND);
+                    case InteractionHand.OFF_HAND -> multitool.hurtAndBreak(1, playerIn, EquipmentSlot.OFFHAND);
                 }
 
             }
             return net.minecraft.world.InteractionResult.SUCCESS;
         }
-        return super.interactLivingEntity(stack, playerIn, entity, hand); // Revert to previous super code if not trimmer
+        return super.interactLivingEntity(multitool, playerIn, entity, hand); // Revert to previous super code if not trimmer
     }
 }

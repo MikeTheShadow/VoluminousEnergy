@@ -28,7 +28,7 @@ public class TitaniumTankBlock extends TankBlock implements EntityBlock {
         );
         setRName("titanium_tank");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresDiamond(this);
+        VETagDataGenerator.setRequiresDiamondAndBlacklistLowerTiers(this);
     }
 
     @Nullable

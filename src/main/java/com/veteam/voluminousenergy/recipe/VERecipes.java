@@ -96,8 +96,6 @@ public class VERecipes {
             VE_RECIPE_SERIALIZERS_REGISTRY.register("implosion_compressing", () -> new ImplosionCompressorRecipe().getSerializer());
     public static final Supplier<RecipeSerializer<?>> INDUSTRIAL_BLASTING =
             VE_RECIPE_SERIALIZERS_REGISTRY.register("industrial_blasting", () -> new IndustrialBlastingRecipe().getSerializer());
-    public static final Supplier<RecipeSerializer<?>> TOOLING =
-            VE_RECIPE_SERIALIZERS_REGISTRY.register("tooling", () -> new ToolingRecipe().getSerializer());
     public static final Supplier<RecipeSerializer<?>> SAWMILLING =
             VE_RECIPE_SERIALIZERS_REGISTRY.register("sawmilling", () -> new SawmillRecipe().getSerializer());
     public static final Supplier<RecipeSerializer<?>> DIMENSIONAL_LASING =

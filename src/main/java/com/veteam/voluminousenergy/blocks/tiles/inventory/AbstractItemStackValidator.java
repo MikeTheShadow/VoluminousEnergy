@@ -5,6 +5,8 @@ import net.minecraft.world.item.ItemStack;
 
 public interface AbstractItemStackValidator {
 
-    boolean isItemValid(int slot, ItemStack itemStack, VETileEntity tile);
+    boolean allowItemInsertion(int slot, ItemStack stack,boolean simulate, VETileEntity tile);
+
+    boolean allowItemExtraction(int slot,int amount, boolean simulate, VETileEntity tile);
 
 }

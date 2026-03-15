@@ -28,7 +28,7 @@ public class NetheriteTankBlock extends TankBlock implements EntityBlock {
         );
         setRName("netherite_tank");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresNetherite(this);
+        VETagDataGenerator.setRequiresNetheriteAndBlacklistLowerTiers(this);
     }
 
     @Nullable

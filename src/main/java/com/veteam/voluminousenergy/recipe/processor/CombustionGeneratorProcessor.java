@@ -68,7 +68,7 @@ public class CombustionGeneratorProcessor extends BasicProcessor {
             VERelationalTank fuelTank = tile.getRelationalTank(0);
             VERelationalTank oxiTank = tile.getRelationalTank(1);
 
-            int powerGeneration = CombustibleFluidsData.getEnergyProduced(fuel);
+            int powerGeneration = CombustibleFluidsData.getEnergyPerTick(fuel);
             float multiplier = OxidizerFluidsData.getOxidizerMultiplier(oxi);
 
             if (fuelTank.getTank().getFluidAmount() < COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT || oxiTank.getTank().getFluidAmount() < COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT) {

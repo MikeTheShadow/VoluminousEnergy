@@ -18,7 +18,7 @@ public class RedSaltpeterOre extends ColoredFallingBlock {
                         .requiresCorrectToolForDrops()
         );
         VETagDataGenerator.setRequiresShovel(this);
-        VETagDataGenerator.setRequiresWood(this);
+        VETagDataGenerator.setRequiresWoodAndBlacklistLowerTiers(this);
     }
 
     public int xpOnDrop(RandomSource randomSource) {

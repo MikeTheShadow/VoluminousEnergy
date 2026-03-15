@@ -14,11 +14,13 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.entity.BeaconBlockEntity;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -28,6 +30,8 @@ import org.joml.Matrix4f;
 
 @OnlyIn(Dist.CLIENT)
 public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntity> {
+
+    public static final int MAX_RENDER_Y = 1024;
 
     public static final ResourceLocation BEAM_RESOURCE_LOCATION = new ResourceLocation(VoluminousEnergy.MODID, "textures/entity/beacon_beam.png");
 
@@ -324,5 +328,9 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
         return 256;
     }
 
-
+    @Override
+    public @NotNull AABB getRenderBoundingBox(VETileEntity blockEntity) {
+        BlockPos pos = blockEntity.getBlockPos();
+        return new net.minecraft.world.phys.AABB(pos.getX() - arrayMap.length, pos.getY(), pos.getZ() - arrayMap.length, pos.getX() + arrayMap.length, MAX_RENDER_Y, pos.getZ() + arrayMap.length);
+    }
 }

@@ -25,7 +25,7 @@ public class FluidElectrolyzerBlock extends VEFaceableMachineBlock {
                 .requiresCorrectToolForDrops()
         );
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresIron(this);
+        VETagDataGenerator.setRequiresIronAndBlacklistLowerTiers(this);
     }
 
     @Nullable

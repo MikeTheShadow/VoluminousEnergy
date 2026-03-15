@@ -13,7 +13,7 @@ public class ImplosionCompressorParser extends BasicParser {
 
     @Override
     public boolean isCompleteRecipe(VETileEntity tile) {
-        ItemStack stack = tile.getStackInSlot(1);
+        ItemStack stack = tile.getInventory().getStackInSlot(1);
         if (stack.getItem() != Items.GUNPOWDER) return false;
         return super.isCompleteRecipe(tile);
     }

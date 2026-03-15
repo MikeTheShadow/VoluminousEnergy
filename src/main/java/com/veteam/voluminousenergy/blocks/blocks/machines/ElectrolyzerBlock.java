@@ -25,7 +25,7 @@ public class ElectrolyzerBlock extends VEFaceableMachineBlock {
         );
         setRName("electrolyzer");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresStone(this);
+        VETagDataGenerator.setRequiresStoneAndBlacklistLowerTiers(this);
     }
 
     @Nullable

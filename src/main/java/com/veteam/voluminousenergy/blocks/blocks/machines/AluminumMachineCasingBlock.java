@@ -14,6 +14,6 @@ public class AluminumMachineCasingBlock extends VEBlock {
         );
         setRName("aluminum_machine_casing");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresStone(this);
+        VETagDataGenerator.setRequiresStoneAndBlacklistLowerTiers(this);
     }
 }

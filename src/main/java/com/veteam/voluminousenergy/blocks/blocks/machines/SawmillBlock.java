@@ -43,7 +43,7 @@ public class SawmillBlock extends VEBlock implements EntityBlock { // Based on t
         );
         setRName("sawmill");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresIron(this);
+        VETagDataGenerator.setRequiresIronAndBlacklistLowerTiers(this);
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 

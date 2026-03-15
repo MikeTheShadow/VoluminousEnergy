@@ -30,7 +30,7 @@ public class StirlingGeneratorScreen extends VEContainerScreen<VEContainer> {
     public StirlingGeneratorScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
         tileEntity = screenContainer.getTileEntity();
-        screenContainer.setScreen(this);
+
     }
 
     @Override

@@ -12,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -43,7 +44,8 @@ public class VEItemStackHandler extends ItemStackHandler {
         tileEntity.setChanged();
         List<VESlotManager> managers = tileEntity.getSlotManagers();
 
-        if (slot == upgradeSlotLocation) tileEntity.markRecipeDirty();
+        if (slot == upgradeSlotLocation)
+            tileEntity.markRecipeDirty();
         else if (slot < managers.size()) {
             SlotType slotType = tileEntity.getSlotManagers().get(slot).getSlotType();
             if (slotType == SlotType.INPUT) {
@@ -56,14 +58,14 @@ public class VEItemStackHandler extends ItemStackHandler {
 
     @Override
     public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-        // For simple custom validation.
-        if (validator != null) {
-            return validator.isItemValid(slot, stack,tileEntity);
-        }
-        if (slot == upgradeSlotLocation) return TagUtil.isTaggedMachineUpgradeItem(stack);
+        if (validator != null)
+            return validator.allowItemInsertion(slot, stack, false, tileEntity);
+        if (slot == upgradeSlotLocation)
+            return TagUtil.isTaggedMachineUpgradeItem(stack);
         VESlotManager manager = tileEntity.getSlotManagers().get(slot);
         if (manager.getSlotType() == SlotType.FLUID_INPUT && stack.getItem() instanceof BucketItem bucketItem) {
-            if (bucketItem.content == Fluids.EMPTY) return true;
+            if (bucketItem.content == Fluids.EMPTY)
+                return true;
             VERelationalTank tank = tileEntity.getRelationalTanks().get(manager.getTankId());
             if (tank.getTankType() == TankType.OUTPUT) {
                 return bucketItem.content.isSame(Fluids.EMPTY);
@@ -79,14 +81,15 @@ public class VEItemStackHandler extends ItemStackHandler {
                     return true;
                 }
             }
-        } else return manager.getSlotType() == SlotType.FLUID_OUTPUT;
+        } else
+            return manager.getSlotType() == SlotType.FLUID_OUTPUT;
         return false;
     }
 
-    @Nonnull
     @Override
-    public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-        if (!isItemValid(slot, stack)) return stack;
-        return super.insertItem(slot, stack, simulate);
+    public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
+        if (validator != null && !validator.allowItemExtraction(slot, amount, simulate, tileEntity))
+            return ItemStack.EMPTY;
+        return super.extractItem(slot, amount, simulate);
     }
 }

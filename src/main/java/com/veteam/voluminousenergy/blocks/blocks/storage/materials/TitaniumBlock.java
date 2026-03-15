@@ -14,6 +14,6 @@ public class TitaniumBlock extends VEBlock {
         );
         setRName("titanium_block");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresDiamond(this);
+        VETagDataGenerator.setRequiresDiamondAndBlacklistLowerTiers(this);
     }
 }

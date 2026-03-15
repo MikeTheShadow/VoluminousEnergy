@@ -1,0 +1,37 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "voluminousenergy:item/empty_multitool"
+  },
+  "overrides": [
+    { "predicate": { "voluminousenergy:tool_tier": 1, "voluminousenergy:tool_type": 1 }, "model": "voluminousenergy:item/iron_drill_multitool" },
+    { "predicate": { "voluminousenergy:tool_tier": 1, "voluminousenergy:tool_type": 2 }, "model": "voluminousenergy:item/iron_chain_multitool" },
+    { "predicate": { "voluminousenergy:tool_tier": 1, "voluminousenergy:tool_type": 3 }, "model": "voluminousenergy:item/iron_scooper_multitool" },
+    { "predicate": { "voluminousenergy:tool_tier": 1, "voluminousenergy:tool_type": 4 }, "model": "voluminousenergy:item/iron_trimmer_multitool" },
+
+    { "predicate": { "voluminousenergy:tool_tier": 2, "voluminousenergy:tool_type": 1 }, "model": "voluminousenergy:item/diamond_drill_multitool" },
+    { "predicate": { "voluminousenergy:tool_tier": 2, "voluminousenergy:tool_type": 2 }, "model": "voluminousenergy:item/diamond_chain_multitool" },
+    { "predicate": { "voluminousenergy:tool_tier": 2, "voluminousenergy:tool_type": 3 }, "model": "voluminousenergy:item/diamond_scooper_multitool" },
+    { "predicate": { "voluminousenergy:tool_tier": 2, "voluminousenergy:tool_type": 4 }, "model": "voluminousenergy:item/diamond_trimmer_multitool" },
+
+    { "predicate": { "voluminousenergy:tool_tier": 3, "voluminousenergy:tool_type": 1 }, "model": "voluminousenergy:item/titanium_drill_multitool" },
+    { "predicate": { "voluminousenergy:tool_tier": 3, "voluminousenergy:tool_type": 2 }, "model": "voluminousenergy:item/titanium_chain_multitool" },
+    { "predicate": { "voluminousenergy:tool_tier": 3, "voluminousenergy:tool_type": 3 }, "model": "voluminousenergy:item/titanium_scooper_multitool" },
+    { "predicate": { "voluminousenergy:tool_tier": 3, "voluminousenergy:tool_type": 4 }, "model": "voluminousenergy:item/titanium_trimmer_multitool" },
+
+    { "predicate": { "voluminousenergy:tool_tier": 4, "voluminousenergy:tool_type": 1 }, "model": "voluminousenergy:item/nighalite_drill_multitool" },
+    { "predicate": { "voluminousenergy:tool_tier": 4, "voluminousenergy:tool_type": 2 }, "model": "voluminousenergy:item/nighalite_chain_multitool" },
+    { "predicate": { "voluminousenergy:tool_tier": 4, "voluminousenergy:tool_type": 3 }, "model": "voluminousenergy:item/nighalite_scooper_multitool" },
+    { "predicate": { "voluminousenergy:tool_tier": 4, "voluminousenergy:tool_type": 4 }, "model": "voluminousenergy:item/nighalite_trimmer_multitool" },
+
+    { "predicate": { "voluminousenergy:tool_tier": 5, "voluminousenergy:tool_type": 1 }, "model": "voluminousenergy:item/eighzo_drill_multitool" },
+    { "predicate": { "voluminousenergy:tool_tier": 5, "voluminousenergy:tool_type": 2 }, "model": "voluminousenergy:item/eighzo_chain_multitool" },
+    { "predicate": { "voluminousenergy:tool_tier": 5, "voluminousenergy:tool_type": 3 }, "model": "voluminousenergy:item/eighzo_scooper_multitool" },
+    { "predicate": { "voluminousenergy:tool_tier": 5, "voluminousenergy:tool_type": 4 }, "model": "voluminousenergy:item/eighzo_trimmer_multitool" },
+
+    { "predicate": { "voluminousenergy:tool_tier": 6, "voluminousenergy:tool_type": 1 }, "model": "voluminousenergy:item/solarium_drill_multitool" },
+    { "predicate": { "voluminousenergy:tool_tier": 6, "voluminousenergy:tool_type": 2 }, "model": "voluminousenergy:item/solarium_chain_multitool" },
+    { "predicate": { "voluminousenergy:tool_tier": 6, "voluminousenergy:tool_type": 3 }, "model": "voluminousenergy:item/solarium_scooper_multitool" },
+    { "predicate": { "voluminousenergy:tool_tier": 6, "voluminousenergy:tool_type": 4 }, "model": "voluminousenergy:item/solarium_trimmer_multitool" }
+  ]
+}

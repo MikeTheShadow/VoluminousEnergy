@@ -6,6 +6,7 @@ import com.veteam.voluminousenergy.util.records.ChunkFluidData;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.SimpleFluidContent;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -91,4 +92,39 @@ public class VEDataComponents {
                                 .build();
                     }
             );
+
+    public static final Supplier<DataComponentType<Integer>> TOOL_TYPE =
+            DATA_COMPONENT_TYPE_DEFERRED_REGISTER.register("tool_type",
+                    () -> {
+                        DataComponentType.Builder<Integer> stackBuilder = DataComponentType.builder();
+                        return stackBuilder.persistent(Codec.INT)
+                                .build();
+                    }
+            );
+
+    public static final Supplier<DataComponentType<Integer>> TOOL_TIER =
+            DATA_COMPONENT_TYPE_DEFERRED_REGISTER.register("tool_tier",
+                    () -> {
+                        DataComponentType.Builder<Integer> stackBuilder = DataComponentType.builder();
+                        return stackBuilder.persistent(Codec.INT)
+                                .build();
+                    }
+            );
+
+    public static final Supplier<DataComponentType<List<ItemStack>>> ITEM_STACK_LIST_COMPONENT =
+            DATA_COMPONENT_TYPE_DEFERRED_REGISTER.register("multi_tool_inventory", () -> {
+                DataComponentType.Builder<List<ItemStack>> stackBuilder = DataComponentType.builder();
+                return stackBuilder.persistent(ItemStack.CODEC.listOf())
+                        .networkSynchronized(ItemStack.LIST_STREAM_CODEC)
+                        .build();
+            });
+
+    public static final Supplier<DataComponentType<Float>> MULTI_TOOL_ENERGY =
+            DATA_COMPONENT_TYPE_DEFERRED_REGISTER.register("multi_tool_energy", () -> {
+                DataComponentType.Builder<Float> stackBuilder = DataComponentType.builder();
+                return stackBuilder.persistent(Codec.FLOAT)
+                        .networkSynchronized(ByteBufCodecs.FLOAT)
+                        .build();
+            });
+
 }

@@ -1,0 +1,24 @@
+{
+  "values": [
+    "voluminousenergy:titanium_machine_casing",
+    "voluminousenergy:solarium_machine_casing",
+    "voluminousenergy:blast_furnace",
+    "voluminousenergy:dimensional_laser",
+    "voluminousenergy:titanium_tank",
+    "voluminousenergy:netherite_tank",
+    "voluminousenergy:nighalite_tank",
+    "voluminousenergy:eighzo_tank",
+    "voluminousenergy:solarium_tank",
+    "voluminousenergy:rutileore",
+    "voluminousenergy:eighzo_ore",
+    "voluminousenergy:deepslate_rutile_ore",
+    "voluminousenergy:solarium_block",
+    "voluminousenergy:eighzo_block",
+    "voluminousenergy:nighalite_block",
+    "voluminousenergy:titanium_block",
+    "voluminousenergy:tungsten_block",
+    "voluminousenergy:tungsten_steel_block",
+    "voluminousenergy:raw_eighzo_block",
+    "voluminousenergy:raw_rutile_block"
+  ]
+}

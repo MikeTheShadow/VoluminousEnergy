@@ -19,8 +19,8 @@ public class BasicProcessor implements AbstractRecipeProcessor {
             VERecipe newRecipe = VERecipe.getCompleteRecipe(tile);
 
             if (newRecipe == null) {
-                CounterLength counterLength = new CounterLength(0,0);
-                tile.setData(VEAttachments.COUNTER_LENGTH,counterLength);
+                CounterLength counterLength = new CounterLength(0, 0);
+                tile.setData(VEAttachments.COUNTER_LENGTH, counterLength);
                 tile.setChanged();
                 tile.setSelectedRecipe(null);
                 return;
@@ -28,16 +28,18 @@ public class BasicProcessor implements AbstractRecipeProcessor {
 
             int newLength = tile.updateCounter(newRecipe);
 
+            tile.setLit(true);
             if (tile.getSelectedRecipe() != newRecipe) {
                 tile.setSelectedRecipe(newRecipe);
                 CounterLength oldData = tile.getData(VEAttachments.COUNTER_LENGTH);
-                CounterLength counterLength = new CounterLength(newLength,oldData.length());
-                tile.setData(VEAttachments.COUNTER_LENGTH,counterLength);
+                CounterLength counterLength = new CounterLength(newLength, oldData.length());
+                tile.setData(VEAttachments.COUNTER_LENGTH, counterLength);
                 tile.setChanged();
             }
         } else {
-            CounterLength counterLength = new CounterLength(0,0);
-            tile.setData(VEAttachments.COUNTER_LENGTH,counterLength);
+            tile.setLit(false);
+            CounterLength counterLength = new CounterLength(0, 0);
+            tile.setData(VEAttachments.COUNTER_LENGTH, counterLength);
             tile.setChanged();
             tile.setSelectedRecipe(null);
         }
@@ -45,8 +47,10 @@ public class BasicProcessor implements AbstractRecipeProcessor {
 
     @Override
     public boolean processRecipe(VETileEntity tile) {
-        if (tile.getSelectedRecipe() == null) return false;
-        if (!tile.canConsumeEnergy()) return false;
+        if (tile.getSelectedRecipe() == null)
+            return false;
+        if (!tile.canConsumeEnergy())
+            return false;
         VERecipe recipe = tile.getSelectedRecipe();
 
         CounterLength counterLength = tile.getData(VEAttachments.COUNTER_LENGTH);
@@ -54,7 +58,8 @@ public class BasicProcessor implements AbstractRecipeProcessor {
 
         if (counter == 1) {
             BasicParser parser = recipe.getParser();
-            if (!parser.canCompleteRecipe(tile)) return false;
+            if (!parser.canCompleteRecipe(tile))
+                return false;
             parser.completeRecipe(tile);
             tile.markRecipeDirty();
             tile.markFluidInputDirty();
@@ -63,11 +68,12 @@ public class BasicProcessor implements AbstractRecipeProcessor {
             int soundTick = tile.getData(VEAttachments.SOUND_TICK);
             if (++soundTick == 19 && Config.PLAY_MACHINE_SOUNDS.get()) {
                 soundTick = 0;
-                tile.getLevel().playSound(null, tile.getBlockPos(), VESounds.AQUEOULIZER, SoundSource.BLOCKS, 1.0F, 1.0F);
+                tile.getLevel().playSound(null, tile.getBlockPos(), VESounds.AQUEOULIZER, SoundSource.BLOCKS, 1.0F,
+                        1.0F);
             }
             tile.setData(VEAttachments.SOUND_TICK, soundTick);
         }
-        tile.setData(VEAttachments.COUNTER_LENGTH,new CounterLength(counter - 1,counterLength.length()));
+        tile.setData(VEAttachments.COUNTER_LENGTH, new CounterLength(counter - 1, counterLength.length()));
         tile.consumeEnergy();
         return true;
     }

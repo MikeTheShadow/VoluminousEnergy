@@ -43,12 +43,14 @@ public abstract class VERecipe implements Recipe<Container> {
     }
 
     /*
-        In single player worlds both the constructor and packet are fired. This bool
-        prevents the method from being called if the constructor is called
+     * In single player worlds both the constructor and packet are fired. This bool
+     * prevents the method from being called if the constructor is called
      */
     private static boolean isServerSide = false;
 
-    public VERecipe(List<VERecipeCodecs.RegistryIngredient> ingredients, List<VERecipeCodecs.RegistryFluidIngredient> fluidIngredients, List<FluidStack> fluidResults, List<ItemStack> results, int processTime) {
+    public VERecipe(List<VERecipeCodecs.RegistryIngredient> ingredients,
+            List<VERecipeCodecs.RegistryFluidIngredient> fluidIngredients, List<FluidStack> fluidResults,
+            List<ItemStack> results, int processTime) {
         this.results = results;
         registryFluidIngredients = fluidIngredients;
         fluidOutputList = fluidResults;
@@ -60,9 +62,11 @@ public abstract class VERecipe implements Recipe<Container> {
         if (newCache.containsKey(this.getType())) {
             newCache.get(this.getType()).add(this);
         } else {
-            newCache.put(this.getType(), new ArrayList<>() {{
-                add(recipe);
-            }});
+            newCache.put(this.getType(), new ArrayList<>() {
+                {
+                    add(recipe);
+                }
+            });
         }
     }
 
@@ -92,7 +96,8 @@ public abstract class VERecipe implements Recipe<Container> {
     }
 
     /**
-     * A variable list of results of variable length that can change depending on the recipe requirements
+     * A variable list of results of variable length that can change depending on
+     * the recipe requirements
      * Should only be used in serialization
      *
      * @return the raw results
@@ -112,7 +117,8 @@ public abstract class VERecipe implements Recipe<Container> {
     }
 
     @Override
-    public @NotNull ItemStack assemble(@NotNull Container pCraftingContainer,@NotNull HolderLookup.Provider registries) {
+    public @NotNull ItemStack assemble(@NotNull Container pCraftingContainer,
+            @NotNull HolderLookup.Provider registries) {
         throw new NotImplementedException("Unable to call assemble on recipe because it has been unimplemented!");
     }
 
@@ -141,7 +147,9 @@ public abstract class VERecipe implements Recipe<Container> {
         if (slot >= this.getIngredients().size()) {
             return 0;
         }
-        return this.getIngredients().get(slot).getItems().length > 0 ? this.ingredients.get(slot).getItems()[0].getCount() : 0;
+        return this.getIngredients().get(slot).getItems().length > 0
+                ? this.ingredients.get(slot).getItems()[0].getCount()
+                : 0;
     }
 
     public int getProcessTime() {
@@ -209,7 +217,8 @@ public abstract class VERecipe implements Recipe<Container> {
     }
 
     public static List<VERecipe> getCachedRecipes(RecipeType<?> recipeType) {
-        if (!recipeCache.containsKey(recipeType)) return new ArrayList<>();
+        if (!recipeCache.containsKey(recipeType))
+            return new ArrayList<>();
         return recipeCache.get(recipeType);
     }
 
@@ -221,20 +230,24 @@ public abstract class VERecipe implements Recipe<Container> {
     }
 
     public static void addRecipeToCacheClient(VERecipe recipe) {
-        if(isServerSide) return;
+        if (isServerSide)
+            return;
         if (newCache.containsKey(recipe.getType())) {
             newCache.get(recipe.getType()).add(recipe);
         } else {
-            newCache.put(recipe.getType(), new ArrayList<>() {{
-                add(recipe);
-            }});
+            newCache.put(recipe.getType(), new ArrayList<>() {
+                {
+                    add(recipe);
+                }
+            });
         }
     }
 
     public static List<VERecipe> getPotentialRecipes(VETileEntity tile) {
         List<VERecipe> recipes = new ArrayList<>();
         for (VERecipe recipe : getCachedRecipes(tile.getRecipeType())) {
-            if (recipe.getParser().isPartialRecipe(tile)) recipes.add(recipe);
+            if (recipe.getParser().isPartialRecipe(tile))
+                recipes.add(recipe);
         }
         return recipes;
     }
@@ -242,7 +255,8 @@ public abstract class VERecipe implements Recipe<Container> {
     @Nullable
     public static VERecipe getCompleteRecipe(VETileEntity tile) {
         for (VERecipe recipe : getCachedRecipes(tile.getRecipeType())) {
-            if (recipe.getParser().isCompleteRecipe(tile)) return recipe;
+            if (recipe.getParser().isCompleteRecipe(tile))
+                return recipe;
         }
         return null;
     }

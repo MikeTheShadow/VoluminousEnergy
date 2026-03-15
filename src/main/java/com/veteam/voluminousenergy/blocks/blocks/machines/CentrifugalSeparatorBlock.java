@@ -25,7 +25,7 @@ public class CentrifugalSeparatorBlock extends VEFaceableMachineBlock {
         );
         setRName("centrifugal_separator");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresIron(this);
+        VETagDataGenerator.setRequiresIronAndBlacklistLowerTiers(this);
     }
 
     @Nullable

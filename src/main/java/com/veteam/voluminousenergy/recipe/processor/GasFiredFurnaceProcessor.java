@@ -36,7 +36,7 @@ public class GasFiredFurnaceProcessor implements AbstractRecipeProcessor {
         int fuelLength = fuelCounterLength.length();
 
         FluidStack fuel = tile.getFluidStackFromTank(0);
-        ItemStack stack = tile.getStackInSlot(2);
+        ItemStack stack = tile.getInventory().getStackInSlot(2);
 
         // Gas processing
         if (fuelCounter > 0) {
@@ -45,7 +45,7 @@ public class GasFiredFurnaceProcessor implements AbstractRecipeProcessor {
             // Drain Input
 
             tile.getRelationalTank(0).getTank().drain(250, IFluidHandler.FluidAction.EXECUTE);
-            fuelCounter = 400 * CombustibleFluidsData.getEnergyProduced(fuel) / 4;
+            fuelCounter = 400 * CombustibleFluidsData.getEnergyPerTick(fuel) / 4;
             VEItemStackHandler inventory = tile.getInventory();
             ItemStack upgradeItem = inventory.getStackInSlot(4);
             if (upgradeItem.getCount() > 0 && upgradeItem.getItem() == VEItems.QUARTZ_MULTIPLIER.get()) {
@@ -67,7 +67,7 @@ public class GasFiredFurnaceProcessor implements AbstractRecipeProcessor {
     }
 
     void processForRecipe(Recipe<?> recipe, VETileEntity tile) {
-        if (!canInsertIntoResult(recipe, tile.getLevel().registryAccess(), tile.getStackInSlot(3))) {
+        if (!canInsertIntoResult(recipe, tile.getLevel().registryAccess(), tile.getInventory().getStackInSlot(3))) {
             return;
         }
 
@@ -101,7 +101,7 @@ public class GasFiredFurnaceProcessor implements AbstractRecipeProcessor {
     @Override
     public void validateRecipe(VETileEntity tile) {
         Level level = tile.getLevel();
-        ItemStack furnaceInput = tile.getStackInSlot(2);
+        ItemStack furnaceInput = tile.getInventory().getStackInSlot(2);
         var blastingRecipeNew = level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(furnaceInput.copy()), level).orElse(null);
         if (blastingRecipeNew != null) {
             blastingRecipe = blastingRecipeNew.value();

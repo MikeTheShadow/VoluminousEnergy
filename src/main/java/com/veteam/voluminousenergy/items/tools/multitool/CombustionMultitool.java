@@ -1,9 +1,8 @@
 package com.veteam.voluminousenergy.items.tools.multitool;
 
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
-import com.veteam.voluminousenergy.items.tools.multitool.bits.MultitoolBit;
-import com.veteam.voluminousenergy.recipe.CombustionGeneratorRecipe;
-import com.veteam.voluminousenergy.recipe.VERecipe;
+import com.veteam.voluminousenergy.items.data.CombustibleFluidsData;
+import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItemData;
 import com.veteam.voluminousenergy.util.NumberUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
 import com.veteam.voluminousenergy.util.VEDataComponents;
@@ -15,23 +14,21 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class CombustionMultitool extends Multitool {
 
     public final int TANK_CAPACITY = VETileEntity.DEFAULT_TANK_CAPACITY;
 
-    public CombustionMultitool(MultitoolBit bit, String registryName, Properties itemProperties) {
-        super(bit, registryName, itemProperties);
+    public CombustionMultitool(String registryName, Properties itemProperties) {
+
     }
 
     @Override
@@ -82,73 +79,61 @@ public class CombustionMultitool extends Multitool {
     @Override
     public void setDamage(ItemStack stack, int damage) {
 
-        Integer damageComponent = stack.get(DataComponents.DAMAGE);
-        if (damageComponent == null) return;
-
-        IEnergyStorage energyStorage = stack.getCapability(Capabilities.EnergyStorage.ITEM);
-        IFluidHandler fluidHandler = stack.getCapability(Capabilities.FluidHandler.ITEM);
-
-        if (energyStorage == null || fluidHandler == null) {
-            return;
-        }
-
-        int usesLeftUntilRefuel = energyStorage.getEnergyStored();
-        if (usesLeftUntilRefuel < 1) {
-            int volumetricEnergy = 0;
-            FluidStack itemFluid = fluidHandler.getFluidInTank(0).copy();
-            if (!itemFluid.isEmpty() && isCombustibleFuel(itemFluid.getFluid())) {
-                if (fluidHandler.getFluidInTank(0).getAmount() > 50) {
-                    fluidHandler.drain(50, IFluidHandler.FluidAction.EXECUTE);
-                    //volumetricEnergy.set(CombustionGeneratorFuelRecipe.rawFluidWithVolumetricEnergy.getOrDefault(fluid.getFluidInTank(0).getRawFluid(), 0)/50);
-                    volumetricEnergy = getVolumetricEnergyFromFluid(fluidHandler.getFluidInTank(0).getFluid()) / 50;
-                }
-            }
-
-            energyStorage.extractEnergy(energyStorage.getEnergyStored(),false);
-            energyStorage.receiveEnergy(volumetricEnergy,false);
-        }
+//        Integer damageComponent = stack.get(DataComponents.DAMAGE);
+//        if (damageComponent == null) return;
+//        IFluidHandler fluidHandler = stack.getCapability(Capabilities.FluidHandler.ITEM);
+//
+//        if (usesLeftUntilRefuel < 1) {
+//            int volumetricEnergy = 0;
+//            FluidStack itemFluid = fluidHandler.getFluidInTank(0).copy();
+//            if (CombustibleFluidsData.isCombustible(itemFluid.getFluid())) {
+//
+//                FluidStack fluid = fluidHandler.drain(50, IFluidHandler.FluidAction.EXECUTE);
+//                float usages = (float) (CombustibleFluidsData.getEnergyPerTick(fluid) * 5) / ((float) fluid.getAmount() / 1000);
+//            }
+//        }
     }
 
     @Override
     public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, T entity, Runnable onBroken) {
-        Integer usesLeftUntilRefuel = stack.get(VEDataComponents.MECHANICAL_ENERGY);
-
-        if (usesLeftUntilRefuel == null && stack.getCapability(Capabilities.FluidHandler.ITEM) != null) {
-            AtomicInteger volumetricEnergy = new AtomicInteger();
-            IFluidHandlerItem fluid = stack.getCapability(Capabilities.FluidHandler.ITEM);
-
-            FluidStack itemFluid = fluid.getFluidInTank(0).copy();
-
-            if (isCombustibleFuel(itemFluid.getFluid())) {
-                if (fluid.getFluidInTank(0).getAmount() > 50) {
-                    fluid.drain(50, IFluidHandler.FluidAction.EXECUTE);
-                    volumetricEnergy.set(getVolumetricEnergyFromFluid(fluid.getFluidInTank(0).getFluid()) / 50);
-                    stack.set(DataComponents.DAMAGE, volumetricEnergy.get());// does nothing
-                }
-            }
-            return -(volumetricEnergy.get()) > 0 ? -(volumetricEnergy.get()) : -1;
-        } else if (usesLeftUntilRefuel == null) {
-            return 0; // Technically this should never occur
-        }
-
-        if (usesLeftUntilRefuel > 1) {
-            stack.set(VEDataComponents.MECHANICAL_ENERGY, (usesLeftUntilRefuel - amount));
-            return -1;
-        } else if (usesLeftUntilRefuel <= 1) {
-            AtomicInteger volumetricEnergy = new AtomicInteger(0);
-            IFluidHandlerItem fluid = stack.getCapability(Capabilities.FluidHandler.ITEM);
-
-            FluidStack itemFluid = fluid.getFluidInTank(0).copy();
-            if (isCombustibleFuel(itemFluid.getFluid())) {
-                if (fluid.getFluidInTank(0).getAmount() >= 50) {
-                    fluid.drain(50, IFluidHandler.FluidAction.EXECUTE);
-                    volumetricEnergy.set(getVolumetricEnergyFromFluid(fluid.getFluidInTank(0).getFluid()) / 50);
-                }
-            }
-
-            stack.set(VEDataComponents.MECHANICAL_ENERGY, volumetricEnergy.get()); //  THIS RESETS THE ENERGY
-            return -(volumetricEnergy.get()) > 0 ? -(volumetricEnergy.get()) : -1; // CANNOT 0 or + result will destroy item
-        }
+//        Integer usesLeftUntilRefuel = stack.get(VEDataComponents.MECHANICAL_ENERGY);
+//
+//        if (usesLeftUntilRefuel == null && stack.getCapability(Capabilities.FluidHandler.ITEM) != null) {
+//            AtomicInteger volumetricEnergy = new AtomicInteger();
+//            IFluidHandlerItem fluid = stack.getCapability(Capabilities.FluidHandler.ITEM);
+//
+//            FluidStack itemFluid = fluid.getFluidInTank(0).copy();
+//
+//            if (isCombustibleFuel(itemFluid.getFluid())) {
+//                if (fluid.getFluidInTank(0).getAmount() > 50) {
+//                    fluid.drain(50, IFluidHandler.FluidAction.EXECUTE);
+//                    volumetricEnergy.set(getVolumetricEnergyFromFluid(fluid.getFluidInTank(0).getFluid()) / 50);
+//                    stack.set(DataComponents.DAMAGE, volumetricEnergy.get());// does nothing
+//                }
+//            }
+//            return -(volumetricEnergy.get()) > 0 ? -(volumetricEnergy.get()) : -1;
+//        } else if (usesLeftUntilRefuel == null) {
+//            return 0; // Technically this should never occur
+//        }
+//
+//        if (usesLeftUntilRefuel > 1) {
+//            stack.set(VEDataComponents.MECHANICAL_ENERGY, (usesLeftUntilRefuel - amount));
+//            return -1;
+//        } else if (usesLeftUntilRefuel <= 1) {
+//            AtomicInteger volumetricEnergy = new AtomicInteger(0);
+//            IFluidHandlerItem fluid = stack.getCapability(Capabilities.FluidHandler.ITEM);
+//
+//            FluidStack itemFluid = fluid.getFluidInTank(0).copy();
+//            if (isCombustibleFuel(itemFluid.getFluid())) {
+//                if (fluid.getFluidInTank(0).getAmount() >= 50) {
+//                    fluid.drain(50, IFluidHandler.FluidAction.EXECUTE);
+//                    volumetricEnergy.set(getVolumetricEnergyFromFluid(fluid.getFluidInTank(0).getFluid()) / 50);
+//                }
+//            }
+//
+//            stack.set(VEDataComponents.MECHANICAL_ENERGY, volumetricEnergy.get()); //  THIS RESETS THE ENERGY
+//            return -(volumetricEnergy.get()) > 0 ? -(volumetricEnergy.get()) : -1; // CANNOT 0 or + result will destroy item
+//        }
 
         return -1;
     }
@@ -168,13 +153,13 @@ public class CombustionMultitool extends Multitool {
 
         FluidStack itemFluid = fluid.getFluidInTank(0).copy();
 
-        if (isCombustibleFuel(itemFluid.getFluid())) {
-            if (fluid.getFluidInTank(0).getAmount() > 50) {
-                fluid.drain(50, IFluidHandler.FluidAction.EXECUTE);
-                int volumetricEnergy = getVolumetricEnergyFromFluid(fluid.getFluidInTank(0).getFluid());
-                itemFluid.set(VEDataComponents.MECHANICAL_ENERGY, volumetricEnergy);
-            }
-        }
+//        if (isCombustibleFuel(itemFluid.getFluid())) {
+//            if (fluid.getFluidInTank(0).getAmount() > 50) {
+//                fluid.drain(50, IFluidHandler.FluidAction.EXECUTE);
+//                int volumetricEnergy = getVolumetricEnergyFromFluid(fluid.getFluidInTank(0).getFluid());
+//                itemFluid.set(VEDataComponents.MECHANICAL_ENERGY, volumetricEnergy);
+//            }
+//        }
     }
 
 
@@ -184,7 +169,7 @@ public class CombustionMultitool extends Multitool {
     }
 
     @Override
-    public float getDestroySpeed(ItemStack itemStack, BlockState blockStateToMine) {
+    public float getDestroySpeed(@NotNull ItemStack itemStack, @NotNull BlockState blockStateToMine) {
         Integer mechanicalEnergy = itemStack.get(VEDataComponents.MECHANICAL_ENERGY);
         if (mechanicalEnergy != null) {
             if (mechanicalEnergy > 1) {
@@ -199,20 +184,5 @@ public class CombustionMultitool extends Multitool {
             }
         }
         return 0; // disables the tool
-    }
-
-
-    private static int getVolumetricEnergyFromFluid(Fluid fluid) {
-        for (VERecipe recipe : VERecipe.getCachedRecipes(CombustionGeneratorRecipe.RECIPE_TYPE)) {
-            if (recipe.getFluidIngredient(0).test(fluid)) return recipe.getFluidIngredientAmount(0);
-        }
-        return 0;
-    }
-
-    public static boolean isCombustibleFuel(Fluid fluid) {
-        for (VERecipe recipe : VERecipe.getCachedRecipes(CombustionGeneratorRecipe.RECIPE_TYPE)) {
-            if (recipe.getFluidIngredient(0).test(fluid)) return true;
-        }
-        return false;
     }
 }

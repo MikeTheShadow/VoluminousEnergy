@@ -24,7 +24,7 @@ public class FluidMixerBlock extends VEFaceableMachineBlock {
                 .requiresCorrectToolForDrops()
         );
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresIron(this);
+        VETagDataGenerator.setRequiresIronAndBlacklistLowerTiers(this);
     }
 
     @Nullable

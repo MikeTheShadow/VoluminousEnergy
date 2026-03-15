@@ -14,6 +14,6 @@ public class TungstenSteelBlock extends VEBlock {
         );
         setRName("tungsten_steel_block");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.addTierBasedOnInt(3, this);
+        VETagDataGenerator.setRequiresNetheriteAndBlacklistLowerTiers(this); // TODO: maybe tungstensteel instead
     }
 }

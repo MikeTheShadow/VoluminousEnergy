@@ -14,6 +14,6 @@ public class NighaliteBlock extends VEBlock {
         );
         setRName("nighalite_block");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.addTierBasedOnInt(4, this);
+        VETagDataGenerator.setRequiresNighaliteAndBlacklistLowerTiers(this);
     }
 }

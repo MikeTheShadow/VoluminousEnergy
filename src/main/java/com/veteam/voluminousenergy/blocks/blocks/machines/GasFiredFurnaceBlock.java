@@ -26,7 +26,7 @@ public class GasFiredFurnaceBlock extends VEFaceableMachineBlock {
         );
         setRName("gas_fired_furnace");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresStone(this);
+        VETagDataGenerator.setRequiresStoneAndBlacklistLowerTiers(this);
     }
 
     @Nullable

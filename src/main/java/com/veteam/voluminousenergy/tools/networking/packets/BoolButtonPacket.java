@@ -47,7 +47,6 @@ public class BoolButtonPacket {
                     VETileEntity.updatePacketFromGui(packet.status(), packet.slotId());
                     VETileEntity.setChanged();
                 }
-                VEContainer.updateStatusButton(packet.status(), packet.slotId());
             }
         }
     }

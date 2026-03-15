@@ -14,6 +14,6 @@ public class SaltpeterBlock extends VEBlock {
         );
         setRName("saltpeter_block");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresWood(this);
+        VETagDataGenerator.setRequiresWoodAndBlacklistLowerTiers(this);
     }
 }

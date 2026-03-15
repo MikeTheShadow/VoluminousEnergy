@@ -24,7 +24,7 @@ public class PrimitiveSolarPanelBlock extends VEFaceableMachineBlock {
         );
         setRName("primitive_solar_panel");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresWood(this);
+        VETagDataGenerator.setRequiresWoodAndBlacklistLowerTiers(this);
     }
 
     @Nullable

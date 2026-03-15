@@ -26,7 +26,7 @@ public class CentrifugalSeparatorScreen extends VEContainerScreen<VEContainer> {
     public CentrifugalSeparatorScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
         tileEntity = screenContainer.getTileEntity();
-        screenContainer.setScreen(this);
+
     }
 
     @Override
