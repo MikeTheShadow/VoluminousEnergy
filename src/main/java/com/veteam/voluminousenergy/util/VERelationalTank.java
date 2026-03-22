@@ -13,7 +13,6 @@ public class VERelationalTank {
 
     FluidTank tank;
     int slotNum;
-    int id;
     ItemStack input;
     ItemStack output;
     TankType tankType;
@@ -31,27 +30,6 @@ public class VERelationalTank {
 
     public VERelationalTank() {
 
-    }
-
-    @Deprecated
-    public VERelationalTank(FluidTank tank, int slotNum, ItemStack input, ItemStack output, TankType tankType, String nbt) {
-        this.tank = tank;
-        this.slotNum = slotNum;
-        this.input = input;
-        this.output = output;
-        this.tankType = tankType;
-        this.nbt = nbt;
-    }
-
-    @Deprecated
-    public VERelationalTank(FluidTank tank, int slotNum, ItemStack input, ItemStack output, TankType tankType, int id, String nbt) {
-        this.tank = tank;
-        this.slotNum = slotNum;
-        this.input = input;
-        this.output = output;
-        this.tankType = tankType;
-        this.id = id;
-        this.nbt = nbt;
     }
 
     public VERelationalTank(FluidTank tank, int slotNum, int recipePos, TankType tankType, String nbt) {
@@ -166,7 +144,7 @@ public class VERelationalTank {
     }
 
     public String getNBTPrefix() {
-        return nbt.split(":")[1];
+        return nbt.replace(":", "_");
     }
 
     public int getRecipePos() {
