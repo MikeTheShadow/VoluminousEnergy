@@ -26,6 +26,7 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
@@ -61,6 +62,18 @@ public class SawmillBlock extends VEBlock implements EntityBlock { // Based on t
                 throw new IllegalStateException(this.getClass().getName() + " named container provider is missing!");
             }
             return InteractionResult.SUCCESS;
+        }
+        return InteractionResult.SUCCESS;
+    }
+
+    @Override
+    public @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hit) {
+        if (world.isClientSide) return InteractionResult.SUCCESS;
+        BlockEntity tileEntity = world.getBlockEntity(pos);
+        if (tileEntity instanceof MenuProvider menuProvider && player instanceof ServerPlayer serverPlayer) {
+            serverPlayer.openMenu(menuProvider, tileEntity.getBlockPos());
+        } else {
+            throw new IllegalStateException(this.getClass().getName() + " named container provider is missing!");
         }
         return InteractionResult.SUCCESS;
     }

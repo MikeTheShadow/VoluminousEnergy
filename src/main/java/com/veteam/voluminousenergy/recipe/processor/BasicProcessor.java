@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.recipe.processor;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.VERecipe;
@@ -23,9 +24,6 @@ public class BasicProcessor implements AbstractRecipeProcessor {
 
     SoundEvent soundEvent = VESounds.GENERAL_MACHINE_NOISE;
 
-    boolean isRecipeDirty = false;
-    boolean isRecipeReady = false;
-
     VERecipe selectedRecipe = null;
     List<VERecipe> potentialRecipes = new ArrayList<>();
 
@@ -39,13 +37,14 @@ public class BasicProcessor implements AbstractRecipeProcessor {
 
     @Override
     public void tick(VETileEntity tile) {
-        if (this.isRecipeDirty) {
+
+        if (isRecipeDirty(tile)) {
             if (validateRecipe(tile))
-                isRecipeReady = true;
-            this.isRecipeDirty = false;
+                this.markRecipeReady(true, tile);
+            this.markRecipeDirty(false, tile);
         }
 
-        if (!isRecipeReady)
+        if (!isRecipeReady(tile))
             return;
 
         CounterLength currentTick = tile.getData(VEAttachments.COUNTER_LENGTH);
@@ -55,7 +54,8 @@ public class BasicProcessor implements AbstractRecipeProcessor {
             tile.setData(VEAttachments.COUNTER_LENGTH, nextTick);
             tile.setChanged();
         } else if (currentTick.counter() == 0 && completeRecipe(tile)) {
-            this.markRecipeDirty();
+            this.markRecipeDirty(true, tile);
+            this.markRecipeReady(false, tile);
             tile.markFluidInputDirty();
             tile.setChanged();
         }
@@ -69,7 +69,7 @@ public class BasicProcessor implements AbstractRecipeProcessor {
             CounterLength counterLength = new CounterLength(0, 0);
             tile.setData(VEAttachments.COUNTER_LENGTH, counterLength);
             this.selectedRecipe = null;
-            this.isRecipeReady = false;
+            this.markRecipeReady(false, tile);
             return false;
         }
 
@@ -78,7 +78,7 @@ public class BasicProcessor implements AbstractRecipeProcessor {
             CounterLength counterLength = new CounterLength(0, 0);
             tile.setData(VEAttachments.COUNTER_LENGTH, counterLength);
             this.selectedRecipe = null;
-            this.isRecipeReady = false;
+            this.markRecipeReady(false, tile);
             return false;
         }
         tile.setLit(true);
@@ -187,12 +187,12 @@ public class BasicProcessor implements AbstractRecipeProcessor {
         return new BasicProcessor(soundEvent);
     }
 
-    public boolean isRecipeDirty() {
-        return isRecipeDirty;
+    public boolean isRecipeDirty(VETileEntity tile) {
+        return tile.getData(VEAttachments.IS_RECIPE_DIRTY);
     }
 
-    public boolean isRecipeReady() {
-        return isRecipeReady;
+    public boolean isRecipeReady(VETileEntity tile) {
+        return tile.getData(VEAttachments.IS_RECIPE_READY);
     }
 
     public VERecipe getSelectedRecipe() {
@@ -203,7 +203,14 @@ public class BasicProcessor implements AbstractRecipeProcessor {
         return potentialRecipes;
     }
 
-    public void markRecipeDirty() {
-        this.isRecipeDirty = true;
+    public void markRecipeDirty(boolean status, VETileEntity tile)
+    {
+        tile.setData(VEAttachments.IS_RECIPE_DIRTY, status);
+        tile.setChanged();
+    }
+
+    public void markRecipeReady(boolean status, VETileEntity tile) {
+        tile.setData(VEAttachments.IS_RECIPE_READY, status);
+        tile.setChanged();
     }
 }

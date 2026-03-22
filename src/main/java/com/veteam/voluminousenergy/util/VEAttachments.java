@@ -45,4 +45,13 @@ public class VEAttachments {
     public static final Supplier<AttachmentType<BlastFurnaceData>> BLAST_FURNACE_DATA = ATTACHMENT_TYPE_DEFERRED_REGISTER.register(
             "blast_furnace_data", () -> AttachmentType.builder((iAttachmentHolder)
                     -> new BlastFurnaceData(0,0,0)).serialize(BLAST_FURNACE_CODEC).build());
+
+    public static final Supplier<AttachmentType<Boolean>> IS_RECIPE_DIRTY = ATTACHMENT_TYPE_DEFERRED_REGISTER.register(
+        "is_recipe_dirty", () -> AttachmentType.builder((iAttachmentHolder)
+            -> false).serialize(Codec.BOOL).build());
+
+    public static final Supplier<AttachmentType<Boolean>> IS_RECIPE_READY = ATTACHMENT_TYPE_DEFERRED_REGISTER.register(
+        "is_recipe_ready", () -> AttachmentType.builder((iAttachmentHolder)
+            -> false).serialize(Codec.BOOL).build());
+
 }

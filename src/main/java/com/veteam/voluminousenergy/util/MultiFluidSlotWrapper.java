@@ -73,7 +73,7 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
                 && (tank.getTank().isEmpty() || resource.is(tank.getTank().getFluid().getFluid()))) {
                 if (tank.getTank().getFluid().getAmount() != tank.getTank().getCapacity())
                     if (tileEntity.getRecipeProcessor() instanceof BasicProcessor basicProcessor) {
-                        basicProcessor.markRecipeDirty();
+                        basicProcessor.markRecipeDirty(true, tileEntity);
                     }
                 return tank.getTank().fill(resource.copy(), action);
             }
@@ -97,7 +97,7 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
             if (resource.is(tank.getTank().getFluid().getFluid())) {
                 if (tank.getTank().getFluid().getAmount() != tank.getTank().getCapacity() &&
                     tileEntity.getRecipeProcessor() instanceof BasicProcessor basicProcessor) {
-                    basicProcessor.markRecipeDirty();
+                    basicProcessor.markRecipeDirty(true, tileEntity);
                 }
                 return tank.getTank().drain(resource.copy(), action);
             }
@@ -116,7 +116,7 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
             if (tank.getTank().getFluidAmount() > 0) {
                 if (tank.getTank().getFluid().getAmount() != tank.getTank().getCapacity())
                     if(tileEntity.getRecipeProcessor() instanceof BasicProcessor basicProcessor) {
-                        basicProcessor.markRecipeDirty();
+                        basicProcessor.markRecipeDirty(true, tileEntity);
                     }
                 return tank.getTank().drain(maxDrain, action);
             }

@@ -47,7 +47,7 @@ public class VEItemStackHandler extends ItemStackHandler {
         List<VESlotManager> managers = tileEntity.getSlotManagers();
 
         if (tileEntity.getRecipeProcessor() instanceof BasicProcessor processor)
-            processor.markRecipeDirty();
+            processor.markRecipeDirty(true, tileEntity);
 
         if (slot >= managers.size()) return;
         SlotType slotType = tileEntity.getSlotManagers().get(slot).getSlotType();

@@ -98,7 +98,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
                     handler.extractItem(slot1, 1, false);
                     handler.insertItem(slot2, new ItemStack(Items.BUCKET, 1), false);
                     if(this.recipeProcessor instanceof BasicProcessor processor)
-                        processor.markRecipeDirty();
+                        processor.markRecipeDirty(true, this);
                 }
             }
         }
@@ -118,7 +118,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
             handler.extractItem(slot1, 1, false);
             handler.insertItem(slot2, bucketStack, false);
             if(this.recipeProcessor instanceof BasicProcessor processor)
-                processor.markRecipeDirty();
+                processor.markRecipeDirty(true, this);
         }
     }
 
