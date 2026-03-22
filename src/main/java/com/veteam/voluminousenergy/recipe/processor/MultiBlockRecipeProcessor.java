@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.recipe.processor;
 
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -18,13 +19,14 @@ public class MultiBlockRecipeProcessor extends BasicProcessor {
     }
 
     @Override
-    public void validateRecipe(VETileEntity tile) {
-        super.validateRecipe(tile);
+    public boolean validateRecipe(VETileEntity tile) {
+        return super.validateRecipe(tile);
     }
 
     @Override
     public boolean processRecipe(VETileEntity tile) {
-        if (!isMultiBlockValid(tile)) return false;
+        if (!isMultiBlockValid(tile))
+            return false;
         return super.processRecipe(tile);
     }
 
@@ -52,8 +54,10 @@ public class MultiBlockRecipeProcessor extends BasicProcessor {
         int lZ = sZ + (lzMultiplier * 2);
 
         lastReading = true;
-        // Tweak box based on direction -- This is the search range to ensure this is a valid multiblock before operation
-        for (final BlockPos blockPos : BlockPos.betweenClosed(tile.getBlockPos().offset(sX, 0, sZ), tile.getBlockPos().offset(lX, 2, lZ))) {
+        // Tweak box based on direction -- This is the search range to ensure this is a
+        // valid multiblock before operation
+        for (final BlockPos blockPos : BlockPos.betweenClosed(tile.getBlockPos().offset(sX, 0, sZ),
+                tile.getBlockPos().offset(lX, 2, lZ))) {
             final BlockState blockState = tile.getLevel().getBlockState(blockPos);
 
             if (blockState.getBlock() != getBlock()) { // Fails MultiBlock condition
@@ -70,4 +74,8 @@ public class MultiBlockRecipeProcessor extends BasicProcessor {
         return block;
     }
 
+    @Override
+    public AbstractRecipeProcessor copy() {
+        return new MultiBlockRecipeProcessor(blockRegistry);
+    }
 }

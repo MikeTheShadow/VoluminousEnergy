@@ -1,14 +1,12 @@
 package com.veteam.voluminousenergy.recipe.processor;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LightLayer;
-import net.minecraft.world.level.block.entity.BlockEntity;
 
-public class SolarPanelProcessor implements AbstractRecipeProcessor{
+public class SolarPanelProcessor implements AbstractRecipeProcessor {
 
     int generationAmount;
 
@@ -17,45 +15,52 @@ public class SolarPanelProcessor implements AbstractRecipeProcessor{
     }
 
     @Override
-    public void validateRecipe(VETileEntity tile) {
-
-    }
-
-    @Override
-    public boolean processRecipe(VETileEntity tile) {
-
-        int generation = (int) (generationAmount * solarIntensity(tile.getLevel(),tile.getBlockPos()));
-        if(generation <= 0) return false;
+    public void tick(VETileEntity tile) {
+        int generation = (int) (generationAmount * solarIntensity(tile.getLevel(), tile.getBlockPos()));
+        if (generation <= 0)
+            return;
         tile.getEnergy().setProduction(generation);
         tile.getEnergy().addEnergy(generation);
-        return true;
     }
 
     /**
-     * Cosine curve based off the location of the Sun(? I think, at least it looks like that)
-     * Noon is the Zenith, hence why we use a cosine curve, since cosine curves start at a max
-     * amplitude, which of course is Noon/Zenith. We do manipulate the curve a bit to make it more "reasonable"
+     * Cosine curve based off the location of the Sun(? I think, at least it looks
+     * like that)
+     * Noon is the Zenith, hence why we use a cosine curve, since cosine curves
+     * start at a max
+     * amplitude, which of course is Noon/Zenith. We do manipulate the curve a bit
+     * to make it more "reasonable"
      */
     protected float solarIntensity(Level level, BlockPos pos) {
-        if(!level.canSeeSky(pos.above())) return 0.0f;
+        if (!level.canSeeSky(pos.above()))
+            return 0.0f;
 
         float celestialAngle = level.getSunAngle(1.0f); // Zenith = 0rad
 
-        if(celestialAngle > Math.PI) celestialAngle = (2 * ((float) Math.PI) - celestialAngle);
+        if (celestialAngle > Math.PI)
+            celestialAngle = (2 * ((float) Math.PI) - celestialAngle);
 
         float intensity = Mth.cos(0.2f + (celestialAngle / 1.2f));
         intensity = Mth.clamp(intensity, 0, 1);
 
-        if(intensity > 0.1f) {
+        if (intensity > 0.1f) {
             intensity = intensity * 1.5f;
-            if(intensity > 1f) intensity = 1f;
+            if (intensity > 1f)
+                intensity = 1f;
         }
 
-        if(intensity > 0){
-            if(level.isRaining()) return intensity * 0.6f;
-            if(level.isThundering()) return intensity * 0.2f;
+        if (intensity > 0) {
+            if (level.isRaining())
+                return intensity * 0.6f;
+            if (level.isThundering())
+                return intensity * 0.2f;
         }
 
         return intensity;
+    }
+
+    @Override
+    public AbstractRecipeProcessor copy() {
+        return new SolarPanelProcessor(generationAmount);
     }
 }

@@ -17,8 +17,9 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 public class AirCompressorProcessor implements AbstractRecipeProcessor {
 
     @Override
-    public boolean processRecipe(VETileEntity tile) {
-        if (!tile.canConsumeEnergy()) return false;
+    public void tick(VETileEntity tile) {
+        if (!tile.canConsumeEnergy())
+            return;
 
         int soundTick = tile.getData(VEAttachments.SOUND_TICK);
 
@@ -53,32 +54,33 @@ public class AirCompressorProcessor implements AbstractRecipeProcessor {
                 if (++soundTick == 19) {
                     soundTick = 0;
                     if (Config.PLAY_MACHINE_SOUNDS.get()) {
-                        level.playSound(null, tile.getBlockPos(), VESounds.AIR_COMPRESSOR, SoundSource.BLOCKS, 1.0F, 1.0F);
+                        level.playSound(null, tile.getBlockPos(), VESounds.AIR_COMPRESSOR, SoundSource.BLOCKS, 1.0F,
+                            1.0F);
                     }
                 }
                 tile.setData(VEAttachments.SOUND_TICK, soundTick);
-                counter = tile.updateCounter(20);
+                counter = BasicProcessor.updateCounter(20,tile);
                 tile.setChanged();
             }
         } else {
             --counter;
         }
-        tile.setData(VEAttachments.COUNTER_LENGTH,new CounterLength(--counter,counterLength.length()));
-        return true;
-    }
-
-    // We don't need to validate the recipe because it doesn't have one.
-    @Override
-    public void validateRecipe(VETileEntity tile) {
+        tile.setData(VEAttachments.COUNTER_LENGTH, new CounterLength(--counter, counterLength.length()));
     }
 
     public boolean addAirToTank(int multiplier, VERelationalTank tank) {
 
         int totalToAdd = 250 * multiplier;
         int amountToAdd = Math.min(totalToAdd, (tank.getTank().getFluidAmount() + totalToAdd));
-        if (amountToAdd == 0) return false;
-        tank.getTank().fill(new FluidStack(VEFluids.COMPRESSED_AIR_REG.get(), amountToAdd), IFluidHandler.FluidAction.EXECUTE);
+        if (amountToAdd == 0)
+            return false;
+        tank.getTank().fill(new FluidStack(VEFluids.COMPRESSED_AIR_REG.get(), amountToAdd),
+                IFluidHandler.FluidAction.EXECUTE);
         return true;
     }
 
+    @Override
+    public AbstractRecipeProcessor copy() {
+        return new AirCompressorProcessor();
+    }
 }

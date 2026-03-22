@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.blocks.tiles.inventory;
 
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.recipe.VERecipe;
+import com.veteam.voluminousenergy.recipe.processor.BasicProcessor;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TagUtil;
@@ -15,6 +16,7 @@ import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.List;
 
 public class VEItemStackHandler extends ItemStackHandler {
@@ -44,15 +46,13 @@ public class VEItemStackHandler extends ItemStackHandler {
         tileEntity.setChanged();
         List<VESlotManager> managers = tileEntity.getSlotManagers();
 
-        if (slot == upgradeSlotLocation)
-            tileEntity.markRecipeDirty();
-        else if (slot < managers.size()) {
-            SlotType slotType = tileEntity.getSlotManagers().get(slot).getSlotType();
-            if (slotType == SlotType.INPUT) {
-                tileEntity.markRecipeDirty();
-            } else if (slotType.isFluidBucketIORelated()) {
-                tileEntity.markFluidInputDirty();
-            }
+        if (tileEntity.getRecipeProcessor() instanceof BasicProcessor processor)
+            processor.markRecipeDirty();
+
+        if (slot >= managers.size()) return;
+        SlotType slotType = tileEntity.getSlotManagers().get(slot).getSlotType();
+        if (slotType.isFluidBucketIORelated()) {
+            tileEntity.markFluidInputDirty();
         }
     }
 
@@ -63,6 +63,11 @@ public class VEItemStackHandler extends ItemStackHandler {
         if (slot == upgradeSlotLocation)
             return TagUtil.isTaggedMachineUpgradeItem(stack);
         VESlotManager manager = tileEntity.getSlotManagers().get(slot);
+
+        List<VERecipe> recipes = new ArrayList<>();
+        if(tileEntity.getRecipeProcessor() instanceof BasicProcessor processor)
+            recipes = processor.getPotentialRecipes();
+
         if (manager.getSlotType() == SlotType.FLUID_INPUT && stack.getItem() instanceof BucketItem bucketItem) {
             if (bucketItem.content == Fluids.EMPTY)
                 return true;
@@ -70,13 +75,13 @@ public class VEItemStackHandler extends ItemStackHandler {
             if (tank.getTankType() == TankType.OUTPUT) {
                 return bucketItem.content.isSame(Fluids.EMPTY);
             }
-            for (VERecipe recipe : tileEntity.getPotentialRecipes()) {
+            for (VERecipe recipe : recipes) {
                 if (recipe.getFluidIngredient(tank.getRecipePos()).test(new FluidStack(bucketItem.content, 1))) {
                     return true;
                 }
             }
         } else if (manager.getSlotType() == SlotType.INPUT || manager.getSlotType() == SlotType.OUTPUT) {
-            for (VERecipe recipe : tileEntity.getPotentialRecipes()) {
+            for (VERecipe recipe : recipes) {
                 if (recipe.getParser().canInsertItem(slot, stack)) {
                     return true;
                 }

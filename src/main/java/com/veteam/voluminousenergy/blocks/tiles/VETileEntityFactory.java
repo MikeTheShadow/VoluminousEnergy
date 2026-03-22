@@ -7,6 +7,7 @@ import com.veteam.voluminousenergy.blocks.tiles.inventory.AbstractItemStackValid
 import com.veteam.voluminousenergy.blocks.tiles.inventory.VEItemStackHandler;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.recipe.processor.AbstractRecipeProcessor;
+import com.veteam.voluminousenergy.recipe.processor.BasicProcessor;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.SlotType;
@@ -53,7 +54,8 @@ public class VETileEntityFactory {
             public AbstractContainerMenu createMenu(int id, @NotNull Inventory playerInventory, @NotNull Player player) {
                 // This fixes a race condition issue where the client doesn't have the recipe cache built yet
                 this.markFluidInputDirty();
-                this.markRecipeDirty();
+                if(this.recipeProcessor instanceof BasicProcessor basicProcessor)
+                    basicProcessor.markRecipeDirty();
                 return containerFactory.create(id, level, worldPosition, playerInventory, player);
             }
         };
@@ -68,8 +70,8 @@ public class VETileEntityFactory {
         if (storage != null)
             newTile.energy = storage.copy();
 
-        //set processor
-        newTile.recipeProcessor = processor;
+        //set processor. Copied so that processors are properly instanced
+        newTile.recipeProcessor = processor.copy();
 
         // send out power
         newTile.sendsOutPower = sendsOutPower;

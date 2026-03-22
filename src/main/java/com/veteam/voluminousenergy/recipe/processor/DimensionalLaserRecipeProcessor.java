@@ -6,6 +6,7 @@ import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.persistence.ChunkFluid;
 import com.veteam.voluminousenergy.persistence.ChunkFluids;
 import com.veteam.voluminousenergy.persistence.SingleChunkFluid;
+import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.VEAttachments;
@@ -32,23 +33,24 @@ import static com.veteam.voluminousenergy.blocks.tiles.VETileEntity.DEFAULT_TANK
 
 public class DimensionalLaserRecipeProcessor extends MultiBlockRecipeProcessor {
 
-
     public DimensionalLaserRecipeProcessor(Supplier<? extends Block> block) {
         super(block);
     }
 
     @Override
     public boolean processRecipe(VETileEntity tile) {
-        if (!isMultiBlockValid(tile)) return false;
+        if (!isMultiBlockValid(tile))
+            return false;
 
         int buildTick = tile.getData(VEAttachments.BUILD_TICK);
         if (buildTick != 1000) {
             tile.setChanged();
-            if(buildTick == 999) {
+            if (buildTick == 999) {
                 int x = tile.getBlockPos().getX();
                 int y = tile.getBlockPos().getY();
                 int z = tile.getBlockPos().getZ();
-                for (ServerPlayer serverplayer : tile.getLevel().getEntitiesOfClass(ServerPlayer.class, (new AABB(x, y, z, x, y - 4, z)).inflate(50.0D, 50.0D, 50.0D))) {
+                for (ServerPlayer serverplayer : tile.getLevel().getEntitiesOfClass(ServerPlayer.class,
+                    (new AABB(x, y, z, x, y - 4, z)).inflate(50.0D, 50.0D, 50.0D))) {
                     VECriteriaTriggers.CONSTRUCT_DIMENSIONAL_LASER_TRIGGER.get().trigger(serverplayer, 3);
                 }
             }
@@ -58,22 +60,26 @@ public class DimensionalLaserRecipeProcessor extends MultiBlockRecipeProcessor {
                 case 50,
                      150,
                      250,
-                     350 -> tile.getLevel().playSound(null, tile.getBlockPos(), SoundEvents.BEACON_ACTIVATE , SoundSource.BLOCKS, 1.0F, 1.0F);
+                     350 ->
+                    tile.getLevel().playSound(null, tile.getBlockPos(), SoundEvents.BEACON_ACTIVATE, SoundSource.BLOCKS,
+                        1.0F, 1.0F);
             }
 
             if (buildTick == 1) {
-                tile.getLevel().playSound(null, tile.getBlockPos(), VESounds.ENERGY_BEAM_ACTIVATE, SoundSource.BLOCKS, 1.0F, 1.0F);
+                tile.getLevel().playSound(null, tile.getBlockPos(), VESounds.ENERGY_BEAM_ACTIVATE, SoundSource.BLOCKS,
+                    1.0F, 1.0F);
             }
 
             if (buildTick == 400) {
-                tile.getLevel().playSound(null, tile.getBlockPos(), VESounds.ENERGY_BEAM_FIRED, SoundSource.BLOCKS, 1.0F, 1.0F);
+                tile.getLevel().playSound(null, tile.getBlockPos(), VESounds.ENERGY_BEAM_FIRED, SoundSource.BLOCKS,
+                    1.0F, 1.0F);
             }
 
             if (buildTick >= 400) {
                 if ((buildTick - 400) % 12 == 0 && (new Random()).nextInt(2) == 1) {
                     BlockPos blockPos = tile
-                            .getLevel().getBlockRandomPos(
-                                    tile.getBlockPos().getX(), 0, tile.getBlockPos().getZ(), 5);
+                        .getLevel().getBlockRandomPos(
+                            tile.getBlockPos().getX(), 0, tile.getBlockPos().getZ(), 5);
 
                     blockPos = blockPos.atY(tile.getBlockPos().getY());
 
@@ -84,29 +90,34 @@ public class DimensionalLaserRecipeProcessor extends MultiBlockRecipeProcessor {
                 }
             }
 
-//            if (!tile.canConsumeEnergy()) {
-//                buildTick = 0;
-//            } else {
-//                tile.consumeEnergy();
-//            }
+            // if (!tile.canConsumeEnergy()) {
+            // buildTick = 0;
+            // } else {
+            // tile.consumeEnergy();
+            // }
             tile.setChanged();
             tile.setData(VEAttachments.BUILD_TICK, buildTick + 1);
             return false;
         }
 
-        if (!tile.canConsumeEnergy()) return false;
+        if (!tile.canConsumeEnergy())
+            return false;
         ItemStack stack = tile.getInventory().getStackInSlot(2);
 
         ChunkFluidData data = stack.get(VEDataComponents.CHUNK_FLUID_DATA);
+
+        DimensionalLaserRecipeProcessor processor = (DimensionalLaserRecipeProcessor) tile.getRecipeProcessor();
+
         if (data == null) {
-            tile.updateCounter(Config.DIMENSIONAL_LASER_PROCESS_TIME.get());
+            processor.updateCounter(Config.DIMENSIONAL_LASER_PROCESS_TIME.get(), tile);
             return false;
         }
 
         ChunkFluid fluid = ChunkFluids.getInstance().getChunkFluid(new ChunkPos(data.x(), data.z()));
 
         if (fluid == null) {
-            VoluminousEnergy.LOGGER.error("Unable to find chunk fluid for what appears to be a scanned chunk: " + data.x() + " | " + data.z());
+            VoluminousEnergy.LOGGER.error("Unable to find chunk fluid for what appears to be a scanned chunk: "
+                + data.x() + " | " + data.z());
             return false;
         }
 
@@ -115,8 +126,10 @@ public class DimensionalLaserRecipeProcessor extends MultiBlockRecipeProcessor {
         FluidStack currentFluid = tile.getFluidStackFromTank(0);
         int amount = Math.min(singleChunkFluid.getAmount(), DEFAULT_TANK_CAPACITY - currentFluid.getAmount());
 
-        boolean canFill = tile.getRelationalTank(0).testFillTank(new FluidStack(singleChunkFluid.getFluid(), amount)) > 0;
-        if (!canFill) return canFill;
+        boolean canFill = tile.getRelationalTank(0)
+            .testFillTank(new FluidStack(singleChunkFluid.getFluid(), amount)) > 0;
+        if (!canFill)
+            return canFill;
 
         CounterLength counterLength = tile.getData(VEAttachments.COUNTER_LENGTH);
 
@@ -132,9 +145,9 @@ public class DimensionalLaserRecipeProcessor extends MultiBlockRecipeProcessor {
             counter--;
             tile.consumeEnergy();
         } else {
-            counter = tile.updateCounter(Config.DIMENSIONAL_LASER_PROCESS_TIME.get());
+            counter = processor.updateCounter(Config.DIMENSIONAL_LASER_PROCESS_TIME.get(), tile);
         }
-        tile.setData(VEAttachments.COUNTER_LENGTH, new CounterLength(counter,counterLength.length()));
+        tile.setData(VEAttachments.COUNTER_LENGTH, new CounterLength(counter, counterLength.length()));
         return true;
     }
 
@@ -149,10 +162,11 @@ public class DimensionalLaserRecipeProcessor extends MultiBlockRecipeProcessor {
         }
         counter = 20;
         lastReading = true;
-        // Tweak box based on direction -- This is the search range to ensure this is a valid multiblock before operation
+        // Tweak box based on direction -- This is the search range to ensure this is a
+        // valid multiblock before operation
         for (final BlockPos blockPos : BlockPos.betweenClosed(
-                tile.getBlockPos().offset(0, -3, 0),
-                tile.getBlockPos().offset(0, -1, 0))) {
+            tile.getBlockPos().offset(0, -3, 0),
+            tile.getBlockPos().offset(0, -1, 0))) {
 
             final BlockState blockState = tile.getLevel().getBlockState(blockPos);
 
@@ -164,6 +178,7 @@ public class DimensionalLaserRecipeProcessor extends MultiBlockRecipeProcessor {
     }
 
     @Override
-    public void validateRecipe(VETileEntity tile) {
+    public boolean validateRecipe(VETileEntity tile) {
+        return true;
     }
 }

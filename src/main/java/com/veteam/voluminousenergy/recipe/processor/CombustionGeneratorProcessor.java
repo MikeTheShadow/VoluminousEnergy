@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.recipe.processor;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.items.data.CombustibleFluidsData;
 import com.veteam.voluminousenergy.items.data.OxidizerFluidsData;
@@ -15,53 +14,29 @@ import net.minecraft.sounds.SoundSource;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
-
 public class CombustionGeneratorProcessor extends BasicProcessor {
     public static final int COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT = 250;
     public static final int COMBUSTION_GENERATOR_PROCESS_TIME = 1600;
 
     @Override
-    public void validateRecipe(VETileEntity tile) {
-        tile.setPotentialRecipes(VERecipe.getPotentialRecipes(tile));
-        if (tile.getPotentialRecipes().size() == 1) {
-            VERecipe newRecipe = VERecipe.getCompleteRecipe(tile);
-            if (newRecipe == null) {
-                tile.setSelectedRecipe(null);
-                return;
-            }
-            if (tile.getSelectedRecipe() != newRecipe) {
-                tile.setSelectedRecipe(newRecipe);
-            }
-        } else {
-            tile.setSelectedRecipe(null);
-        }
-    }
-
-    @Override
-    public boolean processRecipe(VETileEntity tile) {
-        VERecipe recipe = tile.getSelectedRecipe();
+    public boolean validateRecipe(VETileEntity tile) {
 
         CounterLength counterLength = tile.getData(VEAttachments.COUNTER_LENGTH);
+        if (counterLength.counter() > 0) {
+            return true;
+        }
+        this.potentialRecipes = VERecipe.getPotentialRecipes(tile);
 
-        int counter = counterLength.counter();
-        int length = counterLength.length();
-        VEEnergyStorage storage = tile.getEnergy();
-        if (storage.getEnergyStored() + storage.getProduction() > Config.COMBUSTION_GENERATOR_MAX_POWER.get())
-            return false;
-
-        if (counter > 0) {
-            counter--;
-            storage.addEnergy(storage.getProduction());
-            int soundTick = tile.getData(VEAttachments.SOUND_TICK);
-            if (++soundTick == 19) {
-                soundTick = 0;
-                if (Config.PLAY_MACHINE_SOUNDS.get()) {
-                    tile.getLevel().playSound(null, tile.getBlockPos(), VESounds.GENERAL_MACHINE_NOISE, SoundSource.BLOCKS, 1.0F, 1.0F);
-                }
+        if (this.potentialRecipes.size() == 1) {
+            VEEnergyStorage storage = tile.getEnergy();
+            VERecipe newRecipe = VERecipe.getCompleteRecipe(tile);
+            if (newRecipe == null) {
+                this.selectedRecipe = null;
+                return false;
             }
-            tile.setData(VEAttachments.SOUND_TICK, soundTick);
-            tile.setChanged();
-        } else if (recipe != null) {
+            if (selectedRecipe != newRecipe) {
+                this.selectedRecipe = newRecipe;
+            }
             FluidStack fuel = tile.getFluidStackFromTank(0);
             FluidStack oxi = tile.getFluidStackFromTank(1);
 
@@ -71,13 +46,15 @@ public class CombustionGeneratorProcessor extends BasicProcessor {
             int powerGeneration = CombustibleFluidsData.getEnergyPerTick(fuel);
             float multiplier = OxidizerFluidsData.getOxidizerMultiplier(oxi);
 
-            if (fuelTank.getTank().getFluidAmount() < COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT || oxiTank.getTank().getFluidAmount() < COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT) {
+            if (fuelTank.getTank().getFluidAmount() < COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT
+                    || oxiTank.getTank().getFluidAmount() < COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT) {
                 return false;
             }
 
             fuelTank.getTank().drain(250, IFluidHandler.FluidAction.EXECUTE);
             oxiTank.getTank().drain(250, IFluidHandler.FluidAction.EXECUTE);
 
+            int counter;
             if (Config.COMBUSTION_GENERATOR_BALANCED_MODE.get()) {
                 counter = COMBUSTION_GENERATOR_PROCESS_TIME / 4;
             } else {
@@ -85,16 +62,43 @@ public class CombustionGeneratorProcessor extends BasicProcessor {
             }
 
             int production = (int) (powerGeneration * multiplier);
-
-            VoluminousEnergy.LOGGER.info("Setting production to: " + production);
+            tile.setData(VEAttachments.COUNTER_LENGTH, new CounterLength(counter, counter));
             storage.setProduction(production);
-            length = counter;
-            tile.setChanged();
+            return true;
         } else {
-            storage.setProduction(0);
+            this.selectedRecipe = null;
         }
-        tile.setData(VEAttachments.COUNTER_LENGTH, new CounterLength(counter, length));
+        return false;
+    }
+
+    @Override
+    public boolean processRecipe(VETileEntity tile) {
+        VEEnergyStorage storage = tile.getEnergy();
+        if (storage.getEnergyStored() + storage.getProduction() > Config.COMBUSTION_GENERATOR_MAX_POWER.get())
+            return false;
+
+        storage.addEnergy(storage.getProduction());
+        int soundTick = tile.getData(VEAttachments.SOUND_TICK);
+        if (++soundTick == 19) {
+            soundTick = 0;
+            if (Config.PLAY_MACHINE_SOUNDS.get()) {
+                tile.getLevel().playSound(null, tile.getBlockPos(), VESounds.GENERAL_MACHINE_NOISE,
+                        SoundSource.BLOCKS, 1.0F, 1.0F);
+            }
+        }
+        tile.setData(VEAttachments.SOUND_TICK, soundTick);
         return true;
     }
 
+    @Override
+    public boolean completeRecipe(VETileEntity tile) {
+        VEEnergyStorage storage = tile.getEnergy();
+        storage.setProduction(0);
+        return true;
+    }
+
+    @Override
+    public AbstractRecipeProcessor copy() {
+        return new CombustionGeneratorProcessor();
+    }
 }
