@@ -10,11 +10,10 @@ import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.util.VEAttachments;
 import com.veteam.voluminousenergy.util.records.CounterLength;
 import net.minecraft.sounds.SoundSource;
-import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.List;
 
-public class GeneratorProcessor implements AbstractRecipeProcessor {
+public class GeneratorProcessor extends BasicProcessor {
 
     private int divisor = 1;
     private boolean allowOverflow = false;
@@ -28,72 +27,60 @@ public class GeneratorProcessor implements AbstractRecipeProcessor {
     }
 
     @Override
-    public void validateRecipe(VETileEntity tile) {
-        if (!tile.isRecipeDirty()) {
-            return;
+    public boolean validateRecipe(VETileEntity tile) {
+
+        CounterLength counterLength = tile.getData(VEAttachments.COUNTER_LENGTH);
+        if (counterLength.counter() > 0) {
+            return true;
         }
-        tile.setRecipeDirty(false);
+
         List<VERecipe> potentialRecipes = VERecipe.getPotentialRecipes(tile);
-        tile.setPotentialRecipes(potentialRecipes);
-        if (tile.getPotentialRecipes().size() == 1) {
-            tile.setSelectedRecipe(VERecipe.getCompleteRecipe(tile));
+        this.potentialRecipes = potentialRecipes;
+
+        if (this.potentialRecipes.size() == 1) {
+            this.selectedRecipe = VERecipe.getCompleteRecipe(tile);
+            VEEnergyRecipe veEnergyRecipe = (VEEnergyRecipe) this.selectedRecipe;
+            BasicParser parser = this.selectedRecipe.getParser();
+            parser.completeRecipe(tile);
+            tile.getEnergy().setProduction(veEnergyRecipe.getEnergyPerTick() / divisor);
+            tile.setData(VEAttachments.COUNTER_LENGTH,
+                    new CounterLength(veEnergyRecipe.getProcessTime(), veEnergyRecipe.getProcessTime()));
+            tile.setLit(true);
+            return true;
         }
+        return false;
     }
 
     @Override
     public boolean processRecipe(VETileEntity tile) {
         VEEnergyStorage energy = tile.getEnergy();
 
-        if (energy == null)
-            throw new NotImplementedException("Missing energy impl for " + tile.getDisplayName());
-
-        CounterLength counterLength = tile.getData(VEAttachments.COUNTER_LENGTH);
-
-        int counter = counterLength.counter();
-        int length = counterLength.length();
-
-        if (counter > 0) {
-            tile.setLit(true);
-            if (energy.getEnergyStored() + energy.getProduction() <= energy.getCapacity() || allowOverflow) {
-                counter--;
-                tile.setData(VEAttachments.COUNTER_LENGTH, new CounterLength(counter, length));
-                energy.addEnergy(energy.getProduction());
-            }
-
-            if (Config.PLAY_MACHINE_SOUNDS.get()) {
-                int sound_tick = tile.getData(VEAttachments.SOUND_TICK);
-                if (++sound_tick == 19) {
-                    sound_tick = 0;
-                    tile.getLevel().playSound(null,
-                            tile.getBlockPos(),
-                            VESounds.GENERAL_MACHINE_NOISE,
-                            SoundSource.BLOCKS, 1.0F, 1.0F);
-                    tile.setData(VEAttachments.SOUND_TICK, sound_tick);
-                }
-            }
-            tile.setChanged();
-        } else if (counter == 0) {
-            if (tile.getSelectedRecipe() instanceof VEEnergyRecipe veEnergyRecipe) {
-                BasicParser parser = veEnergyRecipe.getParser();
-                if (!parser.canCompleteRecipe(tile))
-                    return false;
-                // Check to see if the energy produced will overflow the tile
-                if (tile.getEnergy().isFullyCharged())
-                    return false;
-                // Since we're a generator we want to subtract the amounts at the start rather
-                // than at the end
-                veEnergyRecipe.getParser().completeRecipe(tile);
-                tile.getEnergy().setProduction(veEnergyRecipe.getEnergyPerTick() / divisor);
-                tile.setData(VEAttachments.COUNTER_LENGTH,
-                        new CounterLength(veEnergyRecipe.getProcessTime(), veEnergyRecipe.getProcessTime()));
-                tile.setSelectedRecipe(null);
-                tile.setChanged();
-            } else {
-                tile.getEnergy().setProduction(0);
-                tile.setLit(false);
+        if (allowOverflow && energy.getEnergyStored() + energy.getProduction() > energy.getCapacity())
+            return false;
+        energy.addEnergy(energy.getProduction());
+        if (Config.PLAY_MACHINE_SOUNDS.get()) {
+            int sound_tick = tile.getData(VEAttachments.SOUND_TICK);
+            if (++sound_tick == 19) {
+                sound_tick = 0;
+                tile.getLevel().playSound(null,
+                        tile.getBlockPos(),
+                        VESounds.GENERAL_MACHINE_NOISE,
+                        SoundSource.BLOCKS, 1.0F, 1.0F);
+                tile.setData(VEAttachments.SOUND_TICK, sound_tick);
             }
         }
         return true;
     }
 
+    @Override
+    public boolean completeRecipe(VETileEntity tile) {
+        tile.getEnergy().setProduction(0);
+        tile.setLit(false);
+        return true;
+    }
+
+    @Override
+    public AbstractRecipeProcessor copy() {
+        return new GeneratorProcessor(allowOverflow, divisor);
+    }
 }

@@ -1,11 +1,12 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.inventory.VEItemStackHandler;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.upgrades.MysteriousMultiplier;
 import com.veteam.voluminousenergy.recipe.VERecipe;
+import com.veteam.voluminousenergy.recipe.parser.BasicParser;
 import com.veteam.voluminousenergy.recipe.processor.AbstractRecipeProcessor;
+import com.veteam.voluminousenergy.recipe.processor.BasicProcessor;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
@@ -52,13 +53,14 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
     VEItemStackHandler inventory;
     private final RecipeType<? extends Recipe<?>> recipeType;
-    VERecipe selectedRecipe = null;
-    List<VERecipe> potentialRecipes = new ArrayList<>();
 
     final List<VERelationalTank> tanks = new ArrayList<>();
     final List<VESlotManager> managers = new ArrayList<>();
     AbstractRecipeProcessor recipeProcessor;
     boolean sendsOutPower;
+
+    public static final int DEFAULT_TANK_CAPACITY = 4000;
+    boolean fluidInputDirty = true;
 
     public VETileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state,
             RecipeType<? extends Recipe<?>> recipeType) {
@@ -74,11 +76,6 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     public static void serverTick(Level level, BlockPos pos, BlockState state, VETileEntity voluminousTile) {
         voluminousTile.tick();
     }
-
-    // Fluid methods to subclass?
-
-    public static final int DEFAULT_TANK_CAPACITY = 4000;
-    boolean fluidInputDirty = true;
 
     public void inputFluid(VERelationalTank tank, int slot1, int slot2) {
         ItemStack input = tank.getInput().copy();
@@ -100,7 +97,8 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
                     inputTank.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
                     handler.extractItem(slot1, 1, false);
                     handler.insertItem(slot2, new ItemStack(Items.BUCKET, 1), false);
-                    this.markRecipeDirty();
+                    if(this.recipeProcessor instanceof BasicProcessor processor)
+                        processor.markRecipeDirty();
                 }
             }
         }
@@ -119,7 +117,8 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
             outputTank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
             handler.extractItem(slot1, 1, false);
             handler.insertItem(slot2, bucketStack, false);
-            this.markRecipeDirty();
+            if(this.recipeProcessor instanceof BasicProcessor processor)
+                processor.markRecipeDirty();
         }
     }
 
@@ -182,11 +181,6 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
     // END OF FLUID STUFF
 
-    int counter = 0;
-    int length = 0;
-    int sound_tick = 0;
-    boolean isRecipeDirty = true;
-
     /**
      * Must include a call to updateClients();
      * This message can be removed if updateClients(); is found to be useless
@@ -194,15 +188,9 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     public void tick() {
         processFluidIO();
         updateClients();
+        if(this.recipeProcessor != null)
+            recipeProcessor.tick(this);
 
-        if (this.recipeProcessor != null) {
-            if (this.isRecipeDirty) {
-                recipeProcessor.validateRecipe(this);
-                this.isRecipeDirty = false;
-            }
-            if (recipeProcessor.processRecipe(this))
-                this.setChanged();
-        }
         if (this.sendsOutPower)
             sendOutPower();
     }
@@ -228,30 +216,6 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
     public int getEnergyCostMultiplier() {
         return this.consumptionMultiplier(this.energy.getConsumption(), this.energy.getUpgradeSlotId());
-    }
-
-    /**
-     * This is for internal use only. Call this outside at your own peril
-     * 
-     * @param processTime  The base time it takes to process
-     * @param upgradeStack The stack to use to calculate it
-     * @return the new counter int.
-     */
-    private int calculateCounter(int processTime, ItemStack upgradeStack) {
-
-        float multiplier = upgradeStack.getOrDefault(VEDataComponents.MULTIPLIER_DATA, 0.0F);
-
-        if (upgradeStack.getItem() == VEItems.QUARTZ_MULTIPLIER.get()) {
-            int count = upgradeStack.getCount();
-            if (count == 4) {
-                return 5;
-            } else {
-                return (-45 * upgradeStack.getCount()) + processTime;
-            }
-        } else if (multiplier != 0) {
-            return (int) (processTime * multiplier);
-        }
-        return processTime;
     }
 
     protected int consumptionMultiplier(int consumption, int slot) {
@@ -444,10 +408,11 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
      * does not have this.
      * Throws an error if missing the power consumeEnergy IMPL
      */
-    public void consumeEnergy() {
-        if (this.energy == null)
-            return;
+    public boolean consumeEnergy() {
+        if (this.energy == null || !this.canConsumeEnergy())
+            return false;
         energy.consumeEnergy(this.consumptionMultiplier(energy.getConsumption(), energy.getUpgradeSlotId()));
+        return true;
     }
 
     /**
@@ -583,16 +548,8 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         return energy;
     }
 
-    public void markRecipeDirty() {
-        this.isRecipeDirty = true;
-    }
-
     public RecipeType<? extends Recipe<?>> getRecipeType() {
         return this.recipeType;
-    }
-
-    public List<VERecipe> getPotentialRecipes() {
-        return potentialRecipes;
     }
 
     void addTanks(List<VERelationalTank> tanks) {
@@ -601,11 +558,6 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
     void addSlots(List<VESlotManager> managers) {
         this.managers.addAll(managers);
-    }
-
-    @Nullable
-    public VERecipe getSelectedRecipe() {
-        return selectedRecipe;
     }
 
     public List<VERelationalTank> getTanks() {
@@ -622,18 +574,6 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
     public List<VESlotManager> getManagers() {
         return managers;
-    }
-
-    public boolean isRecipeDirty() {
-        return isRecipeDirty;
-    }
-
-    public void setRecipeDirty(boolean dirty) {
-        this.isRecipeDirty = dirty;
-    }
-
-    public void setPotentialRecipes(List<VERecipe> recipes) {
-        this.potentialRecipes = recipes;
     }
 
     @Deprecated
@@ -659,61 +599,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         this.setChanged();
     }
 
-    public void setSelectedRecipe(VERecipe recipe) {
-        this.selectedRecipe = recipe;
-    }
-
     public AbstractRecipeProcessor getRecipeProcessor() {
         return recipeProcessor;
-    }
-
-    public int updateCounter(VERecipe recipe) {
-        int newLength;
-        ItemStackHandler handler = this.getInventory();
-        if (energy != null && handler != null && energy.getUpgradeSlotId() != -1) {
-            newLength = this.calculateCounter(recipe.getProcessTime(),
-                    handler.getStackInSlot(energy.getUpgradeSlotId()).copy());
-        } else {
-            newLength = this.calculateCounter(recipe.getProcessTime(), ItemStack.EMPTY);
-        }
-
-        CounterLength counterLength = this.getData(VEAttachments.COUNTER_LENGTH);
-
-        double ratio = (double) counterLength.length() / (double) newLength;
-
-        CounterLength newCounter = new CounterLength((int) (counterLength.counter() / ratio), newLength);
-        this.setData(VEAttachments.COUNTER_LENGTH, newCounter);
-        this.setChanged();
-        return newLength;
-    }
-
-    /**
-     * This updates the counter and takes into account an upgrade slot if
-     * it exists.
-     * 
-     * @param defaultProcessTime The base processing time in ticks.
-     * @return The new length. Only need to use this if you potentially overwrite
-     *         the changes here (this.setData("length") for example)
-     */
-    public int updateCounter(int defaultProcessTime) {
-        int newLength;
-        ItemStackHandler handler = this.getInventory();
-        if (this.getEnergy() != null && handler != null) {
-            newLength = this.calculateCounter(defaultProcessTime,
-                    handler.getStackInSlot(energy.getUpgradeSlotId()).copy());
-        } else {
-            newLength = this.calculateCounter(defaultProcessTime, ItemStack.EMPTY);
-        }
-
-        CounterLength counterLength = this.getData(VEAttachments.COUNTER_LENGTH);
-
-        double ratio = (double) counterLength.length() / (double) newLength;
-
-        int ratioedCounter = (int) (counterLength.counter() / ratio);
-
-        CounterLength newCounter = new CounterLength(ratioedCounter == 0 ? newLength : ratioedCounter, newLength);
-        this.setData(VEAttachments.COUNTER_LENGTH, newCounter);
-        this.setChanged();
-        return newLength;
     }
 }

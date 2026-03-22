@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
+import com.veteam.voluminousenergy.recipe.processor.BasicProcessor;
 import com.veteam.voluminousenergy.tools.VERender;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.gui.GuiGraphics;
@@ -84,7 +85,11 @@ public class ToolingStationScreen extends VEContainerScreen<VEContainer> {
         int j = (this.height - this.imageHeight) / 2;
         matrixStack.blit(GUI, i, j, 0, 0, this.imageWidth, this.imageHeight);
         if (tileEntity != null) {
-            boolean lightArrow = (tileEntity.getSelectedRecipe() == null);
+
+            boolean lightArrow = false;
+
+            if(tileEntity.getRecipeProcessor() instanceof BasicProcessor processor)
+                lightArrow = (processor.getSelectedRecipe() == null);
 
             /*Note for this.blit below:
                 p_blit_1_ = starting x for blit on screen
