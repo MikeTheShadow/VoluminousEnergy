@@ -55,7 +55,7 @@ public class VETileEntityFactory {
                 // This fixes a race condition issue where the client doesn't have the recipe cache built yet
                 this.markFluidInputDirty();
                 if(this.recipeProcessor instanceof BasicProcessor basicProcessor)
-                    basicProcessor.markRecipeDirty(true, this);
+                    basicProcessor.markRecipeDirty();
                 return containerFactory.create(id, level, worldPosition, playerInventory, player);
             }
         };

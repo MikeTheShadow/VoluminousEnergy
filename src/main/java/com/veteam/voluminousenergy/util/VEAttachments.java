@@ -5,6 +5,7 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.util.records.BlastFurnaceData;
 import com.veteam.voluminousenergy.util.records.CounterLength;
 import com.veteam.voluminousenergy.util.records.FluidPumpData;
+import net.minecraft.world.item.crafting.Recipe;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
@@ -46,12 +47,7 @@ public class VEAttachments {
             "blast_furnace_data", () -> AttachmentType.builder((iAttachmentHolder)
                     -> new BlastFurnaceData(0,0,0)).serialize(BLAST_FURNACE_CODEC).build());
 
-    public static final Supplier<AttachmentType<Boolean>> IS_RECIPE_DIRTY = ATTACHMENT_TYPE_DEFERRED_REGISTER.register(
-        "is_recipe_dirty", () -> AttachmentType.builder((iAttachmentHolder)
+    public static final Supplier<AttachmentType<Boolean>> IS_RECIPE_AWAITING_COMPLETE = ATTACHMENT_TYPE_DEFERRED_REGISTER.register(
+        "is_await_complete", () -> AttachmentType.builder((iAttachmentHolder)
             -> false).serialize(Codec.BOOL).build());
-
-    public static final Supplier<AttachmentType<Boolean>> IS_RECIPE_READY = ATTACHMENT_TYPE_DEFERRED_REGISTER.register(
-        "is_recipe_ready", () -> AttachmentType.builder((iAttachmentHolder)
-            -> false).serialize(Codec.BOOL).build());
-
 }

@@ -27,6 +27,9 @@ public class BasicProcessor implements AbstractRecipeProcessor {
     VERecipe selectedRecipe = null;
     List<VERecipe> potentialRecipes = new ArrayList<>();
 
+    private boolean isRecipeDirty = true;
+    private boolean isRecipeReady = false;
+
     public BasicProcessor() {
 
     }
@@ -38,27 +41,32 @@ public class BasicProcessor implements AbstractRecipeProcessor {
     @Override
     public void tick(VETileEntity tile) {
 
-        if (isRecipeDirty(tile)) {
+        if (isRecipeDirty()) {
             if (validateRecipe(tile))
-                this.markRecipeReady(true, tile);
-            this.markRecipeDirty(false, tile);
+                this.setRecipeReady(true);
+            this.markRecipeDirty();
         }
 
-        if (!isRecipeReady(tile))
+        if (!isRecipeReady())
             return;
 
         CounterLength currentTick = tile.getData(VEAttachments.COUNTER_LENGTH);
 
-        if (currentTick.counter() != 0 && processRecipe(tile)) {
-            CounterLength nextTick = new CounterLength(currentTick.counter() - 1, currentTick.length());
-            tile.setData(VEAttachments.COUNTER_LENGTH, nextTick);
-            tile.setChanged();
-        } else if (currentTick.counter() == 0 && completeRecipe(tile)) {
-            this.markRecipeDirty(true, tile);
-            this.markRecipeReady(false, tile);
+        if (currentTick.counter() != 1 && processRecipe(tile)) {
+            tickCounter(tile,currentTick);
+        } else if (currentTick.counter() == 1 && completeRecipe(tile)) {
+            tile.consumeEnergy();
+            this.markRecipeDirty();
+            this.setRecipeReady(false);
             tile.markFluidInputDirty();
-            tile.setChanged();
+            tickCounter(tile,currentTick);
         }
+    }
+
+    void tickCounter(VETileEntity tile,CounterLength currentTick) {
+        CounterLength nextTick = new CounterLength(currentTick.counter() - 1, currentTick.length());
+        tile.setData(VEAttachments.COUNTER_LENGTH, nextTick);
+        tile.setChanged();
     }
 
     public boolean validateRecipe(VETileEntity tile) {
@@ -69,7 +77,7 @@ public class BasicProcessor implements AbstractRecipeProcessor {
             CounterLength counterLength = new CounterLength(0, 0);
             tile.setData(VEAttachments.COUNTER_LENGTH, counterLength);
             this.selectedRecipe = null;
-            this.markRecipeReady(false, tile);
+            this.setRecipeReady(false);
             return false;
         }
 
@@ -78,7 +86,7 @@ public class BasicProcessor implements AbstractRecipeProcessor {
             CounterLength counterLength = new CounterLength(0, 0);
             tile.setData(VEAttachments.COUNTER_LENGTH, counterLength);
             this.selectedRecipe = null;
-            this.markRecipeReady(false, tile);
+            this.setRecipeReady(false);
             return false;
         }
         tile.setLit(true);
@@ -101,8 +109,11 @@ public class BasicProcessor implements AbstractRecipeProcessor {
 
     public boolean completeRecipe(VETileEntity tile) {
         BasicParser parser = selectedRecipe.getParser();
-        if (!parser.canCompleteRecipe(tile))
+        if (!parser.canCompleteRecipe(tile)) {
+            tile.setData(VEAttachments.IS_RECIPE_AWAITING_COMPLETE, true);
             return false;
+        }
+        tile.setData(VEAttachments.IS_RECIPE_AWAITING_COMPLETE, false);
         parser.completeRecipe(tile);
         return true;
     }
@@ -119,7 +130,7 @@ public class BasicProcessor implements AbstractRecipeProcessor {
             length = calculateCounter(recipe.getProcessTime(), ItemStack.EMPTY);
         }
 
-        CounterLength newLength = new CounterLength(length, length);
+        CounterLength newLength = new CounterLength(length + 1, length + 1);
         CounterLength oldLength = tile.getData(VEAttachments.COUNTER_LENGTH);
         if (selectedRecipe != recipe || oldLength.counter() == 0) {
             selectedRecipe = recipe;
@@ -136,6 +147,7 @@ public class BasicProcessor implements AbstractRecipeProcessor {
 
     private static int calculateCounter(int processTime, ItemStack upgradeStack) {
 
+        processTime++; // Since the last tick isn't counted
         float multiplier = upgradeStack.getOrDefault(VEDataComponents.MULTIPLIER_DATA, 0.0F);
 
         if (upgradeStack.getItem() == VEItems.QUARTZ_MULTIPLIER.get()) {
@@ -160,6 +172,7 @@ public class BasicProcessor implements AbstractRecipeProcessor {
      *         the changes here (this.setData("length") for example)
      */
     public static int updateCounter(int defaultProcessTime,VETileEntity tile) {
+        defaultProcessTime++; // Since the last tick isn't counted
         int newLength;
         ItemStackHandler handler = tile.getInventory();
         VEEnergyStorage energy = tile.getEnergy();
@@ -187,12 +200,12 @@ public class BasicProcessor implements AbstractRecipeProcessor {
         return new BasicProcessor(soundEvent);
     }
 
-    public boolean isRecipeDirty(VETileEntity tile) {
-        return tile.getData(VEAttachments.IS_RECIPE_DIRTY);
+    public boolean isRecipeDirty() {
+        return isRecipeDirty;
     }
 
-    public boolean isRecipeReady(VETileEntity tile) {
-        return tile.getData(VEAttachments.IS_RECIPE_READY);
+    public boolean isRecipeReady() {
+        return isRecipeReady;
     }
 
     public VERecipe getSelectedRecipe() {
@@ -203,14 +216,11 @@ public class BasicProcessor implements AbstractRecipeProcessor {
         return potentialRecipes;
     }
 
-    public void markRecipeDirty(boolean status, VETileEntity tile)
-    {
-        tile.setData(VEAttachments.IS_RECIPE_DIRTY, status);
-        tile.setChanged();
+    public void markRecipeDirty() {
+        this.isRecipeDirty = true;
     }
 
-    public void markRecipeReady(boolean status, VETileEntity tile) {
-        tile.setData(VEAttachments.IS_RECIPE_READY, status);
-        tile.setChanged();
+    public void setRecipeReady(boolean status) {
+        this.isRecipeReady = status;
     }
 }

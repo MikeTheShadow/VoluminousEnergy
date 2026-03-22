@@ -31,6 +31,7 @@ public class GeneratorProcessor extends BasicProcessor {
 
         CounterLength counterLength = tile.getData(VEAttachments.COUNTER_LENGTH);
         if (counterLength.counter() > 0) {
+            this.setRecipeReady(true);
             return true;
         }
 
@@ -76,6 +77,7 @@ public class GeneratorProcessor extends BasicProcessor {
     public boolean completeRecipe(VETileEntity tile) {
         tile.getEnergy().setProduction(0);
         tile.setLit(false);
+        tickCounter(tile,tile.getData(VEAttachments.COUNTER_LENGTH));
         return true;
     }
 
