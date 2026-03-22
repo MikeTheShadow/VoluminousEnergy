@@ -69,12 +69,11 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
         for (VERelationalTank tank : tanks) {
             if (tank.getTankType() == TankType.OUTPUT)
                 continue;
-            if (isFluidValid(tank.getSlotNum(), resource)
-                && (tank.getTank().isEmpty() || resource.is(tank.getTank().getFluid().getFluid()))) {
-                if (tank.getTank().getFluid().getAmount() != tank.getTank().getCapacity())
-                    if (tileEntity.getRecipeProcessor() instanceof BasicProcessor basicProcessor) {
-                        basicProcessor.markRecipeDirty();
-                    }
+
+            if (isFluidValid(tank.getSlotNum(), resource) && (tank.getTank().isEmpty() || resource.is(tank.getTank().getFluid().getFluid()))) {
+                if (tileEntity.getRecipeProcessor() instanceof BasicProcessor basicProcessor) {
+                    basicProcessor.markRecipeDirty();
+                }
                 return tank.getTank().fill(resource.copy(), action);
             }
         }
@@ -95,8 +94,7 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
                     continue;
             }
             if (resource.is(tank.getTank().getFluid().getFluid())) {
-                if (tank.getTank().getFluid().getAmount() != tank.getTank().getCapacity() &&
-                    tileEntity.getRecipeProcessor() instanceof BasicProcessor basicProcessor) {
+                if (tileEntity.getRecipeProcessor() instanceof BasicProcessor basicProcessor) {
                     basicProcessor.markRecipeDirty();
                 }
                 return tank.getTank().drain(resource.copy(), action);
@@ -115,7 +113,7 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
             }
             if (tank.getTank().getFluidAmount() > 0) {
                 if (tank.getTank().getFluid().getAmount() != tank.getTank().getCapacity())
-                    if(tileEntity.getRecipeProcessor() instanceof BasicProcessor basicProcessor) {
+                    if (tileEntity.getRecipeProcessor() instanceof BasicProcessor basicProcessor) {
                         basicProcessor.markRecipeDirty();
                     }
                 return tank.getTank().drain(maxDrain, action);

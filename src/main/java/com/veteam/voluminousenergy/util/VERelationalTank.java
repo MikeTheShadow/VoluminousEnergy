@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.util;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.fluids.AbstractFluidValidator;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import net.minecraft.core.Direction;
@@ -84,7 +85,7 @@ public class VERelationalTank {
      * @return true if the fluid can be inserted into the tank
      */
     public boolean canInsertOutputFluid(VERecipe recipe, int id) {
-        return (this.getTank().isEmpty() || this.tank.getFluid().equals(recipe.getOutputFluids().get(id)))
+        return (this.getTank().isEmpty() || this.tank.getFluid().is(recipe.getOutputFluids().get(id).getFluid()))
                 && this.getTank().getFluidAmount() + recipe.getOutputFluids().get(id).getAmount() <= this.tank.getCapacity();
     }
 

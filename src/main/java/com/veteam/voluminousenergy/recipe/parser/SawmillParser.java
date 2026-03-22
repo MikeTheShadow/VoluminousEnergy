@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.recipe.parser;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.recipe.SawmillRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
@@ -64,6 +65,7 @@ public class SawmillParser extends BasicParser {
                     (plank.is(plankOutput.getItem()) && plankOutput.getCount() + plank.getCount() <= plankOutput.getMaxStackSize());
             boolean dustValid = dustOutput.isEmpty() ||
                     (dustOutput.is(recipe.getResult(0).getItem()) && dustOutput.getCount() + recipe.getResultCount(0) <= dustOutput.getMaxStackSize());
+
             return plankValid && dustValid && tile.getRelationalTank(0).canInsertOutputFluid(recipe,0);
         }
         return super.canCompleteRecipe(tile);

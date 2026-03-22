@@ -395,7 +395,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
     public CapabilityMap getCapabilityMap() {
         if (this.capabilityMap == null) {
-            capabilityMap = new CapabilityMap(inventory, getSlotManagers(), getRelationalTanks(), energy, this);
+            this.capabilityMap = new CapabilityMap(inventory, getSlotManagers(), getRelationalTanks(), energy, this);
         }
         return this.capabilityMap;
     }
