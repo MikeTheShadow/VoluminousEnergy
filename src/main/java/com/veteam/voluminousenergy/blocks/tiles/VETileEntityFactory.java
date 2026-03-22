@@ -71,7 +71,8 @@ public class VETileEntityFactory {
             newTile.energy = storage.copy();
 
         //set processor. Copied so that processors are properly instanced
-        newTile.recipeProcessor = processor.copy();
+        if(processor != null)
+            newTile.recipeProcessor = processor.copy();
 
         // send out power
         newTile.sendsOutPower = sendsOutPower;

@@ -59,7 +59,7 @@ public class VEContainerFactory {
                         addSlot(new VESlot(h, slot.index, slot.x, slot.y, true, slot.listener, isClientSide));
                         continue;
                     }
-                    if (i == this.tileEntity.getSlotManagers().size()) {
+                    if (i >= this.tileEntity.getSlotManagers().size()) {
                         VoluminousEnergy.LOGGER.error("Unable to properly create " + menuTypeRegistryObject.get() + ". The VEContainerFactory tried to process more slots than were available.");
                         break;
                     }
