@@ -61,9 +61,8 @@ public class VETileEntityFactory {
         };
 
         // Add our tanks and slots
-        AtomicInteger index = new AtomicInteger();
+        AtomicInteger index = new AtomicInteger(0);
         newTile.addSlots(containerFactory.getTileSlotsAsManagers());
-        index.set(0);
         newTile.addTanks(tanks.stream().map(t -> t.asTank(index.getAndIncrement())).toList());
 
         // Set energy before the slot count otherwise we'll run into issues with the data slot
@@ -199,6 +198,7 @@ public class VETileEntityFactory {
         public VERelationalTank asTank(int id) {
             VERelationalTank tank = new VERelationalTank(new FluidTank(capacity), id, recipePos, TankType.BOTH, "both_tank_" + id + ":output_tank_gui",fluidValidator);
             tank.setAllowAny((fluidValidator == null));
+            tank.setIgnoreDirection(true);
             return tank;
         }
     }

@@ -9,6 +9,7 @@ import com.veteam.voluminousenergy.tools.buttons.slots.SlotDirectionButton;
 import com.veteam.voluminousenergy.tools.buttons.tanks.TankBoolButton;
 import com.veteam.voluminousenergy.tools.buttons.tanks.TankDirectionButton;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
+import com.veteam.voluminousenergy.util.TankType;
 import com.veteam.voluminousenergy.util.TextUtil;
 import com.veteam.voluminousenergy.util.VERelationalTank;
 import net.minecraft.client.Minecraft;
@@ -71,6 +72,10 @@ public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends
         }
 
         for (VERelationalTank tank : tileEntity.getRelationalTanks()) {
+
+            if(tank.getTankType() == TankType.BOTH)
+                continue;
+
             // Input Tank
             addRenderableWidget(new TankBoolButton(tank, (this.width / 2) - 198, this.topPos + (20 * increase), button -> {
                 // Do nothing
@@ -97,6 +102,22 @@ public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends
             }));
 
             addRenderableWidget(new SlotDirectionButton(manager, (this.width / 2) - 184, this.topPos + (20 * increase), button -> {
+            }));
+            increase++;
+        }
+
+        for (VERelationalTank tank : tileEntity.getRelationalTanks()) {
+
+            if(tank.getTankType() == TankType.BOTH)
+                continue;
+
+            // Input Tank
+            addRenderableWidget(new TankBoolButton(tank, (this.width / 2) - 198, this.topPos + (20 * increase), button -> {
+                // Do nothing
+            }));
+
+            addRenderableWidget(new TankDirectionButton(tank, (this.width / 2) - 184, this.topPos + (20 * increase), button -> {
+                // Do nothing
             }));
             increase++;
         }

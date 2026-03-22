@@ -57,23 +57,6 @@ public class DistillationUnitScreen extends VEContainerScreen<VEContainer> {
     }
 
     @Override
-    protected void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
-        // Slots
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 38, 18, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 38, 49, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("2")), 96, 11, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("3")), 96, 42, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("4")), 137, 11, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("5")), 137, 42, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("6")), 122, 64, WHITE_TEXT_STYLE);
-
-        // Tanks
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("0")), 61, 18, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("1")), 119, 11, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("2")), 157, 11, WHITE_TEXT_STYLE);
-    }
-
-    @Override
     protected void renderTooltip(GuiGraphics matrixStack, int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
             matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(tileEntity.getEnergy(), Config.DISTILLATION_UNIT_MAX_POWER.get()), mouseX, mouseY);

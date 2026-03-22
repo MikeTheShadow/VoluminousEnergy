@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.util.tiles;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
@@ -44,8 +43,14 @@ public class CapabilityMap {
         }
 
         for (VERelationalTank tank : tanks) {
-            MultiFluidSlotWrapper wrapper = fluidMap.get(tank.getSideDirection());
-            wrapper.addRelationalTank(tank);
+            if(tank.isIgnoreDirection()) {
+                for(MultiFluidSlotWrapper wrapper : fluidMap.values()) {
+                    wrapper.addRelationalTank(tank);
+                }
+            } else {
+                MultiFluidSlotWrapper wrapper = fluidMap.get(tank.getSideDirection());
+                wrapper.addRelationalTank(tank);
+            }
         }
     }
 

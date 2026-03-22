@@ -107,47 +107,4 @@ public class TankScreen extends VEContainerScreen<VEContainer> {
             drawIOSideHelper();
         }
     }
-
-    public void updateButtonDirection(int direction, int slotId) {
-        for (Renderable Renderable : this.renderables) {
-            if (Renderable instanceof SlotDirectionButton && ((SlotDirectionButton) Renderable).getAssociatedSlotId() == slotId) {
-                ((SlotDirectionButton) Renderable).setDirectionFromInt(direction);
-            }
-        }
-    }
-
-    public void updateBooleanButton(boolean status, int slotId) {
-        for (Renderable Renderable : this.renderables) {
-            if (Renderable instanceof SlotBoolButton && ((SlotBoolButton) Renderable).getAssociatedSlotId() == slotId) {
-                //VoluminousEnergy.LOGGER.debug("About to update the status of the Status/boolean Button.");
-                ((SlotBoolButton) Renderable).toggleRender(true);
-                ((SlotBoolButton) Renderable).setStatus(status);
-                ((SlotBoolButton) Renderable).toggleRender(false);
-            }
-        }
-    }
-
-    public void updateTankDirection(int direction, int id) {
-        for (Renderable Renderable : this.renderables) {
-            if (Renderable instanceof TankDirectionButton && ((TankDirectionButton) Renderable).getId() == id) {
-                ((TankDirectionButton) Renderable).setDirectionFromInt(direction);
-            }
-        }
-    }
-
-    public void updateTankStatus(boolean status, int id) {
-        for (Renderable Renderable : this.renderables) {
-            if (Renderable instanceof TankBoolButton && ((TankBoolButton) Renderable).getId() == id) {
-                //VoluminousEnergy.LOGGER.debug("About to update the status of the Status/boolean Button.");
-                ((TankBoolButton) Renderable).toggleRender(true);
-                ((TankBoolButton) Renderable).setStatus(status);
-                ((TankBoolButton) Renderable).toggleRender(false);
-            }
-        }
-    }
-
-    public void informTileOfIOButton(boolean connection) {
-        UUID uuid = Minecraft.getInstance().player.getUUID();
-    }
-
 }

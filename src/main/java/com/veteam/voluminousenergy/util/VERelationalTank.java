@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.util;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.fluids.AbstractFluidValidator;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import net.minecraft.core.Direction;
