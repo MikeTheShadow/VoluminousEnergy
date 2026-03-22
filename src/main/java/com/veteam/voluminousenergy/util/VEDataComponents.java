@@ -119,11 +119,11 @@ public class VEDataComponents {
                         .build();
             });
 
-    public static final Supplier<DataComponentType<Float>> MULTI_TOOL_ENERGY =
+    public static final Supplier<DataComponentType<Integer>> MULTI_TOOL_ENERGY =
             DATA_COMPONENT_TYPE_DEFERRED_REGISTER.register("multi_tool_energy", () -> {
-                DataComponentType.Builder<Float> stackBuilder = DataComponentType.builder();
-                return stackBuilder.persistent(Codec.FLOAT)
-                        .networkSynchronized(ByteBufCodecs.FLOAT)
+                DataComponentType.Builder<Integer> stackBuilder = DataComponentType.builder();
+                return stackBuilder.persistent(Codec.INT)
+                        .networkSynchronized(ByteBufCodecs.INT)
                         .build();
             });
 

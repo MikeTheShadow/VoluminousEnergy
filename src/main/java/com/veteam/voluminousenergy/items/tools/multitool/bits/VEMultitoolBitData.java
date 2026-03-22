@@ -12,7 +12,7 @@ import net.neoforged.neoforge.common.ToolActions;
 
 public class VEMultitoolBitData {
 
-    private static final TagKey<Block> MINEABLE_WITH_TRIMMER = TagUtil.getBlockTagKeyFromLocation(new ResourceLocation(VoluminousEnergy.MODID, "mineable/trimmer"));
+    public static final TagKey<Block> MINEABLE_WITH_TRIMMER = TagUtil.getBlockTagKeyFromLocation(new ResourceLocation(VoluminousEnergy.MODID, "mineable/trimmer"));
 
     // Drill bits 
     public static final BitItemData IRON_DRILL_BIT_DATA = new BitItemData(ToolActions.DEFAULT_PICKAXE_ACTIONS, Tiers.IRON, BlockTags.MINEABLE_WITH_PICKAXE,

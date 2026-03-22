@@ -1,11 +1,13 @@
 package com.veteam.voluminousenergy.items.tools.multitool;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.items.VEItem;
 import com.veteam.voluminousenergy.items.data.CombustibleFluidsData;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItem;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItemData;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.ToolType;
+import com.veteam.voluminousenergy.items.tools.multitool.bits.VEMultitoolBitData;
 import com.veteam.voluminousenergy.util.NumberUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
 import com.veteam.voluminousenergy.util.VEDataComponents;
@@ -81,7 +83,7 @@ public class Multitool extends VEItem {
             );
         }
 
-        Float energy = itemStack.getOrDefault(VEDataComponents.MULTI_TOOL_ENERGY,0f);
+        Integer energy = itemStack.getOrDefault(VEDataComponents.MULTI_TOOL_ENERGY,0);
 
         tooltip.add(TextUtil.translateString("text.voluminousenergy.energy").copy()
                 .append(": " + NumberUtil.formatNumber(energy)));
@@ -115,8 +117,13 @@ public class Multitool extends VEItem {
         for (ItemStack stack : inventory) {
             if (stack.getItem() instanceof BitItem bitItem) {
                 Tool tool = bitItem.getTool();
-                float tempSpeed = tool.getMiningSpeed(blockState);
 
+                if(bitItem.getBitItemData().getToolType() == ToolType.TRIMMER.value()
+                    && blockState.is(VEMultitoolBitData.MINEABLE_WITH_TRIMMER)) {
+                    return bitItem;
+                }
+
+                float tempSpeed = tool.getMiningSpeed(blockState);
                 if (tempSpeed > miningSpeed && tool.isCorrectForDrops(blockState)) {
                     miningSpeed = tempSpeed;
                     selected = bitItem;
@@ -152,7 +159,7 @@ public class Multitool extends VEItem {
 
     @Override
     public float getDestroySpeed(@NotNull ItemStack itemStack, @NotNull BlockState blockStateToMine) {
-        float energy = itemStack.getOrDefault(VEDataComponents.MULTI_TOOL_ENERGY,0f);
+        int energy = itemStack.getOrDefault(VEDataComponents.MULTI_TOOL_ENERGY,0);
         if(energy < 1) {
             IFluidHandlerItem capability = itemStack.getCapability(Capabilities.FluidHandler.ITEM);
             FluidStack drainedFluid = capability.drain(50, IFluidHandler.FluidAction.EXECUTE);
@@ -161,10 +168,10 @@ public class Multitool extends VEItem {
             }
 
             int energyPerTick = CombustibleFluidsData.getEnergyPerTick(drainedFluid);
-            int multiplier = 5;
+            int multiplier = 20;
             int inputAmount = drainedFluid.getAmount();
 
-            float usages = inputAmount * ((energyPerTick * multiplier) / 1000f);
+            int usages = Math.round(inputAmount * ((energyPerTick * multiplier) / 1000f));
             itemStack.set(VEDataComponents.MULTI_TOOL_ENERGY, usages + energy); // Add energy because if it's 0.2 for example we want to keep that
         }
 
@@ -185,7 +192,7 @@ public class Multitool extends VEItem {
 
     @Override
     public boolean mineBlock(@NotNull ItemStack stack, @NotNull Level level, @NotNull BlockState blockState, @NotNull BlockPos pos, @NotNull LivingEntity player) {
-        Float energy = stack.getOrDefault(VEDataComponents.MULTI_TOOL_ENERGY,0f);
+        Integer energy = stack.getOrDefault(VEDataComponents.MULTI_TOOL_ENERGY,0);
         stack.set(VEDataComponents.MULTI_TOOL_ENERGY,--energy);
         BitItem selected = getBestBitForBlock(stack, blockState);
         if (selected == null) {
@@ -204,6 +211,13 @@ public class Multitool extends VEItem {
         if(!(stack.getItem() instanceof Multitool)) return 0f;
         
         BitItem bit = getBestBitForDamage(stack);
+        if (bit == null) {
+            stack.set(VEDataComponents.TOOL_TYPE, 0);
+            stack.set(VEDataComponents.TOOL_TIER, 0);
+        } else {
+            stack.set(VEDataComponents.TOOL_TYPE, bit.getBitItemData().getToolType());
+            stack.set(VEDataComponents.TOOL_TIER, bit.getBitItemData().getToolTier());
+        }
         return bit != null ? bit.getBitItemData().getAttackDamage() : 0;
     }
 
