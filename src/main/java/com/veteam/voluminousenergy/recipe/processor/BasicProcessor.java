@@ -69,6 +69,7 @@ public class BasicProcessor implements AbstractRecipeProcessor {
             CounterLength counterLength = new CounterLength(0, 0);
             tile.setData(VEAttachments.COUNTER_LENGTH, counterLength);
             this.selectedRecipe = null;
+            this.isRecipeReady = false;
             return false;
         }
 
@@ -77,6 +78,7 @@ public class BasicProcessor implements AbstractRecipeProcessor {
             CounterLength counterLength = new CounterLength(0, 0);
             tile.setData(VEAttachments.COUNTER_LENGTH, counterLength);
             this.selectedRecipe = null;
+            this.isRecipeReady = false;
             return false;
         }
         tile.setLit(true);

@@ -8,7 +8,6 @@ import com.veteam.voluminousenergy.recipe.parser.BasicParser;
 import com.veteam.voluminousenergy.recipe.parser.HydroponicParser;
 import com.veteam.voluminousenergy.recipe.serializer.FluidSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
@@ -16,19 +15,18 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 public class HydroponicIncubatorRecipe extends VERNGRecipe {
     public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.HYDROPONIC_INCUBATING.get();
 
     private final BasicParser parser = new HydroponicParser(this)
-            .addChancedItemResult(2, 0)
-            .addChancedItemResult(3, 1)
-            .addChancedItemResult(4, 2)
-            .addChancedItemResult(5, 3)
-            .addChancedItemResult(6, 4)
-            .addFluidIngredient(0, 0);
+        .addChancedItemResult(4, 1)
+        .addChancedItemResult(5, 2)
+        .addChancedItemResult(6, 3)
+        .addItemResult(3, 0)
+        .addFluidIngredient(0, 0)
+        .addIngredient(2, 0);
 
     public HydroponicIncubatorRecipe() {
     }
@@ -40,10 +38,10 @@ public class HydroponicIncubatorRecipe extends VERNGRecipe {
     public static final RecipeSerializer<HydroponicIncubatorRecipe> SERIALIZER = new RecipeSerializer<>() {
 
         public static final MapCodec<HydroponicIncubatorRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
-                VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
-                VERecipeCodecs.VE_FLUID_INGREDIENT_CODEC.listOf().fieldOf("fluid_ingredients").forGetter((getter) -> getter.registryFluidIngredients),
-                VERecipeCodecs.VE_CHANCED_OUTPUT_ITEM_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.itemResultsWithChance),
-                Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime)
+            VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
+            VERecipeCodecs.VE_FLUID_INGREDIENT_CODEC.listOf().fieldOf("fluid_ingredients").forGetter((getter) -> getter.registryFluidIngredients),
+            VERecipeCodecs.VE_CHANCED_OUTPUT_ITEM_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.itemResultsWithChance),
+            Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime)
         ).apply(instance, HydroponicIncubatorRecipe::new));
 
         private static final FluidSerializerHelper<HydroponicIncubatorRecipe> helper = new FluidSerializerHelper<>();
