@@ -127,7 +127,7 @@ public class DimensionalLaserScreen extends VEContainerScreen<VEContainer> {
         if (isHovering(119, 18, 12, 50, mouseX, mouseY)) { // Tank
             int amount = this.getTank().getFluidAmount();
             String name = this.getFluidStackFromTank().getHoverName().getString();
-            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
+            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity(0)), mouseX, mouseY);
         }
 
         super.renderTooltip(matrixStack, mouseX, mouseY);
@@ -167,7 +167,7 @@ public class DimensionalLaserScreen extends VEContainerScreen<VEContainer> {
             matrixStack.blit(GUI, i + 97, j + 34, 176, 0, 15, progress);
             matrixStack.blit(GUI, i + 11, j + (16 + (49 - power)), 176, 24 + (49 - power), 12, power);
 
-            VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), this.getFluidStackFromTank(), tileEntity.getTankCapacity(), i + 119, j + 18, 0, 12, 50);
+            VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), this.getFluidStackFromTank(), tileEntity.getTankCapacity(0), i + 119, j + 18, 0, 12, 50);
 
             drawIOSideHelper();
             // Upgrade slot

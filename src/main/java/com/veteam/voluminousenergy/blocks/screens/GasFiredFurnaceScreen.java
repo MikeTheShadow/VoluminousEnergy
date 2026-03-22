@@ -66,7 +66,7 @@ public class GasFiredFurnaceScreen extends VEContainerScreen<VEContainer> {
         if (isHovering(31, 18, 12, 49, mouseX, mouseY)) {
             int amount = tileEntity.getFluidStackFromTank(0).getAmount();
             String name = tileEntity.getFluidStackFromTank(0).getHoverName().getString();
-            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
+            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity(0)), mouseX, mouseY);
         } else if (!VoluminousEnergy.JEI_LOADED && isHovering(getFuelTooltipArea(), mouseX, mouseY)) {
             matrixStack.renderComponentTooltip(this.font, getFuelTooltips(), mouseX, mouseY);
         } else if (!VoluminousEnergy.JEI_LOADED && isHovering(getCounterTooltipArea(), mouseX, mouseY)) {
@@ -122,7 +122,7 @@ public class GasFiredFurnaceScreen extends VEContainerScreen<VEContainer> {
             matrixStack.blit(GUI, i + 81, j + 31, 176, 0, progress, 17);
             matrixStack.blit(GUI, i + 54, j + (54 + (flameHeight - fuelProgress)), 176, 24 + (flameHeight - fuelProgress), flameHeight, fuelProgress);
 
-            VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(0), tileEntity.getTankCapacity(), i + 31, j + 18, 0, 12, 50);
+            VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(0), tileEntity.getTankCapacity(0), i + 31, j + 18, 0, 12, 50);
             drawIOSideHelper();
         }
         RenderSystem.setShaderTexture(0, GUI_TOOLS);

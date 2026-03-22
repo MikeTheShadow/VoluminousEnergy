@@ -18,8 +18,6 @@ import org.jetbrains.annotations.NotNull;
 public class ToolingStationScreen extends VEContainerScreen<VEContainer> {
     private VETileEntity tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/tooling_station_gui.png");
-    private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
-
 
     public ToolingStationScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
@@ -48,25 +46,12 @@ public class ToolingStationScreen extends VEContainerScreen<VEContainer> {
     }
 
     @Override
-    protected void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
-        // Slots
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 38, 18, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 38, 49, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("2")), 86, 32, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("3")), 134, 18, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("4")), 134, 49, WHITE_TEXT_STYLE);
-
-        // Tanks
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("0")), 61, 18, WHITE_TEXT_STYLE);
-    }
-
-    @Override
     protected void renderTooltip(GuiGraphics matrixStack, int mouseX, int mouseY) {
 
         if (isHovering(61, 18, 12, 50, mouseX, mouseY)) { // Input Tank
             int amount = tileEntity.getFluidStackFromTank(0).getAmount();
             String name = tileEntity.getFluidStackFromTank(0).getHoverName().getString();
-            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
+            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity(0)), mouseX, mouseY);
         }
 
         super.renderTooltip(matrixStack, mouseX, mouseY);
@@ -100,7 +85,7 @@ public class ToolingStationScreen extends VEContainerScreen<VEContainer> {
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
             if (lightArrow) matrixStack.blit(GUI, i + 109, j + 18, 188, 0, 22, 47);
-            VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(0), tileEntity.getTankCapacity(), i + 61, j + 18, 0, 12, 50);
+            VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(0), tileEntity.getTankCapacity(0), i + 61, j + 18, 0, 12, 50);
 
             /*try{
                 VERender.renderGuiTank(tileEntity.getFluidStackFromTank(1),tileEntity.getTankCapacity(), i + 157, j + 18, 0, 12, 50);

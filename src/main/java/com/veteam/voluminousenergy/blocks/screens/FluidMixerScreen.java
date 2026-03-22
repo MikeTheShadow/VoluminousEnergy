@@ -81,19 +81,19 @@ public class FluidMixerScreen extends VEContainerScreen<VEContainer> {
         if (isHovering(61, 18, 12, 50, mouseX, mouseY)) { // First Input Tank
             int amount = tileEntity.getFluidStackFromTank(0).getAmount();
             String name = tileEntity.getFluidStackFromTank(0).getHoverName().getString();
-            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
+            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity(0)), mouseX, mouseY);
         }
 
         if (isHovering(109, 18, 12, 50, mouseX, mouseY)) { // Second input Tank
             int amount = tileEntity.getFluidStackFromTank(1).getAmount();
             String name = tileEntity.getFluidStackFromTank(1).getHoverName().getString();
-            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
+            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity(1)), mouseX, mouseY);
         }
 
         if (isHovering(159, 18, 12, 50, mouseX, mouseY)) { // Second Output Tank
             int amount = tileEntity.getFluidStackFromTank(2).getAmount();
             String name = tileEntity.getFluidStackFromTank(2).getHoverName().getString();
-            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
+            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity(2)), mouseX, mouseY);
         }
 
         super.renderTooltip(matrixStack, mouseX, mouseY);
@@ -105,8 +105,8 @@ public class FluidMixerScreen extends VEContainerScreen<VEContainer> {
 
     public List<Component> getTooltips() {
         return Arrays.asList(
-                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_complete").getString() + ": " + tileEntity.progressCounterPercent() + "%"),
-                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + tileEntity.ticksLeft()));
+            Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_complete").getString() + ": " + tileEntity.progressCounterPercent() + "%"),
+            Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + tileEntity.ticksLeft()));
     }
 
     @Override
@@ -132,17 +132,10 @@ public class FluidMixerScreen extends VEContainerScreen<VEContainer> {
             matrixStack.blit(GUI, i + 127, j + 31, 176, 0, progress, 17);
             matrixStack.blit(GUI, i + 11, j + (16 + (49 - power)), 176, 24 + (49 - power), 12, power);
 
-            VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(0), tileEntity.getTankCapacity(), i + 61, j + 18, 0, 12, 50);
+            VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(0), tileEntity.getTankCapacity(0), i + 61, j + 18, 0, 12, 50);
+            VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(1), tileEntity.getTankCapacity(1), i + 109, j + 18, 0, 12, 50);
+            VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(2), tileEntity.getTankCapacity(2), i + 159, j + 18, 0, 12, 50);
 
-            try {
-                VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(1), tileEntity.getTankCapacity(), i + 109, j + 18, 0, 12, 50);
-            } catch (Exception e) {
-            }
-
-            try {
-                VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(2), tileEntity.getTankCapacity(), i + 159, j + 18, 0, 12, 50);
-            } catch (Exception e) {
-            }
             drawIOSideHelper();
             // Upgrade slot
             RenderSystem.setShaderTexture(0, GUI_TOOLS);

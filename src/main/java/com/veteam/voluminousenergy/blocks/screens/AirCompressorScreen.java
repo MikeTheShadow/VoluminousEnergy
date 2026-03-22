@@ -67,7 +67,7 @@ public class AirCompressorScreen extends VEContainerScreen<VEContainer> {
         if (isHovering(93, 18, 12, 50, mouseX, mouseY)) { // Oxidizer Tank
             String name = tileEntity.getFluidStackFromTank(0).getHoverName().getString();
             int amount = tileEntity.getFluidStackFromTank(0).getAmount();
-            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
+            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity(0)), mouseX, mouseY);
         }
 
         super.renderTooltip(matrixStack, mouseX, mouseY);
@@ -94,11 +94,7 @@ public class AirCompressorScreen extends VEContainerScreen<VEContainer> {
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
             matrixStack.blit(this.GUI, i + 11, j + (16 + (49 - power)), 176, 24 + (49 - power), 12, power);
-
-            try {
-                VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(0), tileEntity.getTankCapacity(), i + 93, j + 18, 0, 12, 50);
-            } catch (Exception e) {
-            }
+            VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(0), tileEntity.getTankCapacity(0), i + 93, j + 18, 0, 12, 50);
             // Upgrade slot
             RenderSystem.setShaderTexture(0, GUI_TOOLS);
 

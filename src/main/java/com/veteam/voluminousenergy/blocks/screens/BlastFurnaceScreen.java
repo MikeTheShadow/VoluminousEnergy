@@ -93,7 +93,7 @@ public class BlastFurnaceScreen extends VEContainerScreen<VEContainer> {
         if (isHovering(61, 18, 12, 50, mouseX, mouseY)) { // Input Tank
             int amount = tileEntity.getFluidStackFromTank(0).getAmount();
             String name = tileEntity.getFluidStackFromTank(0).getHoverName().getString();
-            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
+            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity(0)), mouseX, mouseY);
         }
 
         super.renderTooltip(matrixStack, mouseX, mouseY);
@@ -132,7 +132,7 @@ public class BlastFurnaceScreen extends VEContainerScreen<VEContainer> {
             matrixStack.blit(this.GUI, i + 109, j + 32, 176, 0, progress, 17);
             matrixStack.blit(this.GUI, i + 11, j + (16 + (49 - power)), 176, 24 + (49 - power), 12, power);
 
-            VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(0), tileEntity.getTankCapacity(), i + 61, j + 18, 0, 12, 50);
+            VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(0), tileEntity.getTankCapacity(0), i + 61, j + 18, 0, 12, 50);
 
             drawIOSideHelper();
             // Upgrade slot

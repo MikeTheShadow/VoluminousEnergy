@@ -6,7 +6,6 @@ import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.persistence.ChunkFluid;
 import com.veteam.voluminousenergy.persistence.ChunkFluids;
 import com.veteam.voluminousenergy.persistence.SingleChunkFluid;
-import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.VEAttachments;
@@ -31,16 +30,17 @@ import java.util.function.Supplier;
 
 import static com.veteam.voluminousenergy.blocks.tiles.VETileEntity.DEFAULT_TANK_CAPACITY;
 
-public class DimensionalLaserRecipeProcessor extends MultiBlockRecipeProcessor {
+public class DimensionalLaserRecipeProcessor implements AbstractRecipeProcessor {
 
+    private Supplier<? extends Block> blockSupplier;
     public DimensionalLaserRecipeProcessor(Supplier<? extends Block> block) {
-        super(block);
+        this.blockSupplier = block;
     }
 
     @Override
-    public boolean processRecipe(VETileEntity tile) {
+    public void tick(VETileEntity tile) {
         if (!isMultiBlockValid(tile))
-            return false;
+            return;
 
         int buildTick = tile.getData(VEAttachments.BUILD_TICK);
         if (buildTick != 1000) {
@@ -97,11 +97,11 @@ public class DimensionalLaserRecipeProcessor extends MultiBlockRecipeProcessor {
             // }
             tile.setChanged();
             tile.setData(VEAttachments.BUILD_TICK, buildTick + 1);
-            return false;
+            return;
         }
 
         if (!tile.canConsumeEnergy())
-            return false;
+            return;
         ItemStack stack = tile.getInventory().getStackInSlot(2);
 
         ChunkFluidData data = stack.get(VEDataComponents.CHUNK_FLUID_DATA);
@@ -109,8 +109,8 @@ public class DimensionalLaserRecipeProcessor extends MultiBlockRecipeProcessor {
         DimensionalLaserRecipeProcessor processor = (DimensionalLaserRecipeProcessor) tile.getRecipeProcessor();
 
         if (data == null) {
-            processor.updateCounter(Config.DIMENSIONAL_LASER_PROCESS_TIME.get(), tile);
-            return false;
+            BasicProcessor.updateCounter(Config.DIMENSIONAL_LASER_PROCESS_TIME.get(), tile);
+            return;
         }
 
         ChunkFluid fluid = ChunkFluids.getInstance().getChunkFluid(new ChunkPos(data.x(), data.z()));
@@ -118,7 +118,7 @@ public class DimensionalLaserRecipeProcessor extends MultiBlockRecipeProcessor {
         if (fluid == null) {
             VoluminousEnergy.LOGGER.error("Unable to find chunk fluid for what appears to be a scanned chunk: "
                 + data.x() + " | " + data.z());
-            return false;
+            return;
         }
 
         // If we ever need to validate a selected fluid we do so here.
@@ -129,7 +129,7 @@ public class DimensionalLaserRecipeProcessor extends MultiBlockRecipeProcessor {
         boolean canFill = tile.getRelationalTank(0)
             .testFillTank(new FluidStack(singleChunkFluid.getFluid(), amount)) > 0;
         if (!canFill)
-            return canFill;
+            return;
 
         CounterLength counterLength = tile.getData(VEAttachments.COUNTER_LENGTH);
 
@@ -145,16 +145,19 @@ public class DimensionalLaserRecipeProcessor extends MultiBlockRecipeProcessor {
             counter--;
             tile.consumeEnergy();
         } else {
-            counter = processor.updateCounter(Config.DIMENSIONAL_LASER_PROCESS_TIME.get(), tile);
+            counter = BasicProcessor.updateCounter(Config.DIMENSIONAL_LASER_PROCESS_TIME.get(), tile);
         }
         tile.setData(VEAttachments.COUNTER_LENGTH, new CounterLength(counter, counterLength.length()));
-        return true;
+    }
+
+    @Override
+    public AbstractRecipeProcessor copy() {
+        return new DimensionalLaserRecipeProcessor(blockSupplier);
     }
 
     private int counter = 0;
     private boolean lastReading = false;
 
-    @Override
     public boolean isMultiBlockValid(VETileEntity tile) {
         if (counter != 0) {
             counter--;
@@ -170,15 +173,10 @@ public class DimensionalLaserRecipeProcessor extends MultiBlockRecipeProcessor {
 
             final BlockState blockState = tile.getLevel().getBlockState(blockPos);
 
-            if (blockState.getBlock() != getBlock()) { // Fails MultiBlock condition
+            if (blockState.getBlock() != blockSupplier.get()) { // Fails MultiBlock condition
                 lastReading = false;
             }
         }
         return lastReading;
-    }
-
-    @Override
-    public boolean validateRecipe(VETileEntity tile) {
-        return true;
     }
 }

@@ -73,7 +73,7 @@ public class SawmillScreen extends VEContainerScreen<VEContainer> {
         if (isHovering(138, 18, 12, 50, mouseX, mouseY)) { // Output Tank
             int amount = tileEntity.getFluidStackFromTank(0).getAmount();
             String name = tileEntity.getFluidStackFromTank(0).getHoverName().getString();
-            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
+            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity(0)), mouseX, mouseY);
         }
 
         if (!VoluminousEnergy.JEI_LOADED && isHovering(getTooltipArea(), mouseX, mouseY)) { // Progress tooltip
@@ -116,7 +116,7 @@ public class SawmillScreen extends VEContainerScreen<VEContainer> {
             matrixStack.blit(GUI, i + 67, j + 31, 176, 0, progress, 17);
             matrixStack.blit(GUI, i + 11, j + (16 + (49 - power)), 176, 24 + (49 - power), 12, power);
 
-            VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(0), tileEntity.getTankCapacity(), i + 138, j + 18, 0, 12, 50);
+            VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(0), tileEntity.getTankCapacity(0), i + 138, j + 18, 0, 12, 50);
 
             drawIOSideHelper();
             // Upgrade slot

@@ -84,7 +84,7 @@ public class PumpScreen extends VEContainerScreen<VEContainer> {
             FluidStack stack = tileEntity.getRelationalTank(0).getTank().getFluid();
             String name = stack.getHoverName().getString();
             int amount = stack.getAmount();
-            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
+            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity(0)), mouseX, mouseY);
         }
 
         super.renderTooltip(matrixStack, mouseX, mouseY);
@@ -112,7 +112,7 @@ public class PumpScreen extends VEContainerScreen<VEContainer> {
             matrixStack.blit(GUI, i + 11, j + (16 + (49 - power)), 176, 24 + (49 - power), 12, power);
 
             try {
-                VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getRelationalTank(0).getTank().getFluid(), tileEntity.getTankCapacity(), i + 93, j + 18, 0, 12, 50);
+                VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getRelationalTank(0).getTank().getFluid(), tileEntity.getTankCapacity(0), i + 93, j + 18, 0, 12, 50);
             } catch (Exception e) {
             }
             drawIOSideHelper();

@@ -122,10 +122,6 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         }
     }
 
-    public int getTankCapacity() {
-        return DEFAULT_TANK_CAPACITY;
-    }
-
     public void updateTankPacketFromGui(boolean status, int id) {
         for (VERelationalTank tank : getRelationalTanks()) {
             if (id == tank.getSlotNum())
