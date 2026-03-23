@@ -70,11 +70,14 @@ public class AirCompressorProcessor implements AbstractRecipeProcessor {
 
     public boolean addAirToTank(int multiplier, VERelationalTank tank) {
 
-        int totalToAdd = 250 * multiplier;
-        int amountToAdd = Math.min(totalToAdd, (tank.getTank().getFluidAmount() + totalToAdd));
-        if (amountToAdd == 0)
+        int totalToAdd = 25 * multiplier;
+
+        int amountLeft = tank.getTank().getCapacity() - tank.getTank().getFluidAmount();
+
+        int amountToFill = Math.min(totalToAdd, amountLeft);
+        if (amountToFill == 0)
             return false;
-        tank.getTank().fill(new FluidStack(VEFluids.COMPRESSED_AIR_REG.get(), amountToAdd),
+        tank.getTank().fill(new FluidStack(VEFluids.COMPRESSED_AIR_REG.get(), amountToFill),
                 IFluidHandler.FluidAction.EXECUTE);
         return true;
     }
