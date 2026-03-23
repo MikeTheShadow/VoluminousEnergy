@@ -207,7 +207,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     public void updateClients() {
         if (level == null)
             return;
-        level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 1);
+        level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 3);
     }
 
     public int getEnergyCostMultiplier() {

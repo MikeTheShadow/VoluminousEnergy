@@ -64,6 +64,30 @@ public abstract class VEContainer extends AbstractContainerMenu {
                 public void set(int value) {
                 }
             });
+
+            addDataSlot(new DataSlot() {
+                @Override
+                public int get() {
+                    return tileEntity.getEnergy().getProduction();
+                }
+
+                @Override
+                public void set(int value) {
+                    tileEntity.getEnergy().setProduction(value);
+                }
+            });
+
+            addDataSlot(new DataSlot() {
+                @Override
+                public int get() {
+                    return tileEntity.getEnergy().getConsumption();
+                }
+
+                @Override
+                public void set(int value) {
+                    tileEntity.getEnergy().setConsumption(value);
+                }
+            });
         }
     }
 
