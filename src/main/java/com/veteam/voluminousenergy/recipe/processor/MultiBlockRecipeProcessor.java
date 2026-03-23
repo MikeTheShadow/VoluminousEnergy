@@ -39,7 +39,7 @@ public class MultiBlockRecipeProcessor extends BasicProcessor {
             return lastReading;
         }
         counter = 20;
-        int rawDirection = tile.getBlockState().getValue(BlockStateProperties.FACING).get2DDataValue();
+        int rawDirection = tile.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING).get2DDataValue();
 
         int sXMultiplier = 1;
         int sZMultiplier = 1;

@@ -91,7 +91,7 @@ public class CapabilityMap {
     }
 
     private static Direction normalizeDirection(Direction direction, BlockEntity tileEntity) {
-        Direction currentDirection = tileEntity.getBlockState().getValue(BlockStateProperties.FACING);
+        Direction currentDirection = tileEntity.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
         int directionInt = direction.get3DDataValue();
         if (directionInt == 0 || directionInt == 1) return direction;
         Direction rotated = currentDirection;
