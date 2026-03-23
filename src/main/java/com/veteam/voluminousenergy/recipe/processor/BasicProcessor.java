@@ -176,7 +176,7 @@ public class BasicProcessor implements AbstractRecipeProcessor {
         int newLength;
         ItemStackHandler handler = tile.getInventory();
         VEEnergyStorage energy = tile.getEnergy();
-        if (energy != null && handler != null) {
+        if (energy != null && handler != null && energy.getUpgradeSlotId() != -1) {
             newLength = calculateCounter(defaultProcessTime,
                 handler.getStackInSlot(energy.getUpgradeSlotId()).copy());
         } else {
