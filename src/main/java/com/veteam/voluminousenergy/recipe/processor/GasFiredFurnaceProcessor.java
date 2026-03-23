@@ -75,7 +75,7 @@ public class GasFiredFurnaceProcessor extends BasicProcessor {
     @Override
     public boolean validateRecipe(VETileEntity tile) {
         Level level = tile.getLevel();
-        ItemStack furnaceInput = tile.getInventory().getStackInSlot(0);
+        ItemStack furnaceInput = tile.getInventory().getStackInSlot(2);
         var blastingRecipeNew = level.getRecipeManager()
                 .getRecipeFor(RecipeType.BLASTING, new SimpleContainer(furnaceInput.copy()), level).orElse(null);
         if (blastingRecipeNew != null) {
@@ -106,12 +106,12 @@ public class GasFiredFurnaceProcessor extends BasicProcessor {
     }
 
     private boolean createOutput(VETileEntity tile, Recipe<?> recipe) {
-        if (!canInsertIntoResult(recipe, tile.getLevel().registryAccess(), tile.getInventory().getStackInSlot(1))) {
+        if (!canInsertIntoResult(recipe, tile.getLevel().registryAccess(), tile.getInventory().getStackInSlot(3))) {
             return false;
         }
-        tile.getInventory().extractItem(0, 1, false);
+        tile.getInventory().extractItem(2, 1, false);
         ItemStack output = recipe.getResultItem(tile.getLevel().registryAccess()).copy();
-        tile.getInventory().insertItem(1, output, false);
+        tile.getInventory().insertItem(3, output, false);
         return true;
     }
 

@@ -44,7 +44,7 @@ public class BasicProcessor implements AbstractRecipeProcessor {
         if (isRecipeDirty()) {
             if (validateRecipe(tile))
                 this.setRecipeReady(true);
-            this.markRecipeDirty();
+            this.isRecipeDirty = false;
         }
 
         if (!isRecipeReady())

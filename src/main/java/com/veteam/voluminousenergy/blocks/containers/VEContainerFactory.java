@@ -91,8 +91,8 @@ public class VEContainerFactory {
         private int index = 0;
 
         public VEContainerFactoryBuilder addUpgradeSlot(int x, int y) {
-            this.factory.slots.add(new Slot(index++, x, y, null));
             this.factory.upgradeSlotId = index;
+            this.factory.slots.add(new Slot(index++, x, y, null));
             return this;
         }
 

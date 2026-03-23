@@ -48,7 +48,6 @@ public class ElectricFurnaceProcessor extends BasicProcessor {
     public boolean processRecipe(VETileEntity tile) {
         if (!tile.consumeEnergy())
             return false;
-        tile.consumeEnergy();
         int soundTick = tile.getData(VEAttachments.SOUND_TICK);
         if (++soundTick == 19) {
             soundTick = 0;
