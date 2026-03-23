@@ -22,8 +22,8 @@ public class FluidMixerRecipe extends VERecipe {
 
     private final BasicParser parser = new BasicParser(this)
             .addFluidIngredient(0, 0)
-            .addFluidResult(1, 0)
-            .addFluidResult(2, 1);
+            .addFluidIngredient(1, 1)
+            .addFluidResult(2, 0);
 
     public FluidMixerRecipe() {
     }

@@ -10,6 +10,7 @@ import com.veteam.voluminousenergy.items.tools.multitool.CombustionMultitool;
 import com.veteam.voluminousenergy.items.tools.multitool.MuiltiToolFluidHandler;
 import com.veteam.voluminousenergy.items.tools.multitool.Multitool;
 import com.veteam.voluminousenergy.items.tools.multitool.VEMultitoolItems;
+import com.veteam.voluminousenergy.tools.energy.VEEnergyItemStorage;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.networking.packets.*;
 import com.veteam.voluminousenergy.util.VEDataComponents;
@@ -69,7 +70,7 @@ public class VEGenericListener {
                 event.registerItem(Capabilities.EnergyStorage.ITEM, (stack, provider) ->
                 {
                     VEEnergyItem energyItem = (VEEnergyItem) stack.getItem();
-                    return new VEEnergyStorage(energyItem.getMaxEnergy(), energyItem.getMaxTransfer());
+                    return new VEEnergyItemStorage(stack, energyItem.getMaxEnergy(), energyItem.getMaxTransfer());
                 }, item);
             }
         });

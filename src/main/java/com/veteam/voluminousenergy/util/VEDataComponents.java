@@ -127,4 +127,12 @@ public class VEDataComponents {
                         .build();
             });
 
+    public static final Supplier<DataComponentType<Integer>> ENERGY =
+            DATA_COMPONENT_TYPE_DEFERRED_REGISTER.register("energy", () -> {
+                DataComponentType.Builder<Integer> stackBuilder = DataComponentType.builder();
+                return stackBuilder.persistent(Codec.INT)
+                        .networkSynchronized(ByteBufCodecs.INT)
+                        .build();
+            });
+
 }

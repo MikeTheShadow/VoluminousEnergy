@@ -58,7 +58,7 @@
   "tank.voluminousenergy.input_tank": "Tank",
   "tank.voluminousenergy.output_tank": "Tank",
   "tank.voluminousenergy.both_tank": "Tank",
-  "tank.voluminousenergy.tank_empty": "Tanky Empty",
+  "tank.voluminousenergy.tank_empty": "Tank Empty",
   "tank.voluminousenergy.invalid": "INVALID",
   "tank.voluminousenergy.null": "NULL",
   "_comment": "IO Menu Labels (shorts)",

@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.recipe.processor;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.blocks.tiles.inventory.VEItemStackHandler;
 import com.veteam.voluminousenergy.items.batteries.VEEnergyItem;
@@ -31,6 +32,7 @@ public class BatteryBoxProcessor implements AbstractRecipeProcessor {
             if (chargeItem(stack, itemEnergy, storage))
                 moveItem(tile);
         }
+        tile.setChanged();
     }
 
     void moveItem(VETileEntity tile) {
@@ -49,45 +51,53 @@ public class BatteryBoxProcessor implements AbstractRecipeProcessor {
     }
 
     private boolean dischargeItem(ItemStack stack, IEnergyStorage itemEnergy, VEEnergyStorage tileEnergy) {
-        if (tileEnergy.getEnergyStored() < tileEnergy.getMaxEnergyStored()) {
-            if (itemEnergy.canExtract()) {
-                int toExtract;
-                if (stack.getItem() instanceof VEEnergyItem) {
-                    int maxExtractItem = ((VEEnergyItem) stack.getItem()).getMaxTransfer();
-                    toExtract = Math.min(itemEnergy.getEnergyStored(), maxExtractItem);
-                    toExtract = Math.min(toExtract, POWER_MAX_TX);
-                } else
-                    toExtract = Math.min(itemEnergy.getEnergyStored(), POWER_MAX_TX);
+        if (!tileEnergy.isFullyCharged() && itemEnergy.canExtract()) {
+            int toExtract;
+            if (stack.getItem() instanceof VEEnergyItem) {
+                int maxExtractItem = ((VEEnergyItem) stack.getItem()).getMaxTransfer();
+                toExtract = Math.min(itemEnergy.getEnergyStored(), maxExtractItem);
+            } else
+                toExtract = Math.min(itemEnergy.getEnergyStored(), POWER_MAX_TX);
 
-                int amountExtracted = itemEnergy.extractEnergy(toExtract, false);
-                tileEnergy.receiveEnergy(amountExtracted, false);
+            toExtract = Math.min(toExtract, POWER_MAX_TX);
+            toExtract = Math.min(toExtract, tileEnergy.getCapacity() - tileEnergy.getEnergyStored());
+
+            if (toExtract <= 0)
                 return itemEnergy.getEnergyStored() == 0;
-            }
+
+            int amountExtracted = itemEnergy.extractEnergy(toExtract, false);
+            tileEnergy.receiveEnergy(amountExtracted, false);
+            return itemEnergy.getEnergyStored() == 0;
         }
         return false;
     }
 
     private boolean chargeItem(ItemStack stack, IEnergyStorage itemEnergy, VEEnergyStorage tileEnergy) {
-        if (tileEnergy.getEnergyStored() > 0) {
-            if (itemEnergy.canReceive()) {
-                int toReceive;
-                if (stack.getItem() instanceof VEEnergyItem) {
-                    int maxReceiveItem = ((VEEnergyItem) stack.getItem()).getMaxTransfer();
-                    toReceive = Math.min(
-                            (itemEnergy.getMaxEnergyStored() - itemEnergy.getEnergyStored()),
-                            maxReceiveItem);
-                    toReceive = Math.min(toReceive, POWER_MAX_TX);
-                    toReceive = Math.min(toReceive, tileEnergy.getEnergyStored());
-                } else
-                    toReceive = Math.min((itemEnergy.getMaxEnergyStored() - itemEnergy.getEnergyStored()),
-                            POWER_MAX_TX);
+        if (tileEnergy.getEnergyStored() == 0 || !itemEnergy.canReceive())
+            return false;
+        int toReceive;
+        if (stack.getItem() instanceof VEEnergyItem veEnergyItem) {
+            int maxReceiveItem =  veEnergyItem.getMaxTransfer();
+            toReceive = Math.min((itemEnergy.getMaxEnergyStored() - itemEnergy.getEnergyStored()), maxReceiveItem);
+        } else
+            toReceive = Math.min((itemEnergy.getMaxEnergyStored() - itemEnergy.getEnergyStored()),
+                POWER_MAX_TX);
 
-                int extracted = tileEnergy.extractEnergy(toReceive, false);
-                itemEnergy.receiveEnergy(extracted, false);
-                return itemEnergy.getEnergyStored() == itemEnergy.getMaxEnergyStored();
-            }
-        }
-        return false;
+        toReceive = Math.min(toReceive, POWER_MAX_TX);
+        toReceive = Math.min(toReceive, tileEnergy.getEnergyStored());
+
+        if (toReceive <= 0)
+            return itemEnergy.getEnergyStored() == itemEnergy.getMaxEnergyStored();
+
+        int extracted = tileEnergy.extractEnergy(toReceive, false);
+
+        VoluminousEnergy.LOGGER.info("Extracted: " + extracted);
+
+        int stored = itemEnergy.receiveEnergy(extracted, false);
+
+        VoluminousEnergy.LOGGER.info("Stored: " + stored);
+
+        return itemEnergy.getEnergyStored() == itemEnergy.getMaxEnergyStored();
     }
 
     @Override

@@ -1,9 +1,7 @@
 package com.veteam.voluminousenergy.tools.energy;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.util.VEDataComponents;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.energy.IEnergyStorage;
 
 public class VEEnergyItemStorage extends VEEnergyStorage {
     private final ItemStack itemStack;
@@ -18,28 +16,25 @@ public class VEEnergyItemStorage extends VEEnergyStorage {
         if (!canReceive()) return 0;
         int energyStored = getEnergyStored();
         int energyReceived = Math.min(capacity - energyStored, Math.min(this.maxReceive, maxReceive));
-        if (!simulate) writeEnergy(energyStored + energyReceived);
+        if (!simulate && energyReceived > 0) {
+            itemStack.set(VEDataComponents.ENERGY, energyStored + energyReceived);
+        }
         return energyReceived;
     }
 
     @Override
     public int extractEnergy(int maxExtract, boolean simulate) {
         if (!canExtract()) return 0;
-        int energyExtracted = Math.min(getEnergyStored(), Math.min(this.maxExtract, maxExtract));
-        VoluminousEnergy.LOGGER.debug("Extracting Energy from item. energyStored: " + getEnergyStored() + " energyExtracted: " + energyExtracted + " new total: " + (getEnergyStored() - energyExtracted) + " Max Extract: " + maxExtract);
-        if (!simulate) writeEnergy(getEnergyStored() - energyExtracted);
+        int energyStored = getEnergyStored();
+        int energyExtracted = Math.min(energyStored, Math.min(this.maxExtract, maxExtract));
+        if (!simulate && energyExtracted > 0) {
+            itemStack.set(VEDataComponents.ENERGY, energyStored - energyExtracted);
+        }
         return energyExtracted;
     }
 
     @Override
     public int getEnergyStored() {
-        return this.itemStack.getCapability(Capabilities.EnergyStorage.ITEM).getEnergyStored();
-    }
-
-    private void writeEnergy(int amount) {
-        IEnergyStorage energyStorage = this.itemStack.getCapability(Capabilities.EnergyStorage.ITEM);
-        int stored = energyStorage.getEnergyStored();
-        energyStorage.extractEnergy(stored,false);
-        energyStorage.receiveEnergy(amount,false);
+        return this.itemStack.getOrDefault(VEDataComponents.ENERGY, 0);
     }
 }
