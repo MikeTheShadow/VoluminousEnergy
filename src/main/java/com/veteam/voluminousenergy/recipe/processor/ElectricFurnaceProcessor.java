@@ -41,6 +41,7 @@ public class ElectricFurnaceProcessor extends BasicProcessor {
         } else
             furnaceRecipe = null;
         tile.setData(VEAttachments.COUNTER_LENGTH, new CounterLength(0, 0));
+        this.setRecipeReady(false);
         return false;
     }
 
