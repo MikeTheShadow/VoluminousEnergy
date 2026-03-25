@@ -359,19 +359,15 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         if (recipe != null) {
             ResourceLocation resourcelocation = recipe.id();
 
-            if (resourcelocation == null && this.level != null) {
-                for (RecipeHolder<VERecipe> holder : (List<RecipeHolder<VERecipe>>)(List<?>)this.level.getRecipeManager().getAllRecipesFor((RecipeType<VERecipe>)this.recipeType)) {
-                    if (holder.value() == recipe) {
-                        resourcelocation = holder.id();
-                        recipe.setId(resourcelocation);
-                        break;
-                    }
-                }
-            }
-
             if (resourcelocation != null) {
                 this.recipesUsed.addTo(resourcelocation, 1);
             }
+        }
+    }
+
+    public void recordRecipeUsed(RecipeHolder<?> recipe) {
+        if (recipe != null) {
+            this.recipesUsed.addTo(recipe.id(), 1);
         }
     }
 

@@ -220,6 +220,10 @@ public class BasicProcessor implements AbstractRecipeProcessor {
         this.isRecipeDirty = true;
     }
 
+    public void setRecipeDirty(boolean status) {
+        this.isRecipeDirty = status;
+    }
+
     public void setRecipeReady(boolean status) {
         this.isRecipeReady = status;
     }

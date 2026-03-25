@@ -16,6 +16,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.BlastingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.Level;
@@ -25,8 +26,31 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 public class GasFiredFurnaceProcessor extends BasicProcessor {
 
-    private SmeltingRecipe furnaceRecipe;
-    private BlastingRecipe blastingRecipe;
+    private RecipeHolder<SmeltingRecipe> furnaceRecipe;
+    private RecipeHolder<BlastingRecipe> blastingRecipe;
+
+    @Override
+    public void tick(VETileEntity tile) {
+        if (isRecipeDirty()) {
+            if (validateRecipe(tile))
+                this.setRecipeReady(true);
+            this.setRecipeDirty(false);
+        }
+
+        CounterLength fuelCounterLength = tile.getData(VEAttachments.FUEL_COUNTER_LENGTH);
+        int fuelCounter = fuelCounterLength.counter();
+        if (fuelCounter > 0) {
+            fuelCounter--;
+            tile.setData(VEAttachments.FUEL_COUNTER_LENGTH, new CounterLength(fuelCounter, fuelCounterLength.length()));
+        }
+
+        tile.setLit(fuelCounter > 0);
+
+        if (!isRecipeReady())
+            return;
+
+        super.tick(tile);
+    }
 
     @Override
     public boolean processRecipe(VETileEntity tile) {
@@ -37,29 +61,30 @@ public class GasFiredFurnaceProcessor extends BasicProcessor {
         int fuelLength = fuelCounterLength.length();
 
         FluidStack fuel = tile.getFluidStackFromTank(0);
-        ItemStack stack = tile.getInventory().getStackInSlot(2);
 
         // Gas processing
-        if (fuelCounter > 0) {
-            fuelCounter--;
-        } else if (!fuel.is(Fluids.EMPTY) && !stack.isEmpty()) {
-            tile.getRelationalTank(0).getTank().drain(250, IFluidHandler.FluidAction.EXECUTE);
-            fuelCounter = 400 * CombustibleFluidsData.getEnergyPerTick(fuel) / 4;
-            VEItemStackHandler inventory = tile.getInventory();
-            ItemStack upgradeItem = inventory.getStackInSlot(4);
-            if (upgradeItem.getCount() > 0 && upgradeItem.getItem() == VEItems.QUARTZ_MULTIPLIER.get()) {
-                fuelCounter = fuelCounter / (upgradeItem.getCount() ^ 2);
-            } else if (!upgradeItem.isEmpty() && upgradeItem.has(VEDataComponents.MULTIPLIER_DATA)) {
-                Float multiplier = upgradeItem.get(VEDataComponents.MULTIPLIER_DATA);
-                multiplier = multiplier / 0.5F > 1 ? 1 : multiplier / 0.5F;
-                fuelCounter = (int) (fuelCounter * multiplier);
+        if (fuelCounter <= 0) {
+            if (!fuel.is(Fluids.EMPTY)) {
+                tile.getRelationalTank(0).getTank().drain(250, IFluidHandler.FluidAction.EXECUTE);
+                fuelCounter = 400 * CombustibleFluidsData.getEnergyPerTick(fuel) / 4;
+                VEItemStackHandler inventory = tile.getInventory();
+                ItemStack upgradeItem = inventory.getStackInSlot(4);
+                if (upgradeItem.getCount() > 0 && upgradeItem.getItem() == VEItems.QUARTZ_MULTIPLIER.get()) {
+                    fuelCounter = fuelCounter / (upgradeItem.getCount() * upgradeItem.getCount());
+                } else if (!upgradeItem.isEmpty() && upgradeItem.has(VEDataComponents.MULTIPLIER_DATA)) {
+                    Float multiplier = upgradeItem.get(VEDataComponents.MULTIPLIER_DATA);
+                    multiplier = multiplier / 0.5F > 1 ? 1 : multiplier / 0.5F;
+                    fuelCounter = (int) (fuelCounter * multiplier);
+                }
+                fuelLength = fuelCounter;
+                tile.setData(VEAttachments.FUEL_COUNTER_LENGTH, new CounterLength(fuelCounter, fuelLength));
+                tile.setLit(true);
+                tile.setChanged();
+            } else {
+                return false;
             }
-            fuelLength = fuelCounter;
-            tile.setChanged();
-        } else {
-            return false;
         }
-        tile.setData(VEAttachments.FUEL_COUNTER_LENGTH, new CounterLength(fuelCounter, fuelLength));
+
         int soundTick = tile.getData(VEAttachments.SOUND_TICK);
         if (++soundTick == 19) {
             soundTick = 0;
@@ -79,7 +104,7 @@ public class GasFiredFurnaceProcessor extends BasicProcessor {
         var blastingRecipeNew = level.getRecipeManager()
                 .getRecipeFor(RecipeType.BLASTING, new SimpleContainer(furnaceInput.copy()), level).orElse(null);
         if (blastingRecipeNew != null) {
-            blastingRecipe = blastingRecipeNew.value();
+            blastingRecipe = blastingRecipeNew;
             updateCounter(200,tile);
             return true;
         } else
@@ -87,7 +112,7 @@ public class GasFiredFurnaceProcessor extends BasicProcessor {
         var furnaceRecipeNew = level.getRecipeManager()
                 .getRecipeFor(RecipeType.SMELTING, new SimpleContainer(furnaceInput.copy()), level).orElse(null);
         if (furnaceRecipeNew != null) {
-            furnaceRecipe = furnaceRecipeNew.value();
+            furnaceRecipe = furnaceRecipeNew;
             updateCounter(200,tile);
             return true;
         } else
@@ -99,14 +124,20 @@ public class GasFiredFurnaceProcessor extends BasicProcessor {
 
     @Override
     public boolean completeRecipe(VETileEntity tile) {
-        if (blastingRecipe != null)
-            return createOutput(tile, blastingRecipe);
-        else if (furnaceRecipe != null)
-            return createOutput(tile, furnaceRecipe);
+        if (blastingRecipe != null) {
+            boolean completed = createOutput(tile, blastingRecipe);
+            if (completed) tile.recordRecipeUsed(blastingRecipe);
+            return completed;
+        } else if (furnaceRecipe != null) {
+            boolean completed = createOutput(tile, furnaceRecipe);
+            if (completed) tile.recordRecipeUsed(furnaceRecipe);
+            return completed;
+        }
         throw new IllegalStateException("Unable to complete a recipe as none were selected");
     }
 
-    private boolean createOutput(VETileEntity tile, Recipe<?> recipe) {
+    private boolean createOutput(VETileEntity tile, RecipeHolder<? extends Recipe<?>> recipeHolder) {
+        Recipe<?> recipe = recipeHolder.value();
         if (!canInsertIntoResult(recipe, tile.getLevel().registryAccess(), tile.getInventory().getStackInSlot(3))) {
             return false;
         }

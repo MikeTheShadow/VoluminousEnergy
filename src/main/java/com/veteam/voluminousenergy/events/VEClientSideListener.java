@@ -41,7 +41,7 @@ public class VEClientSideListener {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onDataPackSync(RecipesUpdatedEvent event) {
-        VERecipe.updateCache();
+        VERecipe.updateCache(event.getRecipeManager());
         IntegratedServer server = Minecraft.getInstance().getSingleplayerServer();
         if (server != null) {
             doDataProcess(server);

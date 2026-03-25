@@ -11,14 +11,15 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.BlastingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.Level;
 
 public class ElectricFurnaceProcessor extends BasicProcessor {
 
-    private SmeltingRecipe furnaceRecipe;
-    private BlastingRecipe blastingRecipe;
+    private RecipeHolder<SmeltingRecipe> furnaceRecipe;
+    private RecipeHolder<BlastingRecipe> blastingRecipe;
 
     @Override
     public boolean validateRecipe(VETileEntity tile) {
@@ -27,7 +28,7 @@ public class ElectricFurnaceProcessor extends BasicProcessor {
         var blastingRecipeNew = level.getRecipeManager()
                 .getRecipeFor(RecipeType.BLASTING, new SimpleContainer(furnaceInput.copy()), level).orElse(null);
         if (blastingRecipeNew != null) {
-            blastingRecipe = blastingRecipeNew.value();
+            blastingRecipe = blastingRecipeNew;
             updateCounter(200,tile);
             return true;
         } else
@@ -35,7 +36,7 @@ public class ElectricFurnaceProcessor extends BasicProcessor {
         var furnaceRecipeNew = level.getRecipeManager()
                 .getRecipeFor(RecipeType.SMELTING, new SimpleContainer(furnaceInput.copy()), level).orElse(null);
         if (furnaceRecipeNew != null) {
-            furnaceRecipe = furnaceRecipeNew.value();
+            furnaceRecipe = furnaceRecipeNew;
             updateCounter(200,tile);
             return true;
         } else
@@ -63,10 +64,15 @@ public class ElectricFurnaceProcessor extends BasicProcessor {
 
     @Override
     public boolean completeRecipe(VETileEntity tile) {
-        if (blastingRecipe != null)
-            return createOutput(tile, blastingRecipe);
-        else if (furnaceRecipe != null)
-            return createOutput(tile, furnaceRecipe);
+        if (blastingRecipe != null) {
+            boolean completed = createOutput(tile, blastingRecipe);
+            if (completed) tile.recordRecipeUsed(blastingRecipe);
+            return completed;
+        } else if (furnaceRecipe != null) {
+            boolean completed = createOutput(tile, furnaceRecipe);
+            if (completed) tile.recordRecipeUsed(furnaceRecipe);
+            return completed;
+        }
         return false;
     }
 
@@ -75,7 +81,8 @@ public class ElectricFurnaceProcessor extends BasicProcessor {
         return new ElectricFurnaceProcessor();
     }
 
-    private boolean createOutput(VETileEntity tile, Recipe<?> recipe) {
+    private boolean createOutput(VETileEntity tile, RecipeHolder<? extends Recipe<?>> recipeHolder) {
+        Recipe<?> recipe = recipeHolder.value();
         if (!canInsertIntoResult(recipe, tile.getLevel().registryAccess(), tile.getInventory().getStackInSlot(1))) {
             return false;
         }

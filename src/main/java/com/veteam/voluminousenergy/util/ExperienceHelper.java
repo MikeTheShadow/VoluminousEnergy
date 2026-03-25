@@ -8,6 +8,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ExperienceOrb;
+import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.phys.Vec3;
 
@@ -39,6 +40,8 @@ public class ExperienceHelper {
                 if (recipeHolder.value() instanceof VERNGExperienceRecipe experienceRecipe) {
                     float xp = (experienceRecipe.getMinExp() + experienceRecipe.getMaxExp()) / 2.0f;
                     createExperience(pLevel, pPopVec, entry.getIntValue(), xp);
+                } else if (recipeHolder.value() instanceof AbstractCookingRecipe cookingRecipe) {
+                    createExperience(pLevel, pPopVec, entry.getIntValue(), cookingRecipe.getExperience());
                 }
             });
         }

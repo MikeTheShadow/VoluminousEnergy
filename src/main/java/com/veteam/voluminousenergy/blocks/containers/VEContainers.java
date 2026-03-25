@@ -111,7 +111,7 @@ public class VEContainers {
     public static final VEContainerFactory ELECTRIC_FURNACE_FACTORY = new VEContainerFactoryBuilder()
             .create(ELECTRIC_FURNACE.container(), ELECTRIC_FURNACE.block())
             .addSlot(53, 33, new ItemInputSlot(UP)) // Furnace Input Slot
-            .addSlot(116, 33, new ItemOutputSlot(DOWN)) // Furnace Output Slot
+            .addSlot(116, 33, new ListenedItemOutputSlot(DOWN, new ExperienceListener())) // Furnace Output Slot
             .addUpgradeSlot(154, -14)// Upgrade Slot
             .build();
 
@@ -153,7 +153,7 @@ public class VEContainers {
             .addSlot(8, 18, new BucketInputSlot(UP, 0)) // Fluid input tilePos
             .addSlot(8, 49, new BucketOutputSlot(DOWN)) // Extract fluid from input
             .addSlot(53, 33, new ItemInputSlot(EAST)) // Item input tilePos
-            .addSlot(116, 33, new ItemOutputSlot(WEST)) // Item output tilePos
+            .addSlot(116, 33, new ListenedItemOutputSlot(WEST, new ExperienceListener())) // Item output tilePos
             .addUpgradeSlot(154, -14) // Upgrade tilePos
             .build();
 

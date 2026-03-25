@@ -11,6 +11,8 @@ import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -232,9 +234,14 @@ public abstract class VERecipe implements Recipe<Container> {
     }
 
     // Call after cache has been populated
-    public static void updateCache() {
+    public static void updateCache(RecipeManager recipeManager) {
         recipeCache.clear();
-        recipeCache.putAll(newCache);
+        for (RecipeHolder<?> holder : recipeManager.getRecipes()) {
+            if (holder.value() instanceof VERecipe veRecipe) {
+                veRecipe.setId(holder.id());
+                recipeCache.computeIfAbsent(veRecipe.getType(), k -> new ArrayList<>()).add(veRecipe);
+            }
+        }
         newCache.clear();
     }
 
