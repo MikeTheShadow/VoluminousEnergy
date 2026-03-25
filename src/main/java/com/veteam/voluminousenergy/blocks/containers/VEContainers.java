@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.blocks.containers.VEContainerFactory.VEContainerFactoryBuilder;
+import com.veteam.voluminousenergy.blocks.containers.iolisteners.ExperienceListener;
 import com.veteam.voluminousenergy.blocks.containers.iolisteners.ToolingStationSlotWithIOListening;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntityFactory.*;
 
@@ -82,8 +83,8 @@ public class VEContainers {
     public static final VEContainerFactory CRUSHER_FACTORY = new VEContainerFactoryBuilder()
             .create(CRUSHER.container(), CRUSHER.block())
             .addSlot(80, 13, new ItemInputSlot(UP)) // Input Slot
-            .addSlot(71, 58, new ItemOutputSlot(DOWN)) //Main Output
-            .addSlot(89, 58, new ItemOutputSlot(NORTH)) // RNG slot
+            .addSlot(71, 58, new ListenedItemOutputSlot(DOWN, new ExperienceListener())) //Main Output
+            .addSlot(89, 58, new ListenedItemOutputSlot(NORTH, new ExperienceListener())) // RNG slot
             .addUpgradeSlot(154, -14) //Upgrade slot
             .build();
 

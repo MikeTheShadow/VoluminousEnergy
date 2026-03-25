@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.containers.iolisteners;
 
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 
@@ -7,7 +8,7 @@ public interface SlotWithIOListener {
 
     void onRemoved(IItemHandler handler, int slot, int amount, boolean isClientSide);
 
-    void onTake(IItemHandler handler, ItemStack stack, boolean isClientSide);
+    void onTake(IItemHandler handler, ItemStack stack, boolean isClientSide, Player player);
 
     /**
      *

@@ -22,6 +22,10 @@ import java.util.List;
 public class VEItemStackHandler extends ItemStackHandler {
 
     private final VETileEntity tileEntity;
+
+    public VETileEntity getTileEntity() {
+        return tileEntity;
+    }
     private final int upgradeSlotLocation;
     private AbstractItemStackValidator validator;
 

@@ -1,13 +1,12 @@
 package com.veteam.voluminousenergy.recipe;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.recipe.parser.BasicParser;
-import com.veteam.voluminousenergy.util.VEClientSide;
 import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -37,6 +36,16 @@ public abstract class VERecipe implements Recipe<Container> {
 
     public int processTime;
     public List<ItemStack> results = new ArrayList<>();
+
+    private ResourceLocation id;
+
+    public void setId(ResourceLocation id) {
+        this.id = id;
+    }
+
+    public ResourceLocation id() {
+        return id;
+    }
 
     public VERecipe() {
 

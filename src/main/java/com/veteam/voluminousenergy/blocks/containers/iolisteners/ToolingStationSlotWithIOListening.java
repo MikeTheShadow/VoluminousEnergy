@@ -4,6 +4,7 @@ import com.veteam.voluminousenergy.blocks.tiles.inventory.VEItemStackHandler;
 import com.veteam.voluminousenergy.items.tools.multitool.Multitool;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItem;
 import com.veteam.voluminousenergy.util.VEDataComponents;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 
@@ -15,11 +16,11 @@ public class ToolingStationSlotWithIOListening implements SlotWithIOListener {
     @Override
     public void onRemoved(IItemHandler h, int slot, int amount, boolean isClientSide) {
         ItemStack multitool = h.getStackInSlot(slot);
-        onTake(h, multitool, isClientSide);
+        onTake(h, multitool, isClientSide, null);
     }
 
     @Override
-    public void onTake(IItemHandler h, ItemStack multitool, boolean isClientSide) {
+    public void onTake(IItemHandler h, ItemStack multitool, boolean isClientSide, Player player) {
         VEItemStackHandler handler = (VEItemStackHandler) h;
 
         if (!(multitool.getItem() instanceof Multitool)) {

@@ -2,8 +2,8 @@ package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.iolisteners.SlotWithIOListener;
-import com.veteam.voluminousenergy.blocks.tiles.VETileEntityFactory.ListenedItemInputSlot;
-import com.veteam.voluminousenergy.blocks.tiles.VETileEntityFactory.TileSlot;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntityFactory.*;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntityFactory;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.SlotType;
 import net.minecraft.core.BlockPos;
@@ -99,6 +99,8 @@ public class VEContainerFactory {
         public VEContainerFactoryBuilder addSlot(int x, int y, TileSlot slot) {
             if (slot instanceof ListenedItemInputSlot listenedItemInputSlot)
                 this.factory.slots.add(new Slot(index++, x, y, listenedItemInputSlot.listener()));
+            else if (slot instanceof ListenedItemOutputSlot listenedItemOutputSlot)
+                this.factory.slots.add(new Slot(index++, x, y, listenedItemOutputSlot.listener()));
             else
                 this.factory.slots.add(new Slot(index++, x, y, null));
 
@@ -141,7 +143,7 @@ public class VEContainerFactory {
         @Override
         public void onTake(@NotNull Player pPlayer, @NotNull ItemStack stack) {
             if (listener != null) {
-                listener.onTake(getItemHandler(), stack, isClientSide);
+                listener.onTake(getItemHandler(), stack, isClientSide, pPlayer);
             }
             super.onTake(pPlayer, stack);
         }

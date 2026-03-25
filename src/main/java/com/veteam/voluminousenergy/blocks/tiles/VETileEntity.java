@@ -4,7 +4,6 @@ import com.veteam.voluminousenergy.blocks.tiles.inventory.VEItemStackHandler;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.upgrades.MysteriousMultiplier;
 import com.veteam.voluminousenergy.recipe.VERecipe;
-import com.veteam.voluminousenergy.recipe.parser.BasicParser;
 import com.veteam.voluminousenergy.recipe.processor.AbstractRecipeProcessor;
 import com.veteam.voluminousenergy.recipe.processor.BasicProcessor;
 import com.veteam.voluminousenergy.tools.Config;
@@ -24,12 +23,14 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -61,6 +62,12 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
     public static final int DEFAULT_TANK_CAPACITY = 4000;
     boolean fluidInputDirty = true;
+
+    private final Object2IntOpenHashMap<ResourceLocation> recipesUsed = new Object2IntOpenHashMap<>();
+
+    public Object2IntOpenHashMap<ResourceLocation> getRecipesUsed() {
+        return recipesUsed;
+    }
 
     public VETileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state,
             RecipeType<? extends Recipe<?>> recipeType) {
@@ -299,6 +306,13 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
             this.sendsOutPower = tag.getBoolean("sends_out_power");
         }
 
+        if (tag.contains("recipes_used", 10)) {
+            CompoundTag recipesTag = tag.getCompound("recipes_used");
+            for (String s : recipesTag.getAllKeys()) {
+                this.recipesUsed.put(new ResourceLocation(s), recipesTag.getInt(s));
+            }
+        }
+
         super.loadAdditional(tag, registry);
     }
 
@@ -332,12 +346,37 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
         tag.putBoolean("sends_out_power", sendsOutPower);
 
+        if (!this.recipesUsed.isEmpty()) {
+            CompoundTag recipesTag = new CompoundTag();
+            this.recipesUsed.forEach((id, count) -> recipesTag.putInt(id.toString(), count));
+            tag.put("recipes_used", recipesTag);
+        }
+
         super.saveAdditional(tag, registry);
+    }
+
+    public void recordRecipeUsed(VERecipe recipe) {
+        if (recipe != null) {
+            ResourceLocation resourcelocation = recipe.id();
+
+            if (resourcelocation == null && this.level != null) {
+                for (RecipeHolder<VERecipe> holder : (List<RecipeHolder<VERecipe>>)(List<?>)this.level.getRecipeManager().getAllRecipesFor((RecipeType<VERecipe>)this.recipeType)) {
+                    if (holder.value() == recipe) {
+                        resourcelocation = holder.id();
+                        recipe.setId(resourcelocation);
+                        break;
+                    }
+                }
+            }
+
+            if (resourcelocation != null) {
+                this.recipesUsed.addTo(resourcelocation, 1);
+            }
+        }
     }
 
     @Override
     public void setChanged() {
-        updateClients();
         super.setChanged();
     }
 

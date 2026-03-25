@@ -141,6 +141,13 @@ public class VETileEntityFactory {
         }
     }
 
+    public record ListenedItemOutputSlot(Direction direction, SlotWithIOListener listener) implements TileSlot {
+        @Override
+        public VESlotManager asManager(int id) {
+            return new VESlotManager(id, direction, false, SlotType.OUTPUT);
+        }
+    }
+
     public record InputSlot(Direction direction) implements TileSlot {
         @Override
         public VESlotManager asManager(int id) {

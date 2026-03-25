@@ -4,13 +4,15 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.recipe.parser.RNGBasicParser;
+import com.veteam.voluminousenergy.recipe.parser.ExperienceParser;
 import com.veteam.voluminousenergy.recipe.parser.BasicParser;
 import com.veteam.voluminousenergy.recipe.serializer.IngredientSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -23,7 +25,7 @@ public class CrusherRecipe extends VERNGExperienceRecipe {
 
     public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.CRUSHING.get();
 
-    private final BasicParser parser = new RNGBasicParser(this)
+    private final BasicParser parser = new ExperienceParser(this)
             .addChancedItemResult(1, 0)
             .addChancedItemResult(2, 1)
             .addIngredient(0, 0);
@@ -71,6 +73,11 @@ public class CrusherRecipe extends VERNGExperienceRecipe {
     };
 
 
+
+    @Override
+    public boolean matches(@NotNull com.veteam.voluminousenergy.blocks.tiles.VETileEntity veTileEntity) {
+        return getParser().isCompleteRecipe(veTileEntity);
+    }
 
     @Override
     public @NotNull RecipeSerializer<? extends VERecipe> getSerializer() {
