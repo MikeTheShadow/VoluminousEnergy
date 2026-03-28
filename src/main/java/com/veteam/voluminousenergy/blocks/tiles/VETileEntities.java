@@ -124,7 +124,7 @@ public class VETileEntities {
             .addEnergyStorageWithConsumption(
                     Config.DISTILLATION_UNIT_MAX_POWER.get(),
                     Config.DISTILLATION_UNIT_TRANSFER.get(),
-                    Config.DIMENSIONAL_LASER_POWER_USAGE.get())
+                    Config.DISTILLATION_UNIT_POWER_USAGE.get())
             .addTanks(
                     new FluidInputTank(0, DEFAULT_TANK_CAPACITY),
                     new FluidOutputTank(0, DEFAULT_TANK_CAPACITY),
@@ -143,8 +143,8 @@ public class VETileEntities {
     public static final VETileEntityFactory ELECTROLYZER_FACTORY = new VETileEntityFactory(VEBlocks.ELECTROLYZER.tile(),
             VEContainers.ELECTROLYZER_FACTORY)
             .addEnergyStorageWithConsumption(Config.ELECTROLYZER_MAX_POWER.get(),
-                    Config.ELECTRIC_FURNACE_TRANSFER.get(),
-                    Config.ELECTRIC_FURNACE_POWER_USAGE.get())
+                    Config.ELECTROLYZER_TRANSFER.get(),
+                    Config.ELECTROLYZER_POWER_USAGE.get())
             .withRecipe(ELECTROLYZING)
             .withCustomRecipeProcessing(new BasicProcessor());
 
@@ -239,17 +239,19 @@ public class VETileEntities {
 
     public static final VETileEntityFactory PUMP_FACTORY = new VETileEntityFactory(VEBlocks.PUMP.tile(),
             VEContainers.PUMP_FACTORY)
-            .addEnergyStorage(
+            .addEnergyStorageWithConsumption(
                     Config.PUMP_MAX_POWER.get(),
-                    Config.PUMP_TRANSFER.get())
+                    Config.PUMP_TRANSFER.get(),
+                Config.PUMP_POWER_USAGE.get())
             .addTanks(new FluidOutputTank(0, DEFAULT_TANK_CAPACITY))
             .withCustomRecipeProcessing(new PumpTileProcessor());
 
     public static final VETileEntityFactory SAWMILL_FACTORY = new VETileEntityFactory(VEBlocks.SAWMILL.tile(),
             VEContainers.SAWMILL_FACTORY)
-            .addEnergyStorage(
+            .addEnergyStorageWithConsumption(
                     Config.SAWMILL_MAX_POWER.get(),
-                    Config.SAWMILL_TRANSFER.get())
+                    Config.SAWMILL_TRANSFER.get(),
+                Config.SAWMILL_POWER_USAGE.get())
             .addTanks(
                     new FluidOutputTank(0, DEFAULT_TANK_CAPACITY))
             .withRecipe(SAWMILLING)
