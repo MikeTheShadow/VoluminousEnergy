@@ -2,7 +2,7 @@
   "type": "voluminousenergy:mysterious_multiplier",
   "conditions": [
     {
-      "chance": 1.0,
+      "chance": 0.4,
       "condition": "minecraft:random_chance"
     },
     {

@@ -5,34 +5,36 @@ import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootTable;
 
 import java.util.List;
+import java.util.Map;
 
 public class LootSpawns {
-    public static final List<ResourceKey<LootTable>> SPAWN_MYSTERIOUS_MULTIPLIERS_IN = List.of(
-            BuiltInLootTables.BASTION_BRIDGE,
-            BuiltInLootTables.END_CITY_TREASURE,
-            BuiltInLootTables.SIMPLE_DUNGEON,
-            BuiltInLootTables.ABANDONED_MINESHAFT,
-            BuiltInLootTables.BURIED_TREASURE,
-            BuiltInLootTables.ARMORER_GIFT,
-            BuiltInLootTables.BASTION_HOGLIN_STABLE,
-            BuiltInLootTables.BASTION_OTHER,
-            BuiltInLootTables.BASTION_TREASURE,
-            BuiltInLootTables.DESERT_PYRAMID,
-            BuiltInLootTables.FISHING_TREASURE,
-            BuiltInLootTables.IGLOO_CHEST,
-            BuiltInLootTables.JUNGLE_TEMPLE,
-            BuiltInLootTables.SHIPWRECK_SUPPLY,
-            BuiltInLootTables.SPAWN_BONUS_CHEST,
-            BuiltInLootTables.NETHER_BRIDGE,
-            BuiltInLootTables.STRONGHOLD_CORRIDOR,
-            BuiltInLootTables.STRONGHOLD_CROSSING,
-            BuiltInLootTables.VILLAGE_WEAPONSMITH,
-            BuiltInLootTables.VILLAGE_TOOLSMITH,
-            BuiltInLootTables.VILLAGE_ARMORER,
-            BuiltInLootTables.VILLAGE_MASON,
-            BuiltInLootTables.UNDERWATER_RUIN_BIG,
-            BuiltInLootTables.UNDERWATER_RUIN_SMALL
+    public static final Map<ResourceKey<LootTable>, Float> SPAWN_MYSTERIOUS_MULTIPLIERS_IN = Map.ofEntries(
+        Map.entry(BuiltInLootTables.BASTION_BRIDGE, 0.25F),
+        Map.entry(BuiltInLootTables.END_CITY_TREASURE, 0.50F),
+        Map.entry(BuiltInLootTables.SIMPLE_DUNGEON, 0.15F),
+        Map.entry(BuiltInLootTables.ABANDONED_MINESHAFT, 0.15F),
+        Map.entry(BuiltInLootTables.BURIED_TREASURE, 0.30F),
+        Map.entry(BuiltInLootTables.ARMORER_GIFT, 0.10F),
+        Map.entry(BuiltInLootTables.BASTION_HOGLIN_STABLE, 0.25F),
+        Map.entry(BuiltInLootTables.BASTION_OTHER, 0.25F),
+        Map.entry(BuiltInLootTables.BASTION_TREASURE, 0.40F),
+        Map.entry(BuiltInLootTables.DESERT_PYRAMID, 0.20F),
+        Map.entry(BuiltInLootTables.FISHING_TREASURE, 0.10F),
+        Map.entry(BuiltInLootTables.IGLOO_CHEST, 0.20F),
+        Map.entry(BuiltInLootTables.JUNGLE_TEMPLE, 0.20F),
+        Map.entry(BuiltInLootTables.SHIPWRECK_SUPPLY, 0.15F),
+        Map.entry(BuiltInLootTables.SPAWN_BONUS_CHEST, 1.00F),
+        Map.entry(BuiltInLootTables.NETHER_BRIDGE, 0.20F),
+        Map.entry(BuiltInLootTables.STRONGHOLD_CORRIDOR, 0.20F),
+        Map.entry(BuiltInLootTables.STRONGHOLD_CROSSING, 0.20F),
+        Map.entry(BuiltInLootTables.VILLAGE_WEAPONSMITH, 0.10F),
+        Map.entry(BuiltInLootTables.VILLAGE_TOOLSMITH, 0.10F),
+        Map.entry(BuiltInLootTables.VILLAGE_ARMORER, 0.10F),
+        Map.entry(BuiltInLootTables.VILLAGE_MASON, 0.10F),
+        Map.entry(BuiltInLootTables.UNDERWATER_RUIN_BIG, 0.20F),
+        Map.entry(BuiltInLootTables.UNDERWATER_RUIN_SMALL, 0.10F)
     );
+
 
     public static final List<ResourceKey<LootTable>> SHEEP_THAT_DROP_ANIMAL_FAT = List.of(
             BuiltInLootTables.SHEEP_WHITE,
