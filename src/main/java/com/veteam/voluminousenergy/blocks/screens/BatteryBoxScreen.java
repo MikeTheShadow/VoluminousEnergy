@@ -73,7 +73,7 @@ public class BatteryBoxScreen extends VEContainerScreen<VEContainer> {
 
     @Override
     protected void renderLabels(@NotNull GuiGraphics matrixStack, int mouseX, int mouseY) {
-        TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateVEBlock("battery_box"), 34, 6, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateVEBlock("battery_box"), 27, 6, WHITE_TEXT_STYLE);
         TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateString("container.inventory"), 8, (this.imageWidth - 96 - 8), WHITE_TEXT_STYLE);
         super.renderLabels(matrixStack, mouseX, mouseY);
     }

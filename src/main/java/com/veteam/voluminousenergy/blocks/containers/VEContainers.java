@@ -29,8 +29,8 @@ public class VEContainers {
 
     public static final VEContainerFactory BATTERY_BOX_FACTORY = new VEContainerFactoryBuilder()
             .create(BATTERY_BOX.container(), BATTERY_BOX.block())
-            .addSlot(35, 17, new InputSlot(UP)) // Top Slot
-            .addSlot(35, 54, new ItemOutputSlot(DOWN)) //Bottom Slot
+            .addSlot(80, 17, new InputSlot(UP)) // Top Slot
+            .addSlot(80, 62, new ItemOutputSlot(DOWN)) //Bottom Slot
             .build();
 
     public static final VEContainerFactory BLAST_FURNACE_FACTORY = new VEContainerFactoryBuilder()
