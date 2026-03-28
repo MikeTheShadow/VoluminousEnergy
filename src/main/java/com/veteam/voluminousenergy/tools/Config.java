@@ -136,6 +136,7 @@ public class Config {
     public static ModConfigSpec.IntValue PUMP_MAX_POWER;
     public static ModConfigSpec.IntValue PUMP_POWER_USAGE;
     public static ModConfigSpec.IntValue PUMP_TRANSFER;
+    public static ModConfigSpec.IntValue PUMP_CHECK_CYCLES_PER_TICK;
 
     // Electric Furnace Variables
     public static ModConfigSpec.IntValue ELECTRIC_FURNACE_MAX_POWER;
@@ -531,9 +532,11 @@ public class Config {
         PUMP_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Pump to store")
                 .defineInRange("Maximum Power", 5000, 0, Integer.MAX_VALUE);
         PUMP_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Pump")
-                .defineInRange("Power Consumption", 16, 0, Integer.MAX_VALUE);
+                .defineInRange("Power Consumption", 128, 0, Integer.MAX_VALUE);
         PUMP_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Pump")
                 .defineInRange("Maximum Transfer", 1000, 0, Integer.MAX_VALUE);
+        PUMP_CHECK_CYCLES_PER_TICK = COMMON_BUILDER.comment("How many blocks should be checked per tick for fluids")
+                .defineInRange("Pump Check Cycles Per Tick", 200, 1, Integer.MAX_VALUE);
     }
 
     @Deprecated // Remove if it will never be utilized in the future, undeprecate if there is a use

@@ -41,21 +41,7 @@ public class PumpScreen extends VEContainerScreen<VEContainer> {
     @Override
     protected void init() {
         super.init();
-        // Buttons
-        addRenderableWidget(new ioMenuButton(64 + (this.width / 2), this.topPos + 4, buttons -> {
-
-        }));
-        int increase = 0;
-
-        for (VESlotManager manager : tileEntity.getSlotManagers()) {
-            addRenderableWidget(new SlotBoolButton(manager, (this.width / 2) - 198, this.topPos + (20 * increase), button -> {
-            }));
-
-            addRenderableWidget(new SlotDirectionButton(manager, (this.width / 2) - 184, this.topPos + (20 * increase), button -> {
-            }));
-            increase++;
-        }
-
+        renderIOMenu(tileEntity, 64 + (this.width / 2), this.topPos + 4);
     }
 
     @Override

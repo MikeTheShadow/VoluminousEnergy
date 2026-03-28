@@ -32,6 +32,8 @@ public class PumpTileProcessor implements AbstractRecipeProcessor {
     @Override
     public void tick(VETileEntity tile) {
 
+        if(lY <= tile.getLevel().dimensionType().minY()) return;
+
         if (!init) {
             init = true;
 
@@ -46,34 +48,29 @@ public class PumpTileProcessor implements AbstractRecipeProcessor {
                 if (fluid == Fluids.EMPTY) {
                     return;
                 }
-                FluidPumpData newData = new FluidPumpData(below.getX(), below.getY(), below.getZ(), fluid);
+                FluidPumpData newData = new FluidPumpData(0,0,0, fluid);
                 tile.setData(VEAttachments.FLUID_PUMP, newData);
                 this.pumpingFluid = fluid;
-                this.lX = below.getX();
-                this.lY = below.getY();
-                this.lZ = below.getZ();
             } else {
                 FluidPumpData fluidPumpData = data.get();
                 this.pumpingFluid = fluidPumpData.fluid();
-                this.lX = fluidPumpData.x();
-                this.lY = fluidPumpData.y();
-                this.lZ = fluidPumpData.z();
+                this.lX = 0;
+                this.lY = 0;
+                this.lZ = 0;
             }
         }
-
         if (pumpingFluid == null) {
             return;
         }
 
         if (!tile.canConsumeEnergy())
             return;
-
         VERelationalTank fluidTank = tile.getRelationalTank(0);
 
         if (fluidTank.getTank().getFluidAmount() + 1000 <= DEFAULT_TANK_CAPACITY) {
-            for (int i = 0; i < 50; i++) {
+            for (int i = 0; i < Config.PUMP_CHECK_CYCLES_PER_TICK.get(); i++) {
                 if (fluidPumpMethod(tile)) {
-                    tile.markFluidInputDirty();
+                    tile.consumeEnergy();
                     break;
                 }
             }
@@ -96,8 +93,11 @@ public class PumpTileProcessor implements AbstractRecipeProcessor {
         Level level = tile.getLevel();
         if (lX < 22) {
             lX++;
-            BlockState state = level.getBlockState(tile.getBlockPos().offset(lX, lY, lZ));
-            if (pumpingFluid.isSame(state.getFluidState().getType())) {
+            BlockPos checkPos = tile.getBlockPos().offset(lX, lY, lZ);
+            BlockState state = level.getBlockState(checkPos);
+            FluidState fluidState = state.getFluidState();
+
+            if (fluidState.isSource() && pumpingFluid.isSame(fluidState.getType())) {
                 addFluidToTank(tile, pumpingFluid);
                 return true;
             }
@@ -105,8 +105,9 @@ public class PumpTileProcessor implements AbstractRecipeProcessor {
         } else if (lZ < 22) {
             lZ++;
             lX = -22;
+            BlockPos checkPos = tile.getBlockPos().offset(lX, lY, lZ);
             if (pumpingFluid
-                    .isSame(level.getBlockState(tile.getBlockPos().offset(lX, lY, lZ)).getFluidState().getType())) {
+                .isSame(level.getBlockState(checkPos).getFluidState().getType())) {
                 addFluidToTank(tile, pumpingFluid);
                 return true;
             }
@@ -114,8 +115,9 @@ public class PumpTileProcessor implements AbstractRecipeProcessor {
             lY--;
             lX = -22;
             lZ = -22;
+            BlockPos checkPos = tile.getBlockPos().offset(lX, lY, lZ);
             if (pumpingFluid
-                    .isSame(level.getBlockState(tile.getBlockPos().offset(lX, lY, lZ)).getFluidState().getType())) {
+                .isSame(level.getBlockState(checkPos).getFluidState().getType())) {
                 addFluidToTank(tile, pumpingFluid);
                 return true;
             }
@@ -125,11 +127,11 @@ public class PumpTileProcessor implements AbstractRecipeProcessor {
 
     void addFluidToTank(VETileEntity tile, Fluid fluid) {
         tile.getLevel().setBlockAndUpdate(tile.getBlockPos().offset(lX, lY, lZ), Blocks.AIR.defaultBlockState());
-        tile.consumeEnergy();
         tile.getRelationalTank(0).getTank()
-                .fill(new FluidStack(fluid, 1000), IFluidHandler.FluidAction.EXECUTE);
+            .fill(new FluidStack(fluid, 1000), IFluidHandler.FluidAction.EXECUTE);
         tile.setData(VEAttachments.FLUID_PUMP, new FluidPumpData(lX, lY, lZ, fluid));
         tile.setChanged();
+        tile.markFluidInputDirty();
     }
 
     @Override
