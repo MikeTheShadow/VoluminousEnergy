@@ -40,7 +40,7 @@ public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe
 
     public ElectrolyzingCategory(IGuiHelper guiHelper) {
         // 68, 12 | 40, 65 -> 10 px added for chance
-        ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
+        ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
         background = guiHelper.drawableBuilder(GUI, 52, 5, 120, 78).build();
         icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(VEBlocks.ELECTROLYZER.block().get()));
         slotDrawable = guiHelper.getSlotDrawable();

@@ -39,7 +39,7 @@ public class HydroponicIncubatorCategory implements IRecipeCategory<HydroponicIn
 
     public HydroponicIncubatorCategory(IGuiHelper guiHelper) {
         // 68, 12 | 40, 65 -> 10 px added for chance
-        ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
+        ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
         background = guiHelper.drawableBuilder(GUI, 4, 4, 156, 40).build();
         icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(VEBlocks.HYDROPONIC_INCUBATOR.block().get()));
         slotDrawable = guiHelper.getSlotDrawable();

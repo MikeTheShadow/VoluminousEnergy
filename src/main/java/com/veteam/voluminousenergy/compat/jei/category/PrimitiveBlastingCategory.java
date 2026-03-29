@@ -37,7 +37,7 @@ public class PrimitiveBlastingCategory implements IRecipeCategory<PrimitiveBlast
 
     public PrimitiveBlastingCategory(IGuiHelper guiHelper) {
         // 68, 12 | 40, 65 -> 10 px added for chance
-        ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
+        ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
         background = guiHelper.drawableBuilder(GUI, 68, 12, 70, 40).build();
         icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(VEBlocks.PRIMITIVE_BLAST_FURNACE.block().get()));
         slotDrawable = guiHelper.getSlotDrawable();

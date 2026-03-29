@@ -47,7 +47,7 @@ public class SawmillCategory implements IRecipeCategory<SawmillRecipe> {
 
     public SawmillCategory(IGuiHelper guiHelper) {
         // 68, 12 | 40, 65 -> 10 px added for chance
-        ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
+        ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
         background = guiHelper.drawableBuilder(GUI, 68, 12, 86, 40).build();
         icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(VEBlocks.SAWMILL.block().get()));
         arrow = guiHelper.drawableBuilder(GUI, 176, 0, 23, 17).build();
@@ -108,7 +108,7 @@ public class SawmillCategory implements IRecipeCategory<SawmillRecipe> {
 
 
             // Secondary Output
-            ResourceLocation secondOutputItemResourceLocation = new ResourceLocation(Config.SAWMILL_SECOND_OUTPUT_RESOURCE_LOCATION.get());
+            ResourceLocation secondOutputItemResourceLocation = ResourceLocation.parse(Config.SAWMILL_SECOND_OUTPUT_RESOURCE_LOCATION.get());
 
             if (BuiltInRegistries.ITEM.containsKey(secondOutputItemResourceLocation)) {
                 Item secondOutput = BuiltInRegistries.ITEM.get(secondOutputItemResourceLocation);
@@ -116,7 +116,7 @@ public class SawmillCategory implements IRecipeCategory<SawmillRecipe> {
             }
 
             // Fluid Output
-            ResourceLocation fluidLocation = new ResourceLocation(Config.SAWMILL_FLUID_LOCATION.get());
+            ResourceLocation fluidLocation = ResourceLocation.parse(Config.SAWMILL_FLUID_LOCATION.get());
 
             if (BuiltInRegistries.FLUID.containsKey(fluidLocation)) {
                 Fluid outputFluid = BuiltInRegistries.FLUID.get(fluidLocation);
