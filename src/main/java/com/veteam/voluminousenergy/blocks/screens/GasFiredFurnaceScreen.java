@@ -122,7 +122,7 @@ public class GasFiredFurnaceScreen extends VEContainerScreen<VEContainer> {
             matrixStack.blit(GUI, i + 81, j + 31, 176, 0, progress, 17);
             matrixStack.blit(GUI, i + 54, j + (54 + (flameHeight - fuelProgress)), 176, 24 + (flameHeight - fuelProgress), flameHeight, fuelProgress);
 
-            VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(0), tileEntity.getTankCapacity(0), i + 31, j + 18, 0, 12, 50);
+            VERender.renderGuiTank(matrixStack, tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(0), tileEntity.getTankCapacity(0), i + 31, j + 18, 0, 12, 50);
             drawIOSideHelper();
         }
         RenderSystem.setShaderTexture(0, GUI_TOOLS);

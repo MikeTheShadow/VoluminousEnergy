@@ -98,7 +98,7 @@ public class PumpScreen extends VEContainerScreen<VEContainer> {
             matrixStack.blit(GUI, i + 11, j + (16 + (49 - power)), 176, 24 + (49 - power), 12, power);
 
             try {
-                VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getRelationalTank(0).getTank().getFluid(), tileEntity.getTankCapacity(0), i + 93, j + 18, 0, 12, 50);
+                VERender.renderGuiTank(matrixStack, tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getRelationalTank(0).getTank().getFluid(), tileEntity.getTankCapacity(0), i + 93, j + 18, 0, 12, 50);
             } catch (Exception e) {
             }
             drawIOSideHelper();

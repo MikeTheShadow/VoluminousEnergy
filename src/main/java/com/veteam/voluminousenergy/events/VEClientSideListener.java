@@ -102,7 +102,7 @@ public class VEClientSideListener {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void registerClientExtensions(RegisterClientExtensionsEvent event) {
+    public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
         event.registerFluidType(Oxygen.OXYGEN_FLUID_TYPE.getFluidClientExtension(), VEFluids.OXYGEN_FLUID_TYPE_REG.get());
         event.registerFluidType(CrudeOil.CRUDE_OIL_FLUID_TYPE.getFluidClientExtension(), VEFluids.CRUDE_OIL_FLUID_TYPE_REG.get());
         event.registerFluidType(Naphtha.NAPHTHA_FLUID_TYPE.getFluidClientExtension(), VEFluids.NAPHTHA_FLUID_TYPE_REG.get());

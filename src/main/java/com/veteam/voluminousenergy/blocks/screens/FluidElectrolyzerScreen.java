@@ -130,15 +130,15 @@ public class FluidElectrolyzerScreen extends VEContainerScreen<VEContainer> {
             matrixStack.blit(GUI, i + 81, j + 31, 176, 0, progress, 17);
             matrixStack.blit(GUI, i + 11, j + (16 + (49 - power)), 176, 24 + (49 - power), 12, power);
 
-            VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(0), tileEntity.getTankCapacity(0), i + 61, j + 18, 0, 12, 50);
+            VERender.renderGuiTank(matrixStack, tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(0), tileEntity.getTankCapacity(0), i + 61, j + 18, 0, 12, 50);
 
             try {
-                VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(1), tileEntity.getTankCapacity(1), i + 119, j + 18, 0, 12, 50);
+                VERender.renderGuiTank(matrixStack, tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(1), tileEntity.getTankCapacity(1), i + 119, j + 18, 0, 12, 50);
             } catch (Exception e) {
             }
 
             try {
-                VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(2), tileEntity.getTankCapacity(2), i + 157, j + 18, 0, 12, 50);
+                VERender.renderGuiTank(matrixStack, tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(2), tileEntity.getTankCapacity(2), i + 157, j + 18, 0, 12, 50);
             } catch (Exception e) {
             }
             drawIOSideHelper();
