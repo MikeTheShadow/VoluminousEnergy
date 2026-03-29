@@ -3,14 +3,12 @@
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/MikeTheShadow/VoluminousEnergy)
 ![GitHub](https://img.shields.io/github/license/MikeTheShadow/VoluminousEnergy)
 
-<big> An energy focused tech mod for Minecraft 1.20+ </big>
+<big> An energy focused tech mod for Minecraft 1.21+ </big>
 
 ## NOTES FOR DEVELOPERS/MODDERS:
-Please Target `1.20.4-exp` if your changes are intended for the next major release (likely 0.5).
-
-Please Target `1.20.6-exp` if your changes are intended for the current (0.5) development, but only affects 1.20.6.
+Please Target `1.21.1-dev` if your changes are intended for the next major release (likely 0.5).
  
-Please Target `1.18.2-exp-next` if your changes are intended for 0.4 across all Minecraft versions. 
+Please Target `1.18.2-exp-next` if your changes are intended for 0.4 across Minecraft versions 1.18.2 - 1.20.1. 
  
 ## Fluids
 * Biofuel

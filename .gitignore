@@ -5,6 +5,7 @@ bin
 .metadata
 .classpath
 .project
+.eclipse
 
 # idea
 out
@@ -31,6 +32,9 @@ forge*changelog.txt
 /src/generated/resources/.cache/
 /run-data/
 /runs/
+
+# CUSTOM
+/repo
 
 .editorconfig
 .nvim.lua
