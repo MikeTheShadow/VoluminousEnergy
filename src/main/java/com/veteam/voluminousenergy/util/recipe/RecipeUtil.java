@@ -208,48 +208,10 @@ public class RecipeUtil {
         }
     }
 
-    public static FluidStack pullFluidFromJSON(String id, JsonObject json) {
-        ResourceLocation bucketResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get(id).getAsJsonObject(), "fluid", "minecraft:empty"), ':');
-        int firstAmount = GsonHelper.getAsInt(json.get(id).getAsJsonObject(), "amount", 0);
-        return new FluidStack(Objects.requireNonNull(BuiltInRegistries.FLUID.get(bucketResourceLocation)), firstAmount);
-    }
-
-    public static ItemStack pullItemFromJSON(String id, JsonObject json) {
-        ResourceLocation itemResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get(id).getAsJsonObject(), "item", "minecraft:empty"), ':');
-        int count = GsonHelper.getAsInt(json.get(id).getAsJsonObject(), "amount", 1);
-
-        return new ItemStack(BuiltInRegistries.ITEM.get(itemResourceLocation), count);
-    }
-
     public static Ingredient modifyIngredientAmounts(Ingredient ingredient, int amounts) {
         for (ItemStack stack : ingredient.getItems()) {
             stack.setCount(amounts);
         }
         return ingredient;
-    }
-
-    public static Ingredient pullUnknownItemFromJSON(JsonObject object, int count) {
-        ResourceLocation location;
-        boolean isTag = false;
-        if (object.has("tag")) {
-            location = ResourceLocation.of(GsonHelper.getAsString(object, "tag", "minecraft:air"), ':');
-            isTag = true;
-        } else if (object.has("item")) {
-            location = ResourceLocation.of(GsonHelper.getAsString(object, "item", "minecraft:air"), ':');
-        } else {
-            throw new JsonSyntaxException("Bad recipe syntax!");
-        }
-
-        if (!isTag) {
-            Item item = BuiltInRegistries.ITEM.get(location);
-            if (item == null) {
-                throw new IllegalStateException("Fluid does not exist for a recipe!");
-            }
-            return Ingredient.of(new ItemStack(item, count));
-        }
-
-        TagKey<Item> tag = TagKey.create(Registries.ITEM, location);
-
-        return RecipeUtil.modifyIngredientAmounts(Ingredient.of(tag), count);
     }
 }
