@@ -52,25 +52,25 @@ public class VETagDataGenerator extends BlockTagsProvider {
     @Override
     protected void addTags(HolderLookup.Provider lookupProvider) {
         // Setup Needs Tags
-        final TagKey<Block> NEEDS_WOOD_TOOL = TagKey.create(Registries.BLOCK, new ResourceLocation("minecraft", "needs_wood_tool"));
-        final TagKey<Block> NEEDS_NETHERITE_TOOL = TagKey.create(Registries.BLOCK, new ResourceLocation("minecraft", "needs_netherite_tool"));
-        final TagKey<Block> NEEDS_NIGHALITE_TOOL = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "needs_nighalite_tool"));
-        final TagKey<Block> NEEDS_EIGHZO_TOOL = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "needs_eighzo_tool"));
-        final TagKey<Block> NEEDS_SOLARIUM_TOOL = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "needs_solarium_tool"));
+        final TagKey<Block> NEEDS_WOOD_TOOL = TagKey.create(Registries.BLOCK, ResourceLocation.withDefaultNamespace("needs_wood_tool"));
+        final TagKey<Block> NEEDS_NETHERITE_TOOL = TagKey.create(Registries.BLOCK, ResourceLocation.withDefaultNamespace("needs_netherite_tool"));
+        final TagKey<Block> NEEDS_NIGHALITE_TOOL = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "needs_nighalite_tool"));
+        final TagKey<Block> NEEDS_EIGHZO_TOOL = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "needs_eighzo_tool"));
+        final TagKey<Block> NEEDS_SOLARIUM_TOOL = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "needs_solarium_tool"));
 
         // Setup Incorrect tags
-        final TagKey<Block> INCORRECT_FOR_WOOD = TagKey.create(Registries.BLOCK, new ResourceLocation("minecraft", "incorrect_for_wood_tool"));
-        final TagKey<Block> INCORRECT_FOR_GOLD = TagKey.create(Registries.BLOCK, new ResourceLocation("minecraft", "incorrect_for_gold_tool"));
-        final TagKey<Block> INCORRECT_FOR_STONE = TagKey.create(Registries.BLOCK, new ResourceLocation("minecraft", "incorrect_for_stone_tool"));
-        final TagKey<Block> INCORRECT_FOR_IRON = TagKey.create(Registries.BLOCK, new ResourceLocation("minecraft", "incorrect_for_iron_tool"));
-        final TagKey<Block> INCORRECT_FOR_DIAMOND = TagKey.create(Registries.BLOCK, new ResourceLocation("minecraft", "incorrect_for_diamond_tool"));
-        final TagKey<Block> INCORRECT_FOR_TITANIUM = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "incorrect_for_titanium_tool"));
-        final TagKey<Block> INCORRECT_FOR_TUNGSTEN = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "incorrect_for_tungsten_tool"));
-        final TagKey<Block> INCORRECT_FOR_NETHERITE = TagKey.create(Registries.BLOCK, new ResourceLocation("minecraft", "incorrect_for_netherite_tool"));
-        final TagKey<Block> INCORRECT_FOR_TUNGSTENSTEEL = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "incorrect_for_tungstensteel_tool"));
-        final TagKey<Block> INCORRECT_FOR_NIGHALITE = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "incorrect_for_nighalite_tool"));
-        final TagKey<Block> INCORRECT_FOR_EIGHZO = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "incorrect_for_eighzo_tool"));
-        final TagKey<Block> INCORRECT_FOR_SOLARIUM = TagKey.create(Registries.BLOCK, new ResourceLocation(VoluminousEnergy.MODID, "incorrect_for_solarium_tool"));
+        final TagKey<Block> INCORRECT_FOR_WOOD = TagKey.create(Registries.BLOCK, ResourceLocation.withDefaultNamespace("incorrect_for_wood_tool"));
+        final TagKey<Block> INCORRECT_FOR_GOLD = TagKey.create(Registries.BLOCK, ResourceLocation.withDefaultNamespace("incorrect_for_gold_tool"));
+        final TagKey<Block> INCORRECT_FOR_STONE = TagKey.create(Registries.BLOCK, ResourceLocation.withDefaultNamespace("incorrect_for_stone_tool"));
+        final TagKey<Block> INCORRECT_FOR_IRON = TagKey.create(Registries.BLOCK, ResourceLocation.withDefaultNamespace("incorrect_for_iron_tool"));
+        final TagKey<Block> INCORRECT_FOR_DIAMOND = TagKey.create(Registries.BLOCK, ResourceLocation.withDefaultNamespace("incorrect_for_diamond_tool"));
+        final TagKey<Block> INCORRECT_FOR_TITANIUM = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "incorrect_for_titanium_tool"));
+        final TagKey<Block> INCORRECT_FOR_TUNGSTEN = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "incorrect_for_tungsten_tool"));
+        final TagKey<Block> INCORRECT_FOR_NETHERITE = TagKey.create(Registries.BLOCK, ResourceLocation.withDefaultNamespace("incorrect_for_netherite_tool"));
+        final TagKey<Block> INCORRECT_FOR_TUNGSTENSTEEL = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "incorrect_for_tungstensteel_tool"));
+        final TagKey<Block> INCORRECT_FOR_NIGHALITE = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "incorrect_for_nighalite_tool"));
+        final TagKey<Block> INCORRECT_FOR_EIGHZO = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "incorrect_for_eighzo_tool"));
+        final TagKey<Block> INCORRECT_FOR_SOLARIUM = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "incorrect_for_solarium_tool"));
 
         // To Mine With Tool
         mineableWithAxe.forEach(toMineWithAxe -> tag(BlockTags.MINEABLE_WITH_AXE).add(toMineWithAxe));

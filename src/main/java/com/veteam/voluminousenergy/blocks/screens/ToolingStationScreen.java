@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class ToolingStationScreen extends VEContainerScreen<VEContainer> {
     private VETileEntity tileEntity;
-    private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/tooling_station_gui.png");
+    private final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/tooling_station_gui.png");
 
     public ToolingStationScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);

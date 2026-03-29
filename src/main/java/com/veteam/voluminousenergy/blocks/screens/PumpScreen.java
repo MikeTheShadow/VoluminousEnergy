@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 public class PumpScreen extends VEContainerScreen<VEContainer> {
 
     private VETileEntity tileEntity;
-    private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/air_compressor_gui.png");
+    private final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/air_compressor_gui.png");
 
 
     public PumpScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {

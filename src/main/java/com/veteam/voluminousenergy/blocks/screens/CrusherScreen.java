@@ -19,9 +19,9 @@ import java.util.List;
 
 public class CrusherScreen extends VEContainerScreen<VEContainer> {
     private final VETileEntity tileEntity;
-    private final static ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
-    private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
-    private static final ResourceLocation EXPERIENCE_ORB = new ResourceLocation("minecraft", "textures/entity/experience_orb.png");
+    private final static ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
+    private static final ResourceLocation GUI_TOOLS = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/guitools.png");
+    private static final ResourceLocation EXPERIENCE_ORB = ResourceLocation.withDefaultNamespace("textures/entity/experience_orb.png");
 
     public CrusherScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);

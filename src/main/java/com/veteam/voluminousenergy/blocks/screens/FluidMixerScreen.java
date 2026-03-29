@@ -21,8 +21,8 @@ import java.util.List;
 
 public class FluidMixerScreen extends VEContainerScreen<VEContainer> {
     private final VETileEntity tileEntity;
-    private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/fluid_mixer_gui.png");
-    private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
+    private final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/fluid_mixer_gui.png");
+    private static final ResourceLocation GUI_TOOLS = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/guitools.png");
 
 
     public FluidMixerScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {

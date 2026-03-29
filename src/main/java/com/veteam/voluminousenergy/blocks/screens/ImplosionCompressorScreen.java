@@ -24,8 +24,8 @@ import java.util.List;
 public class ImplosionCompressorScreen extends VEContainerScreen<VEContainer> {
 
     private VETileEntity tileEntity;
-    private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/implosion_compressor_gui.png");
-    private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
+    private final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/implosion_compressor_gui.png");
+    private static final ResourceLocation GUI_TOOLS = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/guitools.png");
 
 
     public ImplosionCompressorScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {

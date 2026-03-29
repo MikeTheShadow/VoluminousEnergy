@@ -21,9 +21,9 @@ import java.util.List;
 
 public class DistillationUnitScreen extends VEContainerScreen<VEContainer> {
     private VETileEntity tileEntity;
-    private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/distillation_unit_gui.png");
-    private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
-    private static final ResourceLocation MULTIBLOCK_WARN = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/multiblock_invalid_warning.png");
+    private final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/distillation_unit_gui.png");
+    private static final ResourceLocation GUI_TOOLS = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/guitools.png");
+    private static final ResourceLocation MULTIBLOCK_WARN = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/multiblock_invalid_warning.png");
 
 
     public DistillationUnitScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {

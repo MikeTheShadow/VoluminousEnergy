@@ -20,8 +20,8 @@ import java.util.List;
 
 public class HydroponicIncubatorScreen extends VEContainerScreen<VEContainer> {
     private final VETileEntity tileEntity;
-    private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/hydroponic_incubator_gui.png");
-    private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
+    private final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/hydroponic_incubator_gui.png");
+    private static final ResourceLocation GUI_TOOLS = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/guitools.png");
 
 
     public HydroponicIncubatorScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {

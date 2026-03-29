@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class PrimitiveSolarPanelScreen extends VEContainerScreen<VEContainer> {
 
-    private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/solar_panel_gui.png");
+    private final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/solar_panel_gui.png");
     private final VETileEntity tileEntity;
 
     public PrimitiveSolarPanelScreen(VEContainer container, Inventory inv, Component name) {

@@ -28,9 +28,9 @@ import java.util.List;
 
 public class DimensionalLaserScreen extends VEContainerScreen<VEContainer> {
     private final VETileEntity tileEntity;
-    private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/dimensional_laser_gui.png");
-    private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
-    private static final ResourceLocation MULTIBLOCK_WARN = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/multiblock_invalid_warning.png");
+    private final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/dimensional_laser_gui.png");
+    private static final ResourceLocation GUI_TOOLS = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/guitools.png");
+    private static final ResourceLocation MULTIBLOCK_WARN = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/multiblock_invalid_warning.png");
 
 
     public DimensionalLaserScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {

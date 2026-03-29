@@ -309,7 +309,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         if (tag.contains("recipes_used", 10)) {
             CompoundTag recipesTag = tag.getCompound("recipes_used");
             for (String s : recipesTag.getAllKeys()) {
-                this.recipesUsed.put(new ResourceLocation(s), recipesTag.getInt(s));
+                this.recipesUsed.put(ResourceLocation.parse(s), recipesTag.getInt(s));
             }
         }
 

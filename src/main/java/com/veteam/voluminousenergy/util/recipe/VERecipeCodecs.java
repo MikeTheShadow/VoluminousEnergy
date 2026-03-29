@@ -45,7 +45,7 @@ public class VERecipeCodecs {
         public Ingredient getIngredient() {
 
             if (!tag.isBlank()) {
-                ResourceLocation res = ResourceLocation.of(tag, ':');
+                ResourceLocation res = ResourceLocation.bySeparator(tag, ':');
                 TagKey<Item> tag = TagKey.create(Registries.ITEM, res);
                 HolderSet<Item> holderSet = BuiltInRegistries.ITEM.getOrCreateTag(tag);
 
@@ -60,7 +60,7 @@ public class VERecipeCodecs {
 
                 return Ingredient.of(itemSet.get().stream());
             } else if (!item.isBlank()) {
-                ResourceLocation res = ResourceLocation.of(item, ':');
+                ResourceLocation res = ResourceLocation.bySeparator(item, ':');
 
                 boolean containsItem = BuiltInRegistries.ITEM.containsKey(res);
 
@@ -152,7 +152,7 @@ public class VERecipeCodecs {
         public FluidIngredient getIngredient() {
 
             if (!tag.isBlank()) {
-                ResourceLocation res = ResourceLocation.of(tag, ':');
+                ResourceLocation res = ResourceLocation.bySeparator(tag, ':');
                 TagKey<Fluid> tag = TagKey.create(Registries.FLUID, res);
                 HolderSet<Fluid> holderSet = BuiltInRegistries.FLUID.getOrCreateTag(tag);
                 AtomicReference<ArrayList<FluidStack>> fluidSet = new AtomicReference<>(new ArrayList<>());
@@ -167,7 +167,7 @@ public class VERecipeCodecs {
                 });
                 return FluidIngredient.of(fluidSet.get().stream());
             } else if (!fluid.isBlank()) {
-                ResourceLocation res = ResourceLocation.of(fluid, ':');
+                ResourceLocation res = ResourceLocation.bySeparator(fluid, ':');
                 if (!BuiltInRegistries.FLUID.containsKey(res)) {
                     throw new IllegalStateException("Unable to get fluid ingredient: " + fluid);
                 }
@@ -184,7 +184,7 @@ public class VERecipeCodecs {
         public FluidSetWithValue getAsValuePair() {
 
             if (!tag.isBlank()) {
-                ResourceLocation res = ResourceLocation.of(tag, ':');
+                ResourceLocation res = ResourceLocation.bySeparator(tag, ':');
                 TagKey<Fluid> tag = TagKey.create(Registries.FLUID, res);
                 HolderSet<Fluid> holderSet = BuiltInRegistries.FLUID.getOrCreateTag(tag);
                 AtomicReference<HashSet<Fluid>> fluidSet = new AtomicReference<>(new HashSet<>());
@@ -197,7 +197,7 @@ public class VERecipeCodecs {
 
                 return new FluidSetWithValue(fluidSet.get(), value);
             } else if (!fluid.isBlank()) {
-                ResourceLocation res = ResourceLocation.of(fluid, ':');
+                ResourceLocation res = ResourceLocation.bySeparator(fluid, ':');
 
                 if (!BuiltInRegistries.FLUID.containsKey(res)) {
                     throw new IllegalStateException("Unable to get fluid ingredient: " + fluid + ". Please validate it exists!");

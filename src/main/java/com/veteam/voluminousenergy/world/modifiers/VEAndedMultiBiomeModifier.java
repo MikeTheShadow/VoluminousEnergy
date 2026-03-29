@@ -116,11 +116,11 @@ public class VEAndedMultiBiomeModifier implements BiomeModifier {
     public void whitelistCacheBuilder() {
         if (whitelistedBiome.contains(",")) {
             Arrays.stream(whitelistedBiome.split(",")).sequential().forEach(greenBiome -> {
-                TagKey<Biome> biomeTag = TagKey.create(Registries.BIOME, new ResourceLocation(greenBiome));
+                TagKey<Biome> biomeTag = TagKey.create(Registries.BIOME, ResourceLocation.parse(greenBiome));
                 whitelistedBiomeKeycache.get().add(biomeTag);
             });
         } else if (!whitelistedBiome.isEmpty()) {
-            TagKey<Biome> biomeTagKey = TagKey.create(Registries.BIOME, new ResourceLocation(whitelistedBiome));
+            TagKey<Biome> biomeTagKey = TagKey.create(Registries.BIOME, ResourceLocation.parse(whitelistedBiome));
             whitelistedBiomeKeycache.get().add(biomeTagKey);
         }
     }
@@ -128,11 +128,11 @@ public class VEAndedMultiBiomeModifier implements BiomeModifier {
     public void blacklistCacheBuilder() {
         if (blacklistedBiome.contains(",")) {
             Arrays.stream(blacklistedBiome.split(",")).sequential().forEach(redBiome -> {
-                TagKey<Biome> biomeTag = TagKey.create(Registries.BIOME, new ResourceLocation(redBiome));
+                TagKey<Biome> biomeTag = TagKey.create(Registries.BIOME, ResourceLocation.parse(redBiome));
                 blacklistedBiomeKeycache.get().add(biomeTag);
             });
         } else if (!blacklistedBiome.isEmpty()) {
-            TagKey<Biome> biomeTagKey = TagKey.create(Registries.BIOME, new ResourceLocation(blacklistedBiome));
+            TagKey<Biome> biomeTagKey = TagKey.create(Registries.BIOME, ResourceLocation.parse(blacklistedBiome));
             blacklistedBiomeKeycache.get().add(biomeTagKey);
         }
     }
