@@ -2,9 +2,13 @@ package com.veteam.voluminousenergy.fluids.flowingFluidBlocks;
 
 import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FlowingFluid;
@@ -18,7 +22,16 @@ public class AcidFlowingFluidBlock extends VEFlowingFluidBlock {
     @Override
     public void entityInside(BlockState state, Level worldIn, BlockPos pos, Entity entityIn) {
 
-        if (!entityIn.fireImmune() && entityIn instanceof LivingEntity && !EnchantmentHelper.hasFrostWalker((LivingEntity) entityIn)) {
+    // TODO: FrostWalker check: FrostWalker is supposed to give the entity immunity to fire damage? We must figure out
+    // TODO: in this version of Minecraft how to achieve this the best way.
+        if (!entityIn.fireImmune() && entityIn instanceof LivingEntity livingEntity && (
+                EnchantmentHelper.hasTag(livingEntity.getItemBySlot(EquipmentSlot.FEET), EnchantmentTags.BOOTS_EXCLUSIVE)
+             || EnchantmentHelper.getEnchantmentLevel(
+                     worldIn.registryAccess()
+                             .lookupOrThrow(Registries.ENCHANTMENT)
+                             .getOrThrow(Enchantments.FROST_WALKER),
+                        livingEntity) <= 0)
+        ) {
             entityIn.hurt(worldIn.damageSources().inFire(), Config.ACID_DAMAGE.get().floatValue());
             entityIn.setRemainingFireTicks(Config.ACID_FIRE_DURATION.get());
         }
