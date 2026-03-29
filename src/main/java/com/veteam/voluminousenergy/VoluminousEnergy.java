@@ -56,9 +56,6 @@ public class VoluminousEnergy {
     public static final Logger LOGGER = LogManager.getLogger();
 
     public VoluminousEnergy(IEventBus modEventBus, ModContainer modContainer) {
-//        modContainer.registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG);
-
-//        final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         /** Deferred registration **/
         // Recipes
@@ -103,7 +100,7 @@ public class VoluminousEnergy {
         // Config loading and (if necessary) file preparation
         getOrCreateDirectory(FMLPaths.CONFIGDIR.get(), VoluminousEnergy.MODID);
 
-        modContainer.registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG, VoluminousEnergy.MODID + "/" + VoluminousEnergy.MODID + "-common.toml");
+        modContainer.registerConfig(ModConfig.Type.STARTUP, Config.COMMON_CONFIG, VoluminousEnergy.MODID + "/" + VoluminousEnergy.MODID + "-common.toml");
         modContainer.registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_CONFIG, VoluminousEnergy.MODID + "/" + VoluminousEnergy.MODID + "-client.toml");
 
         JEI_LOADED = ModList.get().isLoaded("jei");

@@ -2,10 +2,10 @@
   "entries": [
     {
       "enum": "net/minecraft/world/item/Rarity",
-      "name": "ELECTRONIC",
+      "name": "VOLUMINOUSENERGY_ELECTRONIC",
       "constructor": "(ILjava/lang/String;Ljava/util/function/UnaryOperator;)V",
       "parameters": {
-        "class": "com.veteam.voluminousenergy.VEEnums",
+        "class": "com/veteam/voluminousenergy/util/extensions/VEEnums",
         "field": "ELECTRONIC_RARITY"
       }
     }
