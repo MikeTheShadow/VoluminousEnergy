@@ -47,7 +47,7 @@ public class Hydrogen {
         return HYDROGEN_BUCKET;
     }
 
-    public static final FluidType HYDROGEN_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
+    public static final VEFluidType HYDROGEN_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
             .adjacentPathType(PathType.LAVA)
             .canConvertToSource(false)
             .canDrown(false)

@@ -48,7 +48,7 @@ public class CompressedAir {
     }
 
 
-    public static final FluidType COMPRESSED_AIR_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
+    public static final VEFluidType COMPRESSED_AIR_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
             .adjacentPathType(PathType.LAVA)
             .canConvertToSource(false)
             .canDrown(false)

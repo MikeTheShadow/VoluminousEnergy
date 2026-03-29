@@ -49,7 +49,7 @@ public class Nitrogen {
     }
 
 
-    public static final FluidType NITROGEN_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
+    public static final VEFluidType NITROGEN_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
             .adjacentPathType(PathType.LAVA)
             .canConvertToSource(false)
             .canDrown(false)

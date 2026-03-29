@@ -48,7 +48,7 @@ public class RedFumingNitricAcid {
     }
 
 
-    public static final FluidType RFNA_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
+    public static final VEFluidType RFNA_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
             .adjacentPathType(PathType.DAMAGE_FIRE)
             .canConvertToSource(false)
             .canDrown(true)

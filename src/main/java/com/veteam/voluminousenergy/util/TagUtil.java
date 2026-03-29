@@ -15,11 +15,11 @@ import java.util.ArrayList;
 
 public class TagUtil {
 
-    private static final TagKey<Item> MACHINE_UPGRADE_TAG = TagKey.create(Registries.ITEM, new ResourceLocation(VoluminousEnergy.MODID, "machine_upgrades"));
+    private static final TagKey<Item> MACHINE_UPGRADE_TAG = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "machine_upgrades"));
 
 
     public static ArrayList<Fluid> getFluidListFromTagResourceLocation(String fluidTagLocation) {
-        TagKey<Fluid> fluidTagKey = TagKey.create(Registries.FLUID, new ResourceLocation(fluidTagLocation));
+        TagKey<Fluid> fluidTagKey = TagKey.create(Registries.FLUID, ResourceLocation.parse(fluidTagLocation));
         ArrayList<Fluid> fluids = new ArrayList<>();
 
         for (Holder<Fluid> holder : BuiltInRegistries.FLUID.getTagOrEmpty(fluidTagKey)) {
@@ -62,7 +62,7 @@ public class TagUtil {
     }
 
     public static ArrayList<Item> getItemListFromTagResourceLocation(String itemTagLocation) {
-        TagKey<Item> itemTagKey = TagKey.create(Registries.ITEM, new ResourceLocation(itemTagLocation));
+        TagKey<Item> itemTagKey = TagKey.create(Registries.ITEM, ResourceLocation.parse(itemTagLocation));
         ArrayList<Item> items = new ArrayList<>();
 
         for (Holder<Item> holder : BuiltInRegistries.ITEM.getTagOrEmpty(itemTagKey)) {

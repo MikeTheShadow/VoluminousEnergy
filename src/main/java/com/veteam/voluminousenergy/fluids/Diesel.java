@@ -48,7 +48,7 @@ public class Diesel {
     }
 
 
-    public static final FluidType DIESEL_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
+    public static final VEFluidType DIESEL_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
             .adjacentPathType(PathType.WATER)
             .canConvertToSource(false)
             .canDrown(true)

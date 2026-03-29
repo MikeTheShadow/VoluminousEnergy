@@ -35,10 +35,6 @@ public class FluidScanner extends Item {
         );
     }
 
-    public int getUseDuration(ItemStack p_40680_) {
-        return 72000;
-    }
-
     public @NotNull UseAnim getUseAnimation(ItemStack p_40678_) {
         return UseAnim.CROSSBOW;
     }
@@ -137,10 +133,5 @@ public class FluidScanner extends Item {
         }
 
         super.appendHoverText(itemStack, pContext, componentList, tooltipFlag);
-    }
-
-    @Override
-    public boolean canPerformAction(ItemStack stack, net.neoforged.neoforge.common.ToolAction toolAction) {
-        return true;
     }
 }

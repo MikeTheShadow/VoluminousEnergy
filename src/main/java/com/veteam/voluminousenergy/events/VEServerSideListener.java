@@ -19,7 +19,7 @@ import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-@EventBusSubscriber(modid = VoluminousEnergy.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.DEDICATED_SERVER)
+@EventBusSubscriber(modid = VoluminousEnergy.MODID, value = Dist.DEDICATED_SERVER)
 public class VEServerSideListener {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

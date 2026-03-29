@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.items.tools.multitool;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.items.VEItem;
 import com.veteam.voluminousenergy.items.data.CombustibleFluidsData;
@@ -15,9 +14,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -25,7 +25,7 @@ import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.common.ToolAction;
+import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
@@ -206,10 +206,13 @@ public class Multitool extends VEItem {
     }
 
     @Override
-    public float getAttackDamageBonus(@NotNull Player pPlayer, float pBaseAttackDamage) {
-        ItemStack stack = pPlayer.getMainHandItem();
-        if(!(stack.getItem() instanceof Multitool)) return 0f;
-        
+    public float getAttackDamageBonus(@NotNull Entity target, float damage, DamageSource damageSource) {
+
+        if(damageSource.getEntity() == null) return 0f;
+
+        ItemStack stack = damageSource.getEntity().getWeaponItem();
+        if((stack != null) && !(stack.getItem() instanceof Multitool)) return 0f;
+
         BitItem bit = getBestBitForDamage(stack);
         if (bit == null) {
             stack.set(VEDataComponents.TOOL_TYPE, 0);
@@ -222,13 +225,13 @@ public class Multitool extends VEItem {
     }
 
     @Override
-    public boolean canPerformAction(@NotNull ItemStack stack, @NotNull ToolAction toolAction) {
+    public boolean canPerformAction(ItemStack stack, @NotNull ItemAbility itemAbility) {
 
         List<ItemStack> inventory = stack.getOrDefault(VEDataComponents.ITEM_STACK_LIST_COMPONENT,new ArrayList<>());
 
         for(ItemStack itemStack : inventory) {
             if(itemStack.getItem() instanceof BitItem bitItem) {
-                if(bitItem.getBitItemData().canPerformAction(toolAction)) return true;
+                if(bitItem.getBitItemData().canPerformAction(itemAbility)) return true;
             }
         }
         return false;

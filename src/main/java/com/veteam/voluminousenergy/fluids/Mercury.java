@@ -48,7 +48,7 @@ public class Mercury {
     }
 
 
-    public static final FluidType MERCURY_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
+    public static final VEFluidType MERCURY_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
             .adjacentPathType(PathType.WATER)
             .canConvertToSource(false)
             .canDrown(true)

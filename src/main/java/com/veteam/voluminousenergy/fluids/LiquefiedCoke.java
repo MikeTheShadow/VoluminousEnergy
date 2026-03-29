@@ -48,7 +48,7 @@ public class LiquefiedCoke {
     }
 
 
-    public static final FluidType LIQUEFIED_COKE_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
+    public static final VEFluidType LIQUEFIED_COKE_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
             .adjacentPathType(PathType.WATER)
             .canConvertToSource(false)
             .canDrown(true)

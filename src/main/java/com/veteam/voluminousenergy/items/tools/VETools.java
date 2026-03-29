@@ -5,20 +5,13 @@ import com.veteam.voluminousenergy.items.VEItems;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.entity.EquipmentSlotGroup;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.registries.DeferredRegister;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 import static com.veteam.voluminousenergy.items.VEItems.VE_ITEM_REGISTRY;
-import static net.minecraft.world.item.Item.BASE_ATTACK_DAMAGE_UUID;
 
 public class VETools {
 

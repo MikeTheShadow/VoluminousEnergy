@@ -7,14 +7,8 @@ import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.apache.commons.lang3.NotImplementedException;
@@ -25,7 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public abstract class VERecipe implements Recipe<Container> {
+public abstract class VERecipe implements Recipe<RecipeInput> {
 
     List<VERecipeCodecs.RegistryIngredient> registryIngredients;
     private List<FluidIngredient> fluidIngredientList = null;
@@ -86,12 +80,13 @@ public abstract class VERecipe implements Recipe<Container> {
     }
 
     @Override
-    public boolean matches(@NotNull Container inv, @NotNull Level worldIn) {
-        throw new NotImplementedException("Class: " + this.getClass().getName() + " missing matches() impl.");
+    public boolean matches(RecipeInput input, Level level) {
+        return false;
     }
 
-    public ItemStack assemble(Container inv) {
-        return ItemStack.EMPTY;
+    @Override
+    public ItemStack assemble(RecipeInput input, HolderLookup.Provider registries) {
+        throw new NotImplementedException("Class" + this.getClass().getName() + " missing assemble impl!");
     }
 
     @Override
@@ -128,12 +123,6 @@ public abstract class VERecipe implements Recipe<Container> {
     }
 
     @Override
-    public @NotNull ItemStack assemble(@NotNull Container pCraftingContainer,
-            @NotNull HolderLookup.Provider registries) {
-        throw new NotImplementedException("Unable to call assemble on recipe because it has been unimplemented!");
-    }
-
-    @Override
     public @NotNull ItemStack getResultItem(@NotNull HolderLookup.Provider pRegistries) {
         return ItemStack.EMPTY;
     }
@@ -141,10 +130,6 @@ public abstract class VERecipe implements Recipe<Container> {
     @Override
     public @NotNull RecipeSerializer<?> getSerializer() {
         throw new NotImplementedException("Missing serializer impl for " + this.getClass().getName());
-    }
-
-    public boolean matches(@NotNull VETileEntity veTileEntity) {
-        throw new NotImplementedException("Matches is not impl'd for: " + this.getClass().getName());
     }
 
     public int getResultCount(int slot) {

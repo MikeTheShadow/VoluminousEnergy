@@ -716,14 +716,4 @@ public class Config {
 
         CLIENT_CONFIG = CLIENT_BUILDER.build();
     }
-
-    public static void loadConfig(ModConfigSpec spec, Path path){
-        final CommentedFileConfig configData = CommentedFileConfig.builder(path)
-                .sync()
-                .autosave()
-                .writingMode(WritingMode.REPLACE)
-                .build();
-        configData.load();
-        spec.setConfig(configData);
-    }
 }

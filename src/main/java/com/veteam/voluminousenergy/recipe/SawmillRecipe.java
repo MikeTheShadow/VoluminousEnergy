@@ -109,7 +109,7 @@ public class SawmillRecipe extends VERecipe {
     @Override
     public List<FluidStack> getOutputFluids() {
         if (this.isLogRecipe && Config.SAWMILL_ALLOW_NON_SAWMILL_RECIPE_LOGS_TO_BE_SAWED.get()) {
-            ResourceLocation fluidLocation = new ResourceLocation(Config.SAWMILL_FLUID_LOCATION.get());
+            ResourceLocation fluidLocation = ResourceLocation.parse(Config.SAWMILL_FLUID_LOCATION.get());
             Fluid outputFluid = BuiltInRegistries.FLUID.get(fluidLocation);
             return List.of(new FluidStack(outputFluid, Config.SAWMILL_FLUID_AMOUNT.get()));
         }

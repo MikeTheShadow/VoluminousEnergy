@@ -4,12 +4,14 @@ import com.google.common.collect.Lists;
 import com.veteam.voluminousenergy.blocks.screens.StirlingGeneratorScreen;
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.compat.jei.category.StirlingCategory;
+import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import mezz.jei.api.recipe.IFocusFactory;
 import mezz.jei.api.runtime.IRecipesGui;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,7 +19,7 @@ import java.util.List;
 
 public class StirlingGeneratorContainerHandler implements IGuiContainerHandler<StirlingGeneratorScreen> {
     @Override
-    public Collection<IGuiClickableArea> getGuiClickableAreas(StirlingGeneratorScreen containerScreen, double guiMouseX, double guiMouseY) {
+    public @NotNull Collection<IGuiClickableArea> getGuiClickableAreas(@NotNull StirlingGeneratorScreen containerScreen, double guiMouseX, double guiMouseY) {
         List<IGuiClickableArea> areas = new ArrayList<>();
         areas.add(new IGuiClickableArea() {
             @Override
@@ -26,15 +28,13 @@ public class StirlingGeneratorContainerHandler implements IGuiContainerHandler<S
             }
 
             @Override
-            public List<Component> getTooltipStrings() {
-                List<Component> tooltips = new ArrayList<>();
-                tooltips.add(VoluminousEnergyPlugin.SHOW_RECIPES);
-                tooltips.addAll(containerScreen.getTooltips());
-                return tooltips;
+            public void getTooltip(@NotNull ITooltipBuilder tooltip) {
+                tooltip.add(VoluminousEnergyPlugin.SHOW_RECIPES);
+                tooltip.addAll(containerScreen.getTooltips());
             }
 
             @Override
-            public void onClick(IFocusFactory focusFactory, IRecipesGui recipesGui) {
+            public void onClick(@NotNull IFocusFactory focusFactory, @NotNull IRecipesGui recipesGui) {
                 recipesGui.showTypes(Lists.newArrayList(StirlingCategory.RECIPE_TYPE));
             }
         });

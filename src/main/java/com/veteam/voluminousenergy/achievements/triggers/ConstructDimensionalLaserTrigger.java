@@ -19,7 +19,7 @@ public class ConstructDimensionalLaserTrigger extends SimpleCriterionTrigger<Con
     public ConstructDimensionalLaserTrigger() {
     }
 
-    public static final ResourceLocation ID = new ResourceLocation(VoluminousEnergy.MODID, "construct_dimensional_laser");
+    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "construct_dimensional_laser");
 
     public @NotNull ResourceLocation getId() {
         return ID;

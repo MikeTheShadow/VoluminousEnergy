@@ -47,7 +47,7 @@ public class AmmoniumNitrateSolution {
         return AMMONIUM_NITRATE_SOLUTION_BUCKET;
     }
 
-    public static final FluidType AMMONIUM_NITRATE_SOLUTION_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
+    public static final VEFluidType AMMONIUM_NITRATE_SOLUTION_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
             .adjacentPathType(PathType.WATER)
             .canConvertToSource(false)
             .canDrown(true)

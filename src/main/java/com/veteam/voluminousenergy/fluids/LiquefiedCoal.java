@@ -48,7 +48,7 @@ public class LiquefiedCoal {
     }
 
 
-    public static final FluidType LIQUEFIED_COAL_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
+    public static final VEFluidType LIQUEFIED_COAL_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
             .adjacentPathType(PathType.WATER)
             .canConvertToSource(false)
             .canDrown(true)

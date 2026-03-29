@@ -106,9 +106,6 @@ public class VoluminousEnergy {
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG, VoluminousEnergy.MODID + "/" + VoluminousEnergy.MODID + "-common.toml");
         modContainer.registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_CONFIG, VoluminousEnergy.MODID + "/" + VoluminousEnergy.MODID + "-client.toml");
 
-        Config.loadConfig(Config.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve(VoluminousEnergy.MODID + "/" + VoluminousEnergy.MODID + "-common.toml"));
-        Config.loadConfig(Config.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve(VoluminousEnergy.MODID + "/" + VoluminousEnergy.MODID + "-client.toml"));
-
         JEI_LOADED = ModList.get().isLoaded("jei");
     }
 
@@ -143,7 +140,7 @@ public class VoluminousEnergy {
 
     public static MinecraftServer server;
 
-    @EventBusSubscriber(modid = VoluminousEnergy.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
+    @EventBusSubscriber(modid = VoluminousEnergy.MODID, value = Dist.CLIENT)
     public static class ClientRegister {
 
         @SubscribeEvent
@@ -152,10 +149,10 @@ public class VoluminousEnergy {
             event.enqueueWork(() -> ItemBlockRenderTypes.setRenderLayer(VEBlocks.SAWMILL.block().get(), RenderType.cutout()));
             event.enqueueWork(() -> ItemBlockRenderTypes.setRenderLayer(VEBlocks.PRESSURE_LADDER.get(), RenderType.cutout()));
 
-            ItemProperties.register(VEMultitoolItems.MULTI_TOOL.get(), new ResourceLocation(MODID, "tool_type"), (stack, level, entity, seed)
+            ItemProperties.register(VEMultitoolItems.MULTI_TOOL.get(), ResourceLocation.fromNamespaceAndPath(MODID, "tool_type"), (stack, level, entity, seed)
                     -> stack.getOrDefault(VEDataComponents.TOOL_TYPE, 0));
 
-            ItemProperties.register(VEMultitoolItems.MULTI_TOOL.get(), new ResourceLocation(MODID, "tool_tier"), (stack, level, entity, seed)
+            ItemProperties.register(VEMultitoolItems.MULTI_TOOL.get(), ResourceLocation.fromNamespaceAndPath(MODID, "tool_tier"), (stack, level, entity, seed)
                     -> stack.getOrDefault(VEDataComponents.TOOL_TIER, 0));
         }
 
@@ -166,7 +163,7 @@ public class VoluminousEnergy {
 
     }
 
-    @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+    @EventBusSubscriber()
     public static class OnDatagenEvent {
 
         @SubscribeEvent

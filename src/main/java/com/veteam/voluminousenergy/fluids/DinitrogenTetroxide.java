@@ -48,7 +48,7 @@ public class DinitrogenTetroxide {
     }
 
 
-    public static final FluidType DINITROGEN_TETROXIDE_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
+    public static final VEFluidType DINITROGEN_TETROXIDE_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
             .adjacentPathType(PathType.WATER)
             .canConvertToSource(false)
             .canDrown(true)

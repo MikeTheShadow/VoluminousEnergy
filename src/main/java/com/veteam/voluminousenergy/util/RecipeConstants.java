@@ -5,23 +5,22 @@ import net.minecraft.resources.ResourceLocation;
 
 public class RecipeConstants {
 
-    public static final ResourceLocation PRIMITIVE_BLAST_FURNACING = new ResourceLocation(VoluminousEnergy.MODID, "primitive_blast_furnacing");
-    public static final ResourceLocation CRUSHING = new ResourceLocation(VoluminousEnergy.MODID, "crushing");
-    public static final ResourceLocation ELECTROLYZING = new ResourceLocation(VoluminousEnergy.MODID, "electrolyzing");
-    public static final ResourceLocation CENTRIFUGAL_AGITATING = new ResourceLocation(VoluminousEnergy.MODID, "centrifugal_agitating");
-    public static final ResourceLocation COMPRESSING = new ResourceLocation(VoluminousEnergy.MODID, "compressing");
-    public static final ResourceLocation STIRLING = new ResourceLocation(VoluminousEnergy.MODID, "stirling");
-    public static final ResourceLocation FUEL_COMBUSTION = new ResourceLocation(VoluminousEnergy.MODID, "fuel_combustion");
-    public static final ResourceLocation OXIDIZING = new ResourceLocation(VoluminousEnergy.MODID, "oxidizer_combustion");
-    public static final ResourceLocation AQUEOULIZING = new ResourceLocation(VoluminousEnergy.MODID, "aqueoulizing");
-    public static final ResourceLocation DISTILLING = new ResourceLocation(VoluminousEnergy.MODID, "distilling");
-    public static final ResourceLocation CENTRIFUGAL_SEPARATION = new ResourceLocation(VoluminousEnergy.MODID, "centrifugal_separation");
-    public static final ResourceLocation IMPLOSION_COMPRESSING = new ResourceLocation(VoluminousEnergy.MODID, "implosion_compressing");
-    public static final ResourceLocation INDUSTRIAL_BLASTING = new ResourceLocation(VoluminousEnergy.MODID, "industrial_blasting");
-    public static final ResourceLocation TOOLING = new ResourceLocation(VoluminousEnergy.MODID, "tooling");
-    public static final ResourceLocation SAWMILLING = new ResourceLocation(VoluminousEnergy.MODID, "sawmilling");
-    public static final ResourceLocation DIMENSIONAL_LASING = new ResourceLocation(VoluminousEnergy.MODID, "dimensional_lasing");
-    public static final ResourceLocation FLUID_ELECTROLYZING = new ResourceLocation(VoluminousEnergy.MODID, "fluid_electrolyzing");
-    public static final ResourceLocation FLUID_MIXING = new ResourceLocation(VoluminousEnergy.MODID, "fluid_mixing");
-    public static final ResourceLocation HYDROPONIC_INCUBATING = new ResourceLocation(VoluminousEnergy.MODID, "hydroponic_incubating");
+    public static final ResourceLocation PRIMITIVE_BLAST_FURNACING = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "primitive_blast_furnacing");
+    public static final ResourceLocation CRUSHING = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "crushing");
+    public static final ResourceLocation ELECTROLYZING = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "electrolyzing");
+    public static final ResourceLocation CENTRIFUGAL_AGITATING = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "centrifugal_agitating");
+    public static final ResourceLocation COMPRESSING = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "compressing");
+    public static final ResourceLocation STIRLING = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "stirling");
+    public static final ResourceLocation FUEL_COMBUSTION = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "fuel_combustion");
+    public static final ResourceLocation AQUEOULIZING = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "aqueoulizing");
+    public static final ResourceLocation DISTILLING = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "distilling");
+    public static final ResourceLocation CENTRIFUGAL_SEPARATION = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "centrifugal_separation");
+    public static final ResourceLocation IMPLOSION_COMPRESSING = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "implosion_compressing");
+    public static final ResourceLocation INDUSTRIAL_BLASTING = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "industrial_blasting");
+    public static final ResourceLocation TOOLING = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "tooling");
+    public static final ResourceLocation SAWMILLING = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "sawmilling");
+    public static final ResourceLocation DIMENSIONAL_LASING = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "dimensional_lasing");
+    public static final ResourceLocation FLUID_ELECTROLYZING = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "fluid_electrolyzing");
+    public static final ResourceLocation FLUID_MIXING = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "fluid_mixing");
+    public static final ResourceLocation HYDROPONIC_INCUBATING = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "hydroponic_incubating");
 }

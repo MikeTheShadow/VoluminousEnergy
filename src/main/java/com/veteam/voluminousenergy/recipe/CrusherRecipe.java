@@ -72,13 +72,6 @@ public class CrusherRecipe extends VERNGExperienceRecipe {
 
     };
 
-
-
-    @Override
-    public boolean matches(@NotNull com.veteam.voluminousenergy.blocks.tiles.VETileEntity veTileEntity) {
-        return getParser().isCompleteRecipe(veTileEntity);
-    }
-
     @Override
     public @NotNull RecipeSerializer<? extends VERecipe> getSerializer() {
         return SERIALIZER;

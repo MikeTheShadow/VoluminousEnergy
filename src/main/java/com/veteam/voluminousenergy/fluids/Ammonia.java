@@ -47,7 +47,7 @@ public class Ammonia {
         return AMMONIA_BUCKET;
     }
 
-    public static final FluidType AMMONIA_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
+    public static final VEFluidType AMMONIA_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
             .adjacentPathType(PathType.WATER)
             .canConvertToSource(false)
             .canDrown(true)

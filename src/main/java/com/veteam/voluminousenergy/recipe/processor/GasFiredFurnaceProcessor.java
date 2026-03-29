@@ -14,11 +14,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.BlastingRecipe;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.SmeltingRecipe;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -102,7 +98,7 @@ public class GasFiredFurnaceProcessor extends BasicProcessor {
         Level level = tile.getLevel();
         ItemStack furnaceInput = tile.getInventory().getStackInSlot(2);
         var blastingRecipeNew = level.getRecipeManager()
-                .getRecipeFor(RecipeType.BLASTING, new SimpleContainer(furnaceInput.copy()), level).orElse(null);
+                .getRecipeFor(RecipeType.BLASTING, new SingleRecipeInput(furnaceInput.copy()), level).orElse(null);
         if (blastingRecipeNew != null) {
             blastingRecipe = blastingRecipeNew;
             updateCounter(200,tile);
@@ -110,7 +106,7 @@ public class GasFiredFurnaceProcessor extends BasicProcessor {
         } else
             blastingRecipe = null;
         var furnaceRecipeNew = level.getRecipeManager()
-                .getRecipeFor(RecipeType.SMELTING, new SimpleContainer(furnaceInput.copy()), level).orElse(null);
+                .getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(furnaceInput.copy()), level).orElse(null);
         if (furnaceRecipeNew != null) {
             furnaceRecipe = furnaceRecipeNew;
             updateCounter(200,tile);

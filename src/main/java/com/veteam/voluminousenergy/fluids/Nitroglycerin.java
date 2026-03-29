@@ -48,7 +48,7 @@ public class Nitroglycerin {
     }
 
 
-    public static final FluidType NITROGLYCERIN_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
+    public static final VEFluidType NITROGLYCERIN_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
             .adjacentPathType(PathType.WATER)
             .canConvertToSource(false)
             .canDrown(true)

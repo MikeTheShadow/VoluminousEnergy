@@ -47,7 +47,7 @@ public class Oxygen {
         return OXYGEN_BUCKET;
     }
 
-    public static final FluidType OXYGEN_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
+    public static final VEFluidType OXYGEN_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
             .adjacentPathType(PathType.LAVA)
             .canConvertToSource(false)
             .canDrown(false)

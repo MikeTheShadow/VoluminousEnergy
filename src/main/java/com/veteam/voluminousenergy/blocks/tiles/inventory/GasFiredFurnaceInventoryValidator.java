@@ -7,6 +7,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluids;
 
@@ -29,10 +30,10 @@ public class GasFiredFurnaceInventoryValidator extends FurnaceInventoryValidator
         if (slot == 2) {
             Level level = tile.getLevel();
             var furnaceRecipeNew = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING,
-                    new SimpleContainer(stack.copy()), level).orElse(null);
+                    new SingleRecipeInput(stack.copy()), level).orElse(null);
             if (furnaceRecipeNew != null) return true;
             var blastingRecipeNew = level.getRecipeManager().getRecipeFor(RecipeType.BLASTING,
-                    new SimpleContainer(stack.copy()), level).orElse(null);
+                    new SingleRecipeInput(stack.copy()), level).orElse(null);
             return blastingRecipeNew != null;
         }
         return true;

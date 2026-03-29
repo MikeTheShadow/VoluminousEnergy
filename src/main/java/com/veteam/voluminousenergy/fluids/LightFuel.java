@@ -48,7 +48,7 @@ public class LightFuel {
     }
 
 
-    public static final FluidType LIGHT_FUEL_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
+    public static final VEFluidType LIGHT_FUEL_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
             .adjacentPathType(PathType.LAVA)
             .canConvertToSource(false)
             .canDrown(false)

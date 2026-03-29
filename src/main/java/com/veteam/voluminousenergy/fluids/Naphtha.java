@@ -49,7 +49,7 @@ public class Naphtha {
     }
 
 
-    public static final FluidType NAPHTHA_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
+    public static final VEFluidType NAPHTHA_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
             .adjacentPathType(PathType.WATER)
             .canConvertToSource(false)
             .canDrown(true)

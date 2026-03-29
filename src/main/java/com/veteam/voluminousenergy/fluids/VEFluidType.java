@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.fluids;
 
+import com.veteam.voluminousenergy.util.extensions.VEFluidClientExtension;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -46,29 +47,7 @@ public class VEFluidType extends FluidType {
         this.colourTint = colourTint;
     }
 
-    @Override
-    public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
-        consumer.accept(new IClientFluidTypeExtensions() {
-            @Override
-            public ResourceLocation getStillTexture() {
-                return STILL_TEXTURE;
-            }
-
-            @Override
-            public ResourceLocation getFlowingTexture() {
-                return FLOWING_TEXTURE;
-            }
-
-            @Nullable
-            @Override
-            public ResourceLocation getOverlayTexture() {
-                return overlayTexture;
-            }
-
-            @Override
-            public int getTintColor() {
-                return colourTint > 0 ? colourTint : IClientFluidTypeExtensions.super.getTintColor();
-            }
-        });
+    public VEFluidClientExtension getFluidClientExtension() {
+        return new VEFluidClientExtension(STILL_TEXTURE, FLOWING_TEXTURE, overlayTexture, colourTint);
     }
 }

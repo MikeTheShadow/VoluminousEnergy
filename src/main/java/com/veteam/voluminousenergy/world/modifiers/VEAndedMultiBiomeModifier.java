@@ -75,13 +75,13 @@ public class VEAndedMultiBiomeModifier implements BiomeModifier {
         if (biome.tags().anyMatch(b -> blacklistedBiomeKeycache.get().contains(b))) return;
 
         if (Config.WORLD_GEN_LOGGING.get()) {
+            //TODO review these loggers and then remove?
             VoluminousEnergy.LOGGER.info("Voluminous Energy has received a successful biome modify event. ");
 //            VoluminousEnergy.LOGGER.info("Biome is: " + RegistryLookups.lookupBiome(biome.value()));
             VoluminousEnergy.LOGGER.info("Biome Keys of biome in question: ");
             biome.tags().forEach(key -> System.out.print(key.toString() + ", "));
             VoluminousEnergy.LOGGER.info("\nWhitelisted Keys for this AND rule: ");
             whitelistedBiomeKeycache.get().forEach(key -> System.out.print(key.toString() + ", "));
-            System.out.println();
         }
 
         List<ConfiguredFeature<?, ?>> oreConfiguration = feature.value().getFeatures().toList();

@@ -48,7 +48,7 @@ public class Gasoline {
     }
 
 
-    public static final FluidType GASOLINE_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
+    public static final VEFluidType GASOLINE_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
             .adjacentPathType(PathType.WATER)
             .canConvertToSource(false)
             .canDrown(true)

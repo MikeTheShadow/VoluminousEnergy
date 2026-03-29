@@ -5,10 +5,19 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.core.Holder;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
 import net.neoforged.neoforge.common.loot.LootModifier;
@@ -52,15 +61,29 @@ public class AnimalFatLootModifier extends LootModifier {
     @Override
     public @NotNull ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
         float luck = context.getLuck() > 0 ? context.getLuck() : 1;
-        float lootingModif = context.getLootingModifier() > 0 ? context.getLootingModifier() : 1;
+
+        float lootingModif = 1.0f; // Default modifier if no looting is present
+        Entity attacker = context.getParam(LootContextParams.ATTACKING_ENTITY);
+
+        if (attacker instanceof LivingEntity livingAttacker) {
+            RegistryAccess registries = context.getLevel().registryAccess();
+            Holder<Enchantment> lootingEnchant = registries.registryOrThrow(Registries.ENCHANTMENT).getHolderOrThrow(Enchantments.LOOTING);
+
+            int lootingLevel = EnchantmentHelper.getEnchantmentLevel(lootingEnchant, livingAttacker);
+            if (lootingLevel > 0) {
+                lootingModif = (float) lootingLevel;
+            }
+        }
+
         RandomSource contextualizedRandom = context.getRandom();
         int amount = contextualizedRandom.nextInt(this.minAmount, this.maxAmount);
         amount = Math.round(amount * luck);
         amount = Math.round(amount * lootingModif);
+
         ItemStack stackToAdd = itemAddition.copy();
         stackToAdd.setCount(amount);
         generatedLoot.add(stackToAdd);
-        System.out.println("Generated New Loot");
+
         return generatedLoot;
     }
 

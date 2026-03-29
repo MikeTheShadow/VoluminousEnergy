@@ -6,12 +6,9 @@ import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.client.renderers.entity.LaserBlockEntityRenderer;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.batteries.VEEnergyItem;
-import com.veteam.voluminousenergy.items.tools.multitool.CombustionMultitool;
 import com.veteam.voluminousenergy.items.tools.multitool.MuiltiToolFluidHandler;
-import com.veteam.voluminousenergy.items.tools.multitool.Multitool;
 import com.veteam.voluminousenergy.items.tools.multitool.VEMultitoolItems;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyItemStorage;
-import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.networking.packets.*;
 import com.veteam.voluminousenergy.util.VEDataComponents;
 import net.minecraft.world.item.Item;
@@ -22,13 +19,11 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;
-import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStackSimple;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, modid = VoluminousEnergy.MODID)
+@EventBusSubscriber(modid = VoluminousEnergy.MODID)
 public class VEGenericListener {
 
     @SubscribeEvent

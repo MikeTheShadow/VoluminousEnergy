@@ -47,7 +47,7 @@ public class Treethanol {
         return TREETHANOL_BUCKET;
     }
 
-    public static final FluidType TREETHANOL_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
+    public static final VEFluidType TREETHANOL_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
             .adjacentPathType(PathType.WATER)
             .canConvertToSource(false)
             .canDrown(true)

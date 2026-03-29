@@ -48,7 +48,7 @@ public class SulfuricAcid {
     }
 
 
-    public static final FluidType SULFURIC_ACID_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
+    public static final VEFluidType SULFURIC_ACID_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
             .adjacentPathType(PathType.DAMAGE_FIRE)
             .canConvertToSource(false)
             .canDrown(true)

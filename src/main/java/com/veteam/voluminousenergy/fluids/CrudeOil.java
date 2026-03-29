@@ -48,7 +48,7 @@ public class CrudeOil {
         return CRUDE_OIL_BUCKET;
     }
 
-    public static final FluidType CRUDE_OIL_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
+    public static final VEFluidType CRUDE_OIL_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
             .adjacentPathType(PathType.WATER)
             .canConvertToSource(false)
             .canDrown(true)

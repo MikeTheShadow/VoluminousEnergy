@@ -47,7 +47,7 @@ public class Biofuel {
         return BIOFUEL_BUCKET;
     }
 
-    public static final FluidType BIOFUEL_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
+    public static final VEFluidType BIOFUEL_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
             .adjacentPathType(PathType.WATER)
             .canConvertToSource(false)
             .canDrown(true)
