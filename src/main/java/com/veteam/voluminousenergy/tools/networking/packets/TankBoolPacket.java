@@ -18,7 +18,7 @@ public class TankBoolPacket {
 
     public record TankBoolPacketPayload(boolean status, int tankId) implements CustomPacketPayload {
 
-        public static final Type<TankBoolPacketPayload> TYPE = new Type<>(new ResourceLocation(MODID, "tank_bool"));
+        public static final Type<TankBoolPacketPayload> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "tank_bool"));
 
         public static final StreamCodec<FriendlyByteBuf, TankBoolPacketPayload> STREAM_CODEC = StreamCodec.composite(
                 ByteBufCodecs.BOOL,

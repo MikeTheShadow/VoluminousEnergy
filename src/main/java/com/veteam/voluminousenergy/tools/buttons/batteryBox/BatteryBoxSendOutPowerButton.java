@@ -12,7 +12,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 public class BatteryBoxSendOutPowerButton extends VEIOButton {
 
-    private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/battery_box_gui.png");
+    private static final ResourceLocation GUI_TOOLS = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/battery_box_gui.png");
 
     private final VETileEntity tile;
     private boolean sendOutPower;

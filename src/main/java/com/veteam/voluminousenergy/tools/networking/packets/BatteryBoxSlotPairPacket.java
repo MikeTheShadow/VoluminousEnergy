@@ -18,7 +18,7 @@ public class BatteryBoxSlotPairPacket {
 
     public record BatteryBoxSlotPairPayload(boolean status, int slotId) implements CustomPacketPayload {
 
-        public static final Type<BatteryBoxSlotPairPayload> TYPE = new Type<>(new ResourceLocation(MODID, "battery_slot_pair"));
+        public static final Type<BatteryBoxSlotPairPayload> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "battery_slot_pair"));
 
         public static final StreamCodec<FriendlyByteBuf, BatteryBoxSlotPairPayload> STREAM_CODEC = StreamCodec.composite(
                 ByteBufCodecs.BOOL,

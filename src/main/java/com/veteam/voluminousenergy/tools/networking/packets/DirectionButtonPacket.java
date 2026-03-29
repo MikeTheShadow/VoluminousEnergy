@@ -20,7 +20,7 @@ public class DirectionButtonPacket {
 
     public record DirectionButtonPayload(int direction, int slotId) implements CustomPacketPayload {
 
-        public static final Type<DirectionButtonPayload> TYPE = new Type<>(new ResourceLocation(MODID, "direction_button"));
+        public static final Type<DirectionButtonPayload> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "direction_button"));
 
         public static final StreamCodec<FriendlyByteBuf, DirectionButtonPayload> STREAM_CODEC = StreamCodec.composite(
                 ByteBufCodecs.INT,

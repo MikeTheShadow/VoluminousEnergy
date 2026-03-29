@@ -17,7 +17,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 public class TankDirectionButton extends VEIOButton {
     private VERelationalTank tank;
     private Direction direction;
-    private final ResourceLocation texture = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
+    private final ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
 
     public TankDirectionButton(VERelationalTank tank, int x, int y, OnPress onPress) {
         super(x, y, 96, 20, Component.nullToEmpty(""), button -> {

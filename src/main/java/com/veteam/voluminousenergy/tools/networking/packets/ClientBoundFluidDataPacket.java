@@ -28,7 +28,7 @@ public class ClientBoundFluidDataPacket {
     public record ClientBoundFluidDataPayload(HashMap<Fluid, Integer> combustibleFluids,
                                               HashMap<Fluid, Float> oxidizerFluids) implements CustomPacketPayload {
 
-        public static final Type<ClientBoundFluidDataPayload> TYPE = new Type<>(new ResourceLocation(MODID, "client_fluid_data"));
+        public static final Type<ClientBoundFluidDataPayload> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "client_fluid_data"));
 
         public static final StreamCodec<RegistryFriendlyByteBuf, ClientBoundFluidDataPayload> STREAM_CODEC = StreamCodec.composite(
                 FLUID_INT_HASH_MAP_STREAM_CODEC,

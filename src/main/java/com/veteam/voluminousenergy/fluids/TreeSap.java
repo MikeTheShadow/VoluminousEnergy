@@ -17,8 +17,8 @@ import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 
 public class TreeSap {
-    public static final ResourceLocation TREE_SAP_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/tree_sap_still");
-    public static final ResourceLocation TREE_SAP_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/tree_sap_flowing");
+    public static final ResourceLocation TREE_SAP_STILL_TEXTURE = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/tree_sap_still");
+    public static final ResourceLocation TREE_SAP_FLOWING_TEXTURE = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/tree_sap_flowing");
 
     public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
 

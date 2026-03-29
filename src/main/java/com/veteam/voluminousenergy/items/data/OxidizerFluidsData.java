@@ -28,7 +28,7 @@ public class OxidizerFluidsData {
 
     public static void loadData(ResourceManager manager) {
         resetCache();
-        ResourceLocation prefix = new ResourceLocation("voluminousenergy", "fluid_data/oxidizers");
+        ResourceLocation prefix = ResourceLocation.fromNamespaceAndPath("voluminousenergy", "fluid_data/oxidizers");
         Map<ResourceLocation, Resource> resourceLocations = manager.listResources(prefix.getPath(), s -> s.getPath().endsWith(".json"));
 
         for (Resource resource : resourceLocations.values()) {

@@ -17,7 +17,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 public class SlotBoolButton extends VEIOButton {
     private boolean enable = false;
     private VESlotManager slotManager;
-    private final ResourceLocation texture = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
+    private final ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
 
     public SlotBoolButton(VESlotManager slotManager, int x, int y, OnPress onPress) {
         super(x, y, 16, 15, Component.nullToEmpty(""), button -> {

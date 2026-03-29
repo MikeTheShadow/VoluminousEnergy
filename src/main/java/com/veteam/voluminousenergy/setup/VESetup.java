@@ -32,7 +32,7 @@ public class VESetup {
         event.register(Registries.CREATIVE_MODE_TAB, registerer -> registerer.register(
                 ResourceKey.create(
                         Registries.CREATIVE_MODE_TAB,
-                        new ResourceLocation(VoluminousEnergy.MODID, "voluminous_energy_cumulative_tab")
+                        ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "voluminous_energy_cumulative_tab")
                 ),
                 CreativeModeTab.builder()
                         .icon(() -> new ItemStack(VEFluids.RFNA_BUCKET_REG.get()))

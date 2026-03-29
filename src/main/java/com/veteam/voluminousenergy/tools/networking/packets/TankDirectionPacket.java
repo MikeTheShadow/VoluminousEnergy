@@ -18,7 +18,7 @@ import static com.veteam.voluminousenergy.VoluminousEnergy.MODID;
 public class TankDirectionPacket {
     public record TankDirectionPayload(int direction, int tankId) implements CustomPacketPayload {
 
-        public static final Type<TankDirectionPayload> TYPE = new Type<>(new ResourceLocation(MODID, "tank_direction"));
+        public static final Type<TankDirectionPayload> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "tank_direction"));
 
         public static final StreamCodec<FriendlyByteBuf, TankDirectionPayload> STREAM_CODEC = StreamCodec.composite(
                 ByteBufCodecs.INT,

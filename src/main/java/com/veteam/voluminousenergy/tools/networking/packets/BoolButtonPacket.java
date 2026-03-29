@@ -18,7 +18,7 @@ public class BoolButtonPacket {
 
     public record BoolButtonPayload(boolean status, int slotId) implements CustomPacketPayload {
 
-        public static final Type<BoolButtonPayload> TYPE = new Type<>(new ResourceLocation(MODID,"bool_button"));
+        public static final Type<BoolButtonPayload> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(MODID,"bool_button"));
 
         public static final StreamCodec<FriendlyByteBuf,BoolButtonPayload> STREAM_CODEC = StreamCodec.composite(
                 ByteBufCodecs.BOOL,

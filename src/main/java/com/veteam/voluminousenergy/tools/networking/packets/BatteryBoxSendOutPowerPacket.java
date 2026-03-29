@@ -18,7 +18,7 @@ public class BatteryBoxSendOutPowerPacket {
 
     public record BatteryBoxSendOutPowerPayload(boolean status) implements CustomPacketPayload {
 
-        public static final Type<BatteryBoxSendOutPowerPayload> TYPE = new Type<>(new ResourceLocation(MODID, "battery_box_send_out_power"));
+        public static final Type<BatteryBoxSendOutPowerPayload> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "battery_box_send_out_power"));
 
         public static final StreamCodec<FriendlyByteBuf, BatteryBoxSendOutPowerPayload> STREAM_CODEC = StreamCodec.composite(
                 ByteBufCodecs.BOOL,

@@ -17,8 +17,8 @@ import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 
 public class AmmoniumNitrateSolution {
-    public static final ResourceLocation AMMONIUM_NITRATE_SOLUTION_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/ammonium_nitrate_solution_still");
-    public static final ResourceLocation AMMONIUM_NITRATE_SOLUTION_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/ammonium_nitrate_solution_flowing");
+    public static final ResourceLocation AMMONIUM_NITRATE_SOLUTION_STILL_TEXTURE = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/ammonium_nitrate_solution_still");
+    public static final ResourceLocation AMMONIUM_NITRATE_SOLUTION_FLOWING_TEXTURE = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/ammonium_nitrate_solution_flowing");
 
     public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
 

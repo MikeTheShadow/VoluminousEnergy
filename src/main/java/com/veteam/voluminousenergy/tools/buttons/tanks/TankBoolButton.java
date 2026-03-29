@@ -14,7 +14,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 public class TankBoolButton extends VEIOButton {
     private boolean enable = false;
     private VERelationalTank tank;
-    private final ResourceLocation texture = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
+    private final ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
 
     public TankBoolButton(VERelationalTank tank, int x, int y, Button.OnPress onPress) {
         super(x, y, 16, 15, Component.nullToEmpty(""), button -> {

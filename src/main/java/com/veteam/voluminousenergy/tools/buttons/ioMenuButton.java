@@ -16,7 +16,7 @@ import static net.minecraft.client.Minecraft.getInstance;
 @OnlyIn(Dist.CLIENT)
 public class ioMenuButton extends Button {
     private boolean cycled = false;
-    private final ResourceLocation texture = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
+    private final ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
     private final int x;
     private final int y;
 

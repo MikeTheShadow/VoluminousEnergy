@@ -11,7 +11,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 public class BatteryBoxSlotPairButton extends VEIOButton {
 
-    private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/battery_box_gui.png");
+    private static final ResourceLocation GUI_TOOLS = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/battery_box_gui.png");
 
     private int id;
     private boolean isTopIngress;

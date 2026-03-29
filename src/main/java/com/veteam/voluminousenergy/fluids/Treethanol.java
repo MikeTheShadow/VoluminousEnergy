@@ -17,8 +17,8 @@ import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 
 public class Treethanol {
-    public static final ResourceLocation TREETHANOL_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/treethanol_still");
-    public static final ResourceLocation TREETHANOL_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/treethanol_flowing");
+    public static final ResourceLocation TREETHANOL_STILL_TEXTURE = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/treethanol_still");
+    public static final ResourceLocation TREETHANOL_FLOWING_TEXTURE = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/treethanol_flowing");
 
     public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
 

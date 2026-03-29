@@ -24,7 +24,7 @@ public class ChunkFluid {
         while (compoundTag.contains("SCF_" + i)) {
             SingleChunkFluid singleChunkFluid =
                     new SingleChunkFluid(
-                            BuiltInRegistries.FLUID.get(new ResourceLocation(compoundTag.getString("SCF_" + i)))
+                            BuiltInRegistries.FLUID.get(ResourceLocation.parse(compoundTag.getString("SCF_" + i)))
                             , compoundTag.getInt("FS_" + i));
             this.chunkFluidList.add(singleChunkFluid);
             i++;
