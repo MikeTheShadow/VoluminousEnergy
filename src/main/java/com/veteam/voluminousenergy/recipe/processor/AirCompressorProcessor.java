@@ -18,8 +18,11 @@ public class AirCompressorProcessor implements AbstractRecipeProcessor {
 
     @Override
     public void tick(VETileEntity tile) {
-        if (!tile.canConsumeEnergy())
+        if (!tile.canConsumeEnergy()) {
+            tile.setLit(false);
             return;
+        }
+        tile.setLit(true);
 
         int soundTick = tile.getData(VEAttachments.SOUND_TICK);
 
@@ -49,7 +52,7 @@ public class AirCompressorProcessor implements AbstractRecipeProcessor {
                 airMultiplier++;
             if (Blocks.AIR == level.getBlockState(new BlockPos(x, y, z - 1)).getBlock())
                 airMultiplier++;
-            if (addAirToTank(airMultiplier, tile.getRelationalTank(0))) {
+            if (addAirToTank(airMultiplier, tile.getRelationalTank(0), tile)) {
                 tile.consumeEnergy();
                 if (++soundTick == 19) {
                     soundTick = 0;
@@ -68,15 +71,18 @@ public class AirCompressorProcessor implements AbstractRecipeProcessor {
         tile.setData(VEAttachments.COUNTER_LENGTH, new CounterLength(--counter, counterLength.length()));
     }
 
-    public boolean addAirToTank(int multiplier, VERelationalTank tank) {
+    public boolean addAirToTank(int multiplier, VERelationalTank tank, VETileEntity tile) {
 
         int totalToAdd = 25 * multiplier;
 
         int amountLeft = tank.getTank().getCapacity() - tank.getTank().getFluidAmount();
 
         int amountToFill = Math.min(totalToAdd, amountLeft);
-        if (amountToFill == 0)
+        if (amountToFill == 0) {
+            tile.setLit(false);
             return false;
+        }
+
         tank.getTank().fill(new FluidStack(VEFluids.COMPRESSED_AIR_REG.get(), amountToFill),
                 IFluidHandler.FluidAction.EXECUTE);
         return true;

@@ -1,18 +1,33 @@
 {
   "variants": {
-    "facing=north": {
+    "facing=north,lit=false": {
       "model": "voluminousenergy:block/aqueoulizer"
     },
-    "facing=south": {
+    "facing=south,lit=false": {
       "model": "voluminousenergy:block/aqueoulizer",
       "y": 180
     },
-    "facing=west": {
+    "facing=west,lit=false": {
       "model": "voluminousenergy:block/aqueoulizer",
       "y": 270
     },
-    "facing=east": {
+    "facing=east,lit=false": {
       "model": "voluminousenergy:block/aqueoulizer",
+      "y": 90
+    },
+    "facing=north,lit=true": {
+      "model": "voluminousenergy:block/on/aqueoulizer"
+    },
+    "facing=south,lit=true": {
+      "model": "voluminousenergy:block/on/aqueoulizer",
+      "y": 180
+    },
+    "facing=west,lit=true": {
+      "model": "voluminousenergy:block/on/aqueoulizer",
+      "y": 270
+    },
+    "facing=east,lit=true": {
+      "model": "voluminousenergy:block/on/aqueoulizer",
       "y": 90
     }
   }
