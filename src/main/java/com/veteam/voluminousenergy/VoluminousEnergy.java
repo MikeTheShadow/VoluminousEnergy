@@ -100,8 +100,8 @@ public class VoluminousEnergy {
         // Config loading and (if necessary) file preparation
         getOrCreateDirectory(FMLPaths.CONFIGDIR.get(), VoluminousEnergy.MODID);
 
-        modContainer.registerConfig(ModConfig.Type.STARTUP, Config.COMMON_CONFIG, VoluminousEnergy.MODID + "/" + VoluminousEnergy.MODID + "-common.toml");
-        modContainer.registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_CONFIG, VoluminousEnergy.MODID + "/" + VoluminousEnergy.MODID + "-client.toml");
+        modContainer.registerConfig(ModConfig.Type.STARTUP, Config.VE_STARTUP_CONFIG, VoluminousEnergy.MODID + "/" + VoluminousEnergy.MODID + "-startup.toml");
+        modContainer.registerConfig(ModConfig.Type.CLIENT, Config.VE_CLIENT_CONFIG, VoluminousEnergy.MODID + "/" + VoluminousEnergy.MODID + "-client.toml");
 
         JEI_LOADED = ModList.get().isLoaded("jei");
     }

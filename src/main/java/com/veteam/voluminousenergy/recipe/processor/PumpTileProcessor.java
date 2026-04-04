@@ -79,10 +79,8 @@ public class PumpTileProcessor implements AbstractRecipeProcessor {
             int soundTick = tile.getData(VEAttachments.SOUND_TICK);
             if (++soundTick == 19) {
                 soundTick = 0;
-                if (Config.PLAY_MACHINE_SOUNDS.get()) {
-                    tile.getLevel().playSound(null,
+                tile.getLevel().playSound(null,
                         tile.getBlockPos(), VESounds.AIR_COMPRESSOR, SoundSource.BLOCKS, 1.0F, 1.0F);
-                }
                 tile.setData(VEAttachments.SOUND_TICK, soundTick);
             }
         }

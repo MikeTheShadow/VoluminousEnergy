@@ -98,7 +98,7 @@ public class BasicProcessor implements AbstractRecipeProcessor {
         if (!tile.consumeEnergy())
             return false;
         int soundTick = tile.getData(VEAttachments.SOUND_TICK);
-        if (++soundTick == 19 && Config.PLAY_MACHINE_SOUNDS.get()) {
+        if (++soundTick == 19) {
             soundTick = 0;
             tile.getLevel().playSound(null, tile.getBlockPos(), soundEvent, SoundSource.BLOCKS, 1.0F,
                     1.0F);

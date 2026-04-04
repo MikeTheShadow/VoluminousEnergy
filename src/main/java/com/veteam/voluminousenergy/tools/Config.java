@@ -4,11 +4,11 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class Config {
 
-    public static final ModConfigSpec.Builder COMMON_BUILDER = new ModConfigSpec.Builder();
-    public static final ModConfigSpec.Builder CLIENT_BUILDER = new ModConfigSpec.Builder();
+    public static final ModConfigSpec.Builder VE_STARTUP_CONFIG_BUILDER = new ModConfigSpec.Builder();
+    public static final ModConfigSpec.Builder VE_CLIENT_CONFIG_BUILDER = new ModConfigSpec.Builder();
 
-    public static ModConfigSpec COMMON_CONFIG;
-    public static ModConfigSpec CLIENT_CONFIG;
+    public static ModConfigSpec VE_STARTUP_CONFIG;
+    public static ModConfigSpec VE_CLIENT_CONFIG;
 
     // COMMON Config variables and categories
     public static final String CATEGORY_GENERAL = "General";
@@ -222,7 +222,6 @@ public class Config {
     public static ModConfigSpec.BooleanValue SHORTEN_ITEM_TOOLTIP_VALUES;
     public static ModConfigSpec.BooleanValue SHORTEN_POWER_BAR_VALUES;
     public static ModConfigSpec.BooleanValue SHORTEN_TANK_GUI_VALUES;
-    public static ModConfigSpec.BooleanValue PLAY_MACHINE_SOUNDS;
 
     static {
         buildCommonConfig();
@@ -230,308 +229,308 @@ public class Config {
     }
 
     private static void buildCommonConfig(){
-        COMMON_BUILDER.comment("General Settings").push(CATEGORY_GENERAL);
+        VE_STARTUP_CONFIG_BUILDER.comment("General Settings").push(CATEGORY_GENERAL);
         setupGeneralSettings();
-        COMMON_BUILDER.pop();
+        VE_STARTUP_CONFIG_BUILDER.pop();
 
-        COMMON_BUILDER.comment("Food Settings").push(CATEGORY_FOOD);
+        VE_STARTUP_CONFIG_BUILDER.comment("Food Settings").push(CATEGORY_FOOD);
         setupFoodSettings();
-        COMMON_BUILDER.pop();
+        VE_STARTUP_CONFIG_BUILDER.pop();
 
         // World Feature Settings
-        COMMON_BUILDER.comment("World Generation Settings").push(CATEGORY_WORLDGEN);
+        VE_STARTUP_CONFIG_BUILDER.comment("World Generation Settings").push(CATEGORY_WORLDGEN);
         setupWorldGen();
-        COMMON_BUILDER.pop();
+        VE_STARTUP_CONFIG_BUILDER.pop();
 
         // Primitive Stirling Generator
-        COMMON_BUILDER.comment("Primitive Stirling Generator Settings").push(CATEGORY_PRIMITIVE_STIRLING_GENERATOR);
+        VE_STARTUP_CONFIG_BUILDER.comment("Primitive Stirling Generator Settings").push(CATEGORY_PRIMITIVE_STIRLING_GENERATOR);
         setupPrimitiveStirlingGeneratorConfig();
-        COMMON_BUILDER.pop();
+        VE_STARTUP_CONFIG_BUILDER.pop();
 
         // Crusher
-        COMMON_BUILDER.comment("Crusher Settings").push(CATEGORY_CRUSHER);
+        VE_STARTUP_CONFIG_BUILDER.comment("Crusher Settings").push(CATEGORY_CRUSHER);
         setupCrusher();
-        COMMON_BUILDER.pop();
+        VE_STARTUP_CONFIG_BUILDER.pop();
 
         // Electrolyzer
-        COMMON_BUILDER.comment("Electrolyzer Settings").push(CATEGORY_ELECTROLYZER);
+        VE_STARTUP_CONFIG_BUILDER.comment("Electrolyzer Settings").push(CATEGORY_ELECTROLYZER);
         setupElectrolyzer();
-        COMMON_BUILDER.pop();
+        VE_STARTUP_CONFIG_BUILDER.pop();
 
         // Centrifugal Agitator
-        COMMON_BUILDER.comment("Centrifugal Agitator Settings").push(CATEGORY_CENTRIFUGAL_AGITATOR);
+        VE_STARTUP_CONFIG_BUILDER.comment("Centrifugal Agitator Settings").push(CATEGORY_CENTRIFUGAL_AGITATOR);
         setupCentrifugalAgitator();
-        COMMON_BUILDER.pop();
+        VE_STARTUP_CONFIG_BUILDER.pop();
 
         // Compressor
-        COMMON_BUILDER.comment("Compressor Settings").push(CATEGORY_COMPRESSOR);
+        VE_STARTUP_CONFIG_BUILDER.comment("Compressor Settings").push(CATEGORY_COMPRESSOR);
         setupCompressor();
-        COMMON_BUILDER.pop();
+        VE_STARTUP_CONFIG_BUILDER.pop();
 
         // Stirling Generator
-        COMMON_BUILDER.comment("Stirling Generator Settings").push(CATEGORY_STIRLING_GENERATOR);
+        VE_STARTUP_CONFIG_BUILDER.comment("Stirling Generator Settings").push(CATEGORY_STIRLING_GENERATOR);
         setupStirlingGenerator();
-        COMMON_BUILDER.pop();
+        VE_STARTUP_CONFIG_BUILDER.pop();
 
         // Combustion Generator
-        COMMON_BUILDER.comment("Combustion Generator Settings").push(CATEGORY_COMBUSTION_GENERATOR);
+        VE_STARTUP_CONFIG_BUILDER.comment("Combustion Generator Settings").push(CATEGORY_COMBUSTION_GENERATOR);
         setupCombustionGenerator();
-        COMMON_BUILDER.pop();
+        VE_STARTUP_CONFIG_BUILDER.pop();
 
         // Aqueoulizer
-        COMMON_BUILDER.comment("Aqueoulizer Settings").push(CATEGORY_AQUEOULIZER);
+        VE_STARTUP_CONFIG_BUILDER.comment("Aqueoulizer Settings").push(CATEGORY_AQUEOULIZER);
         setupAqueoulizer();
-        COMMON_BUILDER.pop();
+        VE_STARTUP_CONFIG_BUILDER.pop();
 
         // Air Compressor
-        COMMON_BUILDER.comment("Air Compressor Settings").push(CATEGORY_AIR_COMPRESSOR);
+        VE_STARTUP_CONFIG_BUILDER.comment("Air Compressor Settings").push(CATEGORY_AIR_COMPRESSOR);
         setupAirCompressor();
-        COMMON_BUILDER.pop();
+        VE_STARTUP_CONFIG_BUILDER.pop();
 
         // Distillation Unit
-        COMMON_BUILDER.comment("Distillation Unit Settings").push(CATEGORY_DISTILLATION_UNIT);
+        VE_STARTUP_CONFIG_BUILDER.comment("Distillation Unit Settings").push(CATEGORY_DISTILLATION_UNIT);
         setupDistillationUnit();
-        COMMON_BUILDER.pop();
+        VE_STARTUP_CONFIG_BUILDER.pop();
 
         // Pump
-        COMMON_BUILDER.comment("Pump Settings").push(CATEGORY_PUMP);
+        VE_STARTUP_CONFIG_BUILDER.comment("Pump Settings").push(CATEGORY_PUMP);
         setupPump();
-        COMMON_BUILDER.pop();
+        VE_STARTUP_CONFIG_BUILDER.pop();
 
         // Gas Fired Furnace
-        COMMON_BUILDER.comment("Gas Furnace Settings").push(CATEGORY_GAS_FIRED_FURNACE);
+        VE_STARTUP_CONFIG_BUILDER.comment("Gas Furnace Settings").push(CATEGORY_GAS_FIRED_FURNACE);
         setupGasFiredFurnace();
-        COMMON_BUILDER.pop();
+        VE_STARTUP_CONFIG_BUILDER.pop();
 
         // Electric Furnace
-        COMMON_BUILDER.comment("Electric Furnace Settings").push(CATEGORY_ELECTRIC_FURNACE);
+        VE_STARTUP_CONFIG_BUILDER.comment("Electric Furnace Settings").push(CATEGORY_ELECTRIC_FURNACE);
         setupElectricFurnace();
-        COMMON_BUILDER.pop();
+        VE_STARTUP_CONFIG_BUILDER.pop();
 
         // Battery Box
-        COMMON_BUILDER.comment("Battery Box Settings").push(CATEGORY_BATTERY_BOX);
+        VE_STARTUP_CONFIG_BUILDER.comment("Battery Box Settings").push(CATEGORY_BATTERY_BOX);
         setupBatteryBox();
-        COMMON_BUILDER.pop();
+        VE_STARTUP_CONFIG_BUILDER.pop();
 
         // Primitive Solar Panel
-        COMMON_BUILDER.comment("Primitive Solar Panel").push(CATEGORY_PRIMITIVE_SOLAR_PANEL);
+        VE_STARTUP_CONFIG_BUILDER.comment("Primitive Solar Panel").push(CATEGORY_PRIMITIVE_SOLAR_PANEL);
         setupPrimitiveSolarPanel();
-        COMMON_BUILDER.pop();
+        VE_STARTUP_CONFIG_BUILDER.pop();
 
         // Solar Panel
-        COMMON_BUILDER.comment("Solar Panel").push(CATEGORY_SOLAR_PANEL);
+        VE_STARTUP_CONFIG_BUILDER.comment("Solar Panel").push(CATEGORY_SOLAR_PANEL);
         setupSolarPanel();
-        COMMON_BUILDER.pop();
+        VE_STARTUP_CONFIG_BUILDER.pop();
 
         // Centrifugal Separator
-        COMMON_BUILDER.comment("Centrifugal Separator").push(CATEGORY_CENTRIFUGAL_SEPARATOR);
+        VE_STARTUP_CONFIG_BUILDER.comment("Centrifugal Separator").push(CATEGORY_CENTRIFUGAL_SEPARATOR);
         setupCentrifugalSeparator();
-        COMMON_BUILDER.pop();
+        VE_STARTUP_CONFIG_BUILDER.pop();
 
         // Implosion Compressor
-        COMMON_BUILDER.comment("Implosion Compressor").push(CATEGORY_IMPLOSION_COMPRESSOR);
+        VE_STARTUP_CONFIG_BUILDER.comment("Implosion Compressor").push(CATEGORY_IMPLOSION_COMPRESSOR);
         setupImplosionCompressor();
-        COMMON_BUILDER.pop();
+        VE_STARTUP_CONFIG_BUILDER.pop();
 
         // Blast Furnace
-        COMMON_BUILDER.comment("Blast Furnace").push(CATEGORY_BLAST_FURNACE);
+        VE_STARTUP_CONFIG_BUILDER.comment("Blast Furnace").push(CATEGORY_BLAST_FURNACE);
         setupBlastFurnace();
-        COMMON_BUILDER.pop();
+        VE_STARTUP_CONFIG_BUILDER.pop();
 
         // Sawmill
-        COMMON_BUILDER.comment("Sawmill").push(CATEGORY_SAWMILL);
+        VE_STARTUP_CONFIG_BUILDER.comment("Sawmill").push(CATEGORY_SAWMILL);
         setupSawmill();
-        COMMON_BUILDER.pop();
+        VE_STARTUP_CONFIG_BUILDER.pop();
 
         // Tanks
-        COMMON_BUILDER.comment("Tank Blocks").push(CATEGORY_TANK_BLOCKS);
+        VE_STARTUP_CONFIG_BUILDER.comment("Tank Blocks").push(CATEGORY_TANK_BLOCKS);
         setupTankBlocks();
-        COMMON_BUILDER.pop();
+        VE_STARTUP_CONFIG_BUILDER.pop();
 
         // Tooling Station
-        COMMON_BUILDER.comment("Tooling Station").push(CATEGORY_TOOLING_STATION);
+        VE_STARTUP_CONFIG_BUILDER.comment("Tooling Station").push(CATEGORY_TOOLING_STATION);
         setupToolingStation();
-        COMMON_BUILDER.pop();
+        VE_STARTUP_CONFIG_BUILDER.pop();
 
         // Fluid Electrolyzer
-        COMMON_BUILDER.comment("Fluid Electrolyzer").push(CATEGORY_FLUID_ELECTROLYZER);
+        VE_STARTUP_CONFIG_BUILDER.comment("Fluid Electrolyzer").push(CATEGORY_FLUID_ELECTROLYZER);
         setupFluidElectrolyzer();
-        COMMON_BUILDER.pop();
+        VE_STARTUP_CONFIG_BUILDER.pop();
 
         // Fluid Mixer
-        COMMON_BUILDER.comment("Fluid Mixer").push(CATEGORY_FLUID_MIXER);
+        VE_STARTUP_CONFIG_BUILDER.comment("Fluid Mixer").push(CATEGORY_FLUID_MIXER);
         setupFluidMixer();
-        COMMON_BUILDER.pop();
+        VE_STARTUP_CONFIG_BUILDER.pop();
 
         // Fluid Mixer
-        COMMON_BUILDER.comment("Hydroponic Incubator").push(CATEGORY_HYDROPONIC_INCUBATOR);
+        VE_STARTUP_CONFIG_BUILDER.comment("Hydroponic Incubator").push(CATEGORY_HYDROPONIC_INCUBATOR);
         setupHydroponicIncubatorMixer();
-        COMMON_BUILDER.pop();
+        VE_STARTUP_CONFIG_BUILDER.pop();
 
         // Dimensional Laser
-        COMMON_BUILDER.comment("Dimensional Laser").push(CATEGORY_DIMENSIONAL_LASER);
+        VE_STARTUP_CONFIG_BUILDER.comment("Dimensional Laser").push(CATEGORY_DIMENSIONAL_LASER);
         setupDimensionalLaser();
-        COMMON_BUILDER.pop();
+        VE_STARTUP_CONFIG_BUILDER.pop();
 
-        COMMON_CONFIG = COMMON_BUILDER.build();
+        VE_STARTUP_CONFIG = VE_STARTUP_CONFIG_BUILDER.build();
     }
 
     private static void setupGeneralSettings(){
-        ALLOW_EXTRACTION_FROM_INPUT_TANKS = COMMON_BUILDER.comment("Allow pipes to extract fluids from fluid input tanks. Disabling this means that only fluid outputs can be extracted from Tile Entites")
+        ALLOW_EXTRACTION_FROM_INPUT_TANKS = VE_STARTUP_CONFIG_BUILDER.comment("Allow pipes to extract fluids from fluid input tanks. Disabling this means that only fluid outputs can be extracted from Tile Entites")
                 .define("Allow Extraction from Input Tanks", false);
-        ACID_DAMAGE = COMMON_BUILDER.comment("Damage taken from standing in an acid.")
+        ACID_DAMAGE = VE_STARTUP_CONFIG_BUILDER.comment("Damage taken from standing in an acid.")
                 .defineInRange("Acid Damage", 3F, 0F, Float.MAX_VALUE);
-        ACID_FIRE_DURATION = COMMON_BUILDER.comment("Duration of fire on an entity for stepping into an acid.")
+        ACID_FIRE_DURATION = VE_STARTUP_CONFIG_BUILDER.comment("Duration of fire on an entity for stepping into an acid.")
                 .defineInRange("Acid Fire Duration", 4, 0, Integer.MAX_VALUE);
-        SOLARIUM_PROTECTIVE_SHEATH_HITS = COMMON_BUILDER.comment("How many uses a Solarium tool can have before the protective sheath is depleted")
+        SOLARIUM_PROTECTIVE_SHEATH_HITS = VE_STARTUP_CONFIG_BUILDER.comment("How many uses a Solarium tool can have before the protective sheath is depleted")
                 .defineInRange("Solarium Protective Sheath", 2560, 0, Integer.MAX_VALUE);
-        SOLARIUM_SHEATH_REGENERATION_CHANCE = COMMON_BUILDER.comment("The percent chance (as a decimal) of a Solarium sheath regenerating on a tick when exposed to skylight")
+        SOLARIUM_SHEATH_REGENERATION_CHANCE = VE_STARTUP_CONFIG_BUILDER.comment("The percent chance (as a decimal) of a Solarium sheath regenerating on a tick when exposed to skylight")
                 .defineInRange("Solarium Sheath Regeneration Chance", 0.0175, 0, 1);
-        DECREMENT_SPEED_ON_NO_POWER = COMMON_BUILDER.comment("Speed of which progress should be undone at a machine when the machine loses power/FE")
+        DECREMENT_SPEED_ON_NO_POWER = VE_STARTUP_CONFIG_BUILDER.comment("Speed of which progress should be undone at a machine when the machine loses power/FE")
                 .defineInRange("Decrement Speed On No Power", 5, 1, 20);
     }
 
     private static void setupFoodSettings(){
-        COOKED_RICE_NUTRITION = COMMON_BUILDER.comment("Nutritional value of Cooked Rice.")
+        COOKED_RICE_NUTRITION = VE_STARTUP_CONFIG_BUILDER.comment("Nutritional value of Cooked Rice.")
                 .defineInRange("Cooked Rice Nutrition", 5, 1, Integer.MAX_VALUE);
-        COOKED_RICE_SATURATION = COMMON_BUILDER.comment("Saturation of Cooked Rice.")
+        COOKED_RICE_SATURATION = VE_STARTUP_CONFIG_BUILDER.comment("Saturation of Cooked Rice.")
                 .defineInRange("Cooked Rice Saturation", 0.3F, Float.MIN_NORMAL, Float.MAX_VALUE);
-        RICE_TICK_CHANCE = COMMON_BUILDER.comment("Chance of Rice crop going to next life stage.")
+        RICE_TICK_CHANCE = VE_STARTUP_CONFIG_BUILDER.comment("Chance of Rice crop going to next life stage.")
                 .defineInRange("Rice Tick Chance", 0.5F, Float.MIN_NORMAL, 1F);
     }
 
     private static void setupWorldGen(){
-        COMMON_BUILDER.comment("Feature Generation").push(SUBCATEGORY_FEATURE_GENERATION);
-            WORLD_GEN_LOGGING = COMMON_BUILDER.comment("Enable/Disable Logging of Word Generation information for " +
+        VE_STARTUP_CONFIG_BUILDER.comment("Feature Generation").push(SUBCATEGORY_FEATURE_GENERATION);
+            WORLD_GEN_LOGGING = VE_STARTUP_CONFIG_BUILDER.comment("Enable/Disable Logging of Word Generation information for " +
                     "Voluminous Energy features and Ores")
                     .define("Enable Logging", false);
-        COMMON_BUILDER.pop(); // End of Feature Generation
+        VE_STARTUP_CONFIG_BUILDER.pop(); // End of Feature Generation
 
-        COMMON_BUILDER.comment("Climate Spawns").push(SUBCATEGORY_CLIMATE_SPAWNS);
-            PUNCH_HOLES_IN_CLIMATE_SPAWNS = COMMON_BUILDER.comment("To prevent continuous valid chunks, 'punch holes' by removing spawns from valid chunks (Ex: Reduce non-water or lava appearances for the Dimensional Laser)")
+        VE_STARTUP_CONFIG_BUILDER.comment("Climate Spawns").push(SUBCATEGORY_CLIMATE_SPAWNS);
+            PUNCH_HOLES_IN_CLIMATE_SPAWNS = VE_STARTUP_CONFIG_BUILDER.comment("To prevent continuous valid chunks, 'punch holes' by removing spawns from valid chunks (Ex: Reduce non-water or lava appearances for the Dimensional Laser)")
                 .define("Punch Holes in Climate Spawns", true);
-            CLIMATE_SPAWNS_HOLE_PUNCH_MULTIPLIER = COMMON_BUILDER.comment("Multiply cumulative climate value by this multiplier ")
+            CLIMATE_SPAWNS_HOLE_PUNCH_MULTIPLIER = VE_STARTUP_CONFIG_BUILDER.comment("Multiply cumulative climate value by this multiplier ")
                     .defineInRange("Climate Spawns Hole Punch Multiplier", 10_000, 1, Integer.MAX_VALUE);
-            CLIMATE_SPAWNS_HOLE_PUNCH_BOUNDING = COMMON_BUILDER.comment("Value to be used for binding the RNG ")
+            CLIMATE_SPAWNS_HOLE_PUNCH_BOUNDING = VE_STARTUP_CONFIG_BUILDER.comment("Value to be used for binding the RNG ")
                 .defineInRange("Climate Spawns Hole Punch Bounding", 100, 10, 10_000);
-            CLIMATE_SPAWNS_HOLE_PUNCH_RNG_MUST_BE_LARGER = COMMON_BUILDER.comment("If generated number is smaller than this value, the chunk will be 'hole punched'.")
+            CLIMATE_SPAWNS_HOLE_PUNCH_RNG_MUST_BE_LARGER = VE_STARTUP_CONFIG_BUILDER.comment("If generated number is smaller than this value, the chunk will be 'hole punched'.")
                 .defineInRange("Climate Spawns Hole Punch Number Must Be Larger Than", 47, 1, 10_000);
-        COMMON_BUILDER.pop();
+        VE_STARTUP_CONFIG_BUILDER.pop();
 
-        COMMON_BUILDER.comment("Ore Generation").push(SUBCATEGORY_ORE_GENERATION);
+        VE_STARTUP_CONFIG_BUILDER.comment("Ore Generation").push(SUBCATEGORY_ORE_GENERATION);
             //Galena
-            COMMON_BUILDER.comment("Galena Ore Settings").push(SUBCATEGORY_GALENA);
-                GALENA_ORE_BLOCK_LIGHT_LEVEL = COMMON_BUILDER.defineInRange("Galena Light Glow Level", 4, 0, 16);
-            COMMON_BUILDER.pop(); // End of Galena
+            VE_STARTUP_CONFIG_BUILDER.comment("Galena Ore Settings").push(SUBCATEGORY_GALENA);
+                GALENA_ORE_BLOCK_LIGHT_LEVEL = VE_STARTUP_CONFIG_BUILDER.defineInRange("Galena Light Glow Level", 4, 0, 16);
+            VE_STARTUP_CONFIG_BUILDER.pop(); // End of Galena
 
             // DEPOSITS
-            COMMON_BUILDER.comment("Ore Deposits: Large cluster of ore and raw block, more compact than an ore vein, but bigger than an ore blob.").push(SUBCATEGORY_ORE_DEPOSIT_GENERATION);
-                PREVENT_SURFACE_ORE_DEPOSITS = COMMON_BUILDER.comment("Prevent the generation of ore deposits with exposure to the world's surface").define("Disallow surface ore deposits", true);
-            COMMON_BUILDER.pop(); // End of Ore Deposit
+            VE_STARTUP_CONFIG_BUILDER.comment("Ore Deposits: Large cluster of ore and raw block, more compact than an ore vein, but bigger than an ore blob.").push(SUBCATEGORY_ORE_DEPOSIT_GENERATION);
+                PREVENT_SURFACE_ORE_DEPOSITS = VE_STARTUP_CONFIG_BUILDER.comment("Prevent the generation of ore deposits with exposure to the world's surface").define("Disallow surface ore deposits", true);
+            VE_STARTUP_CONFIG_BUILDER.pop(); // End of Ore Deposit
 
-        COMMON_BUILDER.pop(); // End of Ore Generation
+        VE_STARTUP_CONFIG_BUILDER.pop(); // End of Ore Generation
     }
 
     private static void setupPrimitiveStirlingGeneratorConfig(){
-        PRIMITIVE_STIRLING_GENERATOR_MAX_POWER = COMMON_BUILDER.comment("Maximum power for the Primitive Stirling Generator to store")
+        PRIMITIVE_STIRLING_GENERATOR_MAX_POWER = VE_STARTUP_CONFIG_BUILDER.comment("Maximum power for the Primitive Stirling Generator to store")
                 .defineInRange("Maximum Power",100000, 0, Integer.MAX_VALUE);
-        PRIMITIVE_STIRLING_GENERATOR_GENERATE = COMMON_BUILDER.comment("Power generation per tick")
+        PRIMITIVE_STIRLING_GENERATOR_GENERATE = VE_STARTUP_CONFIG_BUILDER.comment("Power generation per tick")
                 .defineInRange("Generation (Per Tick)",40, 0, Integer.MAX_VALUE);
-        PRIMITIVE_STIRLING_GENERATOR_SEND = COMMON_BUILDER.comment("Power generation to send per tick")
+        PRIMITIVE_STIRLING_GENERATOR_SEND = VE_STARTUP_CONFIG_BUILDER.comment("Power generation to send per tick")
                 .defineInRange("Output Rate",1000, 0, Integer.MAX_VALUE);
     }
 
     private static void setupCrusher(){
-        CRUSHER_MAX_POWER = COMMON_BUILDER.comment("Maximum power for the Crusher to store")
+        CRUSHER_MAX_POWER = VE_STARTUP_CONFIG_BUILDER.comment("Maximum power for the Crusher to store")
                 .defineInRange("Maximum Power",5000,0,Integer.MAX_VALUE);
-        CRUSHER_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Crusher")
+        CRUSHER_POWER_USAGE = VE_STARTUP_CONFIG_BUILDER.comment("Power consumption per tick for the Crusher")
                 .defineInRange("Power Consumption",40,0,Integer.MAX_VALUE);
-        CRUSHER_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Crusher")
+        CRUSHER_TRANSFER = VE_STARTUP_CONFIG_BUILDER.comment("Power I/O per tick for the Crusher")
                 .defineInRange("Maximum Transfer",1000,0,Integer.MAX_VALUE);
     }
 
     private static void setupElectrolyzer(){
-        ELECTROLYZER_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Electrolyzer to store")
+        ELECTROLYZER_MAX_POWER = VE_STARTUP_CONFIG_BUILDER.comment("Maximum Power for the Electrolyzer to store")
                 .defineInRange("Maximum Power", 5000, 0, Integer.MAX_VALUE);
-        ELECTROLYZER_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Electrolyzer")
+        ELECTROLYZER_POWER_USAGE = VE_STARTUP_CONFIG_BUILDER.comment("Power consumption per tick for the Electrolyzer")
                 .defineInRange("Power Consumption", 40, 0, Integer.MAX_VALUE);
-        ELECTROLYZER_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Electrolyzer")
+        ELECTROLYZER_TRANSFER = VE_STARTUP_CONFIG_BUILDER.comment("Power I/O per tick for the Electrolyzer")
                 .defineInRange("Maximum Transfer", 1000, 0, Integer.MAX_VALUE);
     }
 
     private static void setupCentrifugalAgitator(){
-        CENTRIFUGAL_AGITATOR_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Centrifugal Agitator to store")
+        CENTRIFUGAL_AGITATOR_MAX_POWER = VE_STARTUP_CONFIG_BUILDER.comment("Maximum Power for the Centrifugal Agitator to store")
                 .defineInRange("Maximum Power", 5000, 0, Integer.MAX_VALUE);
-        CENTRIFUGAL_AGITATOR_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Centrifugal Agitator")
+        CENTRIFUGAL_AGITATOR_POWER_USAGE = VE_STARTUP_CONFIG_BUILDER.comment("Power consumption per tick for the Centrifugal Agitator")
                 .defineInRange("Power Consumption", 40, 0, Integer.MAX_VALUE);
-        CENTRIFUGAL_AGITATOR_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Centrifugal Agitator")
+        CENTRIFUGAL_AGITATOR_TRANSFER = VE_STARTUP_CONFIG_BUILDER.comment("Power I/O per tick for the Centrifugal Agitator")
                 .defineInRange("Maximum Transfer", 1000, 0, Integer.MAX_VALUE);
     }
 
     private static void setupCompressor(){
-        COMPRESSOR_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Compressor to store")
+        COMPRESSOR_MAX_POWER = VE_STARTUP_CONFIG_BUILDER.comment("Maximum Power for the Compressor to store")
                 .defineInRange("Maximum Power", 5000, 0, Integer.MAX_VALUE);
-        COMPRESSOR_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Compressor")
+        COMPRESSOR_POWER_USAGE = VE_STARTUP_CONFIG_BUILDER.comment("Power consumption per tick for the Compressor")
                 .defineInRange("Power Consumption", 40, 0, Integer.MAX_VALUE);
-        COMPRESSOR_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Compressor")
+        COMPRESSOR_TRANSFER = VE_STARTUP_CONFIG_BUILDER.comment("Power I/O per tick for the Compressor")
                 .defineInRange("Maximum Transfer", 1000, 0, Integer.MAX_VALUE);
     }
 
     private static void setupStirlingGenerator(){
-        STIRLING_GENERATOR_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Stirling Generator to store")
+        STIRLING_GENERATOR_MAX_POWER = VE_STARTUP_CONFIG_BUILDER.comment("Maximum Power for the Stirling Generator to store")
                 .defineInRange("Maximum Power", 5120000, 0, Integer.MAX_VALUE);
-        STIRLING_GENERATOR_GENERATE = COMMON_BUILDER.comment("Fallback value for power generation for the Stirling Generator")
+        STIRLING_GENERATOR_GENERATE = VE_STARTUP_CONFIG_BUILDER.comment("Fallback value for power generation for the Stirling Generator")
                 .defineInRange("Fallback Generation Rate", 128, 0, Integer.MAX_VALUE);
-        STIRLING_GENERATOR_SEND = COMMON_BUILDER.comment("Maximum power to send out per tick for the Stirling Generator")
+        STIRLING_GENERATOR_SEND = VE_STARTUP_CONFIG_BUILDER.comment("Maximum power to send out per tick for the Stirling Generator")
                 .defineInRange("Maximum Transfer", 128000, 0, Integer.MAX_VALUE);
     }
 
     private static void setupCombustionGenerator(){
-        COMBUSTION_GENERATOR_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Combustion Generator to store")
+        COMBUSTION_GENERATOR_MAX_POWER = VE_STARTUP_CONFIG_BUILDER.comment("Maximum Power for the Combustion Generator to store")
                 .defineInRange("Maximum Power", 5120000, 0, Integer.MAX_VALUE);
-        COMBUSTION_GENERATOR_SEND = COMMON_BUILDER.comment("Maximum power to send out per tick for the Combustion Generator")
+        COMBUSTION_GENERATOR_SEND = VE_STARTUP_CONFIG_BUILDER.comment("Maximum power to send out per tick for the Combustion Generator")
                 .defineInRange("Maximum Transfer", 512000, 0, Integer.MAX_VALUE);
-        COMBUSTION_GENERATOR_BALANCED_MODE = COMMON_BUILDER.comment("If true, the Combustion Generator will use the process time from the oxidizer's recipe rather than the static process time")
+        COMBUSTION_GENERATOR_BALANCED_MODE = VE_STARTUP_CONFIG_BUILDER.comment("If true, the Combustion Generator will use the process time from the oxidizer's recipe rather than the static process time")
                 .define("Balanced Mode", false);
-        COMBUSTION_GENERATOR_FIXED_TICK_TIME = COMMON_BUILDER.comment("The fixed process time for the Combustion Generator is Balanced Mode is not used.")
+        COMBUSTION_GENERATOR_FIXED_TICK_TIME = VE_STARTUP_CONFIG_BUILDER.comment("The fixed process time for the Combustion Generator is Balanced Mode is not used.")
                 .defineInRange("Fixed Process Time", 1600, 0, Integer.MAX_VALUE);
     }
 
     private static void setupAqueoulizer(){
-        AQUEOULIZER_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Aqueoulizer to store")
+        AQUEOULIZER_MAX_POWER = VE_STARTUP_CONFIG_BUILDER.comment("Maximum Power for the Aqueoulizer to store")
                 .defineInRange("Maximum Power", 5000, 0, Integer.MAX_VALUE);
-        AQUEOULIZER_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Aqueoulizer")
+        AQUEOULIZER_POWER_USAGE = VE_STARTUP_CONFIG_BUILDER.comment("Power consumption per tick for the Aqueoulizer")
                 .defineInRange("Power Consumption", 40, 0, Integer.MAX_VALUE);
-        AQUEOULIZER_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Aqueoulizer")
+        AQUEOULIZER_TRANSFER = VE_STARTUP_CONFIG_BUILDER.comment("Power I/O per tick for the Aqueoulizer")
                 .defineInRange("Maximum Transfer", 1000, 0, Integer.MAX_VALUE);
     }
 
     private static void setupAirCompressor(){
-        AIR_COMPRESSOR_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Air Compressor to store")
+        AIR_COMPRESSOR_MAX_POWER = VE_STARTUP_CONFIG_BUILDER.comment("Maximum Power for the Air Compressor to store")
                 .defineInRange("Maximum Power", 5000, 0, Integer.MAX_VALUE);
-        AIR_COMPRESSOR_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Air Compressor")
+        AIR_COMPRESSOR_POWER_USAGE = VE_STARTUP_CONFIG_BUILDER.comment("Power consumption per tick for the Air Compressor")
                 .defineInRange("Power Consumption", 24, 0, Integer.MAX_VALUE);
-        AIR_COMPRESSOR_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Air Compressor")
+        AIR_COMPRESSOR_TRANSFER = VE_STARTUP_CONFIG_BUILDER.comment("Power I/O per tick for the Air Compressor")
                 .defineInRange("Maximum Transfer", 1000, 0, Integer.MAX_VALUE);
     }
 
     private static void setupDistillationUnit(){
-        DISTILLATION_UNIT_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Distillation Unit to store")
+        DISTILLATION_UNIT_MAX_POWER = VE_STARTUP_CONFIG_BUILDER.comment("Maximum Power for the Distillation Unit to store")
                 .defineInRange("Maximum Power", 5000, 0, Integer.MAX_VALUE);
-        DISTILLATION_UNIT_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Distillation Unit")
+        DISTILLATION_UNIT_POWER_USAGE = VE_STARTUP_CONFIG_BUILDER.comment("Power consumption per tick for the Distillation Unit")
                 .defineInRange("Power Consumption", 64, 0, Integer.MAX_VALUE);
-        DISTILLATION_UNIT_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Distillation Unit")
+        DISTILLATION_UNIT_TRANSFER = VE_STARTUP_CONFIG_BUILDER.comment("Power I/O per tick for the Distillation Unit")
                 .defineInRange("Maximum Transfer", 2500, 0, Integer.MAX_VALUE);
     }
 
     private static void setupPump(){
-        PUMP_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Pump to store")
+        PUMP_MAX_POWER = VE_STARTUP_CONFIG_BUILDER.comment("Maximum Power for the Pump to store")
                 .defineInRange("Maximum Power", 5000, 0, Integer.MAX_VALUE);
-        PUMP_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Pump")
+        PUMP_POWER_USAGE = VE_STARTUP_CONFIG_BUILDER.comment("Power consumption per tick for the Pump")
                 .defineInRange("Power Consumption", 128, 0, Integer.MAX_VALUE);
-        PUMP_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Pump")
+        PUMP_TRANSFER = VE_STARTUP_CONFIG_BUILDER.comment("Power I/O per tick for the Pump")
                 .defineInRange("Maximum Transfer", 1000, 0, Integer.MAX_VALUE);
-        PUMP_CHECK_CYCLES_PER_TICK = COMMON_BUILDER.comment("How many blocks should be checked per tick for fluids")
+        PUMP_CHECK_CYCLES_PER_TICK = VE_STARTUP_CONFIG_BUILDER.comment("How many blocks should be checked per tick for fluids")
                 .defineInRange("Pump Check Cycles Per Tick", 200, 1, Integer.MAX_VALUE);
     }
 
@@ -539,177 +538,175 @@ public class Config {
     private static void setupGasFiredFurnace(){}
 
     private static void setupElectricFurnace(){
-        ELECTRIC_FURNACE_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Electric Furnace to store")
+        ELECTRIC_FURNACE_MAX_POWER = VE_STARTUP_CONFIG_BUILDER.comment("Maximum Power for the Electric Furnace to store")
                 .defineInRange("Maximum Power", 5000, 0, Integer.MAX_VALUE);
-        ELECTRIC_FURNACE_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Electric Furnace")
+        ELECTRIC_FURNACE_POWER_USAGE = VE_STARTUP_CONFIG_BUILDER.comment("Power consumption per tick for the Electric Furnace")
                 .defineInRange("Power Consumption", 64, 0, Integer.MAX_VALUE);
-        ELECTRIC_FURNACE_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Electric Furnace")
+        ELECTRIC_FURNACE_TRANSFER = VE_STARTUP_CONFIG_BUILDER.comment("Power I/O per tick for the Electric Furnace")
                 .defineInRange("Maximum Transfer", 1000, 0, Integer.MAX_VALUE);
     }
 
     private static void setupBatteryBox(){
-        BATTERY_BOX_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Battery Box to store")
+        BATTERY_BOX_MAX_POWER = VE_STARTUP_CONFIG_BUILDER.comment("Maximum Power for the Battery Box to store")
                 .defineInRange("Maximum Power", 50_000, 0, Integer.MAX_VALUE);
-        BATTERY_BOX_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Battery Box")
+        BATTERY_BOX_TRANSFER = VE_STARTUP_CONFIG_BUILDER.comment("Power I/O per tick for the Battery Box")
                 .defineInRange("Maximum Transfer", 5_000, 0, Integer.MAX_VALUE);
     }
 
     public static void setupPrimitiveSolarPanel(){
-        PRIMITIVE_SOLAR_PANEL_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Primitive Solar Panel to store")
+        PRIMITIVE_SOLAR_PANEL_MAX_POWER = VE_STARTUP_CONFIG_BUILDER.comment("Maximum Power for the Primitive Solar Panel to store")
                 .defineInRange("Maximum Power", 100_000, 0, Integer.MAX_VALUE);
-        PRIMITIVE_SOLAR_PANEL_GENERATE = COMMON_BUILDER.comment("Value for power generation for the Primitive Solar Panel")
+        PRIMITIVE_SOLAR_PANEL_GENERATE = VE_STARTUP_CONFIG_BUILDER.comment("Value for power generation for the Primitive Solar Panel")
                 .defineInRange("Generation Rate", 64, 0, Integer.MAX_VALUE);
-        PRIMITIVE_SOLAR_PANEL_SEND = COMMON_BUILDER.comment("Maximum power to send out per tick for the Primitive Solar Panel")
+        PRIMITIVE_SOLAR_PANEL_SEND = VE_STARTUP_CONFIG_BUILDER.comment("Maximum power to send out per tick for the Primitive Solar Panel")
                 .defineInRange("Maximum Transfer", 1_000, 0, Integer.MAX_VALUE);
     }
 
     public static void setupSolarPanel(){
-        SOLAR_PANEL_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Solar Panel to store")
+        SOLAR_PANEL_MAX_POWER = VE_STARTUP_CONFIG_BUILDER.comment("Maximum Power for the Solar Panel to store")
                 .defineInRange("Maximum Power", 250_000, 0, Integer.MAX_VALUE);
-        SOLAR_PANEL_GENERATE = COMMON_BUILDER.comment("Value for power generation for the Solar Panel")
+        SOLAR_PANEL_GENERATE = VE_STARTUP_CONFIG_BUILDER.comment("Value for power generation for the Solar Panel")
                 .defineInRange("Generation Rate", 128, 0, Integer.MAX_VALUE);
-        SOLAR_PANEL_SEND = COMMON_BUILDER.comment("Maximum power to send out per tick for the Solar Panel")
+        SOLAR_PANEL_SEND = VE_STARTUP_CONFIG_BUILDER.comment("Maximum power to send out per tick for the Solar Panel")
                 .defineInRange("Maximum Transfer", 5_000, 0, Integer.MAX_VALUE);
     }
 
     private static void setupCentrifugalSeparator(){
-        CENTRIFUGAL_SEPARATOR_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Centrifugal Separator to store")
+        CENTRIFUGAL_SEPARATOR_MAX_POWER = VE_STARTUP_CONFIG_BUILDER.comment("Maximum Power for the Centrifugal Separator to store")
                 .defineInRange("Maximum Power", 5000, 0, Integer.MAX_VALUE);
-        CENTRIFUGAL_SEPARATOR_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Centrifugal Separator")
+        CENTRIFUGAL_SEPARATOR_POWER_USAGE = VE_STARTUP_CONFIG_BUILDER.comment("Power consumption per tick for the Centrifugal Separator")
                 .defineInRange("Power Consumption", 40, 0, Integer.MAX_VALUE);
-        CENTRIFUGAL_SEPARATOR_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Centrifugal Separator")
+        CENTRIFUGAL_SEPARATOR_TRANSFER = VE_STARTUP_CONFIG_BUILDER.comment("Power I/O per tick for the Centrifugal Separator")
                 .defineInRange("Maximum Transfer", 1000, 0, Integer.MAX_VALUE);
     }
 
     private static void setupImplosionCompressor(){
-        IMPLOSION_COMPRESSOR_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Implosion Compressor to store")
+        IMPLOSION_COMPRESSOR_MAX_POWER = VE_STARTUP_CONFIG_BUILDER.comment("Maximum Power for the Implosion Compressor to store")
                 .defineInRange("Maximum Power", 128_000, 0, Integer.MAX_VALUE);
-        IMPLOSION_COMPRESSOR_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Implosion Compressor")
+        IMPLOSION_COMPRESSOR_POWER_USAGE = VE_STARTUP_CONFIG_BUILDER.comment("Power consumption per tick for the Implosion Compressor")
                 .defineInRange("Power Consumption", 128, 0, Integer.MAX_VALUE);
-        IMPLOSION_COMPRESSOR_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Implosion Compressor")
+        IMPLOSION_COMPRESSOR_TRANSFER = VE_STARTUP_CONFIG_BUILDER.comment("Power I/O per tick for the Implosion Compressor")
                 .defineInRange("Maximum Transfer", 2_500, 0, Integer.MAX_VALUE);
     }
 
     private static void setupBlastFurnace(){
-        BLAST_FURNACE_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Blast Furnace to store")
+        BLAST_FURNACE_MAX_POWER = VE_STARTUP_CONFIG_BUILDER.comment("Maximum Power for the Blast Furnace to store")
                 .defineInRange("Maximum Power", 512_000, 0, Integer.MAX_VALUE);
-        BLAST_FURNACE_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Blast Furnace")
+        BLAST_FURNACE_POWER_USAGE = VE_STARTUP_CONFIG_BUILDER.comment("Power consumption per tick for the Blast Furnace")
                 .defineInRange("Power Consumption", 256, 0, Integer.MAX_VALUE);
-        BLAST_FURNACE_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Blast Furnace")
+        BLAST_FURNACE_TRANSFER = VE_STARTUP_CONFIG_BUILDER.comment("Power I/O per tick for the Blast Furnace")
                 .defineInRange("Maximum Transfer", 10_000, 0, Integer.MAX_VALUE);
-        BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION = COMMON_BUILDER.comment("Amount of fluid that is consumed per blasting operation for heat")
+        BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION = VE_STARTUP_CONFIG_BUILDER.comment("Amount of fluid that is consumed per blasting operation for heat")
                 .defineInRange("Heat Source Consumption", 50, 0, 4_000);
     }
 
     private static void setupSawmill(){
-        SAWMILL_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Sawmill to store")
+        SAWMILL_MAX_POWER = VE_STARTUP_CONFIG_BUILDER.comment("Maximum Power for the Sawmill to store")
                 .defineInRange("Maximum Power", 512_000, 0, Integer.MAX_VALUE);
-        SAWMILL_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Sawmill")
+        SAWMILL_POWER_USAGE = VE_STARTUP_CONFIG_BUILDER.comment("Power consumption per tick for the Sawmill")
                 .defineInRange("Power Consumption", 64, 0, Integer.MAX_VALUE);
-        SAWMILL_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Sawmill")
+        SAWMILL_TRANSFER = VE_STARTUP_CONFIG_BUILDER.comment("Power I/O per tick for the Sawmill")
                 .defineInRange("Maximum Transfer", 10_000, 0, Integer.MAX_VALUE);
-        SAWMILL_ALLOW_NON_SAWMILL_RECIPE_LOGS_TO_BE_SAWED = COMMON_BUILDER.comment("true/false, Allow the use of logs that don't have a proper Sawmill recipe")
+        SAWMILL_ALLOW_NON_SAWMILL_RECIPE_LOGS_TO_BE_SAWED = VE_STARTUP_CONFIG_BUILDER.comment("true/false, Allow the use of logs that don't have a proper Sawmill recipe")
                 .define("Allow logs without recipe", true);
-        SAWMILL_FLUID_LOCATION = COMMON_BUILDER.comment("Resource Location of the fluid that will be generated when processing a log without a recipe")
+        SAWMILL_FLUID_LOCATION = VE_STARTUP_CONFIG_BUILDER.comment("Resource Location of the fluid that will be generated when processing a log without a recipe")
                 .define("Fluid location", "voluminousenergy:tree_sap");
-        SAWMILL_FLUID_AMOUNT = COMMON_BUILDER.comment("Amount of fluid that will be generated when processing a log without a recipe")
+        SAWMILL_FLUID_AMOUNT = VE_STARTUP_CONFIG_BUILDER.comment("Amount of fluid that will be generated when processing a log without a recipe")
                 .defineInRange("Fluid Amount", 250, 0, 4_000);
-        SAWMILL_SECOND_OUTPUT_RESOURCE_LOCATION = COMMON_BUILDER.comment("Resource Location of the second output item when processing a log without a recipe")
+        SAWMILL_SECOND_OUTPUT_RESOURCE_LOCATION = VE_STARTUP_CONFIG_BUILDER.comment("Resource Location of the second output item when processing a log without a recipe")
                 .define("Second output item resource location", "voluminousenergy:saw_dust");
-        SAWMILL_SECOND_OUTPUT_COUNT = COMMON_BUILDER.comment("Item amount of the second output item when processing a log without a recipe")
+        SAWMILL_SECOND_OUTPUT_COUNT = VE_STARTUP_CONFIG_BUILDER.comment("Item amount of the second output item when processing a log without a recipe")
                 .defineInRange("Second output amount", 1, 0, 64);
-        SAWMILL_PROCESSING_TIME = COMMON_BUILDER.comment("Processing time when processing a log without a recipe")
+        SAWMILL_PROCESSING_TIME = VE_STARTUP_CONFIG_BUILDER.comment("Processing time when processing a log without a recipe")
                 .defineInRange("Processing time", 200, 0, Integer.MAX_VALUE);
-        SAWMILL_PRIMARY_OUTPUT_COUNT = COMMON_BUILDER.comment("Amount of the primary item (typically a plank) that will be generated when finished processing a log without a recipe")
+        SAWMILL_PRIMARY_OUTPUT_COUNT = VE_STARTUP_CONFIG_BUILDER.comment("Amount of the primary item (typically a plank) that will be generated when finished processing a log without a recipe")
                 .defineInRange("Primary output amount", 6, 1, 64);
-        SAWMILL_LOG_CONSUMPTION_RATE = COMMON_BUILDER.comment("Amount of the input item (typically a log) that will be consumed when finished processing a log without a recipe")
+        SAWMILL_LOG_CONSUMPTION_RATE = VE_STARTUP_CONFIG_BUILDER.comment("Amount of the input item (typically a log) that will be consumed when finished processing a log without a recipe")
                 .defineInRange("Number of logs to consume", 1, 1, 64);
         }
 
         private static void setupTankBlocks(){
-            SOLARIUM_TANK_CAPACITY = COMMON_BUILDER.comment("Maximum tank capacity in Buckets")
+            SOLARIUM_TANK_CAPACITY = VE_STARTUP_CONFIG_BUILDER.comment("Maximum tank capacity in Buckets")
                     .defineInRange("Solarium Tank Capacity", 2_147_483, 0, 2_147_483);
 
-            EIGHZO_TANK_CAPACITY = COMMON_BUILDER.comment("Maximum tank capacity in Buckets")
+            EIGHZO_TANK_CAPACITY = VE_STARTUP_CONFIG_BUILDER.comment("Maximum tank capacity in Buckets")
                     .defineInRange("Eighzo Tank Capacity", 536_870, 0, 2_147_483);
 
-            NIGHALITE_TANK_CAPACITY = COMMON_BUILDER.comment("Maximum tank capacity in Buckets")
+            NIGHALITE_TANK_CAPACITY = VE_STARTUP_CONFIG_BUILDER.comment("Maximum tank capacity in Buckets")
                     .defineInRange("Nighalite Tank Capacity", 67_108, 0, 2_147_483);
 
-            NETHERITE_TANK_CAPACITY = COMMON_BUILDER.comment("Maximum tank capacity in Buckets")
+            NETHERITE_TANK_CAPACITY = VE_STARTUP_CONFIG_BUILDER.comment("Maximum tank capacity in Buckets")
                     .defineInRange("Netherite Tank Capacity", 8_388, 0, 2_147_483);
 
-            TITANIUM_TANK_CAPACITY = COMMON_BUILDER.comment("Maximum tank capacity in Buckets")
+            TITANIUM_TANK_CAPACITY = VE_STARTUP_CONFIG_BUILDER.comment("Maximum tank capacity in Buckets")
                     .defineInRange("Titanium Tank Capacity", 524, 0, 2_147_483);
 
-            ALUMINUM_TANK_CAPACITY = COMMON_BUILDER.comment("Maximum tank capacity in Buckets")
+            ALUMINUM_TANK_CAPACITY = VE_STARTUP_CONFIG_BUILDER.comment("Maximum tank capacity in Buckets")
                     .defineInRange("Aluminum Tank Capacity", 64, 0, 2_147_483);
         }
 
     private static void setupToolingStation(){
-        TOOLING_STATION_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Tooling Station to store")
+        TOOLING_STATION_MAX_POWER = VE_STARTUP_CONFIG_BUILDER.comment("Maximum Power for the Tooling Station to store")
                 .defineInRange("Maximum Power", 5000, 0, Integer.MAX_VALUE);
-        TOOLING_STATION_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Tooling Station")
+        TOOLING_STATION_TRANSFER = VE_STARTUP_CONFIG_BUILDER.comment("Power I/O per tick for the Tooling Station")
                 .defineInRange("Maximum Transfer", 1000, 0, Integer.MAX_VALUE);
     }
 
     private static void setupFluidElectrolyzer(){
-        FLUID_ELECTROLYZER_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Fluid Electrolyzer to store")
+        FLUID_ELECTROLYZER_MAX_POWER = VE_STARTUP_CONFIG_BUILDER.comment("Maximum Power for the Fluid Electrolyzer to store")
                 .defineInRange("Maximum Power", 128_000, 0, Integer.MAX_VALUE);
-        FLUID_ELECTROLYZER_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Fluid Electrolyzer")
+        FLUID_ELECTROLYZER_POWER_USAGE = VE_STARTUP_CONFIG_BUILDER.comment("Power consumption per tick for the Fluid Electrolyzer")
                 .defineInRange("Power Consumption", 128, 0, Integer.MAX_VALUE);
-        FLUID_ELECTROLYZER_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Fluid Electrolyzer")
+        FLUID_ELECTROLYZER_TRANSFER = VE_STARTUP_CONFIG_BUILDER.comment("Power I/O per tick for the Fluid Electrolyzer")
                 .defineInRange("Maximum Transfer", 25_000, 0, Integer.MAX_VALUE);
     }
 
     private static void setupFluidMixer(){
-        FLUID_MIXER_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Fluid Mixer to store")
+        FLUID_MIXER_MAX_POWER = VE_STARTUP_CONFIG_BUILDER.comment("Maximum Power for the Fluid Mixer to store")
                 .defineInRange("Maximum Power", 128_000, 0, Integer.MAX_VALUE);
-        FLUID_MIXER_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Fluid Mixer")
+        FLUID_MIXER_POWER_USAGE = VE_STARTUP_CONFIG_BUILDER.comment("Power consumption per tick for the Fluid Mixer")
                 .defineInRange("Power Consumption", 96, 0, Integer.MAX_VALUE);
-        FLUID_MIXER_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Fluid Mixer")
+        FLUID_MIXER_TRANSFER = VE_STARTUP_CONFIG_BUILDER.comment("Power I/O per tick for the Fluid Mixer")
                 .defineInRange("Maximum Transfer", 25_000, 0, Integer.MAX_VALUE);
     }
 
     private static void setupHydroponicIncubatorMixer(){
-        HYDROPONIC_INCUBATOR_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Hydroponic Incubator to store")
+        HYDROPONIC_INCUBATOR_MAX_POWER = VE_STARTUP_CONFIG_BUILDER.comment("Maximum Power for the Hydroponic Incubator to store")
                 .defineInRange("Maximum Power", 128_000, 0, Integer.MAX_VALUE);
-        HYDROPONIC_INCUBATOR_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Hydroponic Incubator")
+        HYDROPONIC_INCUBATOR_POWER_USAGE = VE_STARTUP_CONFIG_BUILDER.comment("Power consumption per tick for the Hydroponic Incubator")
                 .defineInRange("Power Consumption", 96, 0, Integer.MAX_VALUE);
-        HYDROPONIC_INCUBATOR_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Hydroponic Incubator")
+        HYDROPONIC_INCUBATOR_TRANSFER = VE_STARTUP_CONFIG_BUILDER.comment("Power I/O per tick for the Hydroponic Incubator")
                 .defineInRange("Maximum Transfer", 25_000, 0, Integer.MAX_VALUE);
     }
 
     private static void setupDimensionalLaser(){
-        DIMENSIONAL_LASER_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Dimensional Laser to store")
+        DIMENSIONAL_LASER_MAX_POWER = VE_STARTUP_CONFIG_BUILDER.comment("Maximum Power for the Dimensional Laser to store")
                 .defineInRange("Maximum Power", Integer.MAX_VALUE / 4, 0, Integer.MAX_VALUE);
-        DIMENSIONAL_LASER_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Dimensional Laser")
+        DIMENSIONAL_LASER_POWER_USAGE = VE_STARTUP_CONFIG_BUILDER.comment("Power consumption per tick for the Dimensional Laser")
                 .defineInRange("Power Consumption", 1024, 0, Integer.MAX_VALUE);
-        DIMENSIONAL_LASER_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Dimensional Laser")
+        DIMENSIONAL_LASER_TRANSFER = VE_STARTUP_CONFIG_BUILDER.comment("Power I/O per tick for the Dimensional Laser")
                 .defineInRange("Maximum Transfer", Integer.MAX_VALUE / 16, 0, Integer.MAX_VALUE);
-        DIMENSIONAL_LASER_FLUID_RATE = COMMON_BUILDER.comment("For each time an extraction is complete, how much fluid should be extracted from the chunk and placed in the output tank")
+        DIMENSIONAL_LASER_FLUID_RATE = VE_STARTUP_CONFIG_BUILDER.comment("For each time an extraction is complete, how much fluid should be extracted from the chunk and placed in the output tank")
                 .defineInRange("Fluid Extraction Rate", 250, 0, 4000);
-        DIMENSIONAL_LASER_PROCESS_TIME = COMMON_BUILDER.comment("How long should it take (it ticks) to extract a fluid from a chunk for a single extraction")
+        DIMENSIONAL_LASER_PROCESS_TIME = VE_STARTUP_CONFIG_BUILDER.comment("How long should it take (it ticks) to extract a fluid from a chunk for a single extraction")
                 .defineInRange("Process Time", 20, 0, Integer.MAX_VALUE);
     }
 
     // CLIENT CONFIG START
     private static void buildClientConfig(){
-        CLIENT_BUILDER.comment("General Client Settings").push(CATEGORY_GENERAL);
+        VE_CLIENT_CONFIG_BUILDER.comment("General Client Settings").push(CATEGORY_GENERAL);
 
-        USE_BIOME_WATER_COLOUR = CLIENT_BUILDER.comment("When rendering water in tanks, use the water's biome appropriate colour, instead of the generic universal water colour.")
+        USE_BIOME_WATER_COLOUR = VE_CLIENT_CONFIG_BUILDER.comment("When rendering water in tanks, use the water's biome appropriate colour, instead of the generic universal water colour.")
                 .define("Use Biome Water Colour", true);
-        SHORTEN_ITEM_TOOLTIP_VALUES = CLIENT_BUILDER.comment("When displaying larger numbers on a tooltip of an item you hover over, change the units to keep the numbers small (eg 1 B instead of 1000 mB).")
+        SHORTEN_ITEM_TOOLTIP_VALUES = VE_CLIENT_CONFIG_BUILDER.comment("When displaying larger numbers on a tooltip of an item you hover over, change the units to keep the numbers small (eg 1 B instead of 1000 mB).")
                 .define("Shorten Item Tooltip Values", true);
-        SHORTEN_POWER_BAR_VALUES = CLIENT_BUILDER.comment("When displaying larger numbers on a tooltip for the machines power bar, change the units to keep the numbers small (eg 1 kFE instead of 1000 FE).")
+        SHORTEN_POWER_BAR_VALUES = VE_CLIENT_CONFIG_BUILDER.comment("When displaying larger numbers on a tooltip for the machines power bar, change the units to keep the numbers small (eg 1 kFE instead of 1000 FE).")
                 .define("Shorten Power Bar Values", true);
-        SHORTEN_TANK_GUI_VALUES = CLIENT_BUILDER.comment("When displaying larger numbers on a tooltip for a tank you hovered over, change the units to keep the numbers small (eg 1 B instead of 1000 mB).")
+        SHORTEN_TANK_GUI_VALUES = VE_CLIENT_CONFIG_BUILDER.comment("When displaying larger numbers on a tooltip for a tank you hovered over, change the units to keep the numbers small (eg 1 B instead of 1000 mB).")
                 .define("Shorten Tank Tooltip Values", true);
-        PLAY_MACHINE_SOUNDS = CLIENT_BUILDER.comment("When running a machine, should the machine's sound be played?")
-                .define("Play Machine Sounds", true);
 
-        CLIENT_BUILDER.pop();
+        VE_CLIENT_CONFIG_BUILDER.pop();
 
-        CLIENT_CONFIG = CLIENT_BUILDER.build();
+        VE_CLIENT_CONFIG = VE_CLIENT_CONFIG_BUILDER.build();
     }
 }

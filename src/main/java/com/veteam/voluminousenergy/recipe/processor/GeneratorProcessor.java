@@ -59,16 +59,14 @@ public class GeneratorProcessor extends BasicProcessor {
         if (allowOverflow && energy.getEnergyStored() + energy.getProduction() > energy.getCapacity())
             return false;
         energy.addEnergy(energy.getProduction());
-        if (Config.PLAY_MACHINE_SOUNDS.get()) {
-            int sound_tick = tile.getData(VEAttachments.SOUND_TICK);
-            if (++sound_tick == 19) {
-                sound_tick = 0;
-                tile.getLevel().playSound(null,
-                        tile.getBlockPos(),
-                        VESounds.GENERAL_MACHINE_NOISE,
-                        SoundSource.BLOCKS, 1.0F, 1.0F);
-                tile.setData(VEAttachments.SOUND_TICK, sound_tick);
-            }
+        int sound_tick = tile.getData(VEAttachments.SOUND_TICK);
+        if (++sound_tick == 19) {
+            sound_tick = 0;
+            tile.getLevel().playSound(null,
+                    tile.getBlockPos(),
+                    VESounds.GENERAL_MACHINE_NOISE,
+                    SoundSource.BLOCKS, 1.0F, 1.0F);
+            tile.setData(VEAttachments.SOUND_TICK, sound_tick);
         }
         return true;
     }

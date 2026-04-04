@@ -49,10 +49,8 @@ public class ElectricFurnaceProcessor extends BasicProcessor {
         int soundTick = tile.getData(VEAttachments.SOUND_TICK);
         if (++soundTick == 19) {
             soundTick = 0;
-            if (Config.PLAY_MACHINE_SOUNDS.get()) {
-                tile.getLevel().playSound(null, tile.getBlockPos(), VESounds.GENERAL_MACHINE_NOISE,
-                        SoundSource.BLOCKS, 1.0F, 1.0F);
-            }
+            tile.getLevel().playSound(null, tile.getBlockPos(), VESounds.GENERAL_MACHINE_NOISE,
+                    SoundSource.BLOCKS, 1.0F, 1.0F);
         }
         tile.setData(VEAttachments.SOUND_TICK, soundTick);
         return true;

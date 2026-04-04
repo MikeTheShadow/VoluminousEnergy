@@ -56,10 +56,8 @@ public class AirCompressorProcessor implements AbstractRecipeProcessor {
                 tile.consumeEnergy();
                 if (++soundTick == 19) {
                     soundTick = 0;
-                    if (Config.PLAY_MACHINE_SOUNDS.get()) {
-                        level.playSound(null, tile.getBlockPos(), VESounds.AIR_COMPRESSOR, SoundSource.BLOCKS, 1.0F,
+                    level.playSound(null, tile.getBlockPos(), VESounds.AIR_COMPRESSOR, SoundSource.BLOCKS, 1.0F,
                             1.0F);
-                    }
                 }
                 tile.setData(VEAttachments.SOUND_TICK, soundTick);
                 counter = BasicProcessor.updateCounter(20,tile);
