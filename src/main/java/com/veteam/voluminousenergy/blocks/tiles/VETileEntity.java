@@ -16,6 +16,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
@@ -29,6 +30,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -353,6 +355,29 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         }
 
         super.saveAdditional(tag, registry);
+    }
+
+    @Override
+    protected void collectImplicitComponents(DataComponentMap.Builder components) {
+        super.collectImplicitComponents(components);
+
+        if (this.level != null) {
+            CompoundTag customDataTag = this.saveCustomOnly(this.level.registryAccess());
+
+            if (!customDataTag.isEmpty()) {
+                components.set(DataComponents.CUSTOM_DATA, CustomData.of(customDataTag));
+            }
+        }
+    }
+
+    @Override
+    protected void applyImplicitComponents(DataComponentInput componentInput) {
+        CustomData customData = componentInput.get(DataComponents.CUSTOM_DATA);
+
+        if (customData != null) {
+            CompoundTag dataTag = customData.getUnsafe();
+            loadAdditional(dataTag, this.level.registryAccess());
+        }
     }
 
     public void recordRecipeUsed(VERecipe recipe) {
