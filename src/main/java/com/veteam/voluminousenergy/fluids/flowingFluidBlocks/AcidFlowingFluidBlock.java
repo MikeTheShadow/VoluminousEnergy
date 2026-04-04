@@ -28,20 +28,8 @@ public class AcidFlowingFluidBlock extends VEFlowingFluidBlock {
     @Override
     public void entityInside(BlockState state, Level worldIn, BlockPos pos, Entity entityIn) {
 
-        // TODO: FrostWalker check: FrostWalker is supposed to give the entity immunity to fire damage? We must figure out
-        // TODO: in this version of Minecraft how to achieve this the best way.
-
-        Optional<Holder.Reference<Enchantment>> enchantment = worldIn.registryAccess()
-            .lookupOrThrow(Registries.ENCHANTMENT)
-            .get(Enchantments.FROST_WALKER);
-
-        if (enchantment.isEmpty())
-            VoluminousEnergy.LOGGER.error("FrostWalker enchantment not found!");
-
-        if (entityIn instanceof LivingEntity livingEntity && EnchantmentHelper.getEnchantmentLevel(enchantment.get(), livingEntity) <= 0) {
-            entityIn.hurt(worldIn.damageSources().inFire(), Config.ACID_DAMAGE.get().floatValue());
-            entityIn.setRemainingFireTicks(Config.ACID_FIRE_DURATION.get());
-        }
+        entityIn.hurt(worldIn.damageSources().inFire(), Config.ACID_DAMAGE.get().floatValue());
+        entityIn.setRemainingFireTicks(Config.ACID_FIRE_DURATION.get());
 
         super.entityInside(state, worldIn, pos, entityIn);
     }
