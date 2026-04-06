@@ -1,0 +1,21 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "minecraft:block/iron_block",
+    "down": "voluminousenergy:block/machine_animations/aluminum_top_rotating_vent",
+    "up": "voluminousenergy:block/pump_top",
+    "east": "voluminousenergy:block/pump_side",
+    "west": "voluminousenergy:block/pump_side",
+    "north": "voluminousenergy:block/pump_side",
+    "south": "voluminousenergy:block/pump_side"
+  },
+  "animations": [
+    {
+      "animation_time": 5,
+      "selector": "{lit:true}",
+      "loop": true,
+      "animation": "machine_animations/aluminum_top_rotating_vent",
+      "target": "all"
+    }
+  ]
+}

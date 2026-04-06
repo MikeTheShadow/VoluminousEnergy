@@ -6,7 +6,7 @@
     "up": "voluminousenergy:block/machine_animations/aluminum_top_rotating_vent",
     "east": "voluminousenergy:block/air_compressor_side",
     "west": "voluminousenergy:block/air_compressor_side",
-    "north": "voluminousenergy:block/air_compressor_front",
+    "north": "voluminousenergy:block/machine_animations/air_compressor_front_animated",
     "south": "voluminousenergy:block/air_compressor_side"
   },
   "animations": [
@@ -15,6 +15,13 @@
       "selector": "{lit:true}",
       "loop": true,
       "animation": "machine_animations/aluminum_top_rotating_vent",
+      "target": "all"
+    },
+    {
+      "animation_time": 5,
+      "selector": "{lit:true}",
+      "loop": true,
+      "animation": "machine_animations/air_compressor_front_animated",
       "target": "all"
     }
   ]

@@ -68,6 +68,7 @@ public class PumpTileProcessor implements AbstractRecipeProcessor {
         VERelationalTank fluidTank = tile.getRelationalTank(0);
 
         if (fluidTank.getTank().getFluidAmount() + 1000 <= DEFAULT_TANK_CAPACITY) {
+            tile.setLit(true);
             for (int i = 0; i < Config.PUMP_CHECK_CYCLES_PER_TICK.get(); i++) {
                 if (fluidPumpMethod(tile)) {
                     tile.consumeEnergy();
@@ -83,6 +84,8 @@ public class PumpTileProcessor implements AbstractRecipeProcessor {
                         tile.getBlockPos(), VESounds.AIR_COMPRESSOR, SoundSource.BLOCKS, 1.0F, 1.0F);
                 tile.setData(VEAttachments.SOUND_TICK, soundTick);
             }
+        } else {
+            tile.setLit(false);
         }
     }
 
