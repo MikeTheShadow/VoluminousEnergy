@@ -3,9 +3,11 @@
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/MikeTheShadow/VoluminousEnergy)
 ![GitHub](https://img.shields.io/github/license/MikeTheShadow/VoluminousEnergy)
 
-<big> An energy focused tech mod for Minecraft 1.21+ </big>
+<big> An energy focused tech mod for Minecraft 26.1+ </big>
 
 ## NOTES FOR DEVELOPERS/MODDERS:
+Please Target `26.1-dev` if your changes are "downstream" changes specific to 26.1+.
+
 Please Target `1.21.1-dev` if your changes are intended for the next major release (likely 0.5).
  
 Please Target `1.18.2-exp-next` if your changes are intended for 0.4 across Minecraft versions 1.18.2 - 1.20.1. 

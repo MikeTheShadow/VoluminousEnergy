@@ -42,17 +42,17 @@ public class MysteriousMultiplier extends Item {
             } else if (multiplier >= 0.25F) {
                 componentToAdd = componentToAdd.copy().append(TextUtil.translateString("text.voluminousenergy.quality.heroic")).withStyle(ChatFormatting.YELLOW);
             } else if (multiplier >= 0.2F) {
-                componentToAdd = componentToAdd.copy().append(TextUtil.translateString("text.voluminousenergy.quality.unique")).withStyle(Style.EMPTY.withFont(Style.DEFAULT_FONT).withColor(0xfc6b03));
+                componentToAdd = componentToAdd.copy().append(TextUtil.translateString("text.voluminousenergy.quality.unique")).withStyle(Style.EMPTY.withColor(0xfc6b03));
             } else if (multiplier >= 0.1F) {
                 componentToAdd = componentToAdd.copy().append(TextUtil.translateString("text.voluminousenergy.quality.celestial")).withStyle(ChatFormatting.RED);
             } else if (multiplier >= 0.075F) {
-                componentToAdd = componentToAdd.copy().append(TextUtil.translateString("text.voluminousenergy.quality.divine")).withStyle(Style.EMPTY.withFont(Style.DEFAULT_FONT).withColor(0xcf7d5d).withBold(true));
+                componentToAdd = componentToAdd.copy().append(TextUtil.translateString("text.voluminousenergy.quality.divine")).withStyle(Style.EMPTY.withColor(0xcf7d5d).withBold(true));
             } else if (multiplier >= 0.05F) {
-                componentToAdd = componentToAdd.copy().append(TextUtil.translateString("text.voluminousenergy.quality.epic")).withStyle(Style.EMPTY.withFont(Style.DEFAULT_FONT).withColor(0x8fa5ca).withBold(true));
+                componentToAdd = componentToAdd.copy().append(TextUtil.translateString("text.voluminousenergy.quality.epic")).withStyle(Style.EMPTY.withColor(0x8fa5ca).withBold(true));
             } else if (multiplier >= 0.025F) {
-                componentToAdd = componentToAdd.copy().append(TextUtil.translateString("text.voluminousenergy.quality.legendary")).withStyle(Style.EMPTY.withFont(Style.DEFAULT_FONT).withColor(0xbf7900).withBold(true));
+                componentToAdd = componentToAdd.copy().append(TextUtil.translateString("text.voluminousenergy.quality.legendary")).withStyle(Style.EMPTY.withColor(0xbf7900).withBold(true));
             } else if (multiplier <= 0.025F) {
-                componentToAdd = componentToAdd.copy().append(TextUtil.translateString("text.voluminousenergy.quality.mythic")).withStyle(Style.EMPTY.withFont(Style.DEFAULT_FONT).withColor(0xc90b0b).withBold(true));
+                componentToAdd = componentToAdd.copy().append(TextUtil.translateString("text.voluminousenergy.quality.mythic")).withStyle(Style.EMPTY.withColor(0xc90b0b).withBold(true));
             } else {
                 componentToAdd = componentToAdd.copy().append("DEBUGWARN: NoneOfTheAbove: " + multiplier);
             }

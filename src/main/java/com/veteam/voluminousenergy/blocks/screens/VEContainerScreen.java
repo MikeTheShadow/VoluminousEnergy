@@ -32,8 +32,8 @@ public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends
     public static final int WHITE_TEXT_COLOUR = 16777215;
     public static final int GREY_TEXT_COLOUR = 0x606060;
 
-    public static final Style WHITE_TEXT_STYLE = Style.EMPTY.withFont(Style.DEFAULT_FONT).withColor(WHITE_TEXT_COLOUR);
-    public static final Style GREY_TEXT_STYLE = Style.EMPTY.withFont(Style.DEFAULT_FONT).withColor(GREY_TEXT_COLOUR);
+    public static final Style WHITE_TEXT_STYLE = Style.EMPTY.withColor(WHITE_TEXT_COLOUR);
+    public static final Style GREY_TEXT_STYLE = Style.EMPTY.withColor(GREY_TEXT_COLOUR);
 
     public VEContainerScreen(T menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
