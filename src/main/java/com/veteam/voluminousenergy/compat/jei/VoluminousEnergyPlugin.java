@@ -22,7 +22,7 @@ import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.registration.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -36,29 +36,29 @@ import java.util.stream.Collectors;
 
 @JeiPlugin
 public class VoluminousEnergyPlugin implements IModPlugin {
-    public static final ResourceLocation PLUGIN_UID = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "plugin/main");
-    public static final ResourceLocation CRUSHING_UID = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "plugin/crushing");
-    public static final ResourceLocation ELECTROLYZING_UID = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "plugin/electrolyzing");
-    public static final ResourceLocation COMPRESSING_UID = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "plugin/compressing");
-    public static final ResourceLocation COMBUSTING_UID = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "plugin/combusting");
-    public static final ResourceLocation STIRLING_UID = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "plugin/stirling");
-    public static final ResourceLocation CENTRIFUGAL_AGITATION_UID = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "plugin/centrifugal_agitation");
-    public static final ResourceLocation AQUEOULIZING_UID = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "plugin/aqueoulizing");
-    public static final ResourceLocation DISTILLING_UID = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "plugin/distilling");
-    public static final ResourceLocation CENTRIFUGAL_SEPARATION_UID = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "plugin/centrifugal_separation");
-    public static final ResourceLocation IMPLOSION_COMPRESSION_UID = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "plugin/implosion_compressing");
-    public static final ResourceLocation INDUSTRIAL_BLASTING_UID = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "plugin/industrial_blasting");
-    public static final ResourceLocation SAWMILL_UID = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "plugin/sawmilling");
-    public static final ResourceLocation DIMENSIONAL_LASER_UID = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "plugin/dimensional_laser");
-    public static final ResourceLocation FLUID_ELECTROLYZER_UID = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "plugin/fluid_electrolyzing");
-    public static final ResourceLocation FLUID_MIXER_UID = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "plugin/fluid_mixing");
-    public static final ResourceLocation PRIMITIVE_BLASTING_UID = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "plugin/primitive_blasting");
-    public static final ResourceLocation HYDROPONIC_INCUBATOR_UID = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "plugin/hydroponic_incubator");
+    public static final Identifier PLUGIN_UID = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "plugin/main");
+    public static final Identifier CRUSHING_UID = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "plugin/crushing");
+    public static final Identifier ELECTROLYZING_UID = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "plugin/electrolyzing");
+    public static final Identifier COMPRESSING_UID = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "plugin/compressing");
+    public static final Identifier COMBUSTING_UID = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "plugin/combusting");
+    public static final Identifier STIRLING_UID = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "plugin/stirling");
+    public static final Identifier CENTRIFUGAL_AGITATION_UID = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "plugin/centrifugal_agitation");
+    public static final Identifier AQUEOULIZING_UID = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "plugin/aqueoulizing");
+    public static final Identifier DISTILLING_UID = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "plugin/distilling");
+    public static final Identifier CENTRIFUGAL_SEPARATION_UID = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "plugin/centrifugal_separation");
+    public static final Identifier IMPLOSION_COMPRESSION_UID = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "plugin/implosion_compressing");
+    public static final Identifier INDUSTRIAL_BLASTING_UID = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "plugin/industrial_blasting");
+    public static final Identifier SAWMILL_UID = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "plugin/sawmilling");
+    public static final Identifier DIMENSIONAL_LASER_UID = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "plugin/dimensional_laser");
+    public static final Identifier FLUID_ELECTROLYZER_UID = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "plugin/fluid_electrolyzing");
+    public static final Identifier FLUID_MIXER_UID = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "plugin/fluid_mixing");
+    public static final Identifier PRIMITIVE_BLASTING_UID = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "plugin/primitive_blasting");
+    public static final Identifier HYDROPONIC_INCUBATOR_UID = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "plugin/hydroponic_incubator");
 
     public static final Component SHOW_RECIPES = TextUtil.translateString("jei.tooltip.show.recipes");
 
     @Override
-    public @NotNull ResourceLocation getPluginUid() {
+    public @NotNull Identifier getPluginUid() {
         return PLUGIN_UID;
     }
 

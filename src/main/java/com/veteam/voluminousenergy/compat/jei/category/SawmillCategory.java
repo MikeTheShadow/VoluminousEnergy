@@ -23,7 +23,7 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
@@ -47,7 +47,7 @@ public class SawmillCategory implements IRecipeCategory<SawmillRecipe> {
 
     public SawmillCategory(IGuiHelper guiHelper) {
         // 68, 12 | 40, 65 -> 10 px added for chance
-        ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
+        Identifier GUI = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
         background = guiHelper.drawableBuilder(GUI, 68, 12, 86, 40).build();
         icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(VEBlocks.SAWMILL.block().get()));
         arrow = guiHelper.drawableBuilder(GUI, 176, 0, 23, 17).build();
@@ -108,15 +108,15 @@ public class SawmillCategory implements IRecipeCategory<SawmillRecipe> {
 
 
             // Secondary Output
-            ResourceLocation secondOutputItemResourceLocation = ResourceLocation.parse(Config.SAWMILL_SECOND_OUTPUT_RESOURCE_LOCATION.get());
+            Identifier secondOutputItemIdentifier = Identifier.parse(Config.SAWMILL_SECOND_OUTPUT_RESOURCE_LOCATION.get());
 
-            if (BuiltInRegistries.ITEM.containsKey(secondOutputItemResourceLocation)) {
-                Item secondOutput = BuiltInRegistries.ITEM.get(secondOutputItemResourceLocation);
+            if (BuiltInRegistries.ITEM.containsKey(secondOutputItemIdentifier)) {
+                Item secondOutput = BuiltInRegistries.ITEM.get(secondOutputItemIdentifier);
                 secondaryItemOutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, new ItemStack(secondOutput, Config.SAWMILL_SECOND_OUTPUT_COUNT.get()));
             }
 
             // Fluid Output
-            ResourceLocation fluidLocation = ResourceLocation.parse(Config.SAWMILL_FLUID_LOCATION.get());
+            Identifier fluidLocation = Identifier.parse(Config.SAWMILL_FLUID_LOCATION.get());
 
             if (BuiltInRegistries.FLUID.containsKey(fluidLocation)) {
                 Fluid outputFluid = BuiltInRegistries.FLUID.get(fluidLocation);

@@ -4,7 +4,7 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -15,11 +15,11 @@ import java.util.ArrayList;
 
 public class TagUtil {
 
-    private static final TagKey<Item> MACHINE_UPGRADE_TAG = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "machine_upgrades"));
+    private static final TagKey<Item> MACHINE_UPGRADE_TAG = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "machine_upgrades"));
 
 
-    public static ArrayList<Fluid> getFluidListFromTagResourceLocation(String fluidTagLocation) {
-        TagKey<Fluid> fluidTagKey = TagKey.create(Registries.FLUID, ResourceLocation.parse(fluidTagLocation));
+    public static ArrayList<Fluid> getFluidListFromTagIdentifier(String fluidTagLocation) {
+        TagKey<Fluid> fluidTagKey = TagKey.create(Registries.FLUID, Identifier.parse(fluidTagLocation));
         ArrayList<Fluid> fluids = new ArrayList<>();
 
         for (Holder<Fluid> holder : BuiltInRegistries.FLUID.getTagOrEmpty(fluidTagKey)) {
@@ -28,7 +28,7 @@ public class TagUtil {
         return fluids;
     }
 
-    public static ArrayList<Block> getBlocksFromTagResourceLocation(ResourceLocation blockTagLocation) {
+    public static ArrayList<Block> getBlocksFromTagIdentifier(Identifier blockTagLocation) {
         TagKey<Block> blockTagKey = TagKey.create(Registries.BLOCK, blockTagLocation);
         ArrayList<Block> blocks = new ArrayList<>();
 
@@ -38,7 +38,7 @@ public class TagUtil {
         return blocks;
     }
 
-    public static TagKey<Block> getBlockTagKeyFromLocation(ResourceLocation blockTagLocation) {
+    public static TagKey<Block> getBlockTagKeyFromLocation(Identifier blockTagLocation) {
         return TagKey.create(Registries.BLOCK, blockTagLocation);
     }
 
@@ -51,7 +51,7 @@ public class TagUtil {
         return blocks;
     }
 
-    public static ArrayList<Fluid> getFluidListFromTagResourceLocation(ResourceLocation fluidTagLocation) {
+    public static ArrayList<Fluid> getFluidListFromTagIdentifier(Identifier fluidTagLocation) {
         TagKey<Fluid> fluidTagKey = TagKey.create(Registries.FLUID, fluidTagLocation);
         ArrayList<Fluid> fluids = new ArrayList<>();
 
@@ -61,8 +61,8 @@ public class TagUtil {
         return fluids;
     }
 
-    public static ArrayList<Item> getItemListFromTagResourceLocation(String itemTagLocation) {
-        TagKey<Item> itemTagKey = TagKey.create(Registries.ITEM, ResourceLocation.parse(itemTagLocation));
+    public static ArrayList<Item> getItemListFromTagIdentifier(String itemTagLocation) {
+        TagKey<Item> itemTagKey = TagKey.create(Registries.ITEM, Identifier.parse(itemTagLocation));
         ArrayList<Item> items = new ArrayList<>();
 
         for (Holder<Item> holder : BuiltInRegistries.ITEM.getTagOrEmpty(itemTagKey)) {
@@ -71,7 +71,7 @@ public class TagUtil {
         return items;
     }
 
-    public static ArrayList<Item> getItemListFromTagResourceLocation(ResourceLocation itemTagLocation) {
+    public static ArrayList<Item> getItemListFromTagIdentifier(Identifier itemTagLocation) {
         TagKey<Item> itemTagKey = TagKey.create(Registries.ITEM, itemTagLocation);
         ArrayList<Item> items = new ArrayList<>();
 

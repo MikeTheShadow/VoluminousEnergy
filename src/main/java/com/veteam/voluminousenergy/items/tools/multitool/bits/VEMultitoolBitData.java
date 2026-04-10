@@ -3,7 +3,7 @@ package com.veteam.voluminousenergy.items.tools.multitool.bits;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.items.tools.VETools;
 import com.veteam.voluminousenergy.util.TagUtil;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Tiers;
@@ -13,7 +13,7 @@ import net.neoforged.neoforge.common.ItemAbility;
 
 public class VEMultitoolBitData {
 
-    public static final TagKey<Block> MINEABLE_WITH_TRIMMER = TagUtil.getBlockTagKeyFromLocation(ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "mineable/trimmer"));
+    public static final TagKey<Block> MINEABLE_WITH_TRIMMER = TagUtil.getBlockTagKeyFromLocation(Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "mineable/trimmer"));
 
     // Drill bits 
     public static final BitItemData IRON_DRILL_BIT_DATA = new BitItemData(ItemAbilities.DEFAULT_PICKAXE_ACTIONS, Tiers.IRON, BlockTags.MINEABLE_WITH_PICKAXE,

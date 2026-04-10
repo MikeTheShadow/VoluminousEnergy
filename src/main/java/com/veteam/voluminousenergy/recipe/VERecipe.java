@@ -6,7 +6,7 @@ import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
@@ -33,13 +33,13 @@ public abstract class VERecipe implements Recipe<RecipeInput> {
     public int processTime;
     public List<ItemStack> results = new ArrayList<>();
 
-    private ResourceLocation id;
+    private Identifier id;
 
-    public void setId(ResourceLocation id) {
+    public void setId(Identifier id) {
         this.id = id;
     }
 
-    public ResourceLocation id() {
+    public Identifier id() {
         return id;
     }
 

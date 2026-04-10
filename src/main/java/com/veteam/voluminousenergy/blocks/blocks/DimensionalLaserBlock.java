@@ -50,8 +50,8 @@ public class DimensionalLaserBlock extends VEFaceableMachineBlock {
     public void destroy(@NotNull LevelAccessor levelAccessor, @NotNull BlockPos blockPos, @NotNull BlockState blockState) {
         if (levelAccessor.isClientSide()) {
             SoundManager manager = Minecraft.getInstance().getSoundManager();
-            manager.stop(VESounds.ENERGY_BEAM_ACTIVATE.getLocation(), SoundSource.BLOCKS);
-            manager.stop(VESounds.ENERGY_BEAM_FIRED.getLocation(), SoundSource.BLOCKS);
+            manager.stop(VESounds.ENERGY_BEAM_ACTIVATE.getIdentifier(), SoundSource.BLOCKS);
+            manager.stop(VESounds.ENERGY_BEAM_FIRED.getIdentifier(), SoundSource.BLOCKS);
             return;
         }
         super.destroy(levelAccessor, blockPos, blockState);

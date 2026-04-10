@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.entity.BeaconBlockEntity;
@@ -33,7 +33,7 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
 
     public static final int MAX_RENDER_Y = 1024;
 
-    public static final ResourceLocation BEAM_RESOURCE_LOCATION = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/entity/beacon_beam.png");
+    public static final Identifier BEAM_RESOURCE_LOCATION = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/entity/beacon_beam.png");
 
     public LaserBlockEntityRenderer(BlockEntityRendererProvider.Context pContext) {
     }
@@ -66,7 +66,7 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
         }
         SoundManager manager = Minecraft.getInstance().getSoundManager();
         if (buildTick == 0) {
-            manager.stop(VESounds.ENERGY_BEAM_ACTIVATE.getLocation(), SoundSource.BLOCKS);
+            manager.stop(VESounds.ENERGY_BEAM_ACTIVATE.getIdentifier(), SoundSource.BLOCKS);
         }
 
         float static02F = 0.2F;

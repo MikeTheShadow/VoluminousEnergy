@@ -12,7 +12,7 @@ import com.veteam.voluminousenergy.items.tools.multitool.VEMultitoolItems;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -32,7 +32,7 @@ public class VESetup {
         event.register(Registries.CREATIVE_MODE_TAB, registerer -> registerer.register(
                 ResourceKey.create(
                         Registries.CREATIVE_MODE_TAB,
-                        ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "voluminous_energy_cumulative_tab")
+                        Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "voluminous_energy_cumulative_tab")
                 ),
                 CreativeModeTab.builder()
                         .icon(() -> new ItemStack(VEFluids.RFNA_BUCKET_REG.get()))

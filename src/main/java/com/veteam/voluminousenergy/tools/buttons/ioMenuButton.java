@@ -7,7 +7,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
@@ -16,7 +16,7 @@ import static net.minecraft.client.Minecraft.getInstance;
 @OnlyIn(Dist.CLIENT)
 public class ioMenuButton extends Button {
     private boolean cycled = false;
-    private final ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
+    private final Identifier texture = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
     private final int x;
     private final int y;
 

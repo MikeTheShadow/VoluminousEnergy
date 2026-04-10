@@ -1,17 +1,18 @@
 package com.veteam.voluminousenergy.util.extensions;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 
 import javax.annotation.Nullable;
 
 public class VEFluidClientExtension implements IClientFluidTypeExtensions {
-    private final ResourceLocation stillTexture;
-    private final ResourceLocation flowingTexture;
-    private final ResourceLocation overlayTexture;
+    private final Identifier stillTexture;
+    private final Identifier flowingTexture;
+    private final Identifier overlayTexture;
     private final int colourTint;
 
-    public VEFluidClientExtension(ResourceLocation still, ResourceLocation flowing, @Nullable ResourceLocation overlay, int colourTint) {
+    public VEFluidClientExtension(Identifier still, Identifier flowing, @Nullable Identifier overlay, int colourTint) {
         this.stillTexture = still;
         this.flowingTexture = flowing;
         this.overlayTexture = overlay;
@@ -19,18 +20,18 @@ public class VEFluidClientExtension implements IClientFluidTypeExtensions {
     }
 
     @Override
-    public ResourceLocation getStillTexture() {
+    public Identifier getStillTexture() {
         return stillTexture;
     }
 
     @Override
-    public ResourceLocation getFlowingTexture() {
+    public Identifier getFlowingTexture() {
         return flowingTexture;
     }
 
     @Nullable
     @Override
-    public ResourceLocation getOverlayTexture() {
+    public Identifier getRenderOverlayTexture(Minecraft mc) {
         return overlayTexture;
     }
 

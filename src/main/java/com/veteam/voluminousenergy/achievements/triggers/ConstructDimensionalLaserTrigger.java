@@ -4,11 +4,11 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.ContextAwarePredicate;
-import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.MinMaxBounds;
-import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.advancements.criterion.ContextAwarePredicate;
+import net.minecraft.advancements.criterion.EntityPredicate;
+import net.minecraft.advancements.criterion.MinMaxBounds;
+import net.minecraft.advancements.criterion.SimpleCriterionTrigger;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ExtraCodecs;
 import org.jetbrains.annotations.NotNull;
@@ -19,9 +19,9 @@ public class ConstructDimensionalLaserTrigger extends SimpleCriterionTrigger<Con
     public ConstructDimensionalLaserTrigger() {
     }
 
-    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "construct_dimensional_laser");
+    public static final Identifier ID = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "construct_dimensional_laser");
 
-    public @NotNull ResourceLocation getId() {
+    public @NotNull Identifier getId() {
         return ID;
     }
 

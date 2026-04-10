@@ -10,7 +10,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,9 +19,9 @@ import java.util.List;
 
 public class CrusherScreen extends VEContainerScreen<VEContainer> {
     private final VETileEntity tileEntity;
-    private final static ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
-    private static final ResourceLocation GUI_TOOLS = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/guitools.png");
-    private static final ResourceLocation EXPERIENCE_ORB = ResourceLocation.withDefaultNamespace("textures/entity/experience_orb.png");
+    private final static Identifier GUI = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
+    private static final Identifier GUI_TOOLS = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/guitools.png");
+    private static final Identifier EXPERIENCE_ORB = Identifier.withDefaultNamespace("textures/entity/experience_orb.png");
 
     public CrusherScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
@@ -107,7 +107,7 @@ public class CrusherScreen extends VEContainerScreen<VEContainer> {
         matrixStack.blit(GUI_TOOLS, i + 153, j - 16, 0, 0, 18, 18);
     }
 
-    public static ResourceLocation getGUI() {
+    public static Identifier getGUI() {
         return GUI;
     }
 

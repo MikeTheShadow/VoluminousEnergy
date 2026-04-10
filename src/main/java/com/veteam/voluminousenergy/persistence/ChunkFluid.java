@@ -4,7 +4,7 @@ import com.veteam.voluminousenergy.util.RegistryLookups;
 import com.veteam.voluminousenergy.util.records.ChunkFluidData;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -24,7 +24,7 @@ public class ChunkFluid {
         while (compoundTag.contains("SCF_" + i)) {
             SingleChunkFluid singleChunkFluid =
                     new SingleChunkFluid(
-                            BuiltInRegistries.FLUID.get(ResourceLocation.parse(compoundTag.getString("SCF_" + i)))
+                            BuiltInRegistries.FLUID.get(Identifier.parse(compoundTag.getString("SCF_" + i)))
                             , compoundTag.getInt("FS_" + i));
             this.chunkFluidList.add(singleChunkFluid);
             i++;

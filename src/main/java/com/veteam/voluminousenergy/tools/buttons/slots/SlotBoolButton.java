@@ -8,7 +8,7 @@ import com.veteam.voluminousenergy.tools.networking.packets.TankBoolPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -17,7 +17,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 public class SlotBoolButton extends VEIOButton {
     private boolean enable = false;
     private VESlotManager slotManager;
-    private final ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
+    private final Identifier texture = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
 
     public SlotBoolButton(VESlotManager slotManager, int x, int y, OnPress onPress) {
         super(x, y, 16, 15, Component.nullToEmpty(""), button -> {

@@ -6,7 +6,7 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
@@ -84,17 +84,18 @@ public class VEAndedMultiBiomeModifier implements BiomeModifier {
             whitelistedBiomeKeycache.get().forEach(key -> System.out.print(key.toString() + ", "));
         }
 
-        List<ConfiguredFeature<?, ?>> oreConfiguration = feature.value().getFeatures().toList();
+//        List<ConfiguredFeature<?, ?>> oreConfiguration = feature.value().getFeatures().toList();
+        ConfiguredFeature<?, ?> oreConfiguration = feature.value();
         Holder<PlacedFeature> modifiedFeature;
         if (isTriangualar) {
-            modifiedFeature = Holder.direct(new PlacedFeature(Holder.direct(oreConfiguration.get(0)), List.of(
+            modifiedFeature = Holder.direct(new PlacedFeature(Holder.direct(oreConfiguration), List.of(
                     HeightRangePlacement.triangle(VerticalAnchor.absolute(bottomAnchor), VerticalAnchor.absolute(topAnchor)),
                     CountPlacement.of(count),
                     RarityFilter.onAverageOnceEvery(rarity),
                     InSquarePlacement.spread()
             )));
         } else {
-            modifiedFeature = Holder.direct(new PlacedFeature(Holder.direct(oreConfiguration.get(0)), List.of(
+            modifiedFeature = Holder.direct(new PlacedFeature(Holder.direct(oreConfiguration), List.of(
                     HeightRangePlacement.uniform(VerticalAnchor.absolute(bottomAnchor), VerticalAnchor.absolute(topAnchor)),
                     CountPlacement.of(count),
                     RarityFilter.onAverageOnceEvery(rarity),
@@ -102,25 +103,17 @@ public class VEAndedMultiBiomeModifier implements BiomeModifier {
             )));
         }
 
-
-//        System.out.println("\nChecking if features are unique. Start with modified: ");
-//        modifiedFeature.get().placement().forEach(rule -> System.out.print(rule.toString() + ", "));
-//        System.out.println("\n");
-//        feature.get().placement().forEach(rule -> System.out.print(rule.toString() + ", "));
-//        System.out.println("");
-
-
         builder.getGenerationSettings().addFeature(getGenerationStepDecoration(), modifiedFeature);
     }
 
     public void whitelistCacheBuilder() {
         if (whitelistedBiome.contains(",")) {
             Arrays.stream(whitelistedBiome.split(",")).sequential().forEach(greenBiome -> {
-                TagKey<Biome> biomeTag = TagKey.create(Registries.BIOME, ResourceLocation.parse(greenBiome));
+                TagKey<Biome> biomeTag = TagKey.create(Registries.BIOME, Identifier.parse(greenBiome));
                 whitelistedBiomeKeycache.get().add(biomeTag);
             });
         } else if (!whitelistedBiome.isEmpty()) {
-            TagKey<Biome> biomeTagKey = TagKey.create(Registries.BIOME, ResourceLocation.parse(whitelistedBiome));
+            TagKey<Biome> biomeTagKey = TagKey.create(Registries.BIOME, Identifier.parse(whitelistedBiome));
             whitelistedBiomeKeycache.get().add(biomeTagKey);
         }
     }
@@ -128,11 +121,11 @@ public class VEAndedMultiBiomeModifier implements BiomeModifier {
     public void blacklistCacheBuilder() {
         if (blacklistedBiome.contains(",")) {
             Arrays.stream(blacklistedBiome.split(",")).sequential().forEach(redBiome -> {
-                TagKey<Biome> biomeTag = TagKey.create(Registries.BIOME, ResourceLocation.parse(redBiome));
+                TagKey<Biome> biomeTag = TagKey.create(Registries.BIOME, Identifier.parse(redBiome));
                 blacklistedBiomeKeycache.get().add(biomeTag);
             });
         } else if (!blacklistedBiome.isEmpty()) {
-            TagKey<Biome> biomeTagKey = TagKey.create(Registries.BIOME, ResourceLocation.parse(blacklistedBiome));
+            TagKey<Biome> biomeTagKey = TagKey.create(Registries.BIOME, Identifier.parse(blacklistedBiome));
             blacklistedBiomeKeycache.get().add(biomeTagKey);
         }
     }

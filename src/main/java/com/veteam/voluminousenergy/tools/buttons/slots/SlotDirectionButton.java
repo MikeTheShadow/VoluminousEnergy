@@ -11,13 +11,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 public class SlotDirectionButton extends VEIOButton {
     private final VESlotManager slotManager;
     private Direction direction;
-    private final ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
+    private final Identifier texture = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
 
     public SlotDirectionButton(VESlotManager slotManager, int x, int y, OnPress onPress) {
         super(x, y, 96, 20, Component.nullToEmpty(""), button -> {

@@ -8,13 +8,13 @@ import com.veteam.voluminousenergy.util.VERelationalTank;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 public class TankBoolButton extends VEIOButton {
     private boolean enable = false;
     private VERelationalTank tank;
-    private final ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
+    private final Identifier texture = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
 
     public TankBoolButton(VERelationalTank tank, int x, int y, Button.OnPress onPress) {
         super(x, y, 16, 15, Component.nullToEmpty(""), button -> {

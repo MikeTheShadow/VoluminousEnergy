@@ -13,7 +13,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -109,7 +109,7 @@ public class SawmillRecipe extends VERecipe {
     @Override
     public List<FluidStack> getOutputFluids() {
         if (this.isLogRecipe && Config.SAWMILL_ALLOW_NON_SAWMILL_RECIPE_LOGS_TO_BE_SAWED.get()) {
-            ResourceLocation fluidLocation = ResourceLocation.parse(Config.SAWMILL_FLUID_LOCATION.get());
+            Identifier fluidLocation = Identifier.parse(Config.SAWMILL_FLUID_LOCATION.get());
             Fluid outputFluid = BuiltInRegistries.FLUID.get(fluidLocation);
             return List.of(new FluidStack(outputFluid, Config.SAWMILL_FLUID_AMOUNT.get()));
         }

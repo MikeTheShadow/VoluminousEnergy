@@ -22,7 +22,7 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
@@ -37,8 +37,8 @@ public class DimensionalLasingCategory implements IRecipeCategory<DimensionalLas
     public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.DIMENSIONAL_LASER_UID, DimensionalLaserRecipe.class);
 
     public DimensionalLasingCategory(IGuiHelper guiHelper) {
-        ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
-        ResourceLocation dimensionalLaserGUI = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/dimensional_laser_gui.png");
+        Identifier GUI = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
+        Identifier dimensionalLaserGUI = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/dimensional_laser_gui.png");
         background = guiHelper.drawableBuilder(GUI, 42, 5, 128, 40).build();
         icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(VEBlocks.DIMENSIONAL_LASER.block().get()));
         slotDrawable = guiHelper.getSlotDrawable();

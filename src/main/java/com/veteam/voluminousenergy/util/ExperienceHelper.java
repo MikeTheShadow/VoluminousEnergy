@@ -3,7 +3,7 @@ package com.veteam.voluminousenergy.util;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.recipe.VERNGExperienceRecipe;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -34,7 +34,7 @@ public class ExperienceHelper {
     public static List<RecipeHolder<?>> getRecipesToAwardAndPopExperience(ServerLevel pLevel, Vec3 pPopVec, VETileEntity tile) {
         List<RecipeHolder<?>> list = new ArrayList<>();
 
-        for (Object2IntMap.Entry<ResourceLocation> entry : tile.getRecipesUsed().object2IntEntrySet()) {
+        for (Object2IntMap.Entry<Identifier> entry : tile.getRecipesUsed().object2IntEntrySet()) {
             pLevel.getRecipeManager().byKey(entry.getKey()).ifPresent(recipeHolder -> {
                 list.add(recipeHolder);
                 if (recipeHolder.value() instanceof VERNGExperienceRecipe experienceRecipe) {

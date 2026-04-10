@@ -7,7 +7,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluids;
@@ -117,7 +117,7 @@ public class VERender {
     public static TextureAtlasSprite getFluidTexture(FluidStack stack) {
         // 6. GUI-SAFE TEXTURE FETCH: FluidSpriteCache requires block context which can crash in GUIs.
         // Using getStillTexture() is 100% GUI safe.
-        ResourceLocation fluidStill = IClientFluidTypeExtensions.of(stack.getFluid()).getStillTexture(stack);
+        Identifier fluidStill = IClientFluidTypeExtensions.of(stack.getFluid()).getStillTexture(stack);
         if (fluidStill == null) return null;
         return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(fluidStill);
     }

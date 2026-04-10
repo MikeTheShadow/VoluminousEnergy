@@ -21,7 +21,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -65,9 +65,9 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     public static final int DEFAULT_TANK_CAPACITY = 4000;
     boolean fluidInputDirty = true;
 
-    private final Object2IntOpenHashMap<ResourceLocation> recipesUsed = new Object2IntOpenHashMap<>();
+    private final Object2IntOpenHashMap<Identifier> recipesUsed = new Object2IntOpenHashMap<>();
 
-    public Object2IntOpenHashMap<ResourceLocation> getRecipesUsed() {
+    public Object2IntOpenHashMap<Identifier> getRecipesUsed() {
         return recipesUsed;
     }
 
@@ -311,7 +311,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         if (tag.contains("recipes_used", 10)) {
             CompoundTag recipesTag = tag.getCompound("recipes_used");
             for (String s : recipesTag.getAllKeys()) {
-                this.recipesUsed.put(ResourceLocation.parse(s), recipesTag.getInt(s));
+                this.recipesUsed.put(Identifier.parse(s), recipesTag.getInt(s));
             }
         }
 
@@ -382,7 +382,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
     public void recordRecipeUsed(VERecipe recipe) {
         if (recipe != null) {
-            ResourceLocation resourcelocation = recipe.id();
+            Identifier resourcelocation = recipe.id();
 
             if (resourcelocation != null) {
                 this.recipesUsed.addTo(resourcelocation, 1);
@@ -492,7 +492,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
      */
     @Override
     public @Nonnull Component getDisplayName() {
-        ResourceLocation name = RegistryLookups.getBlockEntityTypeKey(this);
+        Identifier name = RegistryLookups.getBlockEntityTypeKey(this);
         if (name == null)
             throw new NotImplementedException("Missing registry name for class: " + this.getClass().getName());
         return Component.nullToEmpty(name.getPath());

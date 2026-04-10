@@ -17,7 +17,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
@@ -28,9 +28,9 @@ import java.util.List;
 
 public class DimensionalLaserScreen extends VEContainerScreen<VEContainer> {
     private final VETileEntity tileEntity;
-    private final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/dimensional_laser_gui.png");
-    private static final ResourceLocation GUI_TOOLS = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/guitools.png");
-    private static final ResourceLocation MULTIBLOCK_WARN = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/multiblock_invalid_warning.png");
+    private final Identifier GUI = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/dimensional_laser_gui.png");
+    private static final Identifier GUI_TOOLS = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/guitools.png");
+    private static final Identifier MULTIBLOCK_WARN = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "textures/gui/multiblock_invalid_warning.png");
 
 
     public DimensionalLaserScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {

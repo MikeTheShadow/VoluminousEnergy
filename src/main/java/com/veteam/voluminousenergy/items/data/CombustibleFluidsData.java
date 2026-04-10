@@ -6,7 +6,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.level.material.Fluid;
@@ -30,8 +30,8 @@ public class CombustibleFluidsData {
 
     public static void loadData(ResourceManager manager) {
         resetCache();
-        ResourceLocation prefix = ResourceLocation.fromNamespaceAndPath("voluminousenergy", "fluid_data/combustion");
-        Map<ResourceLocation, Resource> resourceLocations = manager.listResources(prefix.getPath(), s -> s.getPath().endsWith(".json"));
+        Identifier prefix = Identifier.fromNamespaceAndPath("voluminousenergy", "fluid_data/combustion");
+        Map<Identifier, Resource> resourceLocations = manager.listResources(prefix.getPath(), s -> s.getPath().endsWith(".json"));
 
         for (Resource resource : resourceLocations.values()) {
             try (BufferedReader reader = resource.openAsReader()) {

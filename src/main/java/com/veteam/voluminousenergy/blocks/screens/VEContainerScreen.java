@@ -12,7 +12,7 @@ import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.TankType;
 import com.veteam.voluminousenergy.util.TextUtil;
 import com.veteam.voluminousenergy.util.VERelationalTank;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.Rect2i;
@@ -22,8 +22,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.UUID;
 
 public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> {
 
@@ -43,7 +41,7 @@ public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends
     }
 
     @Override
-    protected void renderLabels(@NotNull GuiGraphics matrixStack, int mouseX, int mouseY) {
+    protected void extractLabels(@NotNull GuiGraphicsExtractor matrixStack, int mouseX, int mouseY) {
         this.renderables.stream().filter(Renderable -> Renderable instanceof ioMenuButton).forEach(button -> {
             if (((ioMenuButton) button).shouldIOBeOpen()) {
                 renderSlotAndTankLabels(matrixStack, mouseX, mouseY);
@@ -91,7 +89,7 @@ public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends
         renderIOMenu(tileEntity, 64 + (this.width / 2), this.topPos - 18);
     }
 
-    protected void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
+    protected void renderSlotAndTankLabels(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY) {
         for (int i = 0; i < this.tileEntity.getSlotManagers().size(); i++) {
             Slot slot = this.menu.getSlot(i);
             TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append(String.valueOf(i))), slot.x, slot.y, WHITE_TEXT_STYLE);
