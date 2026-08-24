@@ -6,9 +6,7 @@
     " # "
   ],
   "key": {
-    "#": {
-      "tag": "c:stone"
-    }
+    "#": "#c:stones"
   },
   "result": {
     "id": "voluminousenergy:stonegear"

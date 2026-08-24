@@ -6,12 +6,8 @@
     " # "
   ],
   "key": {
-    "#": {
-      "item": "minecraft:stick"
-    },
-    "X": {
-      "tag": "c:ingots/carbon"
-    }
+    "#": "minecraft:stick",
+    "X": "#c:ingots/carbon"
   },
   "result": {
     "id": "voluminousenergy:carbon_shovel"

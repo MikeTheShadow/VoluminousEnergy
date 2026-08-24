@@ -6,12 +6,8 @@
     " # "
   ],
   "key": {
-    "#": {
-      "item": "minecraft:stick"
-    },
-    "X": {
-      "tag": "c:ingots/solarium"
-    }
+    "#": "minecraft:stick",
+    "X": "#c:ingots/solarium"
   },
   "result": {
     "id": "voluminousenergy:solarium_sword"

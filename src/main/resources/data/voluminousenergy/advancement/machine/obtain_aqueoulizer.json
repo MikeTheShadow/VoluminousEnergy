@@ -2,7 +2,7 @@
   "parent": "voluminousenergy:machine/obtain_electrolyzer",
   "display": {
     "icon": {
-      "item": "voluminousenergy:aqueoulizer"
+      "id": "voluminousenergy:aqueoulizer"
     },
     "title": {
       "translate": "advancements.voluminousenergy.machine.obtain.aqueoulizer.title"

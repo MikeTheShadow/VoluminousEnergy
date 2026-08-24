@@ -4,9 +4,7 @@
     "#"
   ],
   "key": {
-    "#": {
-      "item": "voluminousenergy:empty_multitool"
-    }
+    "#": "voluminousenergy:empty_multitool"
   },
   "result": {
     "id": "voluminousenergy:empty_multitool"

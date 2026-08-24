@@ -2,7 +2,7 @@
   "parent": "voluminousenergy:machine/obtain_electrolyzer",
   "display": {
     "icon": {
-      "item": "voluminousenergy:tooling_station"
+      "id": "voluminousenergy:tooling_station"
     },
     "title": {
       "translate": "advancements.voluminousenergy.machine.obtain.tooling_station.title"

@@ -6,21 +6,11 @@
     "#*#"
   ],
   "key": {
-    "#": {
-      "tag": "c:microchips"
-    },
-    "0": {
-      "item": "voluminousenergy:carbon_shielded_aluminum_machine_frame"
-    },
-    "*": {
-      "item": "voluminousenergy:primitivestirlinggenerator"
-    },
-    "1": {
-      "tag": "c:gears/aluminum"
-    },
-    "2": {
-      "tag": "c:plates/aluminum"
-    }
+    "#": "#c:microchips",
+    "0": "voluminousenergy:carbon_shielded_aluminum_machine_frame",
+    "*": "voluminousenergy:primitivestirlinggenerator",
+    "1": "#c:gears/aluminum",
+    "2": "#c:plates/aluminum"
   },
   "result": {
     "id": "voluminousenergy:stirling_generator"

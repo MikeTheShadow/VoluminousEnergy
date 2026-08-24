@@ -4,9 +4,7 @@
     "#"
   ],
   "key": {
-    "#": {
-      "item": "voluminousenergy:electric_furnace"
-    }
+    "#": "voluminousenergy:electric_furnace"
   },
   "result": {
     "id": "voluminousenergy:electric_furnace"

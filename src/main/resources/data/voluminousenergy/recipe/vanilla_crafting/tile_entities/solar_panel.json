@@ -6,21 +6,11 @@
     "aba"
   ],
   "key": {
-    "#": {
-      "tag": "c:plates/aluminum"
-    },
-    "a": {
-      "tag": "c:microchips"
-    },
-    "b": {
-      "item": "voluminousenergy:carbon_shielded_aluminum_machine_frame"
-    },
-    "c": {
-      "tag": "c:dusts/photovoltaic"
-    },
-    "d": {
-      "tag": "c:glass_panes"
-    }
+    "#": "#c:plates/aluminum",
+    "a": "#c:microchips",
+    "b": "voluminousenergy:carbon_shielded_aluminum_machine_frame",
+    "c": "#c:dusts/photovoltaic",
+    "d": "#c:glass_panes"
   },
   "result": {
     "id": "voluminousenergy:solar_panel"

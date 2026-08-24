@@ -6,15 +6,9 @@
     "1"
   ],
   "key": {
-    "#": {
-      "tag": "c:tallow"
-    },
-    "*": {
-      "item": "minecraft:stick"
-    },
-    "1": {
-      "tag": "minecraft:soul_fire_base_blocks"
-    }
+    "#": "#c:tallow",
+    "*": "minecraft:stick",
+    "1": "#minecraft:soul_fire_base_blocks"
   },
   "result": {
     "id": "minecraft:soul_torch",

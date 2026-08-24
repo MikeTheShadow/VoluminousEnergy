@@ -6,9 +6,7 @@
     " # "
   ],
   "key": {
-    "#": {
-      "tag": "c:ingots/titanium"
-    }
+    "#": "#c:ingots/titanium"
   },
   "result": {
     "id": "voluminousenergy:titanium_gear"

@@ -2,7 +2,7 @@
   "parent": "voluminousenergy:root",
   "display": {
     "icon": {
-      "item": "voluminousenergy:crude_oil_bucket"
+      "id": "voluminousenergy:crude_oil_bucket"
     },
     "title": {
       "translate": "advancements.voluminousenergy.overworld.stuck_in_oil.title"

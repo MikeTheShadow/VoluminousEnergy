@@ -4,9 +4,7 @@
     "#"
   ],
   "key": {
-    "#": {
-      "item": "voluminousenergy:pump"
-    }
+    "#": "voluminousenergy:pump"
   },
   "result": {
     "id": "voluminousenergy:pump"

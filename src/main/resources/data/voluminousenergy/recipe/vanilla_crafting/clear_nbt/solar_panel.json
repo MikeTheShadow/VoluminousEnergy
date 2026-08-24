@@ -4,9 +4,7 @@
     "#"
   ],
   "key": {
-    "#": {
-      "item": "voluminousenergy:solar_panel"
-    }
+    "#": "voluminousenergy:solar_panel"
   },
   "result": {
     "id": "voluminousenergy:solar_panel"

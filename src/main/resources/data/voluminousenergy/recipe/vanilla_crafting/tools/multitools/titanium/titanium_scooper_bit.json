@@ -6,12 +6,8 @@
     "#*#"
   ],
   "key": {
-    "#": {
-      "tag": "c:ingots/titanium"
-    },
-    "*": {
-      "tag": "c:gears/titanium"
-    }
+    "#": "#c:ingots/titanium",
+    "*": "#c:gears/titanium"
   },
   "result": {
     "id": "voluminousenergy:titanium_scooper_bit",

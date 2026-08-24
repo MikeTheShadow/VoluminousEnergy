@@ -6,9 +6,7 @@
     " # "
   ],
   "key": {
-    "#": {
-      "item": "voluminousenergy:carbonbrick"
-    }
+    "#": "voluminousenergy:carbonbrick"
   },
   "result": {
     "id": "voluminousenergy:carbongear"

@@ -5,12 +5,8 @@
     " * "
   ],
   "key": {
-    "#": {
-      "tag": "c:ingots/eighzo"
-    },
-    "*": {
-      "tag": "c:gears/titanium"
-    }
+    "#": "#c:ingots/eighzo",
+    "*": "#c:gears/titanium"
   },
   "result": {
     "id": "voluminousenergy:eighzo_trimmer_bit",

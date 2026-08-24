@@ -2,7 +2,7 @@
   "parent": "voluminousenergy:machine/obtain_electrolyzer",
   "display": {
     "icon": {
-      "item": "voluminousenergy:centrifugal_agitator"
+      "id": "voluminousenergy:centrifugal_agitator"
     },
     "title": {
       "translate": "advancements.voluminousenergy.machine.obtain.centrifugal_agitator.title"

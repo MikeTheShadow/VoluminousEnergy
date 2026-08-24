@@ -6,12 +6,8 @@
     "###"
   ],
   "key": {
-    "#": {
-      "tag": "c:ingots/copper"
-    },
-    "*": {
-      "item": "voluminousenergy:lead_acid_battery"
-    }
+    "#": "#c:ingots/copper",
+    "*": "voluminousenergy:lead_acid_battery"
   },
   "result": {
     "id": "voluminousenergy:lead_acid_battery_pack",

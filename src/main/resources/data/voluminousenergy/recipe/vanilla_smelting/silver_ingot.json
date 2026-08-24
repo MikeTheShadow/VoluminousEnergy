@@ -1,8 +1,6 @@
 {
   "type": "minecraft:smelting",
-  "ingredient": {
-    "tag": "c:dusts/silver"
-  },
+  "ingredient": "#c:dusts/silver",
   "result": {
     "id": "voluminousenergy:silver_ingot"
   },

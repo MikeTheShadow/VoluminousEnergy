@@ -5,12 +5,8 @@
     " * "
   ],
   "key": {
-    "#": {
-      "tag": "c:ingots/nighalite"
-    },
-    "*": {
-      "tag": "c:gears/titanium"
-    }
+    "#": "#c:ingots/nighalite",
+    "*": "#c:gears/titanium"
   },
   "result": {
     "id": "voluminousenergy:nighalite_trimmer_bit",

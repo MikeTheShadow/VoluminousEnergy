@@ -4,9 +4,7 @@
     "#"
   ],
   "key": {
-    "#": {
-      "item": "voluminousenergy:centrifugal_agitator"
-    }
+    "#": "voluminousenergy:centrifugal_agitator"
   },
   "result": {
     "id": "voluminousenergy:centrifugal_agitator"

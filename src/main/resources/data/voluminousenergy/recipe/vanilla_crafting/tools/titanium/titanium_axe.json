@@ -6,12 +6,8 @@
     " # "
   ],
   "key": {
-    "#": {
-      "item": "minecraft:stick"
-    },
-    "X": {
-      "tag": "c:ingots/titanium"
-    }
+    "#": "minecraft:stick",
+    "X": "#c:ingots/titanium"
   },
   "result": {
     "id": "voluminousenergy:titanium_axe"

@@ -6,15 +6,9 @@
     "#*#"
   ],
   "key": {
-    "#": {
-      "tag": "c:plates/titanium"
-    },
-    "*": {
-      "tag": "c:gears/titanium"
-    },
-    "0": {
-      "item": "voluminousenergy:titanium_machine_casing"
-    }
+    "#": "#c:plates/titanium",
+    "*": "#c:gears/titanium",
+    "0": "voluminousenergy:titanium_machine_casing"
   },
   "result": {
     "id": "voluminousenergy:robust_tank_frame"

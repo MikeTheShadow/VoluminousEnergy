@@ -106,6 +106,18 @@ public abstract class VERecipe implements Recipe<RecipeInput> {
         return "";
     }
 
+    /*
+     * VE recipes are never placed into a crafting grid via the recipe book, so they have no
+     * PlacementInfo. Marking them special keeps RecipeManager#finalizeRecipeLoading from warning
+     * that every one of them "can't be placed due to empty ingredients" -- that check is
+     * !isSpecial() && placementInfo().isImpossibleToPlace(), and NOT_PLACEABLE always satisfies
+     * the latter. Machines resolve recipes through getCachedRecipes, not the recipe book.
+     */
+    @Override
+    public boolean isSpecial() {
+        return true;
+    }
+
     @Override
     public @NotNull PlacementInfo placementInfo() {
         return PlacementInfo.NOT_PLACEABLE;

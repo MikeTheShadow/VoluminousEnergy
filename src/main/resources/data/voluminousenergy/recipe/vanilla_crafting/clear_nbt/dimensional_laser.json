@@ -4,9 +4,7 @@
     "#"
   ],
   "key": {
-    "#": {
-      "item": "voluminousenergy:dimensional_laser"
-    }
+    "#": "voluminousenergy:dimensional_laser"
   },
   "result": {
     "id": "voluminousenergy:dimensional_laser"

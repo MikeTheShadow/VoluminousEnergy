@@ -5,15 +5,9 @@
     "# "
   ],
   "key": {
-    "#": {
-      "tag": "c:dusts/coal"
-    },
-    "x": {
-      "tag": "c:silicon"
-    },
-    "*": {
-      "tag": "c:dusts/lapis"
-    }
+    "#": "#c:dusts/coal",
+    "x": "#c:silicon",
+    "*": "#c:dusts/lapis"
   },
   "result": {
     "id": "voluminousenergy:photovoltaic_dust",

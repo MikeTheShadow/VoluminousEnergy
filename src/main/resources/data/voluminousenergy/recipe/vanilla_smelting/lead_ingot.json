@@ -1,8 +1,6 @@
 {
   "type": "minecraft:smelting",
-  "ingredient": {
-    "tag": "c:dusts/lead"
-  },
+  "ingredient": "#c:dusts/lead",
   "result": {
     "id": "voluminousenergy:lead_ingot"
   },

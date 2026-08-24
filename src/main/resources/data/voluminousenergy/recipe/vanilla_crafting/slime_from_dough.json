@@ -4,12 +4,8 @@
     "#*"
   ],
   "key": {
-    "#": {
-      "tag": "c:dough"
-    },
-    "*": {
-      "item": "minecraft:lime_dye"
-    }
+    "#": "#c:dough",
+    "*": "minecraft:lime_dye"
   },
   "result": {
     "id": "minecraft:slime_ball",

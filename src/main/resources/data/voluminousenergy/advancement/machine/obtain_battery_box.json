@@ -2,7 +2,7 @@
   "parent": "voluminousenergy:machine/obtain_electrolyzer",
   "display": {
     "icon": {
-      "item": "voluminousenergy:battery_box"
+      "id": "voluminousenergy:battery_box"
     },
     "title": {
       "translate": "advancements.voluminousenergy.machine.obtain.battery_box.title"

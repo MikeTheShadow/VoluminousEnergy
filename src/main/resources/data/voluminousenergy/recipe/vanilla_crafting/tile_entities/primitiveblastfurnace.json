@@ -6,12 +6,8 @@
     "#*#"
   ],
   "key": {
-    "#": {
-      "item": "minecraft:iron_ingot"
-    },
-    "*": {
-      "item": "minecraft:furnace"
-    }
+    "#": "minecraft:iron_ingot",
+    "*": "minecraft:furnace"
   },
   "result": {
     "id": "voluminousenergy:primitiveblastfurnace"

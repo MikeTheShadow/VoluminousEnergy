@@ -4,9 +4,7 @@
     "#"
   ],
   "key": {
-    "#": {
-      "item": "voluminousenergy:gas_fired_furnace"
-    }
+    "#": "voluminousenergy:gas_fired_furnace"
   },
   "result": {
     "id": "voluminousenergy:gas_fired_furnace"

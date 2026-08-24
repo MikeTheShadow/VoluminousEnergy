@@ -5,9 +5,7 @@
     "##"
   ],
   "key": {
-    "#": {
-      "tag": "c:dusts/sand"
-    }
+    "#": "#c:dusts/sand"
   },
   "result": {
     "id": "minecraft:sand"
