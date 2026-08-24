@@ -45,14 +45,14 @@ public class AnimalFatLootModifier extends LootModifier {
      * @param conditionsIn the ILootConditions that need to be matched before the loot is modified.
      */
     public AnimalFatLootModifier(LootItemCondition[] conditionsIn, ItemStack itemStack, int minAmount, int maxAmount) {
-        super(conditionsIn);
+        super(conditionsIn, IGlobalLootModifier.DEFAULT_PRIORITY);
         this.itemAddition = itemStack;
         this.minAmount = minAmount;
         this.maxAmount = maxAmount;
     }
 
     public AnimalFatLootModifier(LootItemCondition[] conditionsIn, Item item, int minAmount, int maxAmount) {
-        super(conditionsIn);
+        super(conditionsIn, IGlobalLootModifier.DEFAULT_PRIORITY);
         this.itemAddition = new ItemStack(item, 1);
         this.minAmount = minAmount;
         this.maxAmount = maxAmount;

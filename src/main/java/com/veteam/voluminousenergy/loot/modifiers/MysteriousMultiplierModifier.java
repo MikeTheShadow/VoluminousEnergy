@@ -24,7 +24,7 @@ public class MysteriousMultiplierModifier extends LootModifier {
             ));
 
     public MysteriousMultiplierModifier(LootItemCondition[] conditionsIn) {
-        super(conditionsIn);
+        super(conditionsIn, IGlobalLootModifier.DEFAULT_PRIORITY);
     }
 
     @Override
