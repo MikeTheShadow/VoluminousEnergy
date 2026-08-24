@@ -5,7 +5,7 @@ public class LeadAcidBattery extends VEEnergyItem {
     private static final int MAX_TX = 1000;
 
     public LeadAcidBattery() {
-        super(new Properties()
+        super(new Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId())
                         .stacksTo(1),
                 MAX_ENERGY,
                 MAX_TX);

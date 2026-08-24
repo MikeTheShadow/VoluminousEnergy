@@ -5,7 +5,7 @@ import net.minecraft.world.item.Item;
 
 public class CarbonGear extends VEItem {
     public CarbonGear() {
-        super(new Item.Properties()
+        super(new Item.Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId())
                 .stacksTo(64)
         );
         setRegistryName("carbongear");

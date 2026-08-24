@@ -20,7 +20,7 @@ public class Mercury {
     public static final Identifier MERCURY_STILL_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/mercury_still");
     public static final Identifier MERCURY_FLOWING_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/mercury_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
+    public static Block.Properties stdProp = Block.Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
 
     public static FlowingFluid MERCURY;
     public static FlowingFluid FLOWING_MERCURY;
@@ -38,12 +38,12 @@ public class Mercury {
     }
 
     public static VEFlowingFluidBlock FlowingMercuryBlock() {
-        MERCURY_BLOCK = new VEFlowingFluidBlock(MERCURY, stdProp);
+        MERCURY_BLOCK = new VEFlowingFluidBlock(MERCURY, stdProp.setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId()));
         return MERCURY_BLOCK;
     }
 
     public static Item MercuryBucket() {
-        MERCURY_BUCKET = new BucketItem(MERCURY, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
+        MERCURY_BUCKET = new BucketItem(MERCURY, new Item.Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId()).craftRemainder(Items.BUCKET).stacksTo(1));
         return MERCURY_BUCKET;
     }
 

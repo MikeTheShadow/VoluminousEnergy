@@ -115,7 +115,7 @@ public class VEDataComponents {
             DATA_COMPONENT_TYPE_DEFERRED_REGISTER.register("multi_tool_inventory", () -> {
                 DataComponentType.Builder<List<ItemStack>> stackBuilder = DataComponentType.builder();
                 return stackBuilder.persistent(ItemStack.CODEC.listOf())
-                        .networkSynchronized(ItemStack.LIST_STREAM_CODEC)
+                        .networkSynchronized(ItemStack.STREAM_CODEC.apply(ByteBufCodecs.list()))
                         .build();
             });
 

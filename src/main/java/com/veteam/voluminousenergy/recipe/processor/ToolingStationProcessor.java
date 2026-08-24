@@ -7,10 +7,18 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import org.jetbrains.annotations.Nullable;
 
 public class ToolingStationProcessor implements AbstractRecipeProcessor {
 
+    @Nullable
+    private static IFluidHandler getFluidHandler(ItemStack itemStack) {
+        ResourceHandler<FluidResource> handler = ItemAccess.forStack(itemStack).getCapability(Capabilities.Fluid.ITEM);
+        return handler == null ? null : IFluidHandler.of(handler);
+    }
 
     @Override
     public void tick(VETileEntity tile) {
@@ -18,7 +26,7 @@ public class ToolingStationProcessor implements AbstractRecipeProcessor {
 
         if (stack.getItem() instanceof Multitool) {
             VERelationalTank tank = tile.getRelationalTank(0);
-            IFluidHandlerItem fluidHandler = stack.getCapability(Capabilities.FluidHandler.ITEM);
+            IFluidHandler fluidHandler = getFluidHandler(stack);
 
             int capacity = fluidHandler.getTankCapacity(0);
             int current = fluidHandler.getFluidInTank(0).getAmount();

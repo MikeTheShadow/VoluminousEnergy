@@ -5,7 +5,7 @@ import net.minecraft.world.item.Item;
 
 public class CopperCarbonateDust extends VEItem {
     public CopperCarbonateDust() {
-        super(new Item.Properties()
+        super(new Item.Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId())
                 .stacksTo(64)
         );
         setRegistryName("copper_carbonate_dust");

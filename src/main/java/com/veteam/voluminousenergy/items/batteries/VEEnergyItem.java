@@ -14,14 +14,17 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
+import java.util.function.Consumer;
 
 public class VEEnergyItem extends VEItem {
     private final int maxEnergy;
@@ -34,8 +37,14 @@ public class VEEnergyItem extends VEItem {
         this.maxTransfer = maxTransfer;
     }
 
+    @Nullable
+    private static IEnergyStorage getEnergyStorage(ItemStack itemStack) {
+        EnergyHandler handler = ItemAccess.forStack(itemStack).getCapability(Capabilities.Energy.ITEM);
+        return handler == null ? null : IEnergyStorage.of(handler);
+    }
+
     public static float getChargeRatio(ItemStack stack) {
-        IEnergyStorage storage = stack.getCapability(Capabilities.EnergyStorage.ITEM);
+        IEnergyStorage storage = getEnergyStorage(stack);
         if (storage != null) {
             return (float) storage.getEnergyStored() / storage.getMaxEnergyStored();
         }
@@ -43,9 +52,9 @@ public class VEEnergyItem extends VEItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, @NotNull TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    public void appendHoverText(ItemStack itemStack, @NotNull TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltip, @NotNull TooltipFlag flag) {
 
-        IEnergyStorage storage = itemStack.getCapability(Capabilities.EnergyStorage.ITEM);
+        IEnergyStorage storage = getEnergyStorage(itemStack);
         if (storage == null) return;
         Component textComponent;
         if (Config.SHORTEN_ITEM_TOOLTIP_VALUES.get()) {
@@ -53,7 +62,7 @@ public class VEEnergyItem extends VEItem {
         } else {
             textComponent = TextUtil.translateString("text.voluminousenergy.energy").copy().append(": " + NumberUtil.formatNumber(storage.getEnergyStored()) + " FE / " + NumberUtil.formatNumber(storage.getMaxEnergyStored()) + " FE");
         }
-        tooltip.add(textComponent);
+        tooltip.accept(textComponent);
     }
 
     @Override

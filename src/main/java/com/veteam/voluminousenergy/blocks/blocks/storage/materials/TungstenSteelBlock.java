@@ -7,7 +7,7 @@ import net.minecraft.world.level.block.SoundType;
 
 public class TungstenSteelBlock extends VEBlock {
     public TungstenSteelBlock() {
-        super(Block.Properties.of()
+        super(Block.Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
                 .sound(SoundType.METAL)
                 .strength(2F)
                 .requiresCorrectToolForDrops()

@@ -12,6 +12,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.NotNull;
@@ -30,43 +32,32 @@ public class ImplosionCompressorRecipe extends VERecipe {
     public ImplosionCompressorRecipe() {
     }
 
-    public ImplosionCompressorRecipe(List<VERecipeCodecs.RegistryIngredient> ingredients, List<ItemStack> results, int processTime) {
+    public ImplosionCompressorRecipe(List<VERecipeCodecs.RegistryIngredient> ingredients, List<net.minecraft.world.item.ItemStackTemplate> results, int processTime) {
         super(ingredients, new ArrayList<>(), new ArrayList<>(), results, processTime);
     }
 
-    public static final RecipeSerializer<ImplosionCompressorRecipe> SERIALIZER = new RecipeSerializer<>() {
+    public static final MapCodec<ImplosionCompressorRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
+            VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
+            VERecipeCodecs.VE_OUTPUT_ITEM_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.resultTemplates),
+            Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime)
+    ).apply(instance, ImplosionCompressorRecipe::new));
 
-        public static final MapCodec<ImplosionCompressorRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
-                VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
-                VERecipeCodecs.VE_OUTPUT_ITEM_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.results),
-                Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime)
-        ).apply(instance, ImplosionCompressorRecipe::new));
+    private static final IngredientSerializerHelper<ImplosionCompressorRecipe> helper = new IngredientSerializerHelper<>();
 
-        private static final IngredientSerializerHelper<ImplosionCompressorRecipe> helper = new IngredientSerializerHelper<>();
-
+    public static final StreamCodec<RegistryFriendlyByteBuf, ImplosionCompressorRecipe> VE_RECIPE_STREAM_CODEC = new StreamCodec<>() {
         @Override
-        public @NotNull MapCodec<ImplosionCompressorRecipe> codec() {
-            return VE_RECIPE_CODEC;
+        public void encode(@NotNull RegistryFriendlyByteBuf buf, @NotNull ImplosionCompressorRecipe recipe) {
+            helper.toNetwork(buf, recipe);
         }
 
         @Override
         @NotNull
-        public StreamCodec<RegistryFriendlyByteBuf, ImplosionCompressorRecipe> streamCodec() {
-            return new StreamCodec<>() {
-                @Override
-                public void encode(@NotNull RegistryFriendlyByteBuf buf, @NotNull ImplosionCompressorRecipe recipe) {
-                    helper.toNetwork(buf, recipe);
-                }
-
-                @Override
-                @NotNull
-                public ImplosionCompressorRecipe decode(@NotNull RegistryFriendlyByteBuf buffer) {
-                    return helper.fromNetwork(new ImplosionCompressorRecipe(), buffer);
-                }
-            };
+        public ImplosionCompressorRecipe decode(@NotNull RegistryFriendlyByteBuf buffer) {
+            return helper.fromNetwork(new ImplosionCompressorRecipe(), buffer);
         }
-
     };
+
+    public static final RecipeSerializer<ImplosionCompressorRecipe> SERIALIZER = new RecipeSerializer<>(VE_RECIPE_CODEC, VE_RECIPE_STREAM_CODEC);
 
 
     @Override
@@ -80,7 +71,7 @@ public class ImplosionCompressorRecipe extends VERecipe {
     }
 
     @Override
-    public @NotNull RecipeType<?> getType() {
+    public @NotNull RecipeType<? extends Recipe<RecipeInput>> getType() {
         return RECIPE_TYPE;
     }
 

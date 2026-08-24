@@ -18,7 +18,7 @@ import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.levelgen.synth.PerlinSimplexNoise;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.storage.DimensionDataStorage;
+import net.minecraft.world.level.storage.SavedDataStorage;
 import oshi.util.tuples.Pair;
 
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ public class WorldUtil {
     }
 
     public static HashMap<ClimateParameters, Double> sampleClimate(Level level, BlockPos pos) {
-        if (level.isClientSide) new HashMap<>();
+        if (level.isClientSide()) new HashMap<>();
 
         ServerLevel serverLevel = level.getServer().getLevel(level.dimension());
         ServerChunkCache serverchunkcache = serverLevel.getChunkSource();
@@ -84,9 +84,9 @@ public class WorldUtil {
         if (!chunkFluids.hasChunkFluid(chunkFluid)) {
             chunkFluids.add(chunkFluid);
             chunkFluids.setDirty();
-            DimensionDataStorage storage = serverLevel.getDataStorage();
-            storage.set("chunk_fluids", chunkFluids);
-            storage.save();
+            SavedDataStorage storage = serverLevel.getDataStorage();
+            storage.set(ChunkFluids.TYPE, chunkFluids);
+            storage.scheduleSave();
         }
         return chunkFluid;
     }
@@ -151,6 +151,14 @@ public class WorldUtil {
         }
 
         return 250;
+    }
+
+    public static boolean isDirt(net.minecraft.world.level.block.state.BlockState state) {
+        return state.is(net.minecraft.tags.BlockTags.DIRT);
+    }
+
+    public static boolean isStone(net.minecraft.world.level.block.state.BlockState state) {
+        return state.is(net.minecraft.tags.BlockTags.BASE_STONE_OVERWORLD);
     }
 
 }

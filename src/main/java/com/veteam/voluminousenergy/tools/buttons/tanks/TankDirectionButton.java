@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.tools.buttons.tanks;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
 import com.veteam.voluminousenergy.tools.networking.packets.TankDirectionPacket.TankDirectionPayload;
@@ -8,11 +7,12 @@ import com.veteam.voluminousenergy.util.IntToDirection;
 import com.veteam.voluminousenergy.util.TextUtil;
 import com.veteam.voluminousenergy.util.VERelationalTank;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 public class TankDirectionButton extends VEIOButton {
     private VERelationalTank tank;
@@ -60,26 +60,25 @@ public class TankDirectionButton extends VEIOButton {
     }
 
     @Override
-    public void renderWidget(GuiGraphics matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3) {
+    protected void extractContents(GuiGraphicsExtractor matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3) {
         if (!render) return;
-        RenderSystem.setShaderTexture(0, texture);
 
         if (!isHovered) { // x: 96 y:20
-            matrixStack.blit(texture, getX(), getY(), 0, 166, this.width, this.height);
+            matrixStack.blit(RenderPipelines.GUI_TEXTURED, texture, getX(), getY(), 0, 166, this.width, this.height, 256, 256);
         } else {
-            matrixStack.blit(texture, getX(), getY(), 0, 186, this.width, this.height);
+            matrixStack.blit(RenderPipelines.GUI_TEXTURED, texture, getX(), getY(), 0, 186, this.width, this.height, 256, 256);
         }
 
         // Print text
         Component textComponent = TextUtil.slotNameWithDirection(tank.getHoverName(), tank.getSideDirection(), tank.getSlotNum());
-        matrixStack.drawCenteredString(Minecraft.getInstance().font, textComponent.getString(), (getX()) + 48, (getY()) + 5, 0xffffff);
+        matrixStack.centeredText(Minecraft.getInstance().font, textComponent.getString(), (getX()) + 48, (getY()) + 5, 0xffffff);
     }
 
     @Override
-    public void onPress() {
+    public void onPress(net.minecraft.client.input.InputWithModifiers input) {
         if (!render) return;
         cycle();
-        PacketDistributor.sendToServer(new TankDirectionPayload(this.getDirection().get3DDataValue(), this.getId()));
+        ClientPacketDistributor.sendToServer(new TankDirectionPayload(this.getDirection().get3DDataValue(), this.getId()));
     }
 
     public Direction getDirection() {

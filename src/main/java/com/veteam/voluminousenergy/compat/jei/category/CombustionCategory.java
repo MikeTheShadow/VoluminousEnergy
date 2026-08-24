@@ -23,7 +23,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
@@ -61,8 +61,13 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorRe
     }
 
     @Override
-    public @NotNull IDrawable getBackground() {
-        return background;
+    public int getWidth() {
+        return background.getWidth();
+    }
+
+    @Override
+    public int getHeight() {
+        return background.getHeight();
     }
 
     @Override
@@ -71,7 +76,8 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorRe
     }
 
     @Override
-    public void draw(CombustionGeneratorRecipe recipe, IRecipeSlotsView slotsView, @NotNull GuiGraphics matrixStack, double mouseX, double mouseY) {
+    public void draw(CombustionGeneratorRecipe recipe, IRecipeSlotsView slotsView, @NotNull GuiGraphicsExtractor matrixStack, double mouseX, double mouseY) {
+        background.draw(matrixStack, 0, 0);
 
         // Volumetric Energy label
         TextUtil.renderShadowedText(
@@ -99,7 +105,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorRe
         slotDrawable.draw(matrixStack, 17, 35); // Fuel fluid
         slotDrawable.draw(matrixStack, 85, 35); // Oxidizer fluid
 
-        Optional<FluidStack> oxiStack = slotsView.getSlotViews(RecipeIngredientRole.CATALYST).get(0).getDisplayedIngredient(NeoForgeTypes.FLUID_STACK);
+        Optional<FluidStack> oxiStack = slotsView.getSlotViews(RecipeIngredientRole.INPUT).get(0).getDisplayedIngredient(NeoForgeTypes.FLUID_STACK);
 
         if (oxiStack.isPresent()) {
 
@@ -155,7 +161,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorRe
     public void setRecipe(IRecipeLayoutBuilder recipeLayout, @NotNull CombustionGeneratorRecipe recipe, @NotNull IFocusGroup focusGroup) {
         // Init
         IRecipeSlotBuilder fuel = recipeLayout.addSlot(RecipeIngredientRole.INPUT, 18, 36);
-        IRecipeSlotBuilder oxidizer = recipeLayout.addSlot(RecipeIngredientRole.CATALYST, 86, 36);
+        IRecipeSlotBuilder oxidizer = recipeLayout.addSlot(RecipeIngredientRole.INPUT, 86, 36);
 
         this.ingredientHandler(recipe, fuel, oxidizer);
     }

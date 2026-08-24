@@ -20,7 +20,7 @@ public class Gasoline {
     public static final Identifier GASOLINE_STILL_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/gasoline_still");
     public static final Identifier GASOLINE_FLOWING_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/gasoline_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
+    public static Block.Properties stdProp = Block.Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
 
     public static FlowingFluid GASOLINE;
     public static FlowingFluid FLOWING_GASOLINE;
@@ -38,12 +38,12 @@ public class Gasoline {
     }
 
     public static VEFlowingFluidBlock FlowingGasolineBlock() {
-        GASOLINE_BLOCK = new VEFlowingFluidBlock(GASOLINE, stdProp);
+        GASOLINE_BLOCK = new VEFlowingFluidBlock(GASOLINE, stdProp.setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId()));
         return GASOLINE_BLOCK;
     }
 
     public static Item GasolineBucket() {
-        GASOLINE_BUCKET = new BucketItem(GASOLINE, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
+        GASOLINE_BUCKET = new BucketItem(GASOLINE, new Item.Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId()).craftRemainder(Items.BUCKET).stacksTo(1));
         return GASOLINE_BUCKET;
     }
 

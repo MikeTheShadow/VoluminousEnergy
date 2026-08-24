@@ -36,23 +36,6 @@ public class LootSpawns {
     );
 
 
-    public static final List<ResourceKey<LootTable>> SHEEP_THAT_DROP_ANIMAL_FAT = List.of(
-            BuiltInLootTables.SHEEP_WHITE,
-            BuiltInLootTables.SHEEP_ORANGE,
-            BuiltInLootTables.SHEEP_MAGENTA,
-            BuiltInLootTables.SHEEP_LIGHT_BLUE,
-            BuiltInLootTables.SHEEP_YELLOW,
-            BuiltInLootTables.SHEEP_LIME,
-            BuiltInLootTables.SHEEP_PINK,
-            BuiltInLootTables.SHEEP_GRAY,
-            BuiltInLootTables.SHEEP_LIGHT_GRAY,
-            BuiltInLootTables.SHEEP_CYAN,
-            BuiltInLootTables.SHEEP_PURPLE,
-            BuiltInLootTables.SHEEP_BLUE,
-            BuiltInLootTables.SHEEP_BROWN,
-            BuiltInLootTables.SHEEP_GREEN,
-            BuiltInLootTables.SHEEP_RED,
-            BuiltInLootTables.SHEEP_BLACK
-    );
+    public static final List<ResourceKey<LootTable>> SHEEP_THAT_DROP_ANIMAL_FAT = List.copyOf(BuiltInLootTables.SHEEP_BY_DYE.values());
 
 }

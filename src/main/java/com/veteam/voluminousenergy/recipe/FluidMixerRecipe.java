@@ -28,46 +28,35 @@ public class FluidMixerRecipe extends VERecipe {
     public FluidMixerRecipe() {
     }
 
-    public FluidMixerRecipe(List<VERecipeCodecs.RegistryFluidIngredient> fi, List<FluidStack> of, int processTime) {
+    public FluidMixerRecipe(List<VERecipeCodecs.RegistryFluidIngredient> fi, List<net.neoforged.neoforge.fluids.FluidStackTemplate> of, int processTime) {
         super(List.of(), fi, of, List.of(), processTime);
     }
 
-    public static final RecipeSerializer<FluidMixerRecipe> SERIALIZER = new RecipeSerializer<>() {
+    public static final MapCodec<FluidMixerRecipe> VE_RECIPE_CODEC = RecordCodecBuilder
+            .mapCodec((instance) -> instance.group(
+                    VERecipeCodecs.VE_FLUID_INGREDIENT_CODEC.listOf().fieldOf("fluid_ingredients")
+                            .forGetter((getter) -> getter.registryFluidIngredients),
+                    VERecipeCodecs.VE_OUTPUT_FLUID_CODEC.listOf().fieldOf("fluid_results")
+                            .forGetter((getter) -> getter.fluidOutputTemplates),
+                    Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime))
+                    .apply(instance, FluidMixerRecipe::new));
 
-        public static final MapCodec<FluidMixerRecipe> VE_RECIPE_CODEC = RecordCodecBuilder
-                .mapCodec((instance) -> instance.group(
-                        VERecipeCodecs.VE_FLUID_INGREDIENT_CODEC.listOf().fieldOf("fluid_ingredients")
-                                .forGetter((getter) -> getter.registryFluidIngredients),
-                        VERecipeCodecs.VE_OUTPUT_FLUID_CODEC.listOf().fieldOf("fluid_results")
-                                .forGetter((getter) -> getter.fluidOutputList),
-                        Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime))
-                        .apply(instance, FluidMixerRecipe::new));
+    private static final FluidSerializerHelper<FluidMixerRecipe> helper = new FluidSerializerHelper<>();
 
-        private static final FluidSerializerHelper<FluidMixerRecipe> helper = new FluidSerializerHelper<>();
-
+    public static final StreamCodec<RegistryFriendlyByteBuf, FluidMixerRecipe> VE_RECIPE_STREAM_CODEC = new StreamCodec<>() {
         @Override
-        public @NotNull MapCodec<FluidMixerRecipe> codec() {
-            return VE_RECIPE_CODEC;
+        public void encode(@NotNull RegistryFriendlyByteBuf buf, @NotNull FluidMixerRecipe recipe) {
+            helper.toNetwork(buf, recipe);
         }
 
         @Override
         @NotNull
-        public StreamCodec<RegistryFriendlyByteBuf, FluidMixerRecipe> streamCodec() {
-            return new StreamCodec<>() {
-                @Override
-                public void encode(@NotNull RegistryFriendlyByteBuf buf, @NotNull FluidMixerRecipe recipe) {
-                    helper.toNetwork(buf, recipe);
-                }
-
-                @Override
-                @NotNull
-                public FluidMixerRecipe decode(@NotNull RegistryFriendlyByteBuf buffer) {
-                    return helper.fromNetwork(new FluidMixerRecipe(), buffer);
-                }
-            };
+        public FluidMixerRecipe decode(@NotNull RegistryFriendlyByteBuf buffer) {
+            return helper.fromNetwork(new FluidMixerRecipe(), buffer);
         }
-
     };
+
+    public static final RecipeSerializer<FluidMixerRecipe> SERIALIZER = new RecipeSerializer<>(VE_RECIPE_CODEC, VE_RECIPE_STREAM_CODEC);
 
     @Override
     public @NotNull RecipeSerializer<? extends VERecipe> getSerializer() {

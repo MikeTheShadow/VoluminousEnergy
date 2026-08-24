@@ -17,7 +17,7 @@ import javax.annotation.Nullable;
 public class FluidMixerBlock extends VEFaceableMachineBlock {
 
     public FluidMixerBlock() {
-        super(Properties.of()
+        super(Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .lightLevel(l -> 0)

@@ -5,7 +5,7 @@ import net.minecraft.world.item.Item;
 
 public class CupricOxideDust extends VEItem {
     public CupricOxideDust() {
-        super(new Item.Properties()
+        super(new Item.Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId())
                 .stacksTo(64)
         );
         setRegistryName("cupric_oxide_dust");

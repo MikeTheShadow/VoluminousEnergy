@@ -7,7 +7,7 @@ import net.minecraft.world.level.block.SoundType;
 
 public class AluminumMachineCasingBlock extends VEBlock {
     public AluminumMachineCasingBlock() {
-        super(Block.Properties.of()
+        super(Block.Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .requiresCorrectToolForDrops()

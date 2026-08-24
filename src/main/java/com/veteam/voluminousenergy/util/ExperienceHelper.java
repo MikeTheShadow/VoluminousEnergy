@@ -18,7 +18,7 @@ import java.util.List;
 public class ExperienceHelper {
 
     public static void awardUsedRecipesAndPopExperience(ServerPlayer pPlayer, VETileEntity tile) {
-        List<RecipeHolder<?>> list = getRecipesToAwardAndPopExperience(pPlayer.serverLevel(), pPlayer.position(), tile);
+        List<RecipeHolder<?>> list = getRecipesToAwardAndPopExperience(pPlayer.level(), pPlayer.position(), tile);
         pPlayer.awardRecipes(list);
 
         for (RecipeHolder<?> recipeholder : list) {
@@ -35,13 +35,13 @@ public class ExperienceHelper {
         List<RecipeHolder<?>> list = new ArrayList<>();
 
         for (Object2IntMap.Entry<Identifier> entry : tile.getRecipesUsed().object2IntEntrySet()) {
-            pLevel.getRecipeManager().byKey(entry.getKey()).ifPresent(recipeHolder -> {
+            pLevel.recipeAccess().byKey(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE, entry.getKey())).ifPresent(recipeHolder -> {
                 list.add(recipeHolder);
                 if (recipeHolder.value() instanceof VERNGExperienceRecipe experienceRecipe) {
                     float xp = (experienceRecipe.getMinExp() + experienceRecipe.getMaxExp()) / 2.0f;
                     createExperience(pLevel, pPopVec, entry.getIntValue(), xp);
                 } else if (recipeHolder.value() instanceof AbstractCookingRecipe cookingRecipe) {
-                    createExperience(pLevel, pPopVec, entry.getIntValue(), cookingRecipe.getExperience());
+                    createExperience(pLevel, pPopVec, entry.getIntValue(), cookingRecipe.experience());
                 }
             });
         }

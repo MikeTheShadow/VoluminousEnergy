@@ -1,14 +1,13 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.recipe.processor.BasicProcessor;
 import com.veteam.voluminousenergy.tools.VERender;
 import com.veteam.voluminousenergy.util.TextUtil;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -26,35 +25,28 @@ public class ToolingStationScreen extends VEContainerScreen<VEContainer> {
     }
 
     @Override
-    public void render(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(matrixStack, mouseX, mouseY, partialTicks);
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
-        this.renderTooltip(matrixStack, mouseX, mouseY);
-    }
-
-    @Override
     protected void init() {
         super.init();
         renderIOMenu(this.tileEntity, 64 + (this.width / 2), this.topPos + 4);
     }
 
     @Override
-    protected void renderLabels(@NotNull GuiGraphics matrixStack, int mouseX, int mouseY) {
+    protected void extractLabels(@NotNull GuiGraphicsExtractor matrixStack, int mouseX, int mouseY) {
         TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateVEBlock("tooling_station"), 8, 6, WHITE_TEXT_STYLE);
         TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateString("container.inventory"), 8, (this.imageHeight - 96 + 2), WHITE_TEXT_STYLE);
-        super.renderLabels(matrixStack, mouseX, mouseY);
+        super.extractLabels(matrixStack, mouseX, mouseY);
     }
 
     @Override
-    protected void renderTooltip(GuiGraphics matrixStack, int mouseX, int mouseY) {
+    protected void extractTooltip(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY) {
 
         if (isHovering(61, 18, 12, 50, mouseX, mouseY)) { // Input Tank
             int amount = tileEntity.getFluidStackFromTank(0).getAmount();
             String name = tileEntity.getFluidStackFromTank(0).getHoverName().getString();
-            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity(0)), mouseX, mouseY);
+            matrixStack.setTooltipForNextFrame(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity(0)), mouseX, mouseY);
         }
 
-        super.renderTooltip(matrixStack, mouseX, mouseY);
+        super.extractTooltip(matrixStack, mouseX, mouseY);
     }
 
     public Rect2i getTooltipArea() {
@@ -62,13 +54,10 @@ public class ToolingStationScreen extends VEContainerScreen<VEContainer> {
     }
 
     @Override
-    protected void renderBg(GuiGraphics matrixStack, float partialTicks, int mouseX, int mouseY) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        RenderSystem.setShaderTexture(0, this.GUI);
+    public void extractBackground(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY, float partialTicks) {
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
-        matrixStack.blit(GUI, i, j, 0, 0, this.imageWidth, this.imageHeight);
+        matrixStack.blit(RenderPipelines.GUI_TEXTURED, GUI, i, j, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
         if (tileEntity != null) {
 
             boolean lightArrow = false;
@@ -84,7 +73,7 @@ public class ToolingStationScreen extends VEContainerScreen<VEContainer> {
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            if (lightArrow) matrixStack.blit(GUI, i + 109, j + 18, 188, 0, 22, 47);
+            if (lightArrow) matrixStack.blit(RenderPipelines.GUI_TEXTURED, GUI, i + 109, j + 18, 188, 0, 22, 47, 256, 256);
             VERender.renderGuiTank(matrixStack, tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(0), tileEntity.getTankCapacity(0), i + 61, j + 18, 0, 12, 50);
 
             /*try{

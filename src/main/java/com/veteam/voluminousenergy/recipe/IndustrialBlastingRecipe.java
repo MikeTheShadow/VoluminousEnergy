@@ -34,43 +34,32 @@ public class IndustrialBlastingRecipe extends VERecipe {
             .addIngredient(3,1)
             .addItemResult(4, 0);
 
-    private static final RecipeSerializer<IndustrialBlastingRecipe> SERIALIZER = new RecipeSerializer<>() {
+    public static final MapCodec<IndustrialBlastingRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
+            VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
+            VERecipeCodecs.VE_OUTPUT_ITEM_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.resultTemplates),
+            Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime),
+            Codec.INT.fieldOf("minimum_heat_kelvin").forGetter(IndustrialBlastingRecipe::getMinimumHeat)
+    ).apply(instance, IndustrialBlastingRecipe::new));
 
-        public static final MapCodec<IndustrialBlastingRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
-                VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
-                VERecipeCodecs.VE_OUTPUT_ITEM_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.results),
-                Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime),
-                Codec.INT.fieldOf("minimum_heat_kelvin").forGetter(IndustrialBlastingRecipe::getMinimumHeat)
-        ).apply(instance, IndustrialBlastingRecipe::new));
+    private static final IngredientSerializerHelper<IndustrialBlastingRecipe> helper = new IngredientSerializerHelper<>();
 
-        private static final IngredientSerializerHelper<IndustrialBlastingRecipe> helper = new IngredientSerializerHelper<>();
-
+    public static final StreamCodec<RegistryFriendlyByteBuf, IndustrialBlastingRecipe> VE_RECIPE_STREAM_CODEC = new StreamCodec<>() {
         @Override
-        public @NotNull MapCodec<IndustrialBlastingRecipe> codec() {
-            return VE_RECIPE_CODEC;
+        public void encode(@NotNull RegistryFriendlyByteBuf buf, @NotNull IndustrialBlastingRecipe recipe) {
+            buf.writeInt(recipe.getMinimumHeat());
+            helper.toNetwork(buf, recipe);
         }
 
         @Override
         @NotNull
-        public StreamCodec<RegistryFriendlyByteBuf, IndustrialBlastingRecipe> streamCodec() {
-            return new StreamCodec<>() {
-                @Override
-                public void encode(@NotNull RegistryFriendlyByteBuf buf, @NotNull IndustrialBlastingRecipe recipe) {
-                    buf.writeInt(recipe.getMinimumHeat());
-                    helper.toNetwork(buf, recipe);
-                }
-
-                @Override
-                @NotNull
-                public IndustrialBlastingRecipe decode(@NotNull RegistryFriendlyByteBuf buffer) {
-                    IndustrialBlastingRecipe recipe = new IndustrialBlastingRecipe();
-                    recipe.setMinimumHeat(buffer.readInt());
-                    return helper.fromNetwork(recipe, buffer);
-                }
-            };
+        public IndustrialBlastingRecipe decode(@NotNull RegistryFriendlyByteBuf buffer) {
+            IndustrialBlastingRecipe recipe = new IndustrialBlastingRecipe();
+            recipe.setMinimumHeat(buffer.readInt());
+            return helper.fromNetwork(recipe, buffer);
         }
-
     };
+
+    private static final RecipeSerializer<IndustrialBlastingRecipe> SERIALIZER = new RecipeSerializer<>(VE_RECIPE_CODEC, VE_RECIPE_STREAM_CODEC);
 
 
     private int minimumHeat;
@@ -80,7 +69,7 @@ public class IndustrialBlastingRecipe extends VERecipe {
 
     }
 
-    public IndustrialBlastingRecipe(List<VERecipeCodecs.RegistryIngredient> i, List<ItemStack> oi, int processTime, int minimumHeat) {
+    public IndustrialBlastingRecipe(List<VERecipeCodecs.RegistryIngredient> i, List<net.minecraft.world.item.ItemStackTemplate> oi, int processTime, int minimumHeat) {
         super(i, List.of(), List.of(), oi, processTime);
         this.minimumHeat = minimumHeat;
     }

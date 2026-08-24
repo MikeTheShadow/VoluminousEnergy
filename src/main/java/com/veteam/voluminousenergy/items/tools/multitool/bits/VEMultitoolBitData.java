@@ -6,39 +6,41 @@ import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
+
+import java.util.Set;
 
 public class VEMultitoolBitData {
 
     public static final TagKey<Block> MINEABLE_WITH_TRIMMER = TagUtil.getBlockTagKeyFromLocation(Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "mineable/trimmer"));
 
     // Drill bits 
-    public static final BitItemData IRON_DRILL_BIT_DATA = new BitItemData(ItemAbilities.DEFAULT_PICKAXE_ACTIONS, Tiers.IRON, BlockTags.MINEABLE_WITH_PICKAXE,
+    public static final BitItemData IRON_DRILL_BIT_DATA = new BitItemData(Set.of(), ToolMaterial.IRON, BlockTags.MINEABLE_WITH_PICKAXE,
              ToolTier.IRON, ToolType.PICKAXE);
 
-    public static final BitItemData DIAMOND_DRILL_BIT_DATA = new BitItemData(ItemAbilities.DEFAULT_PICKAXE_ACTIONS, Tiers.DIAMOND, BlockTags.MINEABLE_WITH_PICKAXE,
+    public static final BitItemData DIAMOND_DRILL_BIT_DATA = new BitItemData(Set.of(), ToolMaterial.DIAMOND, BlockTags.MINEABLE_WITH_PICKAXE,
              ToolTier.DIAMOND, ToolType.PICKAXE);
 
-    public static final BitItemData TITANIUM_DRILL_BIT_DATA = new BitItemData(ItemAbilities.DEFAULT_PICKAXE_ACTIONS, VETools.TITANIUM, BlockTags.MINEABLE_WITH_PICKAXE,
+    public static final BitItemData TITANIUM_DRILL_BIT_DATA = new BitItemData(Set.of(), VETools.TITANIUM, BlockTags.MINEABLE_WITH_PICKAXE,
              ToolTier.TITANIUM, ToolType.PICKAXE);
 
-    public static final BitItemData NIGHALITE_DRILL_BIT_DATA = new BitItemData(ItemAbilities.DEFAULT_PICKAXE_ACTIONS, VETools.NIGHALITE, BlockTags.MINEABLE_WITH_PICKAXE,
+    public static final BitItemData NIGHALITE_DRILL_BIT_DATA = new BitItemData(Set.of(), VETools.NIGHALITE, BlockTags.MINEABLE_WITH_PICKAXE,
              ToolTier.NIGHALITE, ToolType.PICKAXE);
 
-    public static final BitItemData EIGHZO_DRILL_BIT_DATA = new BitItemData(ItemAbilities.DEFAULT_PICKAXE_ACTIONS, VETools.EIGHZO, BlockTags.MINEABLE_WITH_PICKAXE,
+    public static final BitItemData EIGHZO_DRILL_BIT_DATA = new BitItemData(Set.of(), VETools.EIGHZO, BlockTags.MINEABLE_WITH_PICKAXE,
              ToolTier.EIGHZO, ToolType.PICKAXE);
 
-    public static final BitItemData SOLARIUM_DRILL_BIT_DATA = new BitItemData(ItemAbilities.DEFAULT_PICKAXE_ACTIONS, VETools.SOLARIUM, BlockTags.MINEABLE_WITH_PICKAXE,
+    public static final BitItemData SOLARIUM_DRILL_BIT_DATA = new BitItemData(Set.of(), VETools.SOLARIUM, BlockTags.MINEABLE_WITH_PICKAXE,
              ToolTier.SOLARIUM, ToolType.PICKAXE);
 
     // Chain bits
-    public static final BitItemData IRON_CHAIN_BIT_DATA = new BitItemData(ItemAbilities.DEFAULT_AXE_ACTIONS, Tiers.IRON, BlockTags.MINEABLE_WITH_AXE,
+    public static final BitItemData IRON_CHAIN_BIT_DATA = new BitItemData(ItemAbilities.DEFAULT_AXE_ACTIONS, ToolMaterial.IRON, BlockTags.MINEABLE_WITH_AXE,
              ToolTier.IRON, ToolType.AXE);
 
-    public static final BitItemData DIAMOND_CHAIN_BIT_DATA = new BitItemData(ItemAbilities.DEFAULT_AXE_ACTIONS, Tiers.DIAMOND, BlockTags.MINEABLE_WITH_AXE,
+    public static final BitItemData DIAMOND_CHAIN_BIT_DATA = new BitItemData(ItemAbilities.DEFAULT_AXE_ACTIONS, ToolMaterial.DIAMOND, BlockTags.MINEABLE_WITH_AXE,
              ToolTier.DIAMOND, ToolType.AXE);
 
     public static final BitItemData TITANIUM_CHAIN_BIT_DATA = new BitItemData(ItemAbilities.DEFAULT_AXE_ACTIONS, VETools.TITANIUM, BlockTags.MINEABLE_WITH_AXE,
@@ -54,10 +56,10 @@ public class VEMultitoolBitData {
              ToolTier.SOLARIUM, ToolType.AXE);
 
     // Scooper Bit
-    public static final BitItemData IRON_SCOOPER_BIT_DATA = new BitItemData(ItemAbilities.DEFAULT_SHOVEL_ACTIONS, Tiers.IRON, BlockTags.MINEABLE_WITH_SHOVEL,
+    public static final BitItemData IRON_SCOOPER_BIT_DATA = new BitItemData(ItemAbilities.DEFAULT_SHOVEL_ACTIONS, ToolMaterial.IRON, BlockTags.MINEABLE_WITH_SHOVEL,
              ToolTier.IRON, ToolType.SHOVEL);
 
-    public static final BitItemData DIAMOND_SCOOPER_BIT_DATA = new BitItemData(ItemAbilities.DEFAULT_SHOVEL_ACTIONS, Tiers.DIAMOND, BlockTags.MINEABLE_WITH_SHOVEL,
+    public static final BitItemData DIAMOND_SCOOPER_BIT_DATA = new BitItemData(ItemAbilities.DEFAULT_SHOVEL_ACTIONS, ToolMaterial.DIAMOND, BlockTags.MINEABLE_WITH_SHOVEL,
              ToolTier.DIAMOND, ToolType.SHOVEL);
 
     public static final BitItemData TITANIUM_SCOOPER_BIT_DATA = new BitItemData(ItemAbilities.DEFAULT_SHOVEL_ACTIONS, VETools.TITANIUM, BlockTags.MINEABLE_WITH_SHOVEL,
@@ -73,10 +75,10 @@ public class VEMultitoolBitData {
              ToolTier.SOLARIUM, ToolType.SHOVEL);
 
     // Trimmer bit
-    public static final BitItemData IRON_TRIMMER_BIT_DATA = new BitItemData(ItemAbilities.DEFAULT_SHEARS_ACTIONS, Tiers.IRON, MINEABLE_WITH_TRIMMER,
+    public static final BitItemData IRON_TRIMMER_BIT_DATA = new BitItemData(ItemAbilities.DEFAULT_SHEARS_ACTIONS, ToolMaterial.IRON, MINEABLE_WITH_TRIMMER,
              ToolTier.IRON, ToolType.TRIMMER);
 
-    public static final BitItemData DIAMOND_TRIMMER_BIT_DATA = new BitItemData(ItemAbilities.DEFAULT_SHEARS_ACTIONS, Tiers.DIAMOND, MINEABLE_WITH_TRIMMER,
+    public static final BitItemData DIAMOND_TRIMMER_BIT_DATA = new BitItemData(ItemAbilities.DEFAULT_SHEARS_ACTIONS, ToolMaterial.DIAMOND, MINEABLE_WITH_TRIMMER,
              ToolTier.DIAMOND, ToolType.TRIMMER);
 
     public static final BitItemData TITANIUM_TRIMMER_BIT_DATA = new BitItemData(ItemAbilities.DEFAULT_SHEARS_ACTIONS, VETools.TITANIUM, MINEABLE_WITH_TRIMMER,

@@ -8,7 +8,7 @@ import net.minecraft.world.level.block.SoundType;
 
 public class DeepslateRutileOre extends VEOreBlock {
     public DeepslateRutileOre() {
-        super(Properties.of()
+        super(Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
                 .sound(SoundType.STONE)
                 .strength(4.0f)
                 .requiresCorrectToolForDrops()

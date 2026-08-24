@@ -8,7 +8,7 @@ import net.minecraft.world.level.block.SoundType;
 
 public class EighzoBlock extends VEBlock {
     public EighzoBlock() {
-        super(Block.Properties.of()
+        super(Block.Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
                 .sound(SoundType.METAL)
                 .strength(2F)
                 .requiresCorrectToolForDrops()

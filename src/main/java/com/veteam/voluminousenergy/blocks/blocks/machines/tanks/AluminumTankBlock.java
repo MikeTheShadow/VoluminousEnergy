@@ -20,7 +20,7 @@ import javax.annotation.Nullable;
 public class AluminumTankBlock extends TankBlock implements EntityBlock {
 
     public AluminumTankBlock() {
-        super(Properties.of()
+        super(Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .lightLevel(l -> 0)
@@ -39,7 +39,7 @@ public class AluminumTankBlock extends TankBlock implements EntityBlock {
 
     @Nullable
     protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> passedBlockEntity, BlockEntityType<? extends VETileEntity> tile) {
-        return level.isClientSide ? null : createTickerHelper(passedBlockEntity, tile, VETileEntity::serverTick);
+        return level.isClientSide() ? null : createTickerHelper(passedBlockEntity, tile, VETileEntity::serverTick);
     }
 
     public static <T extends BlockEntity, E extends BlockEntity> BlockEntityTicker<T> createTickerHelper(BlockEntityType<T> blockEntityType, BlockEntityType<? extends VETileEntity> tile, BlockEntityTicker<E> serverTick) {

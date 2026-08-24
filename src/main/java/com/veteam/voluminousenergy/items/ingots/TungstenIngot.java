@@ -5,7 +5,7 @@ import net.minecraft.world.item.Item;
 
 public class TungstenIngot extends VEItem {
     public TungstenIngot() {
-        super(new Item.Properties()
+        super(new Item.Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId())
                 .stacksTo(64)
         );
         setRegistryName("tungsten_ingot");

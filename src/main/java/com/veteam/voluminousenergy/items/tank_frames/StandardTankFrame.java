@@ -5,7 +5,7 @@ import net.minecraft.world.item.Item;
 
 public class StandardTankFrame extends VEItem {
     public StandardTankFrame() {
-        super(new Item.Properties()
+        super(new Item.Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId())
                 .stacksTo(64)
         );
         setRegistryName("standard_tank_frame");

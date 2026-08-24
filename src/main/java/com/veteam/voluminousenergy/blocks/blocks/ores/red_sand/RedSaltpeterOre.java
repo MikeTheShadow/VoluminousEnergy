@@ -8,7 +8,7 @@ import net.minecraft.world.level.block.SoundType;
 public class RedSaltpeterOre extends SaltpeterOre {
     public RedSaltpeterOre() {
         super(new ColorRGBA(-8356741),
-                Properties.of()
+                Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
                         .sound(SoundType.SAND)
                         .strength(0.6f)
                         .requiresCorrectToolForDrops()

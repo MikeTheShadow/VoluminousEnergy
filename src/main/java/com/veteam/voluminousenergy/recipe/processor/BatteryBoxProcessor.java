@@ -9,17 +9,26 @@ import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import org.jetbrains.annotations.Nullable;
 
 public class BatteryBoxProcessor implements AbstractRecipeProcessor {
 
     private final int POWER_MAX_TX = Config.BATTERY_BOX_TRANSFER.get();
     private final int MAX_POWER = Config.BATTERY_BOX_MAX_POWER.get();
 
+    @Nullable
+    private static IEnergyStorage getEnergyStorage(ItemStack itemStack) {
+        EnergyHandler handler = ItemAccess.forStack(itemStack).getCapability(Capabilities.Energy.ITEM);
+        return handler == null ? null : IEnergyStorage.of(handler);
+    }
+
     @Override
     public void tick(VETileEntity tile) {
         ItemStack stack = tile.getInventory().getStackInSlot(0);
 
-        IEnergyStorage itemEnergy = stack.getCapability(Capabilities.EnergyStorage.ITEM);
+        IEnergyStorage itemEnergy = getEnergyStorage(stack);
 
         if (itemEnergy == null)
             return;

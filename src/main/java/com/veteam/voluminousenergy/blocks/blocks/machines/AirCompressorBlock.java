@@ -16,7 +16,7 @@ import javax.annotation.Nullable;
 
 public class AirCompressorBlock extends VEFaceableMachineBlock {
     public AirCompressorBlock() {
-        super(Properties.of()
+        super(Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .lightLevel(l -> 0)

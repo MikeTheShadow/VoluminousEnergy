@@ -24,7 +24,7 @@ public class PrimitiveStirlingGeneratorBlock extends VEFaceableMachineBlock {
 
     public PrimitiveStirlingGeneratorBlock() {
 
-        super(Properties.of()
+        super(Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
                 .sound(SoundType.STONE)
                 .strength(2.0f)
                 .lightLevel(l -> l.getValue(LIT) ? 13 : 0)

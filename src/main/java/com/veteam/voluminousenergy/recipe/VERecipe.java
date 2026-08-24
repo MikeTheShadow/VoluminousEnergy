@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.recipe;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.recipe.parser.BasicParser;
 import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
+import com.veteam.voluminousenergy.util.recipe.IngredientUtil;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
@@ -24,7 +25,9 @@ public abstract class VERecipe implements Recipe<RecipeInput> {
     List<VERecipeCodecs.RegistryIngredient> registryIngredients;
     private List<FluidIngredient> fluidIngredientList = null;
     public List<VERecipeCodecs.RegistryFluidIngredient> registryFluidIngredients;
-    public List<FluidStack> fluidOutputList;
+    public List<FluidStack> fluidOutputList = new ArrayList<>();
+    // Same deferred-materialization deal as resultTemplates below, but for fluid outputs.
+    public List<net.neoforged.neoforge.fluids.FluidStackTemplate> fluidOutputTemplates = null;
     private static final HashMap<RecipeType<?>, List<VERecipe>> recipeCache = new HashMap<>();
     private static final HashMap<RecipeType<?>, List<VERecipe>> newCache = new HashMap<>();
 
@@ -32,6 +35,10 @@ public abstract class VERecipe implements Recipe<RecipeInput> {
 
     public int processTime;
     public List<ItemStack> results = new ArrayList<>();
+    // Templates for results, materialized into `results` lazily on first getResults() call rather
+    // than eagerly at construction time (i.e. during recipe/codec decode), since constructing an
+    // ItemStack from a Holder<Item> that early resolves data components before they're bound.
+    public List<net.minecraft.world.item.ItemStackTemplate> resultTemplates = null;
 
     private Identifier id;
 
@@ -54,11 +61,11 @@ public abstract class VERecipe implements Recipe<RecipeInput> {
     private static boolean isServerSide = false;
 
     public VERecipe(List<VERecipeCodecs.RegistryIngredient> ingredients,
-            List<VERecipeCodecs.RegistryFluidIngredient> fluidIngredients, List<FluidStack> fluidResults,
-            List<ItemStack> results, int processTime) {
-        this.results = results;
+            List<VERecipeCodecs.RegistryFluidIngredient> fluidIngredients, List<net.neoforged.neoforge.fluids.FluidStackTemplate> fluidResultTemplates,
+            List<net.minecraft.world.item.ItemStackTemplate> resultTemplates, int processTime) {
+        this.resultTemplates = resultTemplates;
         registryFluidIngredients = fluidIngredients;
-        fluidOutputList = fluidResults;
+        this.fluidOutputTemplates = fluidResultTemplates;
         this.processTime = processTime;
         this.registryIngredients = NonNullList.create();
         this.registryIngredients.addAll(ingredients);
@@ -76,7 +83,7 @@ public abstract class VERecipe implements Recipe<RecipeInput> {
     }
 
     public Ingredient getIngredient(int id) {
-        return id < this.getIngredients().size() ? getIngredients().get(id) : Ingredient.EMPTY;
+        return id < this.getIngredients().size() ? getIngredients().get(id) : Ingredient.of();
     }
 
     @Override
@@ -85,13 +92,28 @@ public abstract class VERecipe implements Recipe<RecipeInput> {
     }
 
     @Override
-    public ItemStack assemble(RecipeInput input, HolderLookup.Provider registries) {
+    public ItemStack assemble(RecipeInput input) {
         throw new NotImplementedException("Class" + this.getClass().getName() + " missing assemble impl!");
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height) {
+    public boolean showNotification() {
         return true;
+    }
+
+    @Override
+    public @NotNull String group() {
+        return "";
+    }
+
+    @Override
+    public @NotNull PlacementInfo placementInfo() {
+        return PlacementInfo.NOT_PLACEABLE;
+    }
+
+    @Override
+    public @NotNull RecipeBookCategory recipeBookCategory() {
+        return RecipeBookCategories.CRAFTING_MISC;
     }
 
     public ItemStack getResult(int id) {
@@ -109,26 +131,23 @@ public abstract class VERecipe implements Recipe<RecipeInput> {
      * @return the raw results
      */
     public List<ItemStack> getResults() {
+        if (this.results.isEmpty() && this.resultTemplates != null && !this.resultTemplates.isEmpty()) {
+            this.results = this.resultTemplates.stream().map(net.minecraft.world.item.ItemStackTemplate::create).toList();
+        }
         return this.results;
     }
 
     @Override
-    public @NotNull RecipeType<? extends Recipe<?>> getType() {
+    public @NotNull RecipeType<? extends Recipe<RecipeInput>> getType() {
         throw new NotImplementedException("Unable to get type for recipe: " + this.getClass().getName());
     }
 
-    @Override
     public @NotNull ItemStack getToastSymbol() {
         throw new NotImplementedException("Class" + this.getClass().getName() + " missing getToastSymbol impl!");
     }
 
     @Override
-    public @NotNull ItemStack getResultItem(@NotNull HolderLookup.Provider pRegistries) {
-        return ItemStack.EMPTY;
-    }
-
-    @Override
-    public @NotNull RecipeSerializer<?> getSerializer() {
+    public @NotNull RecipeSerializer<? extends Recipe<RecipeInput>> getSerializer() {
         throw new NotImplementedException("Missing serializer impl for " + this.getClass().getName());
     }
 
@@ -143,8 +162,8 @@ public abstract class VERecipe implements Recipe<RecipeInput> {
         if (slot >= this.getIngredients().size()) {
             return 0;
         }
-        return this.getIngredients().get(slot).getItems().length > 0
-                ? this.ingredients.get(slot).getItems()[0].getCount()
+        return IngredientUtil.getItems(this.getIngredients().get(slot)).length > 0
+                ? IngredientUtil.getItems(this.ingredients.get(slot))[0].getCount()
                 : 0;
     }
 
@@ -161,11 +180,14 @@ public abstract class VERecipe implements Recipe<RecipeInput> {
     }
 
     public List<FluidStack> getOutputFluids() {
+        if (this.fluidOutputList.isEmpty() && this.fluidOutputTemplates != null && !this.fluidOutputTemplates.isEmpty()) {
+            this.fluidOutputList = this.fluidOutputTemplates.stream().map(net.neoforged.neoforge.fluids.FluidStackTemplate::create).toList();
+        }
         return this.fluidOutputList;
     }
 
     public FluidStack getOutputFluid(int slot) {
-        return this.fluidOutputList.get(slot).copy();
+        return this.getOutputFluids().get(slot).copy();
     }
 
     public List<FluidIngredient> getFluidIngredients() {
@@ -195,7 +217,6 @@ public abstract class VERecipe implements Recipe<RecipeInput> {
         this.fluidIngredientList = fluidIngredientList;
     }
 
-    @Override
     public @NotNull NonNullList<Ingredient> getIngredients() {
 
         if (ingredients == null) {
@@ -219,11 +240,11 @@ public abstract class VERecipe implements Recipe<RecipeInput> {
     }
 
     // Call after cache has been populated
-    public static void updateCache(RecipeManager recipeManager) {
+    public static void updateCache(Iterable<RecipeHolder<?>> recipes) {
         recipeCache.clear();
-        for (RecipeHolder<?> holder : recipeManager.getRecipes()) {
+        for (RecipeHolder<?> holder : recipes) {
             if (holder.value() instanceof VERecipe veRecipe) {
-                veRecipe.setId(holder.id());
+                veRecipe.setId(holder.id().identifier());
                 recipeCache.computeIfAbsent(veRecipe.getType(), k -> new ArrayList<>()).add(veRecipe);
             }
         }

@@ -31,7 +31,7 @@ public abstract class VEFaceableMachineBlock extends FaceableBlock implements En
 
     @Override
     public @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hit) {
-        if (world.isClientSide) return InteractionResult.SUCCESS;
+        if (world.isClientSide()) return InteractionResult.SUCCESS;
         BlockEntity tileEntity = world.getBlockEntity(pos);
         if (tileEntity instanceof MenuProvider menuProvider && player instanceof ServerPlayer serverPlayer) {
             serverPlayer.openMenu(menuProvider, tileEntity.getBlockPos());
@@ -50,7 +50,7 @@ public abstract class VEFaceableMachineBlock extends FaceableBlock implements En
 
     @Nullable
     protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> passedBlockEntity, BlockEntityType<? extends VETileEntity> tileEntity) {
-        return level.isClientSide ? null : createTickerHelper(passedBlockEntity, tileEntity, VETileEntity::serverTick);
+        return level.isClientSide() ? null : createTickerHelper(passedBlockEntity, tileEntity, VETileEntity::serverTick);
     }
 
     public static <T extends BlockEntity, E extends BlockEntity> BlockEntityTicker<T> createTickerHelper(BlockEntityType<T> blockEntityType, BlockEntityType<? extends VETileEntity> tileEntity, BlockEntityTicker<E> serverTick) {

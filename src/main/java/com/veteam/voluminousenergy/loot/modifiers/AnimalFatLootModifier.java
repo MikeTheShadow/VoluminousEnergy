@@ -63,11 +63,11 @@ public class AnimalFatLootModifier extends LootModifier {
         float luck = context.getLuck() > 0 ? context.getLuck() : 1;
 
         float lootingModif = 1.0f; // Default modifier if no looting is present
-        Entity attacker = context.getParam(LootContextParams.ATTACKING_ENTITY);
+        Entity attacker = context.getParameter(LootContextParams.ATTACKING_ENTITY);
 
         if (attacker instanceof LivingEntity livingAttacker) {
             RegistryAccess registries = context.getLevel().registryAccess();
-            Holder<Enchantment> lootingEnchant = registries.registryOrThrow(Registries.ENCHANTMENT).getHolderOrThrow(Enchantments.LOOTING);
+            Holder<Enchantment> lootingEnchant = registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.LOOTING);
 
             int lootingLevel = EnchantmentHelper.getEnchantmentLevel(lootingEnchant, livingAttacker);
             if (lootingLevel > 0) {

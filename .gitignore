@@ -38,3 +38,6 @@ forge*changelog.txt
 
 .editorconfig
 .nvim.lua
+
+# Serena MCP
+.serena

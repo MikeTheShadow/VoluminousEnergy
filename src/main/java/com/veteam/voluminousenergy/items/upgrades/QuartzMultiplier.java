@@ -5,7 +5,7 @@ import net.minecraft.world.item.Item;
 
 public class QuartzMultiplier extends VEItem {
     public QuartzMultiplier() {
-        super(new Item.Properties()
+        super(new Item.Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId())
                 .stacksTo(4)
         );
         setRegistryName("quartz_multiplier");

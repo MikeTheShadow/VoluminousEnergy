@@ -29,7 +29,7 @@ public class VEBatterySwitchManager {
     }
 
     public void read(CompoundTag nbt, String prefix) {
-        setFlipped(nbt.getBoolean(prefix + "_enabled"));
-        int sideInt = nbt.getInt(prefix + "_direction");
+        setFlipped(nbt.getBooleanOr(prefix + "_enabled", false));
+        int sideInt = nbt.getIntOr(prefix + "_direction", 0);
     }
 }

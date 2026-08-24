@@ -7,7 +7,7 @@ import net.minecraft.world.level.block.SoundType;
 
 public class TitaniumBlock extends VEBlock {
     public TitaniumBlock() {
-        super(Block.Properties.of()
+        super(Block.Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
                 .sound(SoundType.METAL)
                 .strength(2F)
                 .requiresCorrectToolForDrops()

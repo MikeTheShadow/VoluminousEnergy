@@ -17,9 +17,6 @@ import com.veteam.voluminousenergy.util.VEAttachments;
 import com.veteam.voluminousenergy.util.VEDataComponents;
 import com.veteam.voluminousenergy.world.feature.VEFeatures;
 import com.veteam.voluminousenergy.world.modifiers.VEModifiers;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -142,15 +139,16 @@ public class VoluminousEnergy {
 
         @SubscribeEvent
         public static void RegisterClientOnSetupEvent(FMLClientSetupEvent event) {
-            event.enqueueWork(() -> ItemBlockRenderTypes.setRenderLayer(VEBlocks.RICE_CROP.get(), RenderType.cutout()));
-            event.enqueueWork(() -> ItemBlockRenderTypes.setRenderLayer(VEBlocks.SAWMILL.block().get(), RenderType.cutout()));
-            event.enqueueWork(() -> ItemBlockRenderTypes.setRenderLayer(VEBlocks.PRESSURE_LADDER.get(), RenderType.cutout()));
+            // Block/item render layers (cutout etc.) are now auto-detected from texture alpha at
+            // model-load time in 26.1; ItemBlockRenderTypes#setRenderLayer no longer exists.
+            // If RICE_CROP/SAWMILL/PRESSURE_LADDER don't render as cutout automatically, use
+            // "force_translucent"/model-level overrides in their model JSON instead.
 
-            ItemProperties.register(VEMultitoolItems.MULTI_TOOL.get(), Identifier.fromNamespaceAndPath(MODID, "tool_type"), (stack, level, entity, seed)
-                    -> stack.getOrDefault(VEDataComponents.TOOL_TYPE, 0));
-
-            ItemProperties.register(VEMultitoolItems.MULTI_TOOL.get(), Identifier.fromNamespaceAndPath(MODID, "tool_tier"), (stack, level, entity, seed)
-                    -> stack.getOrDefault(VEDataComponents.TOOL_TIER, 0));
+            // TODO: net.minecraft.client.renderer.item.ItemProperties (range-dispatch item model
+            // overrides) was removed in 26.1; the MULTI_TOOL's per-tool-type/tier model swap needs
+            // to be reimplemented via a data-driven item model (assets/voluminousenergy/items/multi_tool.json
+            // using "minecraft:range_dispatch" keyed on the TOOL_TYPE/TOOL_TIER data components)
+            // rather than this Java registration.
         }
 
         @SubscribeEvent
@@ -164,15 +162,13 @@ public class VoluminousEnergy {
     public static class OnDatagenEvent {
 
         @SubscribeEvent
-        public static void onGatherData(GatherDataEvent event) {
+        public static void onGatherData(GatherDataEvent.Server event) {
             DataGenerator dataGenerator = event.getGenerator();
             PackOutput packOutput = dataGenerator.getPackOutput();
             CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
 
-            if (event.includeServer()) {
-                dataGenerator.addProvider(true, new VETagDataGenerator(dataGenerator.getPackOutput(), lookupProvider, event.getExistingFileHelper()));
-                dataGenerator.addProvider(true, new VEGlobalLootModifierData(dataGenerator.getPackOutput(), lookupProvider));
-            }
+            event.addProvider(new VETagDataGenerator(packOutput, lookupProvider));
+            event.addProvider(new VEGlobalLootModifierData(packOutput, lookupProvider));
         }
     }
 }

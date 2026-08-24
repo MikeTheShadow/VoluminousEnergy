@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.fluids;
 import it.unimi.dsi.fastutil.objects.Object2ByteLinkedOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
@@ -29,14 +30,19 @@ public class VEFlowingGasFluid extends BaseFlowingFluid {
     // DANGER
     public static final BooleanProperty FALLING = BlockStateProperties.FALLING;
     public static final IntegerProperty LEVEL = BlockStateProperties.LEVEL_FLOWING;
-    private static final ThreadLocal<Object2ByteLinkedOpenHashMap<Block.BlockStatePairKey>> OCCLUSION_CACHE = ThreadLocal.withInitial(() -> {
-        Object2ByteLinkedOpenHashMap<Block.BlockStatePairKey> object2bytelinkedopenhashmap = new Object2ByteLinkedOpenHashMap<Block.BlockStatePairKey>(200) {
+    private static final ThreadLocal<Object2ByteLinkedOpenHashMap<BlockStatePairKey>> OCCLUSION_CACHE = ThreadLocal.withInitial(() -> {
+        Object2ByteLinkedOpenHashMap<BlockStatePairKey> object2bytelinkedopenhashmap = new Object2ByteLinkedOpenHashMap<BlockStatePairKey>(200) {
             protected void rehash(int p_76102_) {
             }
         };
         object2bytelinkedopenhashmap.defaultReturnValue((byte) 127);
         return object2bytelinkedopenhashmap;
     });
+
+    // net.minecraft.world.level.material.FlowingFluid$BlockStatePairKey is package-private in
+    // vanilla, so this mod keeps its own equivalent occlusion-cache key.
+    private record BlockStatePairKey(BlockState first, BlockState second, Direction direction) {
+    }
     //
 
     protected VEFlowingGasFluid(Properties properties, int blocksToFlowOutWide) {
@@ -45,7 +51,7 @@ public class VEFlowingGasFluid extends BaseFlowingFluid {
     }
 
     // DANGEROUS CODE GOING HERE
-    public void tick(Level level, BlockPos blockPos, FluidState fluidState) {
+    public void tick(ServerLevel level, BlockPos blockPos, BlockState state, FluidState fluidState) {
         if (!fluidState.isSource()) {
             FluidState fluidstate = this.getNewLiquid(level, blockPos, level.getBlockState(blockPos));
             int i = this.getSpreadDelay(level, blockPos, fluidState, fluidstate);
@@ -61,7 +67,7 @@ public class VEFlowingGasFluid extends BaseFlowingFluid {
             }
         }
 
-        this.spread(level, blockPos, fluidState);
+        this.spread(level, blockPos, level.getBlockState(blockPos), fluidState);
     }
 
     protected void createFluidStateDefinition(StateDefinition.Builder<Fluid, FluidState> stateDefinitionBuilder) {
@@ -121,7 +127,7 @@ public class VEFlowingGasFluid extends BaseFlowingFluid {
         return fluidState.isEmpty() || fluidState.getType().isSame(this);
     }
 
-    protected void spread(Level level, BlockPos blockPos, FluidState fluidState) {
+    protected void spread(ServerLevel level, BlockPos blockPos, BlockState state, FluidState fluidState) {
         if (!fluidState.isEmpty()) {
             if (!(blockPos.getY() < 320)) return;
 
@@ -230,7 +236,7 @@ public class VEFlowingGasFluid extends BaseFlowingFluid {
         }
     }
 
-    private void spreadToSides(Level level, BlockPos pos, FluidState fluidState, BlockState blockState) {
+    private void spreadToSides(ServerLevel level, BlockPos pos, FluidState fluidState, BlockState blockState) {
         int i = fluidState.getAmount() - this.getDropOff(level);
         if (fluidState.getValue(FALLING)) {
             i = 7;
@@ -270,6 +276,19 @@ public class VEFlowingGasFluid extends BaseFlowingFluid {
         return fluidState.getType().isSame(this) && fluidState.isSource();
     }
 
+    // net.minecraft.world.level.material.FlowingFluid#canSpreadTo (the old subclass-visible spread-eligibility
+    // check) was removed and its logic inlined into vanilla's own spread()/getSpread(); this mod still needs it
+    // as an explicit hook since its spread() override implements different (upward-flowing) gas physics.
+    private boolean canSpreadTo(BlockGetter level, BlockPos pos, BlockState state, Direction direction, BlockPos targetPos, BlockState targetState, FluidState targetFluidState, Fluid newFluidType) {
+        if (!this.canPassThroughWall(direction, level, pos, state, targetPos, targetState)) {
+            return false;
+        } else if (!targetFluidState.canBeReplacedWith(level, targetPos, newFluidType, direction)) {
+            return false;
+        } else {
+            return this.canHoldFluid(null, level, targetPos, targetState, newFluidType);
+        }
+    }
+
     private boolean isWaterHole(BlockGetter getter, Fluid fluid, BlockPos pos0, BlockState blockState0, BlockPos pos1, BlockState blockState1) {
         if (!this.canPassThroughWall(Direction.UP, getter, pos0, blockState0, pos1, blockState1)) {
             return false;
@@ -279,16 +298,16 @@ public class VEFlowingGasFluid extends BaseFlowingFluid {
     }
 
     private boolean canPassThroughWall(Direction p_76062_, BlockGetter p_76063_, BlockPos p_76064_, BlockState p_76065_, BlockPos p_76066_, BlockState p_76067_) {
-        Object2ByteLinkedOpenHashMap<Block.BlockStatePairKey> object2bytelinkedopenhashmap;
+        Object2ByteLinkedOpenHashMap<BlockStatePairKey> object2bytelinkedopenhashmap;
         if (!p_76065_.getBlock().hasDynamicShape() && !p_76067_.getBlock().hasDynamicShape()) {
             object2bytelinkedopenhashmap = OCCLUSION_CACHE.get();
         } else {
             object2bytelinkedopenhashmap = null;
         }
 
-        Block.BlockStatePairKey block$blockstatepairkey;
+        BlockStatePairKey block$blockstatepairkey;
         if (object2bytelinkedopenhashmap != null) {
-            block$blockstatepairkey = new Block.BlockStatePairKey(p_76065_, p_76067_, p_76062_);
+            block$blockstatepairkey = new BlockStatePairKey(p_76065_, p_76067_, p_76062_);
             byte b0 = object2bytelinkedopenhashmap.getAndMoveToFirst(block$blockstatepairkey);
             if (b0 != 127) {
                 return b0 != 0;

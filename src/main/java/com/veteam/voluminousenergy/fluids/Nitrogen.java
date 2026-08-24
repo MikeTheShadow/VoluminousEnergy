@@ -21,7 +21,7 @@ public class Nitrogen {
     public static final Identifier NITROGEN_FLOWING_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/nitrogen_flowing");
     public static final int NITROGEN_FLUID_WIDTH = 4;
 
-    public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
+    public static Block.Properties stdProp = Block.Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
 
     public static FlowingFluid NITROGEN;
     public static FlowingFluid FLOWING_NITROGEN;
@@ -39,12 +39,12 @@ public class Nitrogen {
     }
 
     public static VEFlowingFluidBlock FlowingNitrogenBlock() {
-        NITROGEN_BLOCK = new VEFlowingFluidBlock(NITROGEN, stdProp);
+        NITROGEN_BLOCK = new VEFlowingFluidBlock(NITROGEN, stdProp.setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId()));
         return NITROGEN_BLOCK;
     }
 
     public static Item NitrogenBucket() {
-        NITROGEN_BUCKET = new BucketItem(NITROGEN, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
+        NITROGEN_BUCKET = new BucketItem(NITROGEN, new Item.Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId()).craftRemainder(Items.BUCKET).stacksTo(1));
         return NITROGEN_BUCKET;
     }
 

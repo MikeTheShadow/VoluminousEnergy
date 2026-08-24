@@ -14,6 +14,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.ItemUseAnimation;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -25,18 +27,19 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class FluidScanner extends Item {
 
     public FluidScanner() {
-        super(new Item.Properties()
+        super(new Item.Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId())
                 .stacksTo(1)
                 .rarity(Rarity.UNCOMMON)
         );
     }
 
-    public @NotNull UseAnim getUseAnimation(ItemStack p_40678_) {
-        return UseAnim.CROSSBOW;
+    public @NotNull ItemUseAnimation getUseAnimation(ItemStack p_40678_) {
+        return ItemUseAnimation.CROSSBOW;
     }
 
     public @NotNull InteractionResult useOn(UseOnContext useOnContext) {
@@ -48,9 +51,9 @@ public class FluidScanner extends Item {
 
         Player player = useOnContext.getPlayer();
 
-        if (player == null || level.isClientSide) return InteractionResult.sidedSuccess(level.isClientSide);
+        if (player == null || level.isClientSide()) return level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
 
-        BlockPos pos = new BlockPos(16 * chunkAccess.getPos().x, 320, 16 * chunkAccess.getPos().z);
+        BlockPos pos = new BlockPos(16 * chunkAccess.getPos().x(), 320, 16 * chunkAccess.getPos().z());
 
         HashMap<WorldUtil.ClimateParameters, Double> climateMap = WorldUtil.sampleClimate(level, pos);
         StringBuilder climateString = new StringBuilder();
@@ -64,7 +67,7 @@ public class FluidScanner extends Item {
             ChunkFluid chunkFluid = ChunkFluids.getInstance().getChunkFluid(chunkAccess.getPos());
             if (chunkFluid == null) {
                 player.sendSystemMessage(TextUtil.translateString(ChatFormatting.RED, "text.voluminousenergy.rfid.chunk_not_scanned"));
-                return InteractionResult.sidedSuccess(false);
+                return InteractionResult.SUCCESS_SERVER;
             }
 
             PlayerInvWrapper inventory = new PlayerInvWrapper(player.getInventory());
@@ -82,20 +85,20 @@ public class FluidScanner extends Item {
                         if (data == null) {
                             itemStack.setCount(itemStack.getCount() - 1);
                             ItemStack dataStack = new ItemStack(VEItems.RFID_CHIP.get(), 1);
-                            data = new ChunkFluidData(chunkAccess.getPos().x,
-                                    chunkAccess.getPos().z, new ArrayList<>());
+                            data = new ChunkFluidData(chunkAccess.getPos().x(),
+                                    chunkAccess.getPos().z(), new ArrayList<>());
                             dataStack.set(VEDataComponents.CHUNK_FLUID_DATA, data);
                             inventory.insertItem(freeSlot, dataStack, false);
                             player.sendSystemMessage(TextUtil.translateString(ChatFormatting.GREEN, "text.voluminousenergy.rfid.write_success"));
                         } else {
                             continue;
                         }
-                        return InteractionResult.sidedSuccess(false);
+                        return InteractionResult.SUCCESS_SERVER;
                     }
                 }
             }
             player.sendSystemMessage(TextUtil.translateString(ChatFormatting.RED, "text.voluminousenergy.fluid_scanner.needs_empty_rfid"));
-            return InteractionResult.sidedSuccess(false);
+            return InteractionResult.SUCCESS_SERVER;
         }
 
         player.sendSystemMessage(TextUtil.translateString(ChatFormatting.YELLOW, "text.voluminousenergy.fluid_scanner.scanning")
@@ -113,25 +116,25 @@ public class FluidScanner extends Item {
         player.sendSystemMessage(Component.nullToEmpty(builder.toString()));
 
         ItemStack hand = useOnContext.getItemInHand();
-        ChunkFluidData data = new ChunkFluidData(chunkAccess.getPos().x,chunkAccess.getPos().z,fluid.getFluids().stream()
+        ChunkFluidData data = new ChunkFluidData(chunkAccess.getPos().x(),chunkAccess.getPos().z(),fluid.getFluids().stream()
                 .map(c -> new FluidStack(c.getFluid(),c.getAmount())).toList());
         hand.set(VEDataComponents.CHUNK_FLUID_DATA,data);
 
-        return InteractionResult.sidedSuccess(false);
+        return InteractionResult.SUCCESS_SERVER;
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack itemStack, @NotNull TooltipContext pContext, @NotNull List<Component> componentList, @NotNull TooltipFlag tooltipFlag) {
+    public void appendHoverText(@NotNull ItemStack itemStack, @NotNull TooltipContext pContext, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> componentList, @NotNull TooltipFlag tooltipFlag) {
 
 
         ChunkFluidData data = itemStack.get(VEDataComponents.CHUNK_FLUID_DATA);
 
         if (data != null) {
             ChunkFluid fluid = new ChunkFluid(data);
-            fluid.getFluids().forEach(f -> componentList.add(TextUtil.fluidNameAndAmountWithUnitsAndColours(f)));
-            componentList.add(Component.nullToEmpty("Chunk X: " + data.x() + " | Chunk Z: " + data.z()));
+            fluid.getFluids().forEach(f -> componentList.accept(TextUtil.fluidNameAndAmountWithUnitsAndColours(f)));
+            componentList.accept(Component.nullToEmpty("Chunk X: " + data.x() + " | Chunk Z: " + data.z()));
         }
 
-        super.appendHoverText(itemStack, pContext, componentList, tooltipFlag);
+        super.appendHoverText(itemStack, pContext, tooltipDisplay, componentList, tooltipFlag);
     }
 }

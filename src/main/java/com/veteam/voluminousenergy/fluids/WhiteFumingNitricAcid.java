@@ -20,7 +20,7 @@ public class WhiteFumingNitricAcid {
     public static final Identifier WFNA_STILL_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/wfna_still");
     public static final Identifier WFNA_FLOWING_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/wfna_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
+    public static Block.Properties stdProp = Block.Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
     ;
 
     public static FlowingFluid WHITE_FUMING_NITRIC_ACID;
@@ -39,18 +39,18 @@ public class WhiteFumingNitricAcid {
     }
 
     public static FumingAcidFlowingFluidBlock FlowingWhiteFumingNitricAcidBlock() {
-        WHITE_FUMING_NITRIC_ACID_BLOCK = new FumingAcidFlowingFluidBlock(WHITE_FUMING_NITRIC_ACID, stdProp);
+        WHITE_FUMING_NITRIC_ACID_BLOCK = new FumingAcidFlowingFluidBlock(WHITE_FUMING_NITRIC_ACID, stdProp.setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId()));
         return WHITE_FUMING_NITRIC_ACID_BLOCK;
     }
 
     public static Item WhiteFumingNitricAcidBucket() {
-        WHITE_FUMING_NITRIC_ACID_BUCKET = new BucketItem(WHITE_FUMING_NITRIC_ACID, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
+        WHITE_FUMING_NITRIC_ACID_BUCKET = new BucketItem(WHITE_FUMING_NITRIC_ACID, new Item.Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId()).craftRemainder(Items.BUCKET).stacksTo(1));
         return WHITE_FUMING_NITRIC_ACID_BUCKET;
     }
 
 
     public static final VEFluidType WFNA_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
-            .adjacentPathType(PathType.DAMAGE_FIRE)
+            .adjacentPathType(PathType.FIRE)
             .canConvertToSource(false)
             .canDrown(true)
             .canExtinguish(false)

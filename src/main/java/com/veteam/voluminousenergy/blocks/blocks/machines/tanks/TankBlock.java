@@ -9,11 +9,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
-import java.util.List;
+import java.util.function.Consumer;
 
 public abstract class TankBlock extends VEFaceableMachineBlock {
 
@@ -23,10 +24,7 @@ public abstract class TankBlock extends VEFaceableMachineBlock {
         super(properties);
     }
 
-    @Override
-    public void appendHoverText(@NotNull ItemStack stack, Item.@NotNull TooltipContext tooltipContext, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        super.appendHoverText(stack, tooltipContext, tooltip, flag);
-
+    public void appendHoverText(@NotNull ItemStack stack, Item.@NotNull TooltipContext tooltipContext, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltip, @NotNull TooltipFlag flag) {
         FluidStack fluid = stack.get(VEDataComponents.FLUID_STACK_DATA);
 
         if(fluid == null) {
@@ -36,7 +34,7 @@ public abstract class TankBlock extends VEFaceableMachineBlock {
         int tankCapacity = this.getTankCapacity() * 1000;
 
         if (Config.SHORTEN_ITEM_TOOLTIP_VALUES.get()) {
-            tooltip.add(
+            tooltip.accept(
                     TextUtil.translateString(fluid.getHoverName().getString()).copy()
                             .append(": ")
                             .append(NumberUtil.numberToString4Fluids(fluid.getAmount()))
@@ -46,7 +44,7 @@ public abstract class TankBlock extends VEFaceableMachineBlock {
         } else {
             String amount = String.format("%s mB", DECIMAL_FORMAT.format(fluid.getAmount()));
             String capacity = String.format("%s mB", DECIMAL_FORMAT.format(tankCapacity));
-            tooltip.add(TextUtil.translateString(fluid.getHoverName().getString()).copy().append(": " + amount + " / " + capacity));
+            tooltip.accept(TextUtil.translateString(fluid.getHoverName().getString()).copy().append(": " + amount + " / " + capacity));
         }
     }
 

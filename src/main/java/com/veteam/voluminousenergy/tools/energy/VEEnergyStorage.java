@@ -1,12 +1,11 @@
 package com.veteam.voluminousenergy.tools.energy;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.energy.EnergyStorage;
 
 
-public class VEEnergyStorage extends EnergyStorage implements INBTSerializable<Tag> {
+public class VEEnergyStorage extends EnergyStorage {
 
     private int production;
     private int consumption;
@@ -41,18 +40,20 @@ public class VEEnergyStorage extends EnergyStorage implements INBTSerializable<T
         }
     }
 
-    public void serializeNBT(CompoundTag tag) {
-        tag.putInt("energy", getEnergyStored());
-        tag.putInt("energy_production", production);
-        tag.putInt("energy_consumption", consumption);
-        tag.putInt("upgrade_slot", upgradeSlotId);
+    @Override
+    public void serialize(ValueOutput out) {
+        super.serialize(out);
+        out.putInt("energy_production", production);
+        out.putInt("energy_consumption", consumption);
+        out.putInt("upgrade_slot", upgradeSlotId);
     }
 
-    public void deserializeNBT(CompoundTag tag) {
-        setEnergy(tag.getInt("energy"));
-        this.production = tag.getInt("energy_production");
-        this.consumption = tag.getInt("energy_consumption");
-        this.upgradeSlotId = tag.getInt("upgrade_slot");
+    @Override
+    public void deserialize(ValueInput in) {
+        super.deserialize(in);
+        this.production = in.getIntOr("energy_production", 0);
+        this.consumption = in.getIntOr("energy_consumption", 0);
+        this.upgradeSlotId = in.getIntOr("upgrade_slot", -1);
     }
 
     public VEEnergyStorage copy() {

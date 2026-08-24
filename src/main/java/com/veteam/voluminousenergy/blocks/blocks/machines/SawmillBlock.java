@@ -22,7 +22,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -32,11 +32,11 @@ import javax.annotation.Nullable;
 
 public class SawmillBlock extends VEBlock implements EntityBlock { // Based on the Stonecutter
 
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
     protected static final VoxelShape SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 9.0D, 16.0D);
 
     public SawmillBlock() {
-        super(Properties.of()
+        super(Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .lightLevel(l -> 0)
@@ -54,7 +54,7 @@ public class SawmillBlock extends VEBlock implements EntityBlock { // Based on t
     }
 
     public InteractionResult use(BlockState blockState, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
-        if (!world.isClientSide) {
+        if (!world.isClientSide()) {
             BlockEntity tileEntity = world.getBlockEntity(pos);
             if (tileEntity instanceof MenuProvider menuProvider && player instanceof ServerPlayer serverPlayer) {
                 serverPlayer.openMenu(menuProvider, tileEntity.getBlockPos());
@@ -68,7 +68,7 @@ public class SawmillBlock extends VEBlock implements EntityBlock { // Based on t
 
     @Override
     public @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hit) {
-        if (world.isClientSide) return InteractionResult.SUCCESS;
+        if (world.isClientSide()) return InteractionResult.SUCCESS;
         BlockEntity tileEntity = world.getBlockEntity(pos);
         if (tileEntity instanceof MenuProvider menuProvider && player instanceof ServerPlayer serverPlayer) {
             serverPlayer.openMenu(menuProvider, tileEntity.getBlockPos());
@@ -94,7 +94,7 @@ public class SawmillBlock extends VEBlock implements EntityBlock { // Based on t
     // NEW TICK SYSTEM
     @Nullable
     protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> passedBlockEntity, BlockEntityType<? extends VETileEntity> tile) {
-        return level.isClientSide ? null : createTickerHelper(passedBlockEntity, tile, VETileEntity::serverTick);
+        return level.isClientSide() ? null : createTickerHelper(passedBlockEntity, tile, VETileEntity::serverTick);
     }
 
     public static <T extends BlockEntity, E extends BlockEntity> BlockEntityTicker<T> createTickerHelper(BlockEntityType<T> blockEntityType, BlockEntityType<? extends VETileEntity> tile, BlockEntityTicker<E> serverTick) {

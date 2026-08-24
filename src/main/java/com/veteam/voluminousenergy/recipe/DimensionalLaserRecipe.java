@@ -50,70 +50,59 @@ public class DimensionalLaserRecipe extends VERecipe {
     private float temperatureMin;
     private float temperatureMax;
 
-    public static final RecipeSerializer<DimensionalLaserRecipe> SERIALIZER = new RecipeSerializer<>() {
+    public static final MapCodec<DimensionalLaserRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
+            VERecipeCodecs.VE_MIN_MAX_FLUID_CODEC.fieldOf("region_fluid").forGetter((getter) -> getter.fluidMinMax),
+            VERecipeCodecs.VE_CLIMATE_CODEC.fieldOf("climate").forGetter((getter) -> getter.climateData)
+    ).apply(instance, DimensionalLaserRecipe::new));
 
-        public static final MapCodec<DimensionalLaserRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
-                VERecipeCodecs.VE_MIN_MAX_FLUID_CODEC.fieldOf("region_fluid").forGetter((getter) -> getter.fluidMinMax),
-                VERecipeCodecs.VE_CLIMATE_CODEC.fieldOf("climate").forGetter((getter) -> getter.climateData)
-        ).apply(instance, DimensionalLaserRecipe::new));
+    private static final FluidSerializerHelper<DimensionalLaserRecipe> helper = new FluidSerializerHelper<>();
 
-        private static final FluidSerializerHelper<DimensionalLaserRecipe> helper = new FluidSerializerHelper<>();
-
+    public static final StreamCodec<RegistryFriendlyByteBuf, DimensionalLaserRecipe> VE_RECIPE_STREAM_CODEC = new StreamCodec<>() {
         @Override
-        public @NotNull MapCodec<DimensionalLaserRecipe> codec() {
-            return VE_RECIPE_CODEC;
+        public void encode(@NotNull RegistryFriendlyByteBuf buf, @NotNull DimensionalLaserRecipe recipe) {
+            buf.writeInt(recipe.getMinimumAmount());
+            buf.writeInt(recipe.getMaximumAmount());
+
+            buf.writeFloat(recipe.getContinentalnessMin());
+            buf.writeFloat(recipe.getContinentalnessMax());
+
+            buf.writeFloat(recipe.getErosionMin());
+            buf.writeFloat(recipe.getErosionMax());
+
+            buf.writeFloat(recipe.getHumidityMin());
+            buf.writeFloat(recipe.getHumidityMax());
+
+            buf.writeFloat(recipe.getTemperatureMin());
+            buf.writeFloat(recipe.getTemperatureMax());
+
+            FluidStack.STREAM_CODEC.encode(buf,new FluidStack(recipe.getRegionFluid(),1));
+            helper.toNetwork(buf, recipe);
         }
 
         @Override
         @NotNull
-        public StreamCodec<RegistryFriendlyByteBuf, DimensionalLaserRecipe> streamCodec() {
-            return new StreamCodec<>() {
-                @Override
-                public void encode(@NotNull RegistryFriendlyByteBuf buf, @NotNull DimensionalLaserRecipe recipe) {
-                    buf.writeInt(recipe.getMinimumAmount());
-                    buf.writeInt(recipe.getMaximumAmount());
+        public DimensionalLaserRecipe decode(@NotNull RegistryFriendlyByteBuf buffer) {
+            DimensionalLaserRecipe recipe = new DimensionalLaserRecipe();
+            recipe.setMinimumAmount(buffer.readInt());
+            recipe.setMaximumAmount(buffer.readInt());
 
-                    buf.writeFloat(recipe.getContinentalnessMin());
-                    buf.writeFloat(recipe.getContinentalnessMax());
+            recipe.setContinentalnessMin(buffer.readFloat());
+            recipe.setContinentalnessMax(buffer.readFloat());
 
-                    buf.writeFloat(recipe.getErosionMin());
-                    buf.writeFloat(recipe.getErosionMax());
+            recipe.setErosionMin(buffer.readFloat());
+            recipe.setErosionMax(buffer.readFloat());
 
-                    buf.writeFloat(recipe.getHumidityMin());
-                    buf.writeFloat(recipe.getHumidityMax());
+            recipe.setHumidityMin(buffer.readFloat());
+            recipe.setHumidityMax(buffer.readFloat());
 
-                    buf.writeFloat(recipe.getTemperatureMin());
-                    buf.writeFloat(recipe.getTemperatureMax());
-
-                    FluidStack.STREAM_CODEC.encode(buf,new FluidStack(recipe.getRegionFluid(),1));
-                    helper.toNetwork(buf, recipe);
-                }
-
-                @Override
-                @NotNull
-                public DimensionalLaserRecipe decode(@NotNull RegistryFriendlyByteBuf buffer) {
-                    DimensionalLaserRecipe recipe = new DimensionalLaserRecipe();
-                    recipe.setMinimumAmount(buffer.readInt());
-                    recipe.setMaximumAmount(buffer.readInt());
-
-                    recipe.setContinentalnessMin(buffer.readFloat());
-                    recipe.setContinentalnessMax(buffer.readFloat());
-
-                    recipe.setErosionMin(buffer.readFloat());
-                    recipe.setErosionMax(buffer.readFloat());
-
-                    recipe.setHumidityMin(buffer.readFloat());
-                    recipe.setHumidityMax(buffer.readFloat());
-
-                    recipe.setTemperatureMin(buffer.readFloat());
-                    recipe.setTemperatureMax(buffer.readFloat());
-                    recipe.setRegionFluid(FluidStack.STREAM_CODEC.decode(buffer).getFluid());
-                    return helper.fromNetwork(recipe, buffer);
-                }
-            };
+            recipe.setTemperatureMin(buffer.readFloat());
+            recipe.setTemperatureMax(buffer.readFloat());
+            recipe.setRegionFluid(FluidStack.STREAM_CODEC.decode(buffer).getFluid());
+            return helper.fromNetwork(recipe, buffer);
         }
-
     };
+
+    public static final RecipeSerializer<DimensionalLaserRecipe> SERIALIZER = new RecipeSerializer<>(VE_RECIPE_CODEC, VE_RECIPE_STREAM_CODEC);
 
 
     public DimensionalLaserRecipe() {

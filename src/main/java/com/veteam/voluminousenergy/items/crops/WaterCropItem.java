@@ -9,7 +9,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -38,12 +37,12 @@ public class WaterCropItem extends BlockItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player playerEntity, InteractionHand hand) {
+    public InteractionResult use(Level world, Player playerEntity, InteractionHand hand) {
         ItemStack itemStack = playerEntity.getItemInHand(hand);
         BlockHitResult rayTraceResult = getPlayerPOVHitResult(world, playerEntity, ClipContext.Fluid.SOURCE_ONLY);
 
         if (rayTraceResult.getType() == HitResult.Type.MISS) {
-            return InteractionResultHolder.pass(itemStack);
+            return InteractionResult.PASS;
         }
 
         if (rayTraceResult.getType() == HitResult.Type.BLOCK) {
@@ -51,7 +50,7 @@ public class WaterCropItem extends BlockItem {
             Direction dir = rayTraceResult.getDirection();
 
             if (!world.mayInteract(playerEntity, pos) || !playerEntity.mayUseItemAt(pos.relative(dir), dir, itemStack)) {
-                return InteractionResultHolder.fail(itemStack);
+                return InteractionResult.FAIL;
             }
 
             BlockPos abovePos = pos.above();
@@ -69,9 +68,9 @@ public class WaterCropItem extends BlockItem {
                 }
 
                 world.playSound(playerEntity, pos, SoundEvents.CROP_PLANTED, SoundSource.BLOCKS, 1.0F, 1.0F);
-                return InteractionResultHolder.success(itemStack);
+                return InteractionResult.SUCCESS;
             }
         }
-        return InteractionResultHolder.fail(itemStack);
+        return InteractionResult.FAIL;
     }
 }

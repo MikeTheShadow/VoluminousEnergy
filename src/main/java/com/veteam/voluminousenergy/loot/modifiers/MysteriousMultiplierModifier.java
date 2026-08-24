@@ -7,8 +7,6 @@ import com.veteam.voluminousenergy.items.VEItems;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
-import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
 import net.neoforged.neoforge.common.loot.LootModifier;
@@ -17,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
-public class MysteriousMultiplierModifier extends LootModifier implements LootItemFunction {
+public class MysteriousMultiplierModifier extends LootModifier {
 
     public static final Supplier<MapCodec<MysteriousMultiplierModifier>> CODEC = Suppliers.memoize(() ->
             RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -56,15 +54,5 @@ public class MysteriousMultiplierModifier extends LootModifier implements LootIt
 
     public LootItemCondition[] getLootItemConditions() {
         return super.conditions;
-    }
-
-    @Override
-    public LootItemFunctionType getType() {
-        return null;
-    }
-
-    @Override
-    public ItemStack apply(ItemStack stack, LootContext lootContext) {
-        return this.doApply(ObjectArrayList.of(stack), lootContext).get(0);
     }
 }

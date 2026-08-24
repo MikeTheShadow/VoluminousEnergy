@@ -12,8 +12,8 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -31,7 +31,7 @@ import static net.minecraft.world.level.material.Fluids.WATER;
 public class CreativeFluidScanner extends Item {
 
     public CreativeFluidScanner() {
-        super(new Item.Properties()
+        super(new Item.Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId())
                 .stacksTo(1)
                 .rarity(Rarity.RARE)
         );
@@ -41,8 +41,8 @@ public class CreativeFluidScanner extends Item {
         return 72_000;
     }
 
-    public @NotNull UseAnim getUseAnimation(ItemStack itemStack) {
-        return UseAnim.CROSSBOW;
+    public @NotNull ItemUseAnimation getUseAnimation(ItemStack itemStack) {
+        return ItemUseAnimation.CROSSBOW;
     }
 
     public @NotNull InteractionResult useOn(UseOnContext useOnContext) {
@@ -53,10 +53,10 @@ public class CreativeFluidScanner extends Item {
         Player player = useOnContext.getPlayer();
 
         // Return if on client side
-        if (player == null || level.isClientSide) return InteractionResult.sidedSuccess(level.isClientSide);
+        if (player == null || level.isClientSide()) return level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
 
         // Get blockPos to query, AKA chunk corner
-        BlockPos pos = new BlockPos(16 * chunkAccess.getPos().x, 320, 16 * chunkAccess.getPos().z);
+        BlockPos pos = new BlockPos(16 * chunkAccess.getPos().x(), 320, 16 * chunkAccess.getPos().z());
 
         // Sample climate and print out paramaters that we use
         HashMap<WorldUtil.ClimateParameters, Double> climateMap = WorldUtil.sampleClimate(level, pos);
@@ -93,9 +93,9 @@ public class CreativeFluidScanner extends Item {
         for (int x = 1; x < mapSize; x++) {
             for (int z = 1; z < mapSize; z++) {
                 pos = new BlockPos(
-                        16 * (chunkAccess.getPos().x - middle + x),
+                        16 * (chunkAccess.getPos().x() - middle + x),
                         320,
-                        16 * (chunkAccess.getPos().z - middle + z));
+                        16 * (chunkAccess.getPos().z() - middle + z));
                 ArrayList<Pair<Fluid, Integer>> items = WorldUtil.queryForFluids(level, pos);
                 if (items.size() > 0) {
 
@@ -122,6 +122,6 @@ public class CreativeFluidScanner extends Item {
         player.sendSystemMessage(Component.nullToEmpty(builder.toString()));
         // MAP END
 
-        return InteractionResult.sidedSuccess(false);
+        return InteractionResult.SUCCESS_SERVER;
     }
 }
