@@ -8,11 +8,13 @@ import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.batteries.VEEnergyItem;
 import com.veteam.voluminousenergy.items.tools.multitool.MuiltiToolFluidHandler;
 import com.veteam.voluminousenergy.items.tools.multitool.VEMultitoolItems;
+import com.veteam.voluminousenergy.recipe.VERecipes;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyItemStorage;
 import com.veteam.voluminousenergy.tools.networking.packets.*;
 import com.veteam.voluminousenergy.util.CapabilityAdapters;
 import com.veteam.voluminousenergy.util.VEDataComponents;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -21,11 +23,15 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.RegisterEvent;
+
+import java.util.List;
 
 @EventBusSubscriber(modid = VoluminousEnergy.MODID)
 public class VEGenericListener {
@@ -94,6 +100,21 @@ public class VEGenericListener {
     @SubscribeEvent
     public static void onRegistry(final RegisterEvent blockRegistryEvent) {
         VoluminousEnergy.LOGGER.info("Running: " + blockRegistryEvent.getRegistryKey()); // If you delete this you have to fix it
+    }
+
+    /*
+     * NeoForge 26.1 only sends full recipe content to clients for types explicitly
+     * requested here; without this, RecipesReceivedEvent#getRecipeMap() on the client
+     * never contains VE recipes, so VERecipe's cache (used by JEI and, in singleplayer,
+     * by machines too since the cache is shared static state with the integrated server)
+     * stays empty. Unrestricted dist so this also fires for the integrated server.
+     */
+    @SubscribeEvent
+    public static void onDataPackSync(OnDatapackSyncEvent event) {
+        List<RecipeType<?>> recipeTypes = VERecipes.VERecipeTypes.VE_RECIPE_TYPES_REGISTRY.getEntries().stream()
+                .<RecipeType<?>>map(DeferredHolder::get)
+                .toList();
+        event.sendRecipes(recipeTypes);
     }
 
     @SubscribeEvent
