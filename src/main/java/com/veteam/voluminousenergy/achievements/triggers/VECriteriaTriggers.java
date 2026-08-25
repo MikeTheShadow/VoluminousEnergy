@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.achievements.triggers;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import net.minecraft.advancements.CriterionTrigger;
+import net.minecraft.advancements.triggers.CriterionTrigger;
 import net.minecraft.core.registries.Registries;
 import net.neoforged.neoforge.registries.DeferredRegister;
 

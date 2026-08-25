@@ -8,10 +8,12 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class VEOreGeneration {
@@ -62,7 +64,15 @@ public class VEOreGeneration {
         public static final RuleTest END = createRuleFromTag("forge:ore_bearing_ground/end_stone");
 
         // WARN: Not tag based
-        public static final RuleTest TERRACOTTA = new MultiBlockStateMatchRuleTest(Blocks.TERRACOTTA.defaultBlockState(), Blocks.WHITE_TERRACOTTA.defaultBlockState(), Blocks.ORANGE_TERRACOTTA.defaultBlockState(), Blocks.MAGENTA_TERRACOTTA.defaultBlockState(), Blocks.LIGHT_BLUE_TERRACOTTA.defaultBlockState(), Blocks.YELLOW_TERRACOTTA.defaultBlockState(), Blocks.LIME_TERRACOTTA.defaultBlockState(), Blocks.PINK_TERRACOTTA.defaultBlockState(), Blocks.GRAY_TERRACOTTA.defaultBlockState(), Blocks.LIGHT_GRAY_TERRACOTTA.defaultBlockState(), Blocks.CYAN_TERRACOTTA.defaultBlockState(), Blocks.PURPLE_TERRACOTTA.defaultBlockState(), Blocks.BLUE_TERRACOTTA.defaultBlockState(), Blocks.BROWN_TERRACOTTA.defaultBlockState(), Blocks.GREEN_TERRACOTTA.defaultBlockState(), Blocks.RED_TERRACOTTA.defaultBlockState(), Blocks.BLACK_TERRACOTTA.defaultBlockState());
+        // Colored terracotta blocks are now stored in the Blocks.DYED_TERRACOTTA ColorCollection instead of individual fields.
+        public static final RuleTest TERRACOTTA = new MultiBlockStateMatchRuleTest(terracottaStates());
+
+        private static ArrayList<BlockState> terracottaStates() {
+            ArrayList<BlockState> states = new ArrayList<>();
+            states.add(Blocks.TERRACOTTA.defaultBlockState());
+            states.addAll(Blocks.DYED_TERRACOTTA.map(Block::defaultBlockState).asList());
+            return states;
+        }
 
         public static RuleTest createRuleFromTag(String blockTagLocation) {
             TagKey<Block> blockTag = TagKey.create(Registries.BLOCK, Identifier.parse(blockTagLocation));

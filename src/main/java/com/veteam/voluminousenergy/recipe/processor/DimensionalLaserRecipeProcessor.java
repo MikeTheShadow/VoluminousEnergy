@@ -17,6 +17,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
@@ -83,7 +84,7 @@ public class DimensionalLaserRecipeProcessor implements AbstractRecipeProcessor 
 
                     blockPos = blockPos.atY(tile.getBlockPos().getY());
 
-                    LightningBolt lightningBolt = new LightningBolt(EntityType.LIGHTNING_BOLT, tile.getLevel());
+                    LightningBolt lightningBolt = new LightningBolt(EntityTypes.LIGHTNING_BOLT, tile.getLevel());
                     lightningBolt.setVisualOnly(true);
                     lightningBolt.setPos(blockPos.getX(), blockPos.getY(), blockPos.getZ());
                     tile.getLevel().addFreshEntity(lightningBolt);

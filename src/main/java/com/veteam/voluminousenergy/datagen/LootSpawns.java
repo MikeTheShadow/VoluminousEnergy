@@ -36,6 +36,6 @@ public class LootSpawns {
     );
 
 
-    public static final List<ResourceKey<LootTable>> SHEEP_THAT_DROP_ANIMAL_FAT = List.copyOf(BuiltInLootTables.SHEEP_BY_DYE.values());
+    public static final List<ResourceKey<LootTable>> SHEEP_THAT_DROP_ANIMAL_FAT = BuiltInLootTables.SHEEP.asList();
 
 }

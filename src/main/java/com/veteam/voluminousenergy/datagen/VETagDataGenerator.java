@@ -5,6 +5,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
@@ -72,34 +73,39 @@ public class VETagDataGenerator extends BlockTagsProvider {
         final TagKey<Block> INCORRECT_FOR_SOLARIUM = TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "incorrect_for_solarium_tool"));
 
         // To Mine With Tool
-        mineableWithAxe.forEach(toMineWithAxe -> tag(BlockTags.MINEABLE_WITH_AXE).add(toMineWithAxe));
-        mineableWithPickaxe.forEach(toMineWithPickaxe -> tag(BlockTags.MINEABLE_WITH_PICKAXE).add(toMineWithPickaxe));
-        mineableWithHoe.forEach(toMineWithHoe -> tag(BlockTags.MINEABLE_WITH_HOE).add(toMineWithHoe));
-        mineableWithShovel.forEach(toMineWithShovel -> tag(BlockTags.MINEABLE_WITH_SHOVEL).add(toMineWithShovel));
+        mineableWithAxe.forEach(toMineWithAxe -> tag(BlockTags.MINEABLE_WITH_AXE).add(key(toMineWithAxe)));
+        mineableWithPickaxe.forEach(toMineWithPickaxe -> tag(BlockTags.MINEABLE_WITH_PICKAXE).add(key(toMineWithPickaxe)));
+        mineableWithHoe.forEach(toMineWithHoe -> tag(BlockTags.MINEABLE_WITH_HOE).add(key(toMineWithHoe)));
+        mineableWithShovel.forEach(toMineWithShovel -> tag(BlockTags.MINEABLE_WITH_SHOVEL).add(key(toMineWithShovel)));
 
         // Needs tier
-        requiresWood.forEach(needsWood -> tag(NEEDS_WOOD_TOOL).add(needsWood));
-        requiresStone.forEach(needsStone -> tag(BlockTags.NEEDS_STONE_TOOL).add(needsStone));
-        requiresIron.forEach(needsIron -> tag(BlockTags.NEEDS_IRON_TOOL).add(needsIron));
-        requiresDiamond.forEach(needsDiamond -> tag(BlockTags.NEEDS_DIAMOND_TOOL).add(needsDiamond));
-        requiresNetherite.forEach(needsNetherite -> tag(NEEDS_NETHERITE_TOOL).add(needsNetherite));
-        requiresNighalite.forEach(needsNighalite -> tag(NEEDS_NIGHALITE_TOOL).add(needsNighalite));
-        requiresEighzo.forEach(needsEighzo -> tag(NEEDS_EIGHZO_TOOL).add(needsEighzo));
-        requiresSolarium.forEach(needsSolarium -> tag(NEEDS_SOLARIUM_TOOL).add(needsSolarium));
+        requiresWood.forEach(needsWood -> tag(NEEDS_WOOD_TOOL).add(key(needsWood)));
+        requiresStone.forEach(needsStone -> tag(BlockTags.NEEDS_STONE_TOOL).add(key(needsStone)));
+        requiresIron.forEach(needsIron -> tag(BlockTags.NEEDS_IRON_TOOL).add(key(needsIron)));
+        requiresDiamond.forEach(needsDiamond -> tag(BlockTags.NEEDS_DIAMOND_TOOL).add(key(needsDiamond)));
+        requiresNetherite.forEach(needsNetherite -> tag(NEEDS_NETHERITE_TOOL).add(key(needsNetherite)));
+        requiresNighalite.forEach(needsNighalite -> tag(NEEDS_NIGHALITE_TOOL).add(key(needsNighalite)));
+        requiresEighzo.forEach(needsEighzo -> tag(NEEDS_EIGHZO_TOOL).add(key(needsEighzo)));
+        requiresSolarium.forEach(needsSolarium -> tag(NEEDS_SOLARIUM_TOOL).add(key(needsSolarium)));
 
         // Incorrect for
-        incorrectForWood.forEach(incorrectWood -> tag(INCORRECT_FOR_WOOD).add(incorrectWood));
-        incorrectForGold.forEach(incorrectGold -> tag(INCORRECT_FOR_GOLD).add(incorrectGold));
-        incorrectForStone.forEach(incorrectStone -> tag(INCORRECT_FOR_STONE).add(incorrectStone));
-        incorrectForIron.forEach(incorrectIron -> tag(INCORRECT_FOR_IRON).add(incorrectIron));
-        incorrectForDiamond.forEach(incorrectDiamond -> tag(INCORRECT_FOR_DIAMOND).add(incorrectDiamond));
-        incorrectForTitanium.forEach(incorrectTitanium -> tag(INCORRECT_FOR_TITANIUM).add(incorrectTitanium));
-        incorrectForNetherite.forEach(incorrectNetherite -> tag(INCORRECT_FOR_NETHERITE).add(incorrectNetherite));
-        incorrectForTungstensteel.forEach(incorrectTungstensteel -> tag(INCORRECT_FOR_TUNGSTENSTEEL).add(incorrectTungstensteel));
-        incorrectForNighalite.forEach(incorrectNighalite -> tag(INCORRECT_FOR_NIGHALITE).add(incorrectNighalite));
-        incorrectForEighzo.forEach(incorrectEighzo -> tag(INCORRECT_FOR_EIGHZO).add(incorrectEighzo));
-        incorrectForSolarium.forEach(incorrectSolarium -> tag(INCORRECT_FOR_SOLARIUM).add(incorrectSolarium));
+        incorrectForWood.forEach(incorrectWood -> tag(INCORRECT_FOR_WOOD).add(key(incorrectWood)));
+        incorrectForGold.forEach(incorrectGold -> tag(INCORRECT_FOR_GOLD).add(key(incorrectGold)));
+        incorrectForStone.forEach(incorrectStone -> tag(INCORRECT_FOR_STONE).add(key(incorrectStone)));
+        incorrectForIron.forEach(incorrectIron -> tag(INCORRECT_FOR_IRON).add(key(incorrectIron)));
+        incorrectForDiamond.forEach(incorrectDiamond -> tag(INCORRECT_FOR_DIAMOND).add(key(incorrectDiamond)));
+        incorrectForTitanium.forEach(incorrectTitanium -> tag(INCORRECT_FOR_TITANIUM).add(key(incorrectTitanium)));
+        incorrectForNetherite.forEach(incorrectNetherite -> tag(INCORRECT_FOR_NETHERITE).add(key(incorrectNetherite)));
+        incorrectForTungstensteel.forEach(incorrectTungstensteel -> tag(INCORRECT_FOR_TUNGSTENSTEEL).add(key(incorrectTungstensteel)));
+        incorrectForNighalite.forEach(incorrectNighalite -> tag(INCORRECT_FOR_NIGHALITE).add(key(incorrectNighalite)));
+        incorrectForEighzo.forEach(incorrectEighzo -> tag(INCORRECT_FOR_EIGHZO).add(key(incorrectEighzo)));
+        incorrectForSolarium.forEach(incorrectSolarium -> tag(INCORRECT_FOR_SOLARIUM).add(key(incorrectSolarium)));
 
+    }
+
+    // TagAppender#add now takes a ResourceKey<Block> instead of the Block instance directly.
+    private static ResourceKey<Block> key(Block block) {
+        return block.builtInRegistryHolder().key();
     }
 
     // Tier setter

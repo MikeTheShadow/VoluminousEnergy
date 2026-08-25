@@ -27,12 +27,13 @@ public class GeyserFeature extends Feature<GeyserFeature.Configuration> {
             Blocks.WATER, Blocks.LAVA, Blocks.CLAY, Blocks.MOSS_BLOCK, Blocks.MOSS_CARPET, Blocks.FLOWERING_AZALEA,
             Blocks.AZALEA, Blocks.GRASS_BLOCK, Blocks.SHORT_GRASS, Blocks.TALL_GRASS, Blocks.BIG_DRIPLEAF, Blocks.BIG_DRIPLEAF_STEM,
             Blocks.SMALL_DRIPLEAF, Blocks.CAVE_VINES, Blocks.CAVE_VINES_PLANT, Blocks.SCULK, Blocks.SCULK_VEIN,
-            Blocks.SCULK_CATALYST, Blocks.TERRACOTTA, Blocks.WHITE_TERRACOTTA, Blocks.ORANGE_TERRACOTTA,
-            Blocks.MAGENTA_TERRACOTTA, Blocks.LIGHT_BLUE_TERRACOTTA, Blocks.YELLOW_TERRACOTTA, Blocks.LIME_TERRACOTTA,
-            Blocks.PINK_TERRACOTTA, Blocks.GRAY_TERRACOTTA, Blocks.LIGHT_GRAY_TERRACOTTA, Blocks.CYAN_TERRACOTTA,
-            Blocks.PURPLE_TERRACOTTA, Blocks.BLUE_TERRACOTTA, Blocks.BROWN_TERRACOTTA, Blocks.GREEN_TERRACOTTA,
-            Blocks.RED_TERRACOTTA, Blocks.BLACK_TERRACOTTA
+            Blocks.SCULK_CATALYST, Blocks.TERRACOTTA
     ));
+
+    {
+        // Colored terracotta blocks are now stored in the Blocks.DYED_TERRACOTTA ColorCollection instead of individual fields.
+        allowList.addAll(Blocks.DYED_TERRACOTTA.asList());
+    }
 
     @Override
     public boolean place(FeaturePlaceContext<GeyserFeature.Configuration> context) {

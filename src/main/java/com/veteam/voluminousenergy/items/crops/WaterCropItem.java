@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.items.crops;
 
 import com.veteam.voluminousenergy.blocks.blocks.crops.VEWaterCrop;
-import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
