@@ -162,7 +162,7 @@ public class VoluminousEnergy {
     public static class OnDatagenEvent {
 
         @SubscribeEvent
-        public static void onGatherData(GatherDataEvent.Server event) {
+        public static void onGatherData(GatherDataEvent.Client event) {
             DataGenerator dataGenerator = event.getGenerator();
             PackOutput packOutput = dataGenerator.getPackOutput();
             CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
