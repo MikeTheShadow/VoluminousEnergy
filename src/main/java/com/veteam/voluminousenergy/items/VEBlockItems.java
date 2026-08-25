@@ -9,7 +9,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class VEBlockItems {
     public static final DeferredRegister<Item> VE_BLOCK_ITEM_REGISTRY = DeferredRegister.create(BuiltInRegistries.ITEM, VoluminousEnergy.MODID);
-    protected static final Item.Properties PROPERTIES = new Item.Properties();
+    protected static final Item.Properties PROPERTIES = new Item.Properties().useBlockDescriptionPrefix();
 
     static {
         for(VEBlocks.RegistryWithName registryWithName : VEBlocks.REGISTERED_BLOCKS) {
