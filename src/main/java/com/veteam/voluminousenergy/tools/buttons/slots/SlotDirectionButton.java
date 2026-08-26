@@ -11,6 +11,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
@@ -59,7 +60,7 @@ public class SlotDirectionButton extends VEIOButton {
         }
 
         Component textComponent = TextUtil.slotNameWithDirection(slotManager.getHoverName(), slotManager.getDirection(), slotManager.getSlotNum());
-        matrixStack.centeredText(Minecraft.getInstance().font, textComponent.getString(), (getX()) + 48, (getY()) + 5, 0xffffff);
+        TextUtil.renderCenteredShadowedText(matrixStack, Minecraft.getInstance().font, textComponent.getString(), (getX()) + 48, (getY()) + 5, Style.EMPTY.withColor(0xffffff));
     }
 
     @Override
