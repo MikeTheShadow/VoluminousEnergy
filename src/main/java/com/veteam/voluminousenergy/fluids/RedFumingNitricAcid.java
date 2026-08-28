@@ -15,12 +15,13 @@ import net.minecraft.world.level.pathfinder.PathType;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 public class RedFumingNitricAcid {
     public static final Identifier RFNA_STILL_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/rfna_still");
     public static final Identifier RFNA_FLOWING_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/rfna_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
+    public static Block.Properties stdProp = Block.Properties.of().setId(VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
 
     public static FlowingFluid RED_FUMING_NITRIC_ACID;
     public static FlowingFluid FLOWING_RED_FUMING_NITRIC_ACID;
@@ -38,12 +39,12 @@ public class RedFumingNitricAcid {
     }
 
     public static FumingAcidFlowingFluidBlock FlowingRedFumingNitricAcidBlock() {
-        RED_FUMING_NITRIC_ACID_BLOCK = new FumingAcidFlowingFluidBlock(RED_FUMING_NITRIC_ACID, stdProp.setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId()));
+        RED_FUMING_NITRIC_ACID_BLOCK = new FumingAcidFlowingFluidBlock(RED_FUMING_NITRIC_ACID, stdProp.setId(VERegistryHelper.currentBlockId()));
         return RED_FUMING_NITRIC_ACID_BLOCK;
     }
 
     public static Item RedFumingNitricAcidBucket() {
-        RED_FUMING_NITRIC_ACID_BUCKET = new BucketItem(RED_FUMING_NITRIC_ACID, new Item.Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId()).craftRemainder(Items.BUCKET).stacksTo(1));
+        RED_FUMING_NITRIC_ACID_BUCKET = new BucketItem(RED_FUMING_NITRIC_ACID, new Item.Properties().setId(VERegistryHelper.currentItemId()).craftRemainder(Items.BUCKET).stacksTo(1));
         return RED_FUMING_NITRIC_ACID_BUCKET;
     }
 

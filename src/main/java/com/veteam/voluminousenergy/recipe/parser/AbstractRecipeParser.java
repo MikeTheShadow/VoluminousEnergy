@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.recipe.parser;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.blocks.tiles.inventory.VEItemStackHandler;
 import net.minecraft.world.item.ItemStack;
+import com.veteam.voluminousenergy.recipe.processor.DimensionalLaserRecipeProcessor;
 
 /**
  * A recipe parser system for taking a recipe and translating it into something more consumable
@@ -45,7 +46,7 @@ public interface AbstractRecipeParser {
     /**
      * This a copy of the ItemHandlers isItemValid. This will be called to
      * validate item IO for the {@link VEItemStackHandler}. You should also
-     * check NBT data like in {@link com.veteam.voluminousenergy.recipe.processor.DimensionalLaserRecipeProcessor}
+     * check NBT data like in {@link DimensionalLaserRecipeProcessor}
      *
      * @param slot  the slot position in the tile inventory
      * @param stack The stack to be inserted

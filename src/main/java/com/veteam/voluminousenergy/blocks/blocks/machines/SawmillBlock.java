@@ -29,6 +29,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 public class SawmillBlock extends VEBlock implements EntityBlock { // Based on the Stonecutter
 
@@ -36,7 +37,7 @@ public class SawmillBlock extends VEBlock implements EntityBlock { // Based on t
     protected static final VoxelShape SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 9.0D, 16.0D);
 
     public SawmillBlock() {
-        super(Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
+        super(Properties.of().setId(VERegistryHelper.currentBlockId())
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .lightLevel(l -> 0)

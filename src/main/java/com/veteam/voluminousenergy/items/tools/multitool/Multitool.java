@@ -39,6 +39,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 public class Multitool extends VEItem {
 
@@ -46,7 +47,7 @@ public class Multitool extends VEItem {
     private static final int TEMP_TANK_CAPACITY = VETileEntity.DEFAULT_TANK_CAPACITY;
 
     public Multitool() {
-        super(new Item.Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId())
+        super(new Item.Properties().setId(VERegistryHelper.currentItemId())
                 .stacksTo(1));
         setRegistryName("multitool");
     }

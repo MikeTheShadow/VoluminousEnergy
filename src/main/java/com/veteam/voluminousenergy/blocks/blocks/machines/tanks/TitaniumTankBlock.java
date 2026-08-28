@@ -16,11 +16,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 public class TitaniumTankBlock extends TankBlock implements EntityBlock {
 
     public TitaniumTankBlock() {
-        super(Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
+        super(Properties.of().setId(VERegistryHelper.currentBlockId())
                 .sound(SoundType.METAL)
                 .strength(4.0f)
                 .lightLevel(l -> 0)

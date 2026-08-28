@@ -7,11 +7,12 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.entity.FuelValues;
 
 import javax.annotation.Nullable;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 public class Petcoke extends VEItem {
     public Petcoke() {
         super(new Item.Properties()
-                .setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId())
+                .setId(VERegistryHelper.currentItemId())
                 .stacksTo(64)
         );
         setRegistryName("petcoke");

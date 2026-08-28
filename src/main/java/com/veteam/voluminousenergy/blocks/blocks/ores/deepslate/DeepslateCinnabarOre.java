@@ -6,10 +6,11 @@ import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 public class DeepslateCinnabarOre extends VEOreBlock {
     public DeepslateCinnabarOre() {
-        super(BlockBehaviour.Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
+        super(BlockBehaviour.Properties.of().setId(VERegistryHelper.currentBlockId())
                 .sound(SoundType.STONE)
                 .strength(1.5f)
                 .requiresCorrectToolForDrops()

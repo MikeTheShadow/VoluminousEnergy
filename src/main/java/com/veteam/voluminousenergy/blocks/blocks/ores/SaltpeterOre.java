@@ -16,11 +16,12 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.ColoredFallingBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 public class SaltpeterOre extends ColoredFallingBlock {
     public SaltpeterOre() {
         super(new ColorRGBA(14406560),
-            Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
+            Properties.of().setId(VERegistryHelper.currentBlockId())
                 .sound(SoundType.SAND)
                 .strength(0.6f)
                 .requiresCorrectToolForDrops()

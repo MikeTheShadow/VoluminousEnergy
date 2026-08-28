@@ -9,11 +9,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 public class RiceCrop extends VEWaterCrop {
 
     public RiceCrop() {
-        super(BlockBehaviour.Properties.ofFullCopy(Blocks.ALLIUM).setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())); // TODO: Rice Properties
+        super(BlockBehaviour.Properties.ofFullCopy(Blocks.ALLIUM).setId(VERegistryHelper.currentBlockId())); // TODO: Rice Properties
     }
 
     @Override

@@ -15,12 +15,13 @@ import net.minecraft.world.level.pathfinder.PathType;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 public class Naphtha {
     public static final Identifier NAPHTHA_STILL_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/naphtha_still");
     public static final Identifier NAPHTHA_FLOWING_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/naphtha_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
+    public static Block.Properties stdProp = Block.Properties.of().setId(VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
 
 
     public static FlowingFluid NAPHTHA;
@@ -39,12 +40,12 @@ public class Naphtha {
     }
 
     public static VEFlowingFluidBlock FlowingNaphthaBlock() {
-        NAPHTHA_BLOCK = new VEFlowingFluidBlock(NAPHTHA, stdProp.setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId()));
+        NAPHTHA_BLOCK = new VEFlowingFluidBlock(NAPHTHA, stdProp.setId(VERegistryHelper.currentBlockId()));
         return NAPHTHA_BLOCK;
     }
 
     public static Item NaphthaBucket() {
-        NAPHTHA_BUCKET = new BucketItem(NAPHTHA, new Item.Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId()).craftRemainder(Items.BUCKET).stacksTo(1));
+        NAPHTHA_BUCKET = new BucketItem(NAPHTHA, new Item.Properties().setId(VERegistryHelper.currentItemId()).craftRemainder(Items.BUCKET).stacksTo(1));
         return NAPHTHA_BUCKET;
     }
 

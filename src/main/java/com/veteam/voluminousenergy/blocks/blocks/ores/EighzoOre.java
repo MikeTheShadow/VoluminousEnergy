@@ -4,10 +4,11 @@ import com.veteam.voluminousenergy.datagen.MaterialConstants;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.SoundType;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 public class EighzoOre extends VEOreBlock {
     public EighzoOre() {
-        super(Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
+        super(Properties.of().setId(VERegistryHelper.currentBlockId())
                 .sound(SoundType.STONE)
                 .strength(30F, 1200F)
                 .requiresCorrectToolForDrops()

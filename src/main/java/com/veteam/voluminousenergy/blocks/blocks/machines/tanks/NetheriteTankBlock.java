@@ -16,11 +16,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 public class NetheriteTankBlock extends TankBlock implements EntityBlock {
 
     public NetheriteTankBlock() {
-        super(Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
+        super(Properties.of().setId(VERegistryHelper.currentBlockId())
                 .sound(SoundType.METAL)
                 .strength(6.0f)
                 .lightLevel(l -> 0)

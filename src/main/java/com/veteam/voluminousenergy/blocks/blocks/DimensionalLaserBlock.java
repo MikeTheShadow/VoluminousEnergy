@@ -20,11 +20,12 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 public class DimensionalLaserBlock extends VEFaceableMachineBlock {
 
     public DimensionalLaserBlock() {
-        super(BlockBehaviour.Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
+        super(BlockBehaviour.Properties.of().setId(VERegistryHelper.currentBlockId())
                 .sound(SoundType.METAL)
                 .strength(3.0f)
                 .requiresCorrectToolForDrops()

@@ -13,11 +13,12 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 public class RFIDChip extends Item {
 
     public RFIDChip() {
-        super(new Item.Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId())
+        super(new Item.Properties().setId(VERegistryHelper.currentItemId())
                 .stacksTo(16)
                 .rarity(VEEnums.ELECTRONIC_RARITY.getValue())
         );

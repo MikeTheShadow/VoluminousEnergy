@@ -15,12 +15,13 @@ import net.minecraft.world.level.pathfinder.PathType;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 public class Treethanol {
     public static final Identifier TREETHANOL_STILL_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/treethanol_still");
     public static final Identifier TREETHANOL_FLOWING_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/treethanol_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
+    public static Block.Properties stdProp = Block.Properties.of().setId(VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
 
     public static FlowingFluid TREETHANOL;
     public static FlowingFluid FLOWING_TREETHANOL;
@@ -38,12 +39,12 @@ public class Treethanol {
     }
 
     public static VEFlowingFluidBlock FlowingTreethanolBlock() {
-        TREETHANOL_BLOCK = new VEFlowingFluidBlock(TREETHANOL, stdProp.setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId()));
+        TREETHANOL_BLOCK = new VEFlowingFluidBlock(TREETHANOL, stdProp.setId(VERegistryHelper.currentBlockId()));
         return TREETHANOL_BLOCK;
     }
 
     public static Item TreethanolBucket() {
-        TREETHANOL_BUCKET = new BucketItem(TREETHANOL, new Item.Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId()).craftRemainder(Items.BUCKET).stacksTo(1));
+        TREETHANOL_BUCKET = new BucketItem(TREETHANOL, new Item.Properties().setId(VERegistryHelper.currentItemId()).craftRemainder(Items.BUCKET).stacksTo(1));
         return TREETHANOL_BUCKET;
     }
 

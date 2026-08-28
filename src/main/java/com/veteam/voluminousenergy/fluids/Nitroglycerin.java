@@ -15,12 +15,13 @@ import net.minecraft.world.level.pathfinder.PathType;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 public class Nitroglycerin {
     public static final Identifier NITROGLYCERIN_STILL_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/nitroglycerin_still");
     public static final Identifier NITROGLYCERIN_FLOWING_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/nitroglycerin_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
+    public static Block.Properties stdProp = Block.Properties.of().setId(VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
 
     public static FlowingFluid NITROGLYCERIN;
     public static FlowingFluid FLOWING_NITROGLYCERIN;
@@ -38,12 +39,12 @@ public class Nitroglycerin {
     }
 
     public static VEFlowingFluidBlock FlowingNitroglycerinBlock() {
-        NITROGLYCERIN_BLOCK = new VEFlowingFluidBlock(NITROGLYCERIN, stdProp.setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId()));
+        NITROGLYCERIN_BLOCK = new VEFlowingFluidBlock(NITROGLYCERIN, stdProp.setId(VERegistryHelper.currentBlockId()));
         return NITROGLYCERIN_BLOCK;
     }
 
     public static Item NitroglycerinBucket() {
-        NITROGLYCERIN_BUCKET = new BucketItem(NITROGLYCERIN, new Item.Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId()).craftRemainder(Items.BUCKET).stacksTo(1));
+        NITROGLYCERIN_BUCKET = new BucketItem(NITROGLYCERIN, new Item.Properties().setId(VERegistryHelper.currentItemId()).craftRemainder(Items.BUCKET).stacksTo(1));
         return NITROGLYCERIN_BUCKET;
     }
 

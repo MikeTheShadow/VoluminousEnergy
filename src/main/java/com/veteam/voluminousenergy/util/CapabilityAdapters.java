@@ -9,6 +9,7 @@ import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import com.veteam.voluminousenergy.items.tools.multitool.Multitool;
 
 /**
  * Bridges the mod's legacy (pre-26.1) IItemHandler / IFluidHandler / IEnergyStorage based
@@ -16,7 +17,7 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
  * <p>
  * NeoForge only ships a bridge in the new-to-old direction ({@code IItemHandler.of(ResourceHandler)},
  * {@code IEnergyStorage.of(EnergyHandler)}, {@code IFluidHandler.of(ResourceHandler)} - see
- * {@link com.veteam.voluminousenergy.items.tools.multitool.Multitool}). There is no equivalent
+ * {@link Multitool}). There is no equivalent
  * old-to-new bridge anywhere in NeoForge (confirmed via javap against the 26.1 universal jar and
  * the decompiled sources), which is what RegisterCapabilitiesEvent providers need to return.
  * This class fills that gap so the mod's existing IItemHandler/IFluidHandler/IEnergyStorage backed

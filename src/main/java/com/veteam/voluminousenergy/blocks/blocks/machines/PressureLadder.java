@@ -29,6 +29,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 public class PressureLadder extends LadderBlock {
     private String registryName; // Voluminous Energy 1.19 port
@@ -38,7 +39,7 @@ public class PressureLadder extends LadderBlock {
 
     public PressureLadder() {
         super(BlockBehaviour.Properties.ofFullCopy(Blocks.LADDER)
-                .setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
+                .setId(VERegistryHelper.currentBlockId())
                 .requiresCorrectToolForDrops()
                 .randomTicks()
                 .pushReaction(PushReaction.DESTROY)

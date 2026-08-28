@@ -15,12 +15,13 @@ import net.minecraft.world.level.pathfinder.PathType;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 public class Biofuel {
     public static final Identifier BIOFUEL_STILL_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/biofuel_still");
     public static final Identifier BIOFUEL_FLOWING_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/biofuel_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
+    public static Block.Properties stdProp = Block.Properties.of().setId(VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
 
     public static FlowingFluid BIOFUEL;
     public static FlowingFluid FLOWING_BIOFUEL;
@@ -38,12 +39,12 @@ public class Biofuel {
     }
 
     public static VEFlowingFluidBlock FlowingBiofuelBlock() {
-        BIOFUEL_BLOCK = new VEFlowingFluidBlock(BIOFUEL, stdProp.setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId()));
+        BIOFUEL_BLOCK = new VEFlowingFluidBlock(BIOFUEL, stdProp.setId(VERegistryHelper.currentBlockId()));
         return BIOFUEL_BLOCK;
     }
 
     public static Item BiofuelBucket() {
-        BIOFUEL_BUCKET = new BucketItem(BIOFUEL, new Item.Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId()).craftRemainder(Items.BUCKET).stacksTo(1));
+        BIOFUEL_BUCKET = new BucketItem(BIOFUEL, new Item.Properties().setId(VERegistryHelper.currentItemId()).craftRemainder(Items.BUCKET).stacksTo(1));
         return BIOFUEL_BUCKET;
     }
 

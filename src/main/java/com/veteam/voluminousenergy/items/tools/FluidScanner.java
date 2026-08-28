@@ -28,11 +28,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 public class FluidScanner extends Item {
 
     public FluidScanner() {
-        super(new Item.Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId())
+        super(new Item.Properties().setId(VERegistryHelper.currentItemId())
                 .stacksTo(1)
                 .rarity(Rarity.UNCOMMON)
         );

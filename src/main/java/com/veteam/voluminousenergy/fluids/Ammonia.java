@@ -15,12 +15,13 @@ import net.minecraft.world.level.pathfinder.PathType;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 public class Ammonia {
     public static final Identifier AMMONIA_STILL_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/ammonia_still");
     public static final Identifier AMMONIA_FLOWING_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/ammonia_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).air();
+    public static Block.Properties stdProp = Block.Properties.of().setId(VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).air();
 
     public static FlowingFluid AMMONIA;
     public static FlowingFluid FLOWING_AMMONIA;
@@ -38,12 +39,12 @@ public class Ammonia {
     }
 
     public static VEFlowingFluidBlock FlowingAmmoniaBlock() {
-        AMMONIA_BLOCK = new VEFlowingFluidBlock(AMMONIA, stdProp.setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId()));
+        AMMONIA_BLOCK = new VEFlowingFluidBlock(AMMONIA, stdProp.setId(VERegistryHelper.currentBlockId()));
         return AMMONIA_BLOCK;
     }
 
     public static Item AmmoniaBucket() {
-        AMMONIA_BUCKET = new BucketItem(AMMONIA, new Item.Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId()).craftRemainder(Items.BUCKET).stacksTo(1));
+        AMMONIA_BUCKET = new BucketItem(AMMONIA, new Item.Properties().setId(VERegistryHelper.currentItemId()).craftRemainder(Items.BUCKET).stacksTo(1));
         return AMMONIA_BUCKET;
     }
 

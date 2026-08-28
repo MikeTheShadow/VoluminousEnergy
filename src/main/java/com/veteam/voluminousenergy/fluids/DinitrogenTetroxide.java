@@ -15,12 +15,13 @@ import net.minecraft.world.level.pathfinder.PathType;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 public class DinitrogenTetroxide {
     public static final Identifier DINITROGEN_TETROXIDE_STILL_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/dinitrogen_tetroxide_still");
     public static final Identifier DINITROGEN_TETROXIDE_FLOWING_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/dinitrogen_tetroxide_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
+    public static Block.Properties stdProp = Block.Properties.of().setId(VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
 
     public static FlowingFluid DINITROGEN_TETROXIDE;
     public static FlowingFluid FLOWING_DINITROGEN_TETROXIDE;
@@ -38,12 +39,12 @@ public class DinitrogenTetroxide {
     }
 
     public static VEFlowingFluidBlock FlowingDinitrogenTetroxideBlock() {
-        DINITROGEN_TETROXIDE_BLOCK = new VEFlowingFluidBlock(DINITROGEN_TETROXIDE, stdProp.setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId()));
+        DINITROGEN_TETROXIDE_BLOCK = new VEFlowingFluidBlock(DINITROGEN_TETROXIDE, stdProp.setId(VERegistryHelper.currentBlockId()));
         return DINITROGEN_TETROXIDE_BLOCK;
     }
 
     public static Item DinitrogenTetroxideBucket() {
-        DINITROGEN_TETROXIDE_BUCKET = new BucketItem(DINITROGEN_TETROXIDE, new Item.Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId()).craftRemainder(Items.BUCKET).stacksTo(1));
+        DINITROGEN_TETROXIDE_BUCKET = new BucketItem(DINITROGEN_TETROXIDE, new Item.Properties().setId(VERegistryHelper.currentItemId()).craftRemainder(Items.BUCKET).stacksTo(1));
         return DINITROGEN_TETROXIDE_BUCKET;
     }
 

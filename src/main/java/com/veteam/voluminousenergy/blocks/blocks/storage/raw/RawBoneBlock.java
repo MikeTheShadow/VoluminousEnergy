@@ -4,10 +4,11 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlock;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 public class RawBoneBlock extends VEBlock {
     public RawBoneBlock() {
-        super(Block.Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
+        super(Block.Properties.of().setId(VERegistryHelper.currentBlockId())
                 .sound(SoundType.BONE_BLOCK)
                 .strength(2F)
                 .requiresCorrectToolForDrops()

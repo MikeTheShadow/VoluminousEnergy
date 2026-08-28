@@ -24,6 +24,7 @@ import oshi.util.tuples.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 import static net.minecraft.world.level.material.Fluids.LAVA;
 import static net.minecraft.world.level.material.Fluids.WATER;
@@ -31,7 +32,7 @@ import static net.minecraft.world.level.material.Fluids.WATER;
 public class CreativeFluidScanner extends Item {
 
     public CreativeFluidScanner() {
-        super(new Item.Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId())
+        super(new Item.Properties().setId(VERegistryHelper.currentItemId())
                 .stacksTo(1)
                 .rarity(Rarity.RARE)
         );

@@ -15,6 +15,7 @@ import net.minecraft.world.level.material.FluidState;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import com.veteam.voluminousenergy.util.WorldUtil;
 
 public class GeyserFeature extends Feature<GeyserFeature.Configuration> {
 
@@ -83,7 +84,7 @@ public class GeyserFeature extends Feature<GeyserFeature.Configuration> {
                     if ((i1 == 0 && j1 == 0 || !(f1 * f1 + f2 * f2 > f * f)) && (i1 != -l && i1 != l && j1 != -l && j1 != l || !(rand.nextFloat() > 0.75F))) {
                         BlockState blockstate = worldIn.getBlockState(pos.offset(i1, k, j1));
                         Block block = blockstate.getBlock();
-                        if (blockstate.isAir() || com.veteam.voluminousenergy.util.WorldUtil.isDirt(blockstate) || com.veteam.voluminousenergy.util.WorldUtil.isStone(blockstate) || allowList.contains(block)) {
+                        if (blockstate.isAir() || WorldUtil.isDirt(blockstate) || WorldUtil.isStone(blockstate) || allowList.contains(block)) {
                             this.setBlock(worldIn, pos.offset(i1, k, j1), fluidState.createLegacyBlock());
                             worldIn.scheduleTick(pos.offset(i1, k, j1), fluidState.getType(), 0);
                         }
@@ -91,7 +92,7 @@ public class GeyserFeature extends Feature<GeyserFeature.Configuration> {
                         if (k != 0 && l > 1) {
                             blockstate = worldIn.getBlockState(pos.offset(i1, -k, j1));
                             block = blockstate.getBlock();
-                            if (blockstate.isAir() || com.veteam.voluminousenergy.util.WorldUtil.isDirt(blockstate) || com.veteam.voluminousenergy.util.WorldUtil.isStone(blockstate) || allowList.contains(block)) {
+                            if (blockstate.isAir() || WorldUtil.isDirt(blockstate) || WorldUtil.isStone(blockstate) || allowList.contains(block)) {
                                 this.setBlock(worldIn, pos.offset(i1, -k, j1), fluidState.createLegacyBlock());
                                 worldIn.scheduleTick(pos.offset(i1, -k, j1), fluidState.getType(), 0);
                             }
@@ -123,7 +124,7 @@ public class GeyserFeature extends Feature<GeyserFeature.Configuration> {
                     if ((x == 0 && z == 0 || !(fx * fx + fz * fz > fy * fy)) && (x != -l && x != l && z != -l && z != l || !(rand.nextFloat() > 0.75F))) {
                         BlockState blockstate = worldIn.getBlockState(pos.offset(x, y, z));
                         Block block = blockstate.getBlock();
-                        if (blockstate.isAir() || com.veteam.voluminousenergy.util.WorldUtil.isDirt(blockstate) || com.veteam.voluminousenergy.util.WorldUtil.isStone(blockstate) || allowList.contains(block)) {
+                        if (blockstate.isAir() || WorldUtil.isDirt(blockstate) || WorldUtil.isStone(blockstate) || allowList.contains(block)) {
                             this.setBlock(worldIn, pos.offset(x, y, z), fluidState.createLegacyBlock());
                             worldIn.scheduleTick(pos.offset(x, y, z), fluidState.getType(), 0);
                         }
@@ -131,7 +132,7 @@ public class GeyserFeature extends Feature<GeyserFeature.Configuration> {
                         if (y != 0 && l > 1) {
                             blockstate = worldIn.getBlockState(pos.offset(x, -y, z));
                             block = blockstate.getBlock();
-                            if (blockstate.isAir() || com.veteam.voluminousenergy.util.WorldUtil.isDirt(blockstate) || com.veteam.voluminousenergy.util.WorldUtil.isStone(blockstate) || allowList.contains(block)) {
+                            if (blockstate.isAir() || WorldUtil.isDirt(blockstate) || WorldUtil.isStone(blockstate) || allowList.contains(block)) {
                                 this.setBlock(worldIn, pos.offset(x, -y, z), fluidState.createLegacyBlock());
                                 worldIn.scheduleTick(pos.offset(x, -y, z), fluidState.getType(), 0);
                             }
@@ -179,14 +180,14 @@ public class GeyserFeature extends Feature<GeyserFeature.Configuration> {
 //                    if ((i1 == 0 && j1 == 0 || !(f1 * f1 + f2 * f2 > f * f)) && (i1 != -l && i1 != l && j1 != -l && j1 != l || !(rand.nextFloat() > 0.75F))) {
 //                        BlockState blockstate = worldIn.getBlockState(pos.offset(i1, k, j1));
 //                        Block block = blockstate.getBlock();
-//                        if (blockstate.isAir() || com.veteam.voluminousenergy.util.WorldUtil.isDirt(blockstate) || com.veteam.voluminousenergy.util.WorldUtil.isStone(blockstate) || allowList.contains(block)) {
+//                        if (blockstate.isAir() || WorldUtil.isDirt(blockstate) || WorldUtil.isStone(blockstate) || allowList.contains(block)) {
 //                            this.setBlock(worldIn, pos.offset(i1, k, j1), crudeOil);
 //                        }
 //
 //                        if (k != 0 && l > 1) {
 //                            blockstate = worldIn.getBlockState(pos.offset(i1, -k, j1));
 //                            block = blockstate.getBlock();
-//                            if (blockstate.isAir() || com.veteam.voluminousenergy.util.WorldUtil.isDirt(blockstate) || com.veteam.voluminousenergy.util.WorldUtil.isStone(blockstate) || allowList.contains(block) ) {
+//                            if (blockstate.isAir() || WorldUtil.isDirt(blockstate) || WorldUtil.isStone(blockstate) || allowList.contains(block) ) {
 //                                this.setBlock(worldIn, pos.offset(i1, -k, j1), crudeOil);
 //                            }
 //                        }

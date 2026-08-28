@@ -5,10 +5,11 @@ import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.SoundType;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 public class GalenaOre extends VEOreBlock {
     public GalenaOre() {
-        super(Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
+        super(Properties.of().setId(VERegistryHelper.currentBlockId())
                 .sound(SoundType.STONE)
                 .lightLevel(l -> Config.GALENA_ORE_BLOCK_LIGHT_LEVEL.get())
                 .requiresCorrectToolForDrops()

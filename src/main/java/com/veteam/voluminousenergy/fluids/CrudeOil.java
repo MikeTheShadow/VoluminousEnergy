@@ -16,12 +16,13 @@ import net.minecraft.world.level.pathfinder.PathType;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 public class CrudeOil {
     public static final Identifier CRUDE_OIL_STILL_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/crude_oil_still");
     public static final Identifier CRUDE_OIL_FLOWING_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/crude_oil_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
+    public static Block.Properties stdProp = Block.Properties.of().setId(VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
 
     public static FlowingFluid CRUDE_OIL;
     public static FlowingFluid FLOWING_CRUDE_OIL;
@@ -39,12 +40,12 @@ public class CrudeOil {
     }
 
     public static CrudeOilFlowingFluidBlock FlowingCrudeOilBlock() { // Create a custom block here for block modifications
-        CRUDE_OIL_BLOCK = new CrudeOilFlowingFluidBlock(CRUDE_OIL, stdProp.setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId()));
+        CRUDE_OIL_BLOCK = new CrudeOilFlowingFluidBlock(CRUDE_OIL, stdProp.setId(VERegistryHelper.currentBlockId()));
         return CRUDE_OIL_BLOCK;
     }
 
     public static Item CrudeOilBucket() {
-        CRUDE_OIL_BUCKET = new BucketItem(CRUDE_OIL, new Item.Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId()).craftRemainder(Items.BUCKET).stacksTo(1));
+        CRUDE_OIL_BUCKET = new BucketItem(CRUDE_OIL, new Item.Properties().setId(VERegistryHelper.currentItemId()).craftRemainder(Items.BUCKET).stacksTo(1));
         return CRUDE_OIL_BUCKET;
     }
 

@@ -8,13 +8,14 @@ import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.level.block.Block;
 
 import java.util.List;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 public class BitItem extends VEItem {
     private final BitItemData bitItemData;
     private final Tool tool;
 
     public BitItem(BitItemData bit, String registryName, Item.Properties itemProperties) {
-        super(itemProperties.setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId()));
+        super(itemProperties.setId(VERegistryHelper.currentItemId()));
         this.bitItemData = bit;
         // ToolMaterial.createToolProperties(TagKey<Block>) was removed; build the Tool component
         // ourselves the same way ToolMaterial.applyToolProperties(...) does internally.

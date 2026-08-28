@@ -4,10 +4,11 @@ import com.veteam.voluminousenergy.datagen.MaterialConstants;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.SoundType;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 public class BauxiteOre extends VEOreBlock {
     public BauxiteOre() {
-        super(Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
+        super(Properties.of().setId(VERegistryHelper.currentBlockId())
                 .sound(SoundType.STONE)
                 .strength(2.0f)
                 .requiresCorrectToolForDrops()
