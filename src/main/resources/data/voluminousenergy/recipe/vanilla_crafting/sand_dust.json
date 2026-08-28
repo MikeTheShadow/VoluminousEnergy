@@ -4,9 +4,7 @@
     "#"
   ],
   "key": {
-    "#": {
-      "tag": "minecraft:sand"
-    }
+    "#": "#minecraft:sand"
   },
   "result": {
     "id": "voluminousenergy:sand_dust",

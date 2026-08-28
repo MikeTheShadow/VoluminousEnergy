@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.blocks.tiles.inventory;
 
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.util.TagUtil;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -15,10 +16,10 @@ public class FurnaceInventoryValidator implements AbstractItemStackValidator {
         if(tile.getEnergy() != null && tile.getEnergy().getUpgradeSlotId() == slot) return TagUtil.isTaggedMachineUpgradeItem(stack);
         if(slot != 0) return true;
         Level level = tile.getLevel();
-        var furnaceRecipeNew = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING,
+        var furnaceRecipeNew = ((ServerLevel) level).recipeAccess().getRecipeFor(RecipeType.SMELTING,
                 new SingleRecipeInput(stack.copy()), level).orElse(null);
         if(furnaceRecipeNew != null) return true;
-        var blastingRecipeNew = level.getRecipeManager().getRecipeFor(RecipeType.BLASTING,
+        var blastingRecipeNew = ((ServerLevel) level).recipeAccess().getRecipeFor(RecipeType.BLASTING,
                 new SingleRecipeInput(stack.copy()), level).orElse(null);
         return blastingRecipeNew != null;
     }

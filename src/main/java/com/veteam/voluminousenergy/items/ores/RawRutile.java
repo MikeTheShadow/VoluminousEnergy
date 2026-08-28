@@ -6,7 +6,7 @@ import net.minecraft.world.item.Item;
 public class RawRutile extends VEItem {
 
     public RawRutile() {
-        super(new Item.Properties()
+        super(new Item.Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId())
                 .stacksTo(64)
         );
         setRegistryName("raw_rutile");

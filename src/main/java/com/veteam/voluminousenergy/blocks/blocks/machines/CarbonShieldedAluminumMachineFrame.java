@@ -6,7 +6,7 @@ import net.minecraft.world.level.block.SoundType;
 
 public class CarbonShieldedAluminumMachineFrame extends VEBlock {
     public CarbonShieldedAluminumMachineFrame() {
-        super(Properties.of()
+        super(Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .requiresCorrectToolForDrops()

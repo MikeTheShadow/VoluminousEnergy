@@ -6,15 +6,9 @@
     "# #"
   ],
   "key": {
-    "#": {
-      "tag": "c:ingots/silver"
-    },
-    "x": {
-      "tag": "c:dusts/quartz"
-    },
-    "*": {
-      "tag": "c:ingots/aluminum"
-    }
+    "#": "#c:ingots/silver",
+    "x": "#c:dusts/quartz",
+    "*": "#c:ingots/aluminum"
   },
   "result": {
     "id": "voluminousenergy:quartz_multiplier",

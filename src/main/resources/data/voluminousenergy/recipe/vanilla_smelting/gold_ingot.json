@@ -1,8 +1,6 @@
 {
   "type": "minecraft:smelting",
-  "ingredient": {
-    "tag": "c:dusts/gold"
-  },
+  "ingredient": "#c:dusts/gold",
   "result": {
     "id": "minecraft:gold_ingot"
   },

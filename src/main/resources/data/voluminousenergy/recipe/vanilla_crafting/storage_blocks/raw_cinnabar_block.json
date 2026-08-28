@@ -6,9 +6,7 @@
     "###"
   ],
   "key": {
-    "#": {
-      "item": "voluminousenergy:raw_cinnabar"
-    }
+    "#": "voluminousenergy:raw_cinnabar"
   },
   "result": {
     "id": "voluminousenergy:raw_cinnabar_block"

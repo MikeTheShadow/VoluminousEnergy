@@ -4,9 +4,7 @@
     "#"
   ],
   "key": {
-    "#": {
-      "item": "voluminousenergy:centrifugal_separator"
-    }
+    "#": "voluminousenergy:centrifugal_separator"
   },
   "result": {
     "id": "voluminousenergy:centrifugal_separator"

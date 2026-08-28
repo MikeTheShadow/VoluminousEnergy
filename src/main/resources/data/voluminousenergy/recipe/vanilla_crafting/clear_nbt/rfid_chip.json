@@ -4,9 +4,7 @@
     "#"
   ],
   "key": {
-    "#": {
-      "item": "voluminousenergy:rfid_chip"
-    }
+    "#": "voluminousenergy:rfid_chip"
   },
   "result": {
     "id": "voluminousenergy:rfid_chip"

@@ -18,7 +18,7 @@ import javax.annotation.Nullable;
 public class FluidElectrolyzerBlock extends VEFaceableMachineBlock {
 
     public FluidElectrolyzerBlock() {
-        super(BlockBehaviour.Properties.of()
+        super(BlockBehaviour.Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .lightLevel(l -> 0)

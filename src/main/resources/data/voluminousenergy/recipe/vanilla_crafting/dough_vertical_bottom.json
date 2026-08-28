@@ -5,12 +5,8 @@
     "*"
   ],
   "key": {
-    "#": {
-      "tag": "c:dusts/flour"
-    },
-    "*": {
-      "item": "minecraft:water_bucket"
-    }
+    "#": "#c:dusts/flour",
+    "*": "minecraft:water_bucket"
   },
   "result": {
     "id": "voluminousenergy:dough",

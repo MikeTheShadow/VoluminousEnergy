@@ -7,7 +7,7 @@ import net.minecraft.world.level.block.SoundType;
 
 public class EighzoOre extends VEOreBlock {
     public EighzoOre() {
-        super(Properties.of()
+        super(Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
                 .sound(SoundType.STONE)
                 .strength(30F, 1200F)
                 .requiresCorrectToolForDrops()

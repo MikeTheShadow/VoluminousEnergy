@@ -5,7 +5,7 @@ import net.minecraft.world.item.Item;
 
 public class QuartzDust extends VEItem {
     public QuartzDust() {
-        super(new Item.Properties()
+        super(new Item.Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId())
                 .stacksTo(64)
         );
         setRegistryName("quartz_dust");

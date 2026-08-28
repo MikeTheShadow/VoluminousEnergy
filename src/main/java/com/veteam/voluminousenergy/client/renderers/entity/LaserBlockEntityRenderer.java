@@ -8,10 +8,14 @@ import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.util.VEAttachments;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.core.BlockPos;
@@ -19,17 +23,15 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.block.entity.BeaconBlockEntity;
+import net.minecraft.world.level.block.entity.BeaconBeamOwner;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
-@OnlyIn(Dist.CLIENT)
-public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntity> {
+public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntity, LaserBlockEntityRenderer.LaserRenderState> {
 
     public static final int MAX_RENDER_Y = 1024;
 
@@ -38,21 +40,39 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
     public LaserBlockEntityRenderer(BlockEntityRendererProvider.Context pContext) {
     }
 
-    @Override
-    public void render(VETileEntity dimensionalLaserTile, float f1, @NotNull PoseStack poseStack, @NotNull MultiBufferSource multiBufferSource, int i1, int i2) {
-        long gameTime = dimensionalLaserTile.getLevel().getGameTime();
+    public static class LaserRenderState extends BlockEntityRenderState {
+        long gameTime;
+        int buildTick;
+        int height;
+        float partialTick;
+    }
 
+    @Override
+    public LaserRenderState createRenderState() {
+        return new LaserRenderState();
+    }
+
+    @Override
+    public void extractRenderState(VETileEntity dimensionalLaserTile, LaserRenderState state, float partialTick, Vec3 cameraPos, @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
+        BlockEntityRenderer.super.extractRenderState(dimensionalLaserTile, state, partialTick, cameraPos, crumblingOverlay);
+        state.gameTime = dimensionalLaserTile.getLevel().getGameTime();
+        state.buildTick = dimensionalLaserTile.getData(VEAttachments.BUILD_TICK);
+        state.height = 335 - dimensionalLaserTile.getBlockPos().getY();
+        state.partialTick = partialTick;
+    }
+
+    @Override
+    public void submit(LaserRenderState state, @NotNull PoseStack poseStack, @NotNull SubmitNodeCollector collector, @NotNull CameraRenderState cameraState) {
         // 1.21 Migration: BeaconBeamSection now uses a packed ARGB integer.
         // 0xFFFFFFFF is fully opaque white.
         int whiteColorARGB = 0xFFFFFFFF;
-        BeaconBlockEntity.BeaconBeamSection section = new BeaconBlockEntity.BeaconBeamSection(whiteColorARGB);
+        BeaconBeamOwner.Section section = new BeaconBeamOwner.Section(whiteColorARGB);
 
-        renderBeaconBeam(dimensionalLaserTile, poseStack, multiBufferSource, f1, gameTime, 0, 1024, section.getColor(), 335 - dimensionalLaserTile.getBlockPos().getY());
+        renderBeaconBeam(poseStack, collector, state.partialTick, state.gameTime, 0, 1024, section.getColor(), state.height, state.buildTick);
     }
 
-    public void renderBeaconBeam(VETileEntity tile, PoseStack poseStack, MultiBufferSource multiBufferSource, float p_112188_, long gameTime, int totalHeight, int beaconListSize, int beaconColor, int height) {
+    public void renderBeaconBeam(PoseStack poseStack, SubmitNodeCollector collector, float p_112188_, long gameTime, int totalHeight, int beaconListSize, int beaconColor, int height, int staticBuildTick) {
 
-        int staticBuildTick = tile.getData(VEAttachments.BUILD_TICK);
         int buildTick = staticBuildTick;
         boolean fullyBuilt = buildTick == 1000;
         boolean firstStageBuilt = buildTick >= 400;
@@ -64,9 +84,10 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
         if (!firstStageBuilt) {
             height = 1;
         }
+        final int height1 = height;
         SoundManager manager = Minecraft.getInstance().getSoundManager();
         if (buildTick == 0) {
-            manager.stop(VESounds.ENERGY_BEAM_ACTIVATE.getIdentifier(), SoundSource.BLOCKS);
+            manager.stop(VESounds.ENERGY_BEAM_ACTIVATE.location(), SoundSource.BLOCKS);
         }
 
         float static02F = 0.2F;
@@ -91,7 +112,8 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
         float f15 = staticRotationNumber + downwardMovement;
         float f16 = (float) beaconListSize * static10F * (0.5F / static02F) + f15;
 
-        renderPart(poseStack, multiBufferSource.getBuffer(RenderType.energySwirl(BEAM_RESOURCE_LOCATION, 0, 0)), beaconColorR, beaconColorG, beaconColorB, 1.0F, totalHeight, height, 0.0F, static02F, static02F, 0.0F, f9, 0.0F, 0.0F, f12, f16, f15);
+        collector.submitCustomGeometry(poseStack, RenderTypes.energySwirl(BEAM_RESOURCE_LOCATION, 0, 0), (quadPose, vertexConsumer) ->
+                renderPart(poseStack, vertexConsumer, beaconColorR, beaconColorG, beaconColorB, 1.0F, totalHeight, height1, 0.0F, static02F, static02F, 0.0F, f9, 0.0F, 0.0F, f12, f16, f15));
         poseStack.popPose();
         PoseStack.Pose pose = poseStack.last();
         Matrix4f matrix4f = pose.pose();
@@ -106,7 +128,8 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
             poseStack.translate(xzPos, yHeight, 0);
             poseStack.mulPose(Axis.ZP.rotationDegrees(45.0F));
             poseStack.mulPose(Axis.YP.rotationDegrees(45.0F));
-            renderPart(poseStack, multiBufferSource.getBuffer(RenderType.energySwirl(BEAM_RESOURCE_LOCATION, 0, 0)), 5, 5, 5, 1.0F, totalHeight, pylonBeamHeight, 0.0F, static02F, static02F, 0.0F, f9, 0.0F, 0.0F, f12, f16, f15);
+            collector.submitCustomGeometry(poseStack, RenderTypes.energySwirl(BEAM_RESOURCE_LOCATION, 0, 0), (quadPose, vertexConsumer) ->
+                    renderPart(poseStack, vertexConsumer, 5, 5, 5, 1.0F, totalHeight, pylonBeamHeight, 0.0F, static02F, static02F, 0.0F, f9, 0.0F, 0.0F, f12, f16, f15));
             poseStack.popPose();
         }
         if(staticBuildTick > 150) {
@@ -114,7 +137,8 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
             poseStack.translate(0, yHeight, -xzPos);
             poseStack.mulPose(Axis.XP.rotationDegrees(45.0F));
             poseStack.mulPose(Axis.YP.rotationDegrees(45.0F));
-            renderPart(poseStack, multiBufferSource.getBuffer(RenderType.energySwirl(BEAM_RESOURCE_LOCATION, 0, 0)), 5, 5, 5, 1.0F, totalHeight, pylonBeamHeight, 0.0F, static02F, static02F, 0.0F, f9, 0.0F, 0.0F, f12, f16, f15);
+            collector.submitCustomGeometry(poseStack, RenderTypes.energySwirl(BEAM_RESOURCE_LOCATION, 0, 0), (quadPose, vertexConsumer) ->
+                    renderPart(poseStack, vertexConsumer, 5, 5, 5, 1.0F, totalHeight, pylonBeamHeight, 0.0F, static02F, static02F, 0.0F, f9, 0.0F, 0.0F, f12, f16, f15));
             poseStack.popPose();
         }
         if(staticBuildTick > 250) {
@@ -122,7 +146,8 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
             poseStack.translate(-xzPos, yHeight, 0);
             poseStack.mulPose(Axis.ZP.rotationDegrees(135.0F));
             poseStack.mulPose(Axis.YP.rotationDegrees(45.0F));
-            renderPart(poseStack, multiBufferSource.getBuffer(RenderType.energySwirl(BEAM_RESOURCE_LOCATION, 0, 0)), 5, 5, 5, 1.0F, totalHeight, -pylonBeamHeight, 0.0F, static02F, static02F, 0.0F, f9, 0.0F, 0.0F, f12, f16, f15);
+            collector.submitCustomGeometry(poseStack, RenderTypes.energySwirl(BEAM_RESOURCE_LOCATION, 0, 0), (quadPose, vertexConsumer) ->
+                    renderPart(poseStack, vertexConsumer, 5, 5, 5, 1.0F, totalHeight, -pylonBeamHeight, 0.0F, static02F, static02F, 0.0F, f9, 0.0F, 0.0F, f12, f16, f15));
             poseStack.popPose();
         }
         if(staticBuildTick > 350) {
@@ -130,7 +155,8 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
             poseStack.translate(0, yHeight, xzPos);
             poseStack.mulPose(Axis.XP.rotationDegrees(135.0F));
             poseStack.mulPose(Axis.YP.rotationDegrees(45.0F));
-            renderPart(poseStack, multiBufferSource.getBuffer(RenderType.energySwirl(BEAM_RESOURCE_LOCATION, 0, 0)), 5, 5, 5, 1.0F, totalHeight, -pylonBeamHeight, 0.0F, static02F, static02F, 0.0F, f9, 0.0F, 0.0F, f12, f16, f15);
+            collector.submitCustomGeometry(poseStack, RenderTypes.energySwirl(BEAM_RESOURCE_LOCATION, 0, 0), (quadPose, vertexConsumer) ->
+                    renderPart(poseStack, vertexConsumer, 5, 5, 5, 1.0F, totalHeight, -pylonBeamHeight, 0.0F, static02F, static02F, 0.0F, f9, 0.0F, 0.0F, f12, f16, f15));
             poseStack.popPose();
         }
 
@@ -147,25 +173,27 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
         int centerX = arrayMap.length / 2;
         int centerY = arrayMap[0].length / 2;
 
-        for (int xPos = 0; xPos < arrayMap.length; xPos++) {
-            for (int zPos = 0; zPos < arrayMap[xPos].length; zPos++) {
-                int dx = xPos - centerX;
-                int dy = zPos - centerY;
-                float r = (float) Math.sqrt(dx * dx + dy * dy);
+        collector.submitCustomGeometry(poseStack, RenderTypes.endPortal(), (quadPose, vertexConsumer) -> {
+            for (int xPos = 0; xPos < arrayMap.length; xPos++) {
+                for (int zPos = 0; zPos < arrayMap[xPos].length; zPos++) {
+                    int dx = xPos - centerX;
+                    int dy = zPos - centerY;
+                    float r = (float) Math.sqrt(dx * dx + dy * dy);
 
-                if (arrayMap[xPos][zPos] != 0 && r <= maxRadius) {
-                    renderFace(matrix4f, multiBufferSource.getBuffer(RenderType.endPortal()),
-                        0.0F + xPos - xMiddle, 1.0F + xPos - xMiddle, height, height,
-                        0.0F + zPos - zMiddle, 0.0F + zPos - zMiddle, 1.0F + zPos - zMiddle, 1.0F + zPos - zMiddle,
-                        Direction.DOWN);
+                    if (arrayMap[xPos][zPos] != 0 && r <= maxRadius) {
+                        renderFace(matrix4f, vertexConsumer,
+                            0.0F + xPos - xMiddle, 1.0F + xPos - xMiddle, height1, height1,
+                            0.0F + zPos - zMiddle, 0.0F + zPos - zMiddle, 1.0F + zPos - zMiddle, 1.0F + zPos - zMiddle,
+                            Direction.DOWN);
+                    }
                 }
             }
-        }
+        });
         poseStack.popPose();
     }
 
     @Override
-    public boolean shouldRenderOffScreen(@NotNull VETileEntity veTileEntity) {
+    public boolean shouldRenderOffScreen() {
         return true;
     }
 

@@ -6,24 +6,12 @@
     "*#*"
   ],
   "key": {
-    "#": {
-      "tag": "c:gears/carbon"
-    },
-    "0": {
-      "item": "voluminousenergy:compressor"
-    },
-    "*": {
-      "item": "minecraft:iron_ingot"
-    },
-    "1": {
-      "tag": "c:glass_panes"
-    },
-    "2": {
-      "tag": "c:gears/iron"
-    },
-    "3": {
-      "tag": "c:microchips"
-    }
+    "#": "#c:gears/carbon",
+    "0": "voluminousenergy:compressor",
+    "*": "minecraft:iron_ingot",
+    "1": "#c:glass_panes",
+    "2": "#c:gears/iron",
+    "3": "#c:microchips"
   },
   "result": {
     "id": "voluminousenergy:pump"

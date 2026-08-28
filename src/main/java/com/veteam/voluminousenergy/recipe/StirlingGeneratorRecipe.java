@@ -11,6 +11,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.NotNull;
@@ -32,41 +34,31 @@ public class StirlingGeneratorRecipe extends VEEnergyRecipe {
         super(ingredients, processTime, energy_per_tick);
     }
 
-    public static final RecipeSerializer<StirlingGeneratorRecipe> SERIALIZER = new RecipeSerializer<>() {
+    public static final MapCodec<StirlingGeneratorRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
+            VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
+            Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime),
+            Codec.INT.fieldOf("energy_per_tick").forGetter((getter) -> getter.processTime)
+    ).apply(instance, StirlingGeneratorRecipe::new));
 
-        public static final MapCodec<StirlingGeneratorRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
-                VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
-                Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime),
-                Codec.INT.fieldOf("energy_per_tick").forGetter((getter) -> getter.processTime)
-        ).apply(instance, StirlingGeneratorRecipe::new));
+    private static final IngredientSerializerHelper<StirlingGeneratorRecipe> helper = new IngredientSerializerHelper<>();
 
-        private static final IngredientSerializerHelper<StirlingGeneratorRecipe> helper = new IngredientSerializerHelper<>();
-
+    public static final StreamCodec<RegistryFriendlyByteBuf, StirlingGeneratorRecipe> VE_RECIPE_STREAM_CODEC = new StreamCodec<>() {
         @Override
-        public @NotNull MapCodec<StirlingGeneratorRecipe> codec() {
-            return VE_RECIPE_CODEC;
+        public void encode(@NotNull RegistryFriendlyByteBuf buf, @NotNull StirlingGeneratorRecipe recipe) {
+            buf.writeInt(recipe.getEnergyPerTick());
+            helper.toNetwork(buf, recipe);
         }
 
         @Override
         @NotNull
-        public StreamCodec<RegistryFriendlyByteBuf, StirlingGeneratorRecipe> streamCodec() {
-            return new StreamCodec<>() {
-                @Override
-                public void encode(@NotNull RegistryFriendlyByteBuf buf, @NotNull StirlingGeneratorRecipe recipe) {
-                    buf.writeInt(recipe.getEnergyPerTick());
-                    helper.toNetwork(buf, recipe);
-                }
-
-                @Override
-                @NotNull
-                public StirlingGeneratorRecipe decode(@NotNull RegistryFriendlyByteBuf buffer) {
-                    StirlingGeneratorRecipe recipe = new StirlingGeneratorRecipe();
-                    recipe.setEnergyPerTick(buffer.readInt());
-                    return helper.fromNetwork(recipe, buffer);
-                }
-            };
+        public StirlingGeneratorRecipe decode(@NotNull RegistryFriendlyByteBuf buffer) {
+            StirlingGeneratorRecipe recipe = new StirlingGeneratorRecipe();
+            recipe.setEnergyPerTick(buffer.readInt());
+            return helper.fromNetwork(recipe, buffer);
         }
     };
+
+    public static final RecipeSerializer<StirlingGeneratorRecipe> SERIALIZER = new RecipeSerializer<>(VE_RECIPE_CODEC, VE_RECIPE_STREAM_CODEC);
 
     @Override
     public @NotNull RecipeSerializer<? extends VERecipe> getSerializer() {
@@ -74,7 +66,7 @@ public class StirlingGeneratorRecipe extends VEEnergyRecipe {
     }
 
     @Override
-    public @NotNull RecipeType<?> getType() {
+    public @NotNull RecipeType<? extends Recipe<RecipeInput>> getType() {
         return RECIPE_TYPE;
     }
 

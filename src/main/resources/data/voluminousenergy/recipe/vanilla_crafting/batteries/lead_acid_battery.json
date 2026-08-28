@@ -6,15 +6,9 @@
     "#*#"
   ],
   "key": {
-    "#": {
-      "tag": "c:ingots/lead"
-    },
-    "x": {
-      "item": "voluminousenergy:sulfuric_acid_bucket"
-    },
-    "*": {
-      "tag": "c:ingots/silver"
-    }
+    "#": "#c:ingots/lead",
+    "x": "voluminousenergy:sulfuric_acid_bucket",
+    "*": "#c:ingots/silver"
   },
   "result": {
     "id": "voluminousenergy:lead_acid_battery",

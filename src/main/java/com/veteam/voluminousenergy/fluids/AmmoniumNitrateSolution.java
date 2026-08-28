@@ -20,7 +20,7 @@ public class AmmoniumNitrateSolution {
     public static final Identifier AMMONIUM_NITRATE_SOLUTION_STILL_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/ammonium_nitrate_solution_still");
     public static final Identifier AMMONIUM_NITRATE_SOLUTION_FLOWING_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/ammonium_nitrate_solution_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
+    public static Block.Properties stdProp = Block.Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
 
     public static FlowingFluid AMMONIUM_NITRATE_SOLUTION;
     public static FlowingFluid FLOWING_AMMONIUM_NITRATE_SOLUTION;
@@ -38,12 +38,12 @@ public class AmmoniumNitrateSolution {
     }
 
     public static VEFlowingFluidBlock FlowingAmmoniumNitrateSolutionBlock() {
-        AMMONIUM_NITRATE_SOLUTION_BLOCK = new VEFlowingFluidBlock(AMMONIUM_NITRATE_SOLUTION, stdProp);
+        AMMONIUM_NITRATE_SOLUTION_BLOCK = new VEFlowingFluidBlock(AMMONIUM_NITRATE_SOLUTION, stdProp.setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId()));
         return AMMONIUM_NITRATE_SOLUTION_BLOCK;
     }
 
     public static Item AmmoniumNitrateSolutionBucket() {
-        AMMONIUM_NITRATE_SOLUTION_BUCKET = new AmmoniumNitrateBucket( AMMONIUM_NITRATE_SOLUTION, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
+        AMMONIUM_NITRATE_SOLUTION_BUCKET = new AmmoniumNitrateBucket( AMMONIUM_NITRATE_SOLUTION, new Item.Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId()).craftRemainder(Items.BUCKET).stacksTo(1));
         return AMMONIUM_NITRATE_SOLUTION_BUCKET;
     }
 

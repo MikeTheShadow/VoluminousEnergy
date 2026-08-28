@@ -1,8 +1,6 @@
 {
   "type": "minecraft:smelting",
-  "ingredient": {
-    "tag": "c:dusts/tungsten"
-  },
+  "ingredient": "#c:dusts/tungsten",
   "result": {
     "id": "voluminousenergy:tungsten_ingot"
   },

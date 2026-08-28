@@ -4,9 +4,7 @@
     "#"
   ],
   "key": {
-    "#": {
-      "item": "voluminousenergy:distillation_unit"
-    }
+    "#": "voluminousenergy:distillation_unit"
   },
   "result": {
     "id": "voluminousenergy:distillation_unit"

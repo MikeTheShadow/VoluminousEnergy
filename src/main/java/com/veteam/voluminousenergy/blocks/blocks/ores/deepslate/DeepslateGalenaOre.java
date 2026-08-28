@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.SoundType;
 
 public class DeepslateGalenaOre extends VEOreBlock {
     public DeepslateGalenaOre() {
-        super(Properties.of()
+        super(Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
                 .sound(SoundType.STONE)
                 .lightLevel(l -> Config.GALENA_ORE_BLOCK_LIGHT_LEVEL.get())
                 .requiresCorrectToolForDrops()

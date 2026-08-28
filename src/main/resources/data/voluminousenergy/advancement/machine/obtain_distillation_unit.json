@@ -2,7 +2,7 @@
   "parent": "voluminousenergy:overworld/stuck_in_oil",
   "display": {
     "icon": {
-      "item": "voluminousenergy:distillation_unit"
+      "id": "voluminousenergy:distillation_unit"
     },
     "title": {
       "translate": "advancements.voluminousenergy.machine.obtain.distillation_unit.title"

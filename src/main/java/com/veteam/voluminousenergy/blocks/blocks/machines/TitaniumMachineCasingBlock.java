@@ -7,7 +7,7 @@ import net.minecraft.world.level.block.SoundType;
 
 public class TitaniumMachineCasingBlock extends VEBlock {
     public TitaniumMachineCasingBlock() {
-        super(Block.Properties.of()
+        super(Block.Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .requiresCorrectToolForDrops()

@@ -6,7 +6,7 @@ public class MercuryBatteryPack extends VEEnergyItem {
     private static final int MAX_TX = 1_500;
 
     public MercuryBatteryPack() {
-        super(new Properties()
+        super(new Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId())
                         .stacksTo(1),
                 MAX_ENERGY,
                 MAX_TX

@@ -20,7 +20,7 @@ public class SulfuricAcid {
     public static final Identifier SULFURIC_ACID_STILL_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/sulfuric_acid_still");
     public static final Identifier SULFURIC_ACID_FLOWING_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/sulfuric_acid_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
+    public static Block.Properties stdProp = Block.Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
 
     public static FlowingFluid SULFURIC_ACID;
     public static FlowingFluid FLOWING_SULFURIC_ACID;
@@ -38,18 +38,18 @@ public class SulfuricAcid {
     }
 
     public static AcidFlowingFluidBlock FlowingSulfuricAcidBlock() {
-        SULFURIC_ACID_BLOCK = new AcidFlowingFluidBlock(SULFURIC_ACID, stdProp);
+        SULFURIC_ACID_BLOCK = new AcidFlowingFluidBlock(SULFURIC_ACID, stdProp.setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId()));
         return SULFURIC_ACID_BLOCK;
     }
 
     public static Item SulfuricAcidBucket() {
-        SULFURIC_ACID_BUCKET = new BucketItem(SULFURIC_ACID, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
+        SULFURIC_ACID_BUCKET = new BucketItem(SULFURIC_ACID, new Item.Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId()).craftRemainder(Items.BUCKET).stacksTo(1));
         return SULFURIC_ACID_BUCKET;
     }
 
 
     public static final VEFluidType SULFURIC_ACID_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
-            .adjacentPathType(PathType.DAMAGE_FIRE)
+            .adjacentPathType(PathType.FIRE)
             .canConvertToSource(false)
             .canDrown(true)
             .canExtinguish(false)

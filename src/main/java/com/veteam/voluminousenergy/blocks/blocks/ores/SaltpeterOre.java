@@ -20,7 +20,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class SaltpeterOre extends ColoredFallingBlock {
     public SaltpeterOre() {
         super(new ColorRGBA(14406560),
-            Properties.of()
+            Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
                 .sound(SoundType.SAND)
                 .strength(0.6f)
                 .requiresCorrectToolForDrops()
@@ -44,7 +44,7 @@ public class SaltpeterOre extends ColoredFallingBlock {
         RegistryAccess registries = level.registryAccess();
 
         int xpOnDrop = Mth.nextInt(level.getRandom(), 1, 5);
-        Holder<Enchantment> fortune = registries.registryOrThrow(Registries.ENCHANTMENT).getHolderOrThrow(Enchantments.FORTUNE);
+        Holder<Enchantment> fortune = registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE);
         int fortuneLevel = EnchantmentHelper.getItemEnchantmentLevel(fortune, tool);
 
         if (fortuneLevel > 0) {

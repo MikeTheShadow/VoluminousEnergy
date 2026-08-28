@@ -1,8 +1,6 @@
 {
   "type": "minecraft:smelting",
-  "ingredient": {
-    "tag": "c:dusts/iron"
-  },
+  "ingredient": "#c:dusts/iron",
   "result": {
     "id": "minecraft:iron_ingot"
   },

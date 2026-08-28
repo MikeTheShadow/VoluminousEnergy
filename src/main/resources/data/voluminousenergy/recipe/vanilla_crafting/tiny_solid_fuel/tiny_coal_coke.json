@@ -4,9 +4,7 @@
     "*"
   ],
   "key": {
-    "*": {
-      "tag": "c:coal_coke"
-    }
+    "*": "#c:coal_coke"
   },
   "result": {
     "id": "voluminousenergy:tiny_coal_coke",

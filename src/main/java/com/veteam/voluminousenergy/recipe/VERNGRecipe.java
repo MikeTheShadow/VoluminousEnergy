@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.recipe;
 
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStackTemplate;
 
 import java.util.List;
 
@@ -14,8 +14,8 @@ public abstract class VERNGRecipe extends VERecipe {
 
     }
 
-    public VERNGRecipe(List<VERecipeCodecs.RegistryIngredient> i, List<VERecipeCodecs.RegistryFluidIngredient> fi, List<FluidStack> of, List<VERecipeCodecs.VEChancedItemWithCount> oi, int processTime) {
-        super(i, fi, of, oi.stream().map(VERecipeCodecs.VEChancedItemWithCount::getAsItemStack).toList(), processTime);
+    public VERNGRecipe(List<VERecipeCodecs.RegistryIngredient> i, List<VERecipeCodecs.RegistryFluidIngredient> fi, List<FluidStackTemplate> of, List<VERecipeCodecs.VEChancedItemWithCount> oi, int processTime) {
+        super(i, fi, of, oi.stream().map(VERecipeCodecs.VEChancedItemWithCount::toTemplate).toList(), processTime);
 
         this.itemResultsWithChance = oi;
         this.rngValues = oi.stream().map(VERecipeCodecs.VEChancedItemWithCount::chance).toList();

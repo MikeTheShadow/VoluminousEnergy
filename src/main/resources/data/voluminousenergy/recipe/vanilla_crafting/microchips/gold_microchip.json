@@ -6,15 +6,9 @@
     "0#0"
   ],
   "key": {
-    "*": {
-      "item": "minecraft:gold_ingot"
-    },
-    "#": {
-      "tag": "c:silicon"
-    },
-    "0": {
-      "item": "minecraft:redstone"
-    }
+    "*": "minecraft:gold_ingot",
+    "#": "#c:silicon",
+    "0": "minecraft:redstone"
   },
   "result": {
     "id": "voluminousenergy:gold_microchip"

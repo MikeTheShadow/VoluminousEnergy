@@ -5,12 +5,8 @@
     " * "
   ],
   "key": {
-    "#": {
-      "tag": "c:ingots/solarium"
-    },
-    "*": {
-      "tag": "c:gears/solarium"
-    }
+    "#": "#c:ingots/solarium",
+    "*": "#c:gears/solarium"
   },
   "result": {
     "id": "voluminousenergy:solarium_trimmer_bit",

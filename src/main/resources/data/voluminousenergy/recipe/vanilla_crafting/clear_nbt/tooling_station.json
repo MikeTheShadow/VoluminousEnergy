@@ -4,9 +4,7 @@
     "#"
   ],
   "key": {
-    "#": {
-      "item": "voluminousenergy:tooling_station"
-    }
+    "#": "voluminousenergy:tooling_station"
   },
   "result": {
     "id": "voluminousenergy:tooling_station"

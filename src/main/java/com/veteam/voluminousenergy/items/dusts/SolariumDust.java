@@ -5,7 +5,7 @@ import net.minecraft.world.item.Item;
 
 public class SolariumDust extends VEItem {
     public SolariumDust() {
-        super(new Item.Properties()
+        super(new Item.Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId())
                 .stacksTo(64)
         );
         setRegistryName("solarium_dust");

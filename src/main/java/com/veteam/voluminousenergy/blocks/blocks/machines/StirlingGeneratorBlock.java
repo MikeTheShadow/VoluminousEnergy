@@ -22,7 +22,7 @@ import java.util.List;
 
 public class StirlingGeneratorBlock extends VEFaceableMachineBlock {
     public StirlingGeneratorBlock() {
-        super(Properties.of()
+        super(Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .lightLevel(l -> l.getValue(LIT) ? 13 : 0)

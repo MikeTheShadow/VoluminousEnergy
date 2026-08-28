@@ -18,7 +18,7 @@ import javax.annotation.Nullable;
 public class GasFiredFurnaceBlock extends VEFaceableMachineBlock {
 
     public GasFiredFurnaceBlock() {
-        super(Block.Properties.of()
+        super(Block.Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .lightLevel(l -> 0)

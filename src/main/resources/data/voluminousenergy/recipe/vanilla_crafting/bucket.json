@@ -5,9 +5,7 @@
     " # "
   ],
   "key": {
-    "#": {
-      "tag": "c:ingots/aluminum"
-    }
+    "#": "#c:ingots/aluminum"
   },
   "result": {
     "id": "minecraft:bucket"

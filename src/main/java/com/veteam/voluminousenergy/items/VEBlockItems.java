@@ -9,11 +9,12 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class VEBlockItems {
     public static final DeferredRegister<Item> VE_BLOCK_ITEM_REGISTRY = DeferredRegister.create(BuiltInRegistries.ITEM, VoluminousEnergy.MODID);
-    protected static final Item.Properties PROPERTIES = new Item.Properties();
+    protected static final Item.Properties PROPERTIES = new Item.Properties().useBlockDescriptionPrefix();
 
     static {
         for(VEBlocks.RegistryWithName registryWithName : VEBlocks.REGISTERED_BLOCKS) {
-            VE_BLOCK_ITEM_REGISTRY.register(registryWithName.name(),() -> new BlockItem(registryWithName.block().get(), PROPERTIES));
+            com.veteam.voluminousenergy.util.VERegistryHelper.registerItem(VE_BLOCK_ITEM_REGISTRY, registryWithName.name(),
+                    () -> new BlockItem(registryWithName.block().get(), PROPERTIES.setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId())));
         }
     }
 

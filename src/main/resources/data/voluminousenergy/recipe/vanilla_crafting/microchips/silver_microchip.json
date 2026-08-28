@@ -6,15 +6,9 @@
     "0#0"
   ],
   "key": {
-    "*": {
-      "tag": "c:ingots/silver"
-    },
-    "#": {
-      "tag": "c:silicon"
-    },
-    "0": {
-      "item": "minecraft:redstone"
-    }
+    "*": "#c:ingots/silver",
+    "#": "#c:silicon",
+    "0": "minecraft:redstone"
   },
   "result": {
     "id": "voluminousenergy:silver_microchip"

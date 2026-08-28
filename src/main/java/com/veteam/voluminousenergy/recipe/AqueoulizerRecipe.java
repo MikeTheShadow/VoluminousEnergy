@@ -29,44 +29,33 @@ public class AqueoulizerRecipe extends VERecipe {
     public AqueoulizerRecipe() {
     }
 
-    public AqueoulizerRecipe(List<VERecipeCodecs.RegistryIngredient> i, List<VERecipeCodecs.RegistryFluidIngredient> fi, List<FluidStack> of, int processTime) {
+    public AqueoulizerRecipe(List<VERecipeCodecs.RegistryIngredient> i, List<VERecipeCodecs.RegistryFluidIngredient> fi, List<net.neoforged.neoforge.fluids.FluidStackTemplate> of, int processTime) {
         super(i, fi, of, List.of(), processTime);
     }
 
-    public static final RecipeSerializer<AqueoulizerRecipe> SERIALIZER = new RecipeSerializer<>() {
+    public static final MapCodec<AqueoulizerRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
+            VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
+            VERecipeCodecs.VE_FLUID_INGREDIENT_CODEC.listOf().fieldOf("fluid_ingredients").forGetter((getter) -> getter.registryFluidIngredients),
+            VERecipeCodecs.VE_OUTPUT_FLUID_CODEC.listOf().fieldOf("fluid_results").forGetter((getter) -> getter.fluidOutputTemplates),
+            Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime)
+    ).apply(instance, AqueoulizerRecipe::new));
 
-        public static final MapCodec<AqueoulizerRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
-                VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
-                VERecipeCodecs.VE_FLUID_INGREDIENT_CODEC.listOf().fieldOf("fluid_ingredients").forGetter((getter) -> getter.registryFluidIngredients),
-                VERecipeCodecs.VE_OUTPUT_FLUID_CODEC.listOf().fieldOf("fluid_results").forGetter((getter) -> getter.fluidOutputList),
-                Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime)
-        ).apply(instance, AqueoulizerRecipe::new));
+    private static final FluidSerializerHelper<AqueoulizerRecipe> helper = new FluidSerializerHelper<>();
 
-        private static final FluidSerializerHelper<AqueoulizerRecipe> helper = new FluidSerializerHelper<>();
-
+    public static final StreamCodec<RegistryFriendlyByteBuf, AqueoulizerRecipe> VE_RECIPE_STREAM_CODEC = new StreamCodec<>() {
         @Override
-        public @NotNull MapCodec<AqueoulizerRecipe> codec() {
-            return VE_RECIPE_CODEC;
+        public void encode(@NotNull RegistryFriendlyByteBuf buf, @NotNull AqueoulizerRecipe recipe) {
+            helper.toNetwork(buf,recipe);
         }
 
         @Override
         @NotNull
-        public StreamCodec<RegistryFriendlyByteBuf, AqueoulizerRecipe> streamCodec() {
-            return new StreamCodec<>() {
-                @Override
-                public void encode(@NotNull RegistryFriendlyByteBuf buf, @NotNull AqueoulizerRecipe recipe) {
-                    helper.toNetwork(buf,recipe);
-                }
-
-                @Override
-                @NotNull
-                public AqueoulizerRecipe decode(@NotNull RegistryFriendlyByteBuf buffer) {
-                    return helper.fromNetwork(new AqueoulizerRecipe(),buffer);
-                }
-            };
+        public AqueoulizerRecipe decode(@NotNull RegistryFriendlyByteBuf buffer) {
+            return helper.fromNetwork(new AqueoulizerRecipe(),buffer);
         }
-
     };
+
+    public static final RecipeSerializer<AqueoulizerRecipe> SERIALIZER = new RecipeSerializer<>(VE_RECIPE_CODEC, VE_RECIPE_STREAM_CODEC);
 
 
     @Override

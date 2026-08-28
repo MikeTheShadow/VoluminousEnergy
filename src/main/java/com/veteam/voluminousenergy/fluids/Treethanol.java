@@ -20,7 +20,7 @@ public class Treethanol {
     public static final Identifier TREETHANOL_STILL_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/treethanol_still");
     public static final Identifier TREETHANOL_FLOWING_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/treethanol_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
+    public static Block.Properties stdProp = Block.Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
 
     public static FlowingFluid TREETHANOL;
     public static FlowingFluid FLOWING_TREETHANOL;
@@ -38,12 +38,12 @@ public class Treethanol {
     }
 
     public static VEFlowingFluidBlock FlowingTreethanolBlock() {
-        TREETHANOL_BLOCK = new VEFlowingFluidBlock(TREETHANOL, stdProp);
+        TREETHANOL_BLOCK = new VEFlowingFluidBlock(TREETHANOL, stdProp.setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId()));
         return TREETHANOL_BLOCK;
     }
 
     public static Item TreethanolBucket() {
-        TREETHANOL_BUCKET = new BucketItem(TREETHANOL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
+        TREETHANOL_BUCKET = new BucketItem(TREETHANOL, new Item.Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId()).craftRemainder(Items.BUCKET).stacksTo(1));
         return TREETHANOL_BUCKET;
     }
 

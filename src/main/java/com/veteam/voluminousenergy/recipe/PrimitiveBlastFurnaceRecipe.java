@@ -11,6 +11,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.common.util.Lazy;
@@ -31,43 +33,32 @@ public class PrimitiveBlastFurnaceRecipe extends VERecipe {
     public PrimitiveBlastFurnaceRecipe() {
     }
 
-    public PrimitiveBlastFurnaceRecipe(List<VERecipeCodecs.RegistryIngredient> ingredients, List<ItemStack> results, int processTime) {
+    public PrimitiveBlastFurnaceRecipe(List<VERecipeCodecs.RegistryIngredient> ingredients, List<net.minecraft.world.item.ItemStackTemplate> results, int processTime) {
         super(ingredients, new ArrayList<>(), new ArrayList<>(), results, processTime);
     }
 
-    public static final RecipeSerializer<PrimitiveBlastFurnaceRecipe> SERIALIZER = new RecipeSerializer<>() {
+    public static final MapCodec<PrimitiveBlastFurnaceRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
+            VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
+            VERecipeCodecs.VE_OUTPUT_ITEM_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.resultTemplates),
+            Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime)
+    ).apply(instance, PrimitiveBlastFurnaceRecipe::new));
 
-        public static final MapCodec<PrimitiveBlastFurnaceRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
-                VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
-                VERecipeCodecs.VE_OUTPUT_ITEM_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.results),
-                Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime)
-        ).apply(instance, PrimitiveBlastFurnaceRecipe::new));
+    private static final IngredientSerializerHelper<PrimitiveBlastFurnaceRecipe> helper = new IngredientSerializerHelper<>();
 
-        private static final IngredientSerializerHelper<PrimitiveBlastFurnaceRecipe> helper = new IngredientSerializerHelper<>();
-
+    public static final StreamCodec<RegistryFriendlyByteBuf, PrimitiveBlastFurnaceRecipe> VE_RECIPE_STREAM_CODEC = new StreamCodec<>() {
         @Override
-        public @NotNull MapCodec<PrimitiveBlastFurnaceRecipe> codec() {
-            return VE_RECIPE_CODEC;
+        public void encode(@NotNull RegistryFriendlyByteBuf buf, @NotNull PrimitiveBlastFurnaceRecipe recipe) {
+            helper.toNetwork(buf, recipe);
         }
 
         @Override
         @NotNull
-        public StreamCodec<RegistryFriendlyByteBuf, PrimitiveBlastFurnaceRecipe> streamCodec() {
-            return new StreamCodec<>() {
-                @Override
-                public void encode(@NotNull RegistryFriendlyByteBuf buf, @NotNull PrimitiveBlastFurnaceRecipe recipe) {
-                    helper.toNetwork(buf, recipe);
-                }
-
-                @Override
-                @NotNull
-                public PrimitiveBlastFurnaceRecipe decode(@NotNull RegistryFriendlyByteBuf buffer) {
-                    return helper.fromNetwork(new PrimitiveBlastFurnaceRecipe(), buffer);
-                }
-            };
+        public PrimitiveBlastFurnaceRecipe decode(@NotNull RegistryFriendlyByteBuf buffer) {
+            return helper.fromNetwork(new PrimitiveBlastFurnaceRecipe(), buffer);
         }
-
     };
+
+    public static final RecipeSerializer<PrimitiveBlastFurnaceRecipe> SERIALIZER = new RecipeSerializer<>(VE_RECIPE_CODEC, VE_RECIPE_STREAM_CODEC);
 
     @Override
     public @NotNull RecipeSerializer<? extends VERecipe> getSerializer() {
@@ -80,7 +71,7 @@ public class PrimitiveBlastFurnaceRecipe extends VERecipe {
     }
 
     @Override
-    public @NotNull RecipeType<?> getType() {
+    public @NotNull RecipeType<? extends Recipe<RecipeInput>> getType() {
         return RECIPE_TYPE;
     }
 

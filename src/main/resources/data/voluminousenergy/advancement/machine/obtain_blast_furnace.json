@@ -2,7 +2,7 @@
   "parent": "voluminousenergy:machine/obtain_electrolyzer",
   "display": {
     "icon": {
-      "item": "voluminousenergy:blast_furnace"
+      "id": "voluminousenergy:blast_furnace"
     },
     "title": {
       "translate": "advancements.voluminousenergy.machine.obtain.blast_furnace.title"

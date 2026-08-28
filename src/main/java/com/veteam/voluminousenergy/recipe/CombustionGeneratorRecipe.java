@@ -32,37 +32,26 @@ public class CombustionGeneratorRecipe extends VERecipe {
         super(new ArrayList<>(), fi, new ArrayList<>(), new ArrayList<>(), Config.COMBUSTION_GENERATOR_FIXED_TICK_TIME.get());
     }
 
-    public static final RecipeSerializer<CombustionGeneratorRecipe> SERIALIZER = new RecipeSerializer<>() {
+    public static final MapCodec<CombustionGeneratorRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
+            VERecipeCodecs.VE_FLUID_INGREDIENT_CODEC.listOf().fieldOf("fluid_ingredients").forGetter((getter) -> getter.registryFluidIngredients)
+    ).apply(instance, CombustionGeneratorRecipe::new));
 
-        public static final MapCodec<CombustionGeneratorRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
-                VERecipeCodecs.VE_FLUID_INGREDIENT_CODEC.listOf().fieldOf("fluid_ingredients").forGetter((getter) -> getter.registryFluidIngredients)
-        ).apply(instance, CombustionGeneratorRecipe::new));
+    private static final FluidSerializerHelper<CombustionGeneratorRecipe> helper = new FluidSerializerHelper<>();
 
-        private static final FluidSerializerHelper<CombustionGeneratorRecipe> helper = new FluidSerializerHelper<>();
-
+    public static final StreamCodec<RegistryFriendlyByteBuf, CombustionGeneratorRecipe> VE_RECIPE_STREAM_CODEC = new StreamCodec<>() {
         @Override
-        public @NotNull MapCodec<CombustionGeneratorRecipe> codec() {
-            return VE_RECIPE_CODEC;
+        public void encode(@NotNull RegistryFriendlyByteBuf buf, @NotNull CombustionGeneratorRecipe recipe) {
+            helper.toNetwork(buf, recipe);
         }
 
         @Override
         @NotNull
-        public StreamCodec<RegistryFriendlyByteBuf, CombustionGeneratorRecipe> streamCodec() {
-            return new StreamCodec<>() {
-                @Override
-                public void encode(@NotNull RegistryFriendlyByteBuf buf, @NotNull CombustionGeneratorRecipe recipe) {
-                    helper.toNetwork(buf, recipe);
-                }
-
-                @Override
-                @NotNull
-                public CombustionGeneratorRecipe decode(@NotNull RegistryFriendlyByteBuf buffer) {
-                    return helper.fromNetwork(new CombustionGeneratorRecipe(), buffer);
-                }
-            };
+        public CombustionGeneratorRecipe decode(@NotNull RegistryFriendlyByteBuf buffer) {
+            return helper.fromNetwork(new CombustionGeneratorRecipe(), buffer);
         }
-
     };
+
+    public static final RecipeSerializer<CombustionGeneratorRecipe> SERIALIZER = new RecipeSerializer<>(VE_RECIPE_CODEC, VE_RECIPE_STREAM_CODEC);
 
 
     @Override

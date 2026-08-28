@@ -6,12 +6,8 @@
     " # "
   ],
   "key": {
-    "#": {
-      "tag": "c:plates/carbon"
-    },
-    "*": {
-      "item": "voluminousenergy:aluminum_shell"
-    }
+    "#": "#c:plates/carbon",
+    "*": "voluminousenergy:aluminum_shell"
   },
   "result": {
     "id": "voluminousenergy:carbon_shielded_aluminum_machine_frame"

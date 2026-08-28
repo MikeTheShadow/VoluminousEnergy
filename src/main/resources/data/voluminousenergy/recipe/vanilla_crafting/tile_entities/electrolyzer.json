@@ -6,21 +6,11 @@
     "cbc"
   ],
   "key": {
-    "#": {
-      "item": "minecraft:iron_ingot"
-    },
-    "*": {
-      "item": "minecraft:iron_block"
-    },
-    "a": {
-      "tag": "c:gears/stone"
-    },
-    "b": {
-      "tag": "c:microchips"
-    },
-    "c": {
-      "item": "minecraft:redstone"
-    }
+    "#": "minecraft:iron_ingot",
+    "*": "minecraft:iron_block",
+    "a": "#c:gears/stone",
+    "b": "#c:microchips",
+    "c": "minecraft:redstone"
   },
   "result": {
     "id": "voluminousenergy:electrolyzer"

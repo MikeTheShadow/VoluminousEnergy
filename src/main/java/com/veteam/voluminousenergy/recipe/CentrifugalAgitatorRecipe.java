@@ -31,43 +31,32 @@ public class CentrifugalAgitatorRecipe extends VERecipe {
 
     }
 
-    public CentrifugalAgitatorRecipe(List<VERecipeCodecs.RegistryFluidIngredient> fi, List<FluidStack> of, int processTime) {
+    public CentrifugalAgitatorRecipe(List<VERecipeCodecs.RegistryFluidIngredient> fi, List<net.neoforged.neoforge.fluids.FluidStackTemplate> of, int processTime) {
         super(List.of(), fi, of, List.of(), processTime);
     }
 
-    public static final RecipeSerializer<CentrifugalAgitatorRecipe> SERIALIZER = new RecipeSerializer<>() {
+    public static final MapCodec<CentrifugalAgitatorRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
+            VERecipeCodecs.VE_FLUID_INGREDIENT_CODEC.listOf().fieldOf("fluid_ingredients").forGetter((getter) -> getter.registryFluidIngredients),
+            VERecipeCodecs.VE_OUTPUT_FLUID_CODEC.listOf().fieldOf("fluid_results").forGetter((getter) -> getter.fluidOutputTemplates),
+            Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime)
+    ).apply(instance, CentrifugalAgitatorRecipe::new));
 
-        public static final MapCodec<CentrifugalAgitatorRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
-                VERecipeCodecs.VE_FLUID_INGREDIENT_CODEC.listOf().fieldOf("fluid_ingredients").forGetter((getter) -> getter.registryFluidIngredients),
-                VERecipeCodecs.VE_OUTPUT_FLUID_CODEC.listOf().fieldOf("fluid_results").forGetter((getter) -> getter.fluidOutputList),
-                Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime)
-        ).apply(instance, CentrifugalAgitatorRecipe::new));
+    private static final FluidSerializerHelper<CentrifugalAgitatorRecipe> helper = new FluidSerializerHelper<>();
 
-        private static final FluidSerializerHelper<CentrifugalAgitatorRecipe> helper = new FluidSerializerHelper<>();
-
+    public static final StreamCodec<RegistryFriendlyByteBuf, CentrifugalAgitatorRecipe> VE_RECIPE_STREAM_CODEC = new StreamCodec<>() {
         @Override
-        public @NotNull MapCodec<CentrifugalAgitatorRecipe> codec() {
-            return VE_RECIPE_CODEC;
+        public void encode(@NotNull RegistryFriendlyByteBuf buf, @NotNull CentrifugalAgitatorRecipe recipe) {
+            helper.toNetwork(buf, recipe);
         }
 
         @Override
         @NotNull
-        public StreamCodec<RegistryFriendlyByteBuf, CentrifugalAgitatorRecipe> streamCodec() {
-            return new StreamCodec<>() {
-                @Override
-                public void encode(@NotNull RegistryFriendlyByteBuf buf, @NotNull CentrifugalAgitatorRecipe recipe) {
-                    helper.toNetwork(buf, recipe);
-                }
-
-                @Override
-                @NotNull
-                public CentrifugalAgitatorRecipe decode(@NotNull RegistryFriendlyByteBuf buffer) {
-                    return helper.fromNetwork(new CentrifugalAgitatorRecipe(), buffer);
-                }
-            };
+        public CentrifugalAgitatorRecipe decode(@NotNull RegistryFriendlyByteBuf buffer) {
+            return helper.fromNetwork(new CentrifugalAgitatorRecipe(), buffer);
         }
-
     };
+
+    public static final RecipeSerializer<CentrifugalAgitatorRecipe> SERIALIZER = new RecipeSerializer<>(VE_RECIPE_CODEC, VE_RECIPE_STREAM_CODEC);
 
 
     @Override

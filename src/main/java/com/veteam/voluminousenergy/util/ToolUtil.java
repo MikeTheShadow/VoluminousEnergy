@@ -4,11 +4,11 @@ import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class ToolUtil {
 
-    public static void SolariumTooltipAppend(ItemStack stack, List<Component> tooltip) {
+    public static void SolariumTooltipAppend(ItemStack stack, Consumer<Component> tooltip) {
         int bonus;
 
         Integer bonusDurability = stack.get(VEDataComponents.SOLARIUM_DURABILITY_BONUS);
@@ -23,7 +23,7 @@ public class ToolUtil {
         Component translatedComponent = TextUtil.translateString("text.voluminousenergy.protective_sheath");
         String translatedString = translatedComponent.getString();
         Component textComponent = Component.nullToEmpty(translatedString + ": " + bonus);
-        tooltip.add(textComponent);
+        tooltip.accept(textComponent);
     }
 
 }

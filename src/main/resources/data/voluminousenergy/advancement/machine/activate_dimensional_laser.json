@@ -2,7 +2,7 @@
   "parent": "voluminousenergy:overworld/stuck_in_oil",
   "display": {
     "icon": {
-      "item": "voluminousenergy:dimensional_laser"
+      "id": "voluminousenergy:dimensional_laser"
     },
     "title": {
       "translate": "advancements.voluminousenergy.machine.activate_dimensional_laser.title"
@@ -26,4 +26,3 @@
     }
   }
 }
-

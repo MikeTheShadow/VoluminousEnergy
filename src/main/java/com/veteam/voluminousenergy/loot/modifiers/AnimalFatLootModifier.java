@@ -13,6 +13,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -26,16 +27,20 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Supplier;
 
 public class AnimalFatLootModifier extends LootModifier {
+    // Decodes to an ItemStackTemplate rather than an ItemStack: constructing an ItemStack from a
+    // Holder<Item> eagerly resolves the holder's data components, which are not bound yet while
+    // loot modifiers are decoded during a datapack reload. ItemStackTemplate defers that
+    // resolution to #create(), called from doApply() once the world is fully loaded.
     public static final Supplier<MapCodec<AnimalFatLootModifier>> CODEC = Suppliers.memoize(() ->
             RecordCodecBuilder.mapCodec(animalFatLootModifierInstance -> animalFatLootModifierInstance.group(
                             LOOT_CONDITIONS_CODEC.fieldOf("conditions").forGetter(AnimalFatLootModifier::getLootItemConditions),
-                            ItemStack.CODEC.fieldOf("addition").forGetter(AnimalFatLootModifier::getItemStackAddition),
+                            ItemStackTemplate.CODEC.fieldOf("addition").forGetter(AnimalFatLootModifier::getItemStackAddition),
                             Codec.INT.fieldOf("minimum_count").forGetter(AnimalFatLootModifier::getMinAmount),
                             Codec.INT.fieldOf("maximum_count").forGetter(AnimalFatLootModifier::getMaxAmount)
                     ).apply(animalFatLootModifierInstance, AnimalFatLootModifier::new)
             ));
 
-    private final ItemStack itemAddition;
+    private final ItemStackTemplate itemAddition;
     private final int minAmount;
     private final int maxAmount;
 
@@ -44,18 +49,15 @@ public class AnimalFatLootModifier extends LootModifier {
      *
      * @param conditionsIn the ILootConditions that need to be matched before the loot is modified.
      */
-    public AnimalFatLootModifier(LootItemCondition[] conditionsIn, ItemStack itemStack, int minAmount, int maxAmount) {
-        super(conditionsIn);
-        this.itemAddition = itemStack;
+    public AnimalFatLootModifier(LootItemCondition[] conditionsIn, ItemStackTemplate itemAddition, int minAmount, int maxAmount) {
+        super(conditionsIn, IGlobalLootModifier.DEFAULT_PRIORITY);
+        this.itemAddition = itemAddition;
         this.minAmount = minAmount;
         this.maxAmount = maxAmount;
     }
 
     public AnimalFatLootModifier(LootItemCondition[] conditionsIn, Item item, int minAmount, int maxAmount) {
-        super(conditionsIn);
-        this.itemAddition = new ItemStack(item, 1);
-        this.minAmount = minAmount;
-        this.maxAmount = maxAmount;
+        this(conditionsIn, new ItemStackTemplate(item, 1), minAmount, maxAmount);
     }
 
     @Override
@@ -63,11 +65,11 @@ public class AnimalFatLootModifier extends LootModifier {
         float luck = context.getLuck() > 0 ? context.getLuck() : 1;
 
         float lootingModif = 1.0f; // Default modifier if no looting is present
-        Entity attacker = context.getParam(LootContextParams.ATTACKING_ENTITY);
+        Entity attacker = context.getParameter(LootContextParams.ATTACKING_ENTITY);
 
         if (attacker instanceof LivingEntity livingAttacker) {
             RegistryAccess registries = context.getLevel().registryAccess();
-            Holder<Enchantment> lootingEnchant = registries.registryOrThrow(Registries.ENCHANTMENT).getHolderOrThrow(Enchantments.LOOTING);
+            Holder<Enchantment> lootingEnchant = registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.LOOTING);
 
             int lootingLevel = EnchantmentHelper.getEnchantmentLevel(lootingEnchant, livingAttacker);
             if (lootingLevel > 0) {
@@ -80,7 +82,7 @@ public class AnimalFatLootModifier extends LootModifier {
         amount = Math.round(amount * luck);
         amount = Math.round(amount * lootingModif);
 
-        ItemStack stackToAdd = itemAddition.copy();
+        ItemStack stackToAdd = itemAddition.create();
         stackToAdd.setCount(amount);
         generatedLoot.add(stackToAdd);
 
@@ -100,7 +102,7 @@ public class AnimalFatLootModifier extends LootModifier {
         return this.maxAmount;
     }
 
-    public ItemStack getItemStackAddition() {
+    public ItemStackTemplate getItemStackAddition() {
         return this.itemAddition;
     }
 

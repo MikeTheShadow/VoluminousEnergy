@@ -2,7 +2,7 @@
   "parent": "voluminousenergy:root",
   "display": {
     "icon": {
-      "item": "voluminousenergy:crusher"
+      "id": "voluminousenergy:crusher"
     },
     "title": {
       "translate": "advancements.voluminousenergy.machine.obtain.crusher.title"

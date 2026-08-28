@@ -2,7 +2,7 @@
   "parent": "voluminousenergy:machine/obtain_blast_furnace",
   "display": {
     "icon": {
-      "item": "voluminousenergy:solarium_ingot"
+      "id": "voluminousenergy:solarium_ingot"
     },
     "title": {
       "translate": "advancements.voluminousenergy.item.obtain.solarium_ingot.title"

@@ -4,9 +4,7 @@
     "*"
   ],
   "key": {
-    "*": {
-      "tag": "c:rosin"
-    }
+    "*": "#c:rosin"
   },
   "result": {
     "id": "voluminousenergy:tiny_rosin",

@@ -8,7 +8,7 @@ import net.minecraft.world.level.block.SoundType;
 
 public class RawCinnabarBlock extends VEBlock {
     public RawCinnabarBlock() {
-        super(Block.Properties.of()
+        super(Block.Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
                 .sound(SoundType.METAL)
                 .strength(1.5f)
                 .requiresCorrectToolForDrops()

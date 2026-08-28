@@ -2,7 +2,7 @@
   "parent": "voluminousenergy:machine/obtain_electrolyzer",
   "display": {
     "icon": {
-      "item": "voluminousenergy:centrifugal_separator"
+      "id": "voluminousenergy:centrifugal_separator"
     },
     "title": {
       "translate": "advancements.voluminousenergy.machine.obtain.centrifugal_separator.title"

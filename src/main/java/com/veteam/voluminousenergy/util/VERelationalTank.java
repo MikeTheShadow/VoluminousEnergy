@@ -172,8 +172,8 @@ public class VERelationalTank {
     }
 
     public void readGuiProperties(CompoundTag nbt) {
-        setSideStatus(nbt.getBoolean(getNBTPrefix() + "_enabled"));
-        int sideInt = nbt.getInt(getNBTPrefix() + "_direction");
+        setSideStatus(nbt.getBooleanOr(getNBTPrefix() + "_enabled", false));
+        int sideInt = nbt.getIntOr(getNBTPrefix() + "_direction", 0);
         setSideDirection(IntToDirection.IntegerToDirection(sideInt));
     }
 }

@@ -7,7 +7,7 @@ import net.minecraft.world.level.block.SoundType;
 
 public class BauxiteOre extends VEOreBlock {
     public BauxiteOre() {
-        super(Properties.of()
+        super(Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
                 .sound(SoundType.STONE)
                 .strength(2.0f)
                 .requiresCorrectToolForDrops()

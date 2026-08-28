@@ -7,7 +7,7 @@ import net.minecraft.world.level.block.SoundType;
 
 public class RawBoneBlock extends VEBlock {
     public RawBoneBlock() {
-        super(Block.Properties.of()
+        super(Block.Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
                 .sound(SoundType.BONE_BLOCK)
                 .strength(2F)
                 .requiresCorrectToolForDrops()

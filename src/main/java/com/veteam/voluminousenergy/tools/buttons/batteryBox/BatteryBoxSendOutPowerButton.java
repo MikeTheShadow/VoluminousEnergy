@@ -1,14 +1,14 @@
 package com.veteam.voluminousenergy.tools.buttons.batteryBox;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
 import com.veteam.voluminousenergy.tools.networking.packets.BatteryBoxSendOutPowerPacket.BatteryBoxSendOutPowerPayload;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 public class BatteryBoxSendOutPowerButton extends VEIOButton {
 
@@ -32,16 +32,14 @@ public class BatteryBoxSendOutPowerButton extends VEIOButton {
     }
 
     @Override
-    public void renderWidget(GuiGraphics matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3) {
-        RenderSystem.setShaderTexture(0, GUI_TOOLS);
-
+    protected void extractContents(GuiGraphicsExtractor matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3) {
         if (!isHovered) u = 96;
         else u = 112;
 
         if (!sendOutPower) v = 178;
         else v = 166;
 
-        matrixStack.blit(GUI_TOOLS, getX(), getY(), this.u, this.v, this.width, this.height);
+        matrixStack.blit(RenderPipelines.GUI_TEXTURED, GUI_TOOLS, getX(), getY(), this.u, this.v, this.width, this.height, 256, 256);
     }
 
     private void cycle() {
@@ -50,9 +48,9 @@ public class BatteryBoxSendOutPowerButton extends VEIOButton {
     }
 
     @Override
-    public void onPress() {
+    public void onPress(net.minecraft.client.input.InputWithModifiers input) {
         cycle();
-        PacketDistributor.sendToServer(new BatteryBoxSendOutPowerPayload(this.sendOutPower));
+        ClientPacketDistributor.sendToServer(new BatteryBoxSendOutPowerPayload(this.sendOutPower));
     }
 
     public void setStatus(boolean status) {

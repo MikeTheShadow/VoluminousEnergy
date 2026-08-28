@@ -20,7 +20,7 @@ public class Oxygen {
     public static final Identifier OXYGEN_STILL_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/oxygen_still");
     public static final Identifier OXYGEN_FLOWING_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/oxygen_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).air();
+    public static Block.Properties stdProp = Block.Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).air();
 
     public static FlowingFluid OXYGEN;
     public static FlowingFluid FLOWING_OXYGEN;
@@ -38,12 +38,12 @@ public class Oxygen {
     }
 
     public static VEFlowingFluidBlock FlowingOxygenBlock() {
-        OXYGEN_BLOCK = new VEFlowingFluidBlock(OXYGEN, stdProp);
+        OXYGEN_BLOCK = new VEFlowingFluidBlock(OXYGEN, stdProp.setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId()));
         return OXYGEN_BLOCK;
     }
 
     public static Item OxygenBucket() {
-        OXYGEN_BUCKET = new BucketItem(OXYGEN, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
+        OXYGEN_BUCKET = new BucketItem(OXYGEN, new Item.Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId()).craftRemainder(Items.BUCKET).stacksTo(1));
         return OXYGEN_BUCKET;
     }
 

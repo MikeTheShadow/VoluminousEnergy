@@ -7,6 +7,7 @@ import net.minecraft.world.level.block.SoundType;
 public class AluminumShellBlock extends VEBlock {
     public AluminumShellBlock() {
         super(Properties.of()
+                .setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .requiresCorrectToolForDrops()

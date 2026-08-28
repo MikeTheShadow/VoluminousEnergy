@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 
 public class DeepslateCinnabarOre extends VEOreBlock {
     public DeepslateCinnabarOre() {
-        super(BlockBehaviour.Properties.of()
+        super(BlockBehaviour.Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
                 .sound(SoundType.STONE)
                 .strength(1.5f)
                 .requiresCorrectToolForDrops()

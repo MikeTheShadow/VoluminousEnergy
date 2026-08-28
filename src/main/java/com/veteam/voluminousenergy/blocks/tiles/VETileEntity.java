@@ -15,6 +15,7 @@ import com.veteam.voluminousenergy.util.tiles.CapabilityMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -22,6 +23,7 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -40,6 +42,10 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
@@ -262,9 +268,9 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     @Nonnull
     @Override
     public CompoundTag getUpdateTag(@NotNull HolderLookup.Provider registry) {
-        CompoundTag compoundTag = new CompoundTag();
-        this.saveAdditional(compoundTag, registry);
-        return compoundTag;
+        TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, registry);
+        this.saveAdditional(output);
+        return output.buildResult();
     }
 
     @Override
@@ -280,81 +286,78 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     /**
      * Loads inventory, energy, slot managers, counter, and length.
      *
-     * @param tag CompoundTag
+     * @param in ValueInput
      */
     @Override
-    public void loadAdditional(CompoundTag tag, @NotNull HolderLookup.Provider registry) {
-        CompoundTag inv = tag.getCompound("inv");
-
+    public void loadAdditional(ValueInput in) {
         ItemStackHandler handler = getInventory();
 
         if (handler != null) {
-            handler.deserializeNBT(registry, inv);
+            in.child("inv").ifPresent(handler::deserialize);
         }
-        if (energy != null)
-            energy.deserializeNBT(tag);
+        if (energy != null) {
+            in.child("energy").ifPresent(energy::deserialize);
+        }
 
+        CompoundTag slotState = in.read("slot_state", CompoundTag.CODEC).orElseGet(CompoundTag::new);
         for (VESlotManager manager : getSlotManagers()) {
-            manager.read(tag);
+            manager.read(slotState);
         }
 
         for (VERelationalTank relationalTank : getRelationalTanks()) {
-            CompoundTag compoundTag = tag.getCompound(relationalTank.getTankName());
-            relationalTank.getTank().readFromNBT(registry, compoundTag);
-            relationalTank.readGuiProperties(tag);
+            in.child(relationalTank.getTankName()).ifPresent(relationalTank.getTank()::deserialize);
+            relationalTank.readGuiProperties(slotState);
         }
 
-        if (tag.contains("sends_out_power")) {
-            this.sendsOutPower = tag.getBoolean("sends_out_power");
-        }
+        this.sendsOutPower = in.getBooleanOr("sends_out_power", false);
 
-        if (tag.contains("recipes_used", 10)) {
-            CompoundTag recipesTag = tag.getCompound("recipes_used");
-            for (String s : recipesTag.getAllKeys()) {
-                this.recipesUsed.put(Identifier.parse(s), recipesTag.getInt(s));
+        in.read("recipes_used", CompoundTag.CODEC).ifPresent(recipesTag -> {
+            for (String s : recipesTag.keySet()) {
+                this.recipesUsed.put(Identifier.parse(s), recipesTag.getIntOr(s, 0));
             }
-        }
+        });
 
-        super.loadAdditional(tag, registry);
+        super.loadAdditional(in);
     }
 
     /**
      * Saves inventory, energy, slot managers, counter, and length.
      * To save the tile call setChanged();
      *
-     * @param tag CompoundTag
+     * @param out ValueOutput
      */
     @Override
-    public void saveAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registry) {
+    public void saveAdditional(@NotNull ValueOutput out) {
         ItemStackHandler handler = getInventory();
         if (handler != null) {
-            CompoundTag compound = handler.serializeNBT(registry);
-            tag.put("inv", compound);
+            handler.serialize(out.child("inv"));
         }
 
         if (energy != null)
-            energy.serializeNBT(tag);
+            energy.serialize(out.child("energy"));
 
+        CompoundTag slotState = new CompoundTag();
         for (VESlotManager manager : getSlotManagers()) {
-            manager.write(tag);
+            manager.write(slotState);
         }
 
         for (VERelationalTank relationalTank : getRelationalTanks()) {
-            CompoundTag compoundTag = new CompoundTag();
-            relationalTank.getTank().writeToNBT(registry, compoundTag);
-            tag.put(relationalTank.getTankName(), compoundTag);
-            relationalTank.writeGuiProperties(tag);
+            relationalTank.getTank().serialize(out.child(relationalTank.getTankName()));
+            relationalTank.writeGuiProperties(slotState);
+        }
+        if (!slotState.isEmpty()) {
+            out.store("slot_state", CompoundTag.CODEC, slotState);
         }
 
-        tag.putBoolean("sends_out_power", sendsOutPower);
+        out.putBoolean("sends_out_power", sendsOutPower);
 
         if (!this.recipesUsed.isEmpty()) {
             CompoundTag recipesTag = new CompoundTag();
             this.recipesUsed.forEach((id, count) -> recipesTag.putInt(id.toString(), count));
-            tag.put("recipes_used", recipesTag);
+            out.store("recipes_used", CompoundTag.CODEC, recipesTag);
         }
 
-        super.saveAdditional(tag, registry);
+        super.saveAdditional(out);
     }
 
     @Override
@@ -371,12 +374,12 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     }
 
     @Override
-    protected void applyImplicitComponents(DataComponentInput componentInput) {
+    protected void applyImplicitComponents(DataComponentGetter componentInput) {
         CustomData customData = componentInput.get(DataComponents.CUSTOM_DATA);
 
         if (customData != null) {
-            CompoundTag dataTag = customData.getUnsafe();
-            loadAdditional(dataTag, this.level.registryAccess());
+            CompoundTag dataTag = customData.copyTag();
+            loadAdditional(TagValueInput.create(ProblemReporter.DISCARDING, this.level.registryAccess(), dataTag));
         }
     }
 
@@ -392,7 +395,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
     public void recordRecipeUsed(RecipeHolder<?> recipe) {
         if (recipe != null) {
-            this.recipesUsed.addTo(recipe.id(), 1);
+            this.recipesUsed.addTo(recipe.id().identifier(), 1);
         }
     }
 
@@ -536,12 +539,9 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
      * When a data packet is received load it.
      */
     @Override
-    public void onDataPacket(@NotNull Connection net, @NotNull ClientboundBlockEntityDataPacket pkt,
-            @NotNull HolderLookup.Provider lookupProvider) {
-        if (energy != null && pkt.getTag().contains("energy"))
-            energy.setEnergy(pkt.getTag().getInt("energy"));
-        this.loadAdditional(pkt.getTag(), lookupProvider);
-        super.onDataPacket(net, pkt, lookupProvider);
+    public void onDataPacket(@NotNull Connection net, @NotNull ValueInput input) {
+        this.loadAdditional(input);
+        super.onDataPacket(net, input);
     }
 
     public int progressBurnCounterPX(int px) {

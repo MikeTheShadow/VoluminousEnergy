@@ -1,8 +1,6 @@
 {
   "type": "minecraft:smelting",
-  "ingredient": {
-    "tag": "c:dusts/aluminum"
-  },
+  "ingredient": "#c:dusts/aluminum",
   "result": {
     "id": "voluminousenergy:aluminum_ingot"
   },

@@ -8,10 +8,13 @@ import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.batteries.VEEnergyItem;
 import com.veteam.voluminousenergy.items.tools.multitool.MuiltiToolFluidHandler;
 import com.veteam.voluminousenergy.items.tools.multitool.VEMultitoolItems;
+import com.veteam.voluminousenergy.recipe.VERecipes;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyItemStorage;
 import com.veteam.voluminousenergy.tools.networking.packets.*;
+import com.veteam.voluminousenergy.util.CapabilityAdapters;
 import com.veteam.voluminousenergy.util.VEDataComponents;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -19,9 +22,16 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.RegisterEvent;
+
+import java.util.List;
 
 @EventBusSubscriber(modid = VoluminousEnergy.MODID)
 public class VEGenericListener {
@@ -39,22 +49,31 @@ public class VEGenericListener {
 
             if (b.hasInventory()) {
                 event.registerBlock(
-                        Capabilities.ItemHandler.BLOCK,
-                        (level, pos, state, be, side) -> ((VETileEntity) be).getCapabilityMap().getItemStackHandler(side, be),
+                        Capabilities.Item.BLOCK,
+                        (level, pos, state, be, side) -> {
+                            IItemHandler itemHandler = ((VETileEntity) be).getCapabilityMap().getItemStackHandler(side, be);
+                            return itemHandler == null ? null : CapabilityAdapters.toResourceHandler(itemHandler);
+                        },
                         block);
             }
 
             if (b.hasEnergy()) {
                 event.registerBlock(
-                        Capabilities.EnergyStorage.BLOCK,
-                        (level, pos, state, be, side) -> ((VETileEntity) be).getCapabilityMap().getEnergyStorage(),
+                        Capabilities.Energy.BLOCK,
+                        (level, pos, state, be, side) -> {
+                            IEnergyStorage energyStorage = ((VETileEntity) be).getCapabilityMap().getEnergyStorage();
+                            return energyStorage == null ? null : CapabilityAdapters.toEnergyHandler(energyStorage);
+                        },
                         block);
             }
 
             if (b.hasFluids()) {
                 event.registerBlock(
-                        Capabilities.FluidHandler.BLOCK,
-                        (level, pos, state, be, side) -> ((VETileEntity) be).getCapabilityMap().getFluidHandler(side, be),
+                        Capabilities.Fluid.BLOCK,
+                        (level, pos, state, be, side) -> {
+                            IFluidHandler fluidHandler = ((VETileEntity) be).getCapabilityMap().getFluidHandler(side, be);
+                            return fluidHandler == null ? null : CapabilityAdapters.toResourceHandler(fluidHandler);
+                        },
                         block);
             }
         }
@@ -62,24 +81,40 @@ public class VEGenericListener {
         VEItems.VE_ITEM_REGISTRY.getEntries().forEach(itemDeferredHolder -> {
             Item item = itemDeferredHolder.get();
             if (item instanceof VEEnergyItem) {
-                event.registerItem(Capabilities.EnergyStorage.ITEM, (stack, provider) ->
+                event.registerItem(Capabilities.Energy.ITEM, (stack, provider) ->
                 {
                     VEEnergyItem energyItem = (VEEnergyItem) stack.getItem();
-                    return new VEEnergyItemStorage(stack, energyItem.getMaxEnergy(), energyItem.getMaxTransfer());
+                    VEEnergyItemStorage storage = new VEEnergyItemStorage(stack, energyItem.getMaxEnergy(), energyItem.getMaxTransfer());
+                    return CapabilityAdapters.toEnergyHandler(storage);
                 }, item);
             }
         });
 
-        event.registerItem(Capabilities.FluidHandler.ITEM, (stack, provider) ->
-                new MuiltiToolFluidHandler(
+        event.registerItem(Capabilities.Fluid.ITEM, (stack, provider) ->
+                CapabilityAdapters.toResourceHandler(new MuiltiToolFluidHandler(
                         VEDataComponents.SIMPLE_FLUID_DATA_TYPE,
-                        stack),
+                        stack)),
                 VEMultitoolItems.MULTI_TOOL.get());
     }
 
     @SubscribeEvent
     public static void onRegistry(final RegisterEvent blockRegistryEvent) {
         VoluminousEnergy.LOGGER.info("Running: " + blockRegistryEvent.getRegistryKey()); // If you delete this you have to fix it
+    }
+
+    /*
+     * NeoForge 26.1 only sends full recipe content to clients for types explicitly
+     * requested here; without this, RecipesReceivedEvent#getRecipeMap() on the client
+     * never contains VE recipes, so VERecipe's cache (used by JEI and, in singleplayer,
+     * by machines too since the cache is shared static state with the integrated server)
+     * stays empty. Unrestricted dist so this also fires for the integrated server.
+     */
+    @SubscribeEvent
+    public static void onDataPackSync(OnDatapackSyncEvent event) {
+        List<RecipeType<?>> recipeTypes = VERecipes.VERecipeTypes.VE_RECIPE_TYPES_REGISTRY.getEntries().stream()
+                .<RecipeType<?>>map(DeferredHolder::get)
+                .toList();
+        event.sendRecipes(recipeTypes);
     }
 
     @SubscribeEvent
@@ -90,8 +125,8 @@ public class VEGenericListener {
     @SubscribeEvent
     public static void onPayloadRegister(RegisterPayloadHandlersEvent event) {
         PayloadRegistrar registrar = event.registrar("ve_1");
-        registrar.playBidirectional(BoolButtonPacket.BoolButtonPayload.TYPE, BoolButtonPacket.BoolButtonPayload.STREAM_CODEC,BoolButtonPacket::handle);
-        registrar.playBidirectional(DirectionButtonPacket.DirectionButtonPayload.TYPE, DirectionButtonPacket.DirectionButtonPayload.STREAM_CODEC,DirectionButtonPacket::handle);
+        registrar.playToServer(BoolButtonPacket.BoolButtonPayload.TYPE, BoolButtonPacket.BoolButtonPayload.STREAM_CODEC,BoolButtonPacket::handle);
+        registrar.playToServer(DirectionButtonPacket.DirectionButtonPayload.TYPE, DirectionButtonPacket.DirectionButtonPayload.STREAM_CODEC,DirectionButtonPacket::handle);
         registrar.playToServer(TankBoolPacket.TankBoolPacketPayload.TYPE, TankBoolPacket.TankBoolPacketPayload.STREAM_CODEC,TankBoolPacket::handle);
         registrar.playToServer(TankDirectionPacket.TankDirectionPayload.TYPE, TankDirectionPacket.TankDirectionPayload.STREAM_CODEC,TankDirectionPacket::handle);
         registrar.playToServer(BatteryBoxSendOutPowerPacket.BatteryBoxSendOutPowerPayload.TYPE, BatteryBoxSendOutPowerPacket.BatteryBoxSendOutPowerPayload.STREAM_CODEC,BatteryBoxSendOutPowerPacket::handle);

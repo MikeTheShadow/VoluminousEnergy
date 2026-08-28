@@ -20,7 +20,7 @@ public class Naphtha {
     public static final Identifier NAPHTHA_STILL_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/naphtha_still");
     public static final Identifier NAPHTHA_FLOWING_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/naphtha_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
+    public static Block.Properties stdProp = Block.Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
 
 
     public static FlowingFluid NAPHTHA;
@@ -39,12 +39,12 @@ public class Naphtha {
     }
 
     public static VEFlowingFluidBlock FlowingNaphthaBlock() {
-        NAPHTHA_BLOCK = new VEFlowingFluidBlock(NAPHTHA, stdProp);
+        NAPHTHA_BLOCK = new VEFlowingFluidBlock(NAPHTHA, stdProp.setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId()));
         return NAPHTHA_BLOCK;
     }
 
     public static Item NaphthaBucket() {
-        NAPHTHA_BUCKET = new BucketItem(NAPHTHA, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
+        NAPHTHA_BUCKET = new BucketItem(NAPHTHA, new Item.Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId()).craftRemainder(Items.BUCKET).stacksTo(1));
         return NAPHTHA_BUCKET;
     }
 

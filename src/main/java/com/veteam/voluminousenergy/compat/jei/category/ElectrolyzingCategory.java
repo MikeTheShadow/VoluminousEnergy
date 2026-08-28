@@ -1,5 +1,7 @@
 package com.veteam.voluminousenergy.compat.jei.category;
 
+import com.veteam.voluminousenergy.util.recipe.IngredientUtil;
+
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
@@ -19,11 +21,12 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -60,8 +63,13 @@ public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe
     }
 
     @Override
-    public @NotNull IDrawable getBackground() {
-        return background;
+    public int getWidth() {
+        return background.getWidth();
+    }
+
+    @Override
+    public int getHeight() {
+        return background.getHeight();
     }
 
     @Override
@@ -70,7 +78,7 @@ public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe
     }
 
     @Override
-    public void draw(ElectrolyzerRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphics matrixStack, double mouseX, double mouseY) {
+    public void draw(ElectrolyzerRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphicsExtractor matrixStack, double mouseX, double mouseY) {
         arrow.draw(matrixStack, 25, 30);
         emptyArrow.draw(matrixStack, 25, 30);
         slotDrawable.draw(matrixStack, 5, 20); // Input
@@ -105,12 +113,13 @@ public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe
                                   IIngredientAcceptor rng0OutputAcceptor,
                                   IIngredientAcceptor rng1OutputAcceptor,
                                   IIngredientAcceptor rng2OutputAcceptor) {
-        ArrayList<ItemStack> inputStacks = new ArrayList<>(Arrays.asList(recipe.getIngredient(0).getItems()));
+        ArrayList<ItemStack> inputStacks = new ArrayList<>(Arrays.asList(IngredientUtil.getItems(recipe.getIngredient(0))));
 
         itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, inputStacks);
 
-        if (!recipe.getIngredient(1).isEmpty()) {
-            ItemStack bucketStack = new ItemStack(Items.BUCKET, recipe.getIngredient(1).getItems()[0].getCount());
+        Ingredient bucketIngredient = recipe.getIngredient(1);
+        if (bucketIngredient != null && !bucketIngredient.isEmpty()) {
+            ItemStack bucketStack = new ItemStack(Items.BUCKET, IngredientUtil.getItems(bucketIngredient)[0].getCount());
             bucketInputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, bucketStack);
         }
 

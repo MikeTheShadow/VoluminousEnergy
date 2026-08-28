@@ -6,18 +6,10 @@
     "1#1"
   ],
   "key": {
-    "#": {
-      "tag": "c:ingots/silver"
-    },
-    "*": {
-      "tag": "c:microchips"
-    },
-    "0": {
-      "tag": "c:ingots/lead"
-    },
-    "1": {
-      "tag": "c:ingots/tungsten_steel"
-    }
+    "#": "#c:ingots/silver",
+    "*": "#c:microchips",
+    "0": "#c:ingots/lead",
+    "1": "#c:ingots/tungsten_steel"
   },
   "result": {
     "id": "voluminousenergy:rfid_chip"

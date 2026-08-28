@@ -193,6 +193,6 @@ public class TextUtil {
             componentToRender = componentToRender.copy().withStyle(styleOptional);
         }
 
-        graphics.drawString(font, componentToRender, x, y, 0x0, shouldShadow);
+        graphics.text(font, componentToRender, x, y, 0xFF000000, shouldShadow);
     }
 }

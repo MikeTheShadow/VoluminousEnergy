@@ -6,15 +6,9 @@
     "###"
   ],
   "key": {
-    "#": {
-      "tag": "c:plates/aluminum"
-    },
-    "a": {
-      "tag": "c:microchips"
-    },
-    "b": {
-      "item": "voluminousenergy:carbon_shielded_aluminum_machine_frame"
-    }
+    "#": "#c:plates/aluminum",
+    "a": "#c:microchips",
+    "b": "voluminousenergy:carbon_shielded_aluminum_machine_frame"
   },
   "result": {
     "id": "voluminousenergy:electric_furnace"
