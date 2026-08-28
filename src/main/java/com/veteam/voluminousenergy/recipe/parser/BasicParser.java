@@ -51,7 +51,7 @@ public class BasicParser {
             ItemStack stackInSlot = tile.getInventory().getStackInSlot(pos.tilePos());
             Ingredient ingredient = recipe.getIngredient(pos.recipePos());
             if (stackInSlot.isEmpty()) continue;
-            if (ingredient.test(stackInSlot)) continue;
+            if (ingredient != null && ingredient.test(stackInSlot)) continue;
             return false;
         }
 
@@ -70,7 +70,7 @@ public class BasicParser {
             ItemStack stackInSlot = tile.getInventory().getStackInSlot(pos.tilePos());
             Ingredient ingredient = recipe.getIngredient(pos.recipePos());
             int amountNeeded = recipe.getIngredientCount(pos.recipePos());
-            if (ingredient.isEmpty()) continue;
+            if (ingredient == null || ingredient.isEmpty()) continue;
             if (!ingredient.test(stackInSlot) || stackInSlot.getCount() < amountNeeded)
                 return false;
         }
@@ -140,7 +140,7 @@ public class BasicParser {
         for (SlotAndRecipePos pos : ingredientPositions) {
             if (pos.tilePos() == slot) {
                 Ingredient recipeIngredient = recipe.getIngredient(pos.recipePos());
-                return recipeIngredient.test(stack);
+                return recipeIngredient != null && recipeIngredient.test(stack);
             }
         }
         for (SlotAndRecipePos pos : itemResultPositions) {

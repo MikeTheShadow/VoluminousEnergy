@@ -26,6 +26,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -122,8 +123,9 @@ public class CentrifugalSeparationCategory implements IRecipeCategory<Centrifuga
         itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, inputStacks);
 
 
-        if (!recipe.getIngredient(1).isEmpty()) {
-            ItemStack[] buckets = IngredientUtil.getItems(recipe.getIngredient(1));
+        Ingredient bucketIngredient = recipe.getIngredient(1);
+        if (bucketIngredient != null && !bucketIngredient.isEmpty()) {
+            ItemStack[] buckets = IngredientUtil.getItems(bucketIngredient);
             bucketInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, Arrays.stream(buckets).toList());
         } else {
             bucketInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, Collections.singletonList(new ItemStack(Items.AIR, 1)));

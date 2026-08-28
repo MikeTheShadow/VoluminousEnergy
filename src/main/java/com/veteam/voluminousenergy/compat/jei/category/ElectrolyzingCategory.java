@@ -26,6 +26,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -116,8 +117,9 @@ public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe
 
         itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, inputStacks);
 
-        if (!recipe.getIngredient(1).isEmpty()) {
-            ItemStack bucketStack = new ItemStack(Items.BUCKET, IngredientUtil.getItems(recipe.getIngredient(1))[0].getCount());
+        Ingredient bucketIngredient = recipe.getIngredient(1);
+        if (bucketIngredient != null && !bucketIngredient.isEmpty()) {
+            ItemStack bucketStack = new ItemStack(Items.BUCKET, IngredientUtil.getItems(bucketIngredient)[0].getCount());
             bucketInputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, bucketStack);
         }
 
