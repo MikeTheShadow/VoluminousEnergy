@@ -82,24 +82,10 @@ public abstract class VERecipe implements Recipe<RecipeInput> {
         }
     }
 
-    /**
-     * Whether this recipe actually declares an ingredient at the given index. Recipes with an
-     * optional secondary input (e.g. the bucket slot on the centrifugal separator / electrolyzer)
-     * simply omit it, so callers must check before assuming index 1 exists.
-     */
     public boolean hasIngredient(int id) {
         return id >= 0 && id < this.getIngredients().size();
     }
 
-    /**
-     * @return the ingredient at {@code id}, or null when the recipe declares no such ingredient.
-     * <p>
-     * This used to return {@code Ingredient.of()} as an "empty" sentinel, which was valid through
-     * 1.21.1. As of 26.1 an Ingredient can no longer be empty -- the constructor throws
-     * {@code UnsupportedOperationException: Ingredients can't be empty} -- so out-of-range lookups
-     * blew up instead of yielding a benign empty value. Null is the sentinel now; use
-     * {@link #hasIngredient(int)} to test first.
-     */
     @Nullable
     public Ingredient getIngredient(int id) {
         return hasIngredient(id) ? getIngredients().get(id) : null;
@@ -128,7 +114,7 @@ public abstract class VERecipe implements Recipe<RecipeInput> {
     /*
      * VE recipes are never placed into a crafting grid via the recipe book, so they have no
      * PlacementInfo. Marking them special keeps RecipeManager#finalizeRecipeLoading from warning
-     * that every one of them "can't be placed due to empty ingredients" -- that check is
+     * that every one of them "can't be placed due to empty ingredients", since that check is
      * !isSpecial() && placementInfo().isImpossibleToPlace(), and NOT_PLACEABLE always satisfies
      * the latter. Machines resolve recipes through getCachedRecipes, not the recipe book.
      */
