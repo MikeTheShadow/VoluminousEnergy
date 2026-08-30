@@ -67,7 +67,7 @@ public class Ammonia {
             .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY),
             AMMONIA_STILL_TEXTURE,
             AMMONIA_FLOWING_TEXTURE
-    ).setCeilingFlush(true);
+    ).setGaseousFluid(true);
 
     public static final BaseFlowingFluid.Properties PROPERTIES = new BaseFlowingFluid.Properties(() -> AMMONIA_FLUID_TYPE, () -> AMMONIA, () -> FLOWING_AMMONIA)
             .block(() -> AMMONIA_BLOCK).bucket(() -> AMMONIA_BUCKET);

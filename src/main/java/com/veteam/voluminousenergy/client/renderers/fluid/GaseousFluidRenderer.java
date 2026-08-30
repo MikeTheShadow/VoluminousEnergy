@@ -26,9 +26,9 @@ import net.neoforged.neoforge.client.textures.FluidSpriteCache;
  * ends of the block: heights go through {@link #flipY} and quad winding is reversed.
  */
 @OnlyIn(Dist.CLIENT)
-public final class GasFluidRenderer {
+public final class GaseousFluidRenderer {
 
-    private GasFluidRenderer() {
+    private GaseousFluidRenderer() {
     }
 
     private static float flipY(float height) {
