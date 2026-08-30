@@ -1,6 +1,12 @@
 package com.veteam.voluminousenergy.util.extensions;
 
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.veteam.voluminousenergy.client.renderers.fluid.GaseousFluidRenderer;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 
 import javax.annotation.Nullable;
@@ -10,12 +16,27 @@ public class VEFluidClientExtension implements IClientFluidTypeExtensions {
     private final ResourceLocation flowingTexture;
     private final ResourceLocation overlayTexture;
     private final int colourTint;
+    private final boolean gaseousFluid;
 
     public VEFluidClientExtension(ResourceLocation still, ResourceLocation flowing, @Nullable ResourceLocation overlay, int colourTint) {
+        this(still, flowing, overlay, colourTint, false);
+    }
+
+    public VEFluidClientExtension(ResourceLocation still, ResourceLocation flowing, @Nullable ResourceLocation overlay, int colourTint, boolean gaseousFluid) {
         this.stillTexture = still;
         this.flowingTexture = flowing;
         this.overlayTexture = overlay;
         this.colourTint = colourTint;
+        this.gaseousFluid = gaseousFluid;
+    }
+
+    @Override
+    public boolean renderFluid(FluidState fluidState, BlockAndTintGetter getter, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState) {
+        if (!gaseousFluid) {
+            return false;
+        }
+        GaseousFluidRenderer.tesselate(getter, pos, vertexConsumer, blockState, fluidState);
+        return true;
     }
 
     @Override

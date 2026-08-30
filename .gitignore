@@ -38,3 +38,4 @@ forge*changelog.txt
 
 .editorconfig
 .nvim.lua
+.DS_Store
