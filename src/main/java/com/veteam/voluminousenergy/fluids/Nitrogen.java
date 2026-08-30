@@ -69,7 +69,7 @@ public class Nitrogen {
             .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY),
             NITROGEN_STILL_TEXTURE,
             NITROGEN_FLOWING_TEXTURE
-    );
+    ).setCeilingFlush(true);
 
     public static final BaseFlowingFluid.Properties properties = new BaseFlowingFluid.Properties(() -> NITROGEN_FLUID_TYPE, () -> NITROGEN, () -> FLOWING_NITROGEN)
             .block(() -> NITROGEN_BLOCK).bucket(() -> NITROGEN_BUCKET);

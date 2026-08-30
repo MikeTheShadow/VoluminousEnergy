@@ -67,7 +67,7 @@ public class Oxygen {
             .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY),
             OXYGEN_STILL_TEXTURE,
             OXYGEN_FLOWING_TEXTURE
-    );
+    ).setCeilingFlush(true);
 
     public static final BaseFlowingFluid.Properties properties = new BaseFlowingFluid.Properties(() -> OXYGEN_FLUID_TYPE, () -> OXYGEN, () -> FLOWING_OXYGEN)
             .block(() -> OXYGEN_BLOCK).bucket(() -> OXYGEN_BUCKET);

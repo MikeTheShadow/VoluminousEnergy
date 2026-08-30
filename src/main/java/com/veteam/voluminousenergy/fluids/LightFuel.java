@@ -68,7 +68,7 @@ public class LightFuel {
             .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY),
             LIGHT_FUEL_STILL_TEXTURE,
             LIGHT_FUEL_FLOWING_TEXTURE
-    );
+    ).setCeilingFlush(true);
 
     public static final BaseFlowingFluid.Properties properties = new BaseFlowingFluid.Properties(() -> LIGHT_FUEL_FLUID_TYPE, () -> LIGHT_FUEL, () -> FLOWING_LIGHT_FUEL)
             .block(() -> LIGHT_FUEL_BLOCK).bucket(() -> LIGHT_FUEL_BUCKET);

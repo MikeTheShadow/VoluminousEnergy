@@ -14,6 +14,7 @@ public class VEFluidType extends FluidType {
     private final ResourceLocation FLOWING_TEXTURE;
     private ResourceLocation overlayTexture;
     private int colourTint;
+    private boolean ceilingFlush;
 
     /**
      * Default constructor.
@@ -47,7 +48,17 @@ public class VEFluidType extends FluidType {
         this.colourTint = colourTint;
     }
 
+    /**
+     * Marks this fluid as pooling upward against a ceiling rather than downward on a floor.
+     *
+     * @param ceilingFlush whether the fluid renders with a vertically mirrored mesh
+     */
+    public VEFluidType setCeilingFlush(boolean ceilingFlush) {
+        this.ceilingFlush = ceilingFlush;
+        return this;
+    }
+
     public VEFluidClientExtension getFluidClientExtension() {
-        return new VEFluidClientExtension(STILL_TEXTURE, FLOWING_TEXTURE, overlayTexture, colourTint);
+        return new VEFluidClientExtension(STILL_TEXTURE, FLOWING_TEXTURE, overlayTexture, colourTint, ceilingFlush);
     }
 }

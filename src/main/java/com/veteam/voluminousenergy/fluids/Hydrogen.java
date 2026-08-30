@@ -67,7 +67,7 @@ public class Hydrogen {
             .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY),
             HYDROGEN_STILL_TEXTURE,
             HYDROGEN_FLOWING_TEXTURE
-    );
+    ).setCeilingFlush(true);
 
     public static final BaseFlowingFluid.Properties properties = new BaseFlowingFluid.Properties(() -> HYDROGEN_FLUID_TYPE, () -> HYDROGEN, () -> FLOWING_HYDROGEN)
             .block(() -> HYDROGEN_BLOCK).bucket(() -> HYDROGEN_BUCKET);
