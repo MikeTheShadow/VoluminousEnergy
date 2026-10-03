@@ -53,14 +53,17 @@ public class Multitool extends VEItem {
 
     @Override
     public int getBarWidth(ItemStack itemStack) {
-        IFluidHandler fluidHandler = itemStack.getCapability(Capabilities.FluidHandler.ITEM);
-        return (int) Math.round(13 * (fluidHandler.getFluidInTank(0).getAmount() / (double) TEMP_TANK_CAPACITY));
+        return Math.round(13 * getFillRatio(itemStack));
     }
 
     @Override
     public int getBarColor(ItemStack itemStack) {
+        return Mth.hsvToRgb(getFillRatio(itemStack) / 3.0F, 1.0F, 1.0F);
+    }
+
+    private float getFillRatio(ItemStack itemStack) {
         IFluidHandler fluidHandler = itemStack.getCapability(Capabilities.FluidHandler.ITEM);
-        return Mth.hsvToRgb(fluidHandler.getFluidInTank(0).getAmount() / 3.0F, 1.0F, 1.0F);
+        return fluidHandler.getFluidInTank(0).getAmount() / (float) TEMP_TANK_CAPACITY;
     }
 
     @Override
