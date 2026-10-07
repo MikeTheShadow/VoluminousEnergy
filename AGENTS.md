@@ -213,8 +213,8 @@ the build files.
 There is no unit test suite. A task is done when:
 
 1. `./gradlew compileJava` (or `./gradlew build`) succeeds.
-2. If the change touches registries, tags, loot, models, or other datagen output, `./gradlew
-   runClientData` has been run and the diff in `src/generated/resources` reviewed and included.
+2. If the change touches registries, tags, loot, models, or other datagen output, `./gradlew runData`
+   has been run and the diff in `src/generated/resources` reviewed and included.
 3. If the change adds or touches gametests (none exist yet), `./gradlew runGameTestServer` passes.
 4. For rendering, GUI, or machine-behaviour changes, say plainly that it needs an in-game check via
    `./gradlew runClient`. Do not claim it works without one.
