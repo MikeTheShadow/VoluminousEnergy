@@ -3,6 +3,8 @@
   "values": [
     "voluminousenergy:light_fuel",
     "voluminousenergy:oxygen",
-    "voluminousenergy:nitrogen"
+    "voluminousenergy:nitrogen",
+    "voluminousenergy:hydrogen",
+    "voluminousenergy:ammonia"
   ]
 }
