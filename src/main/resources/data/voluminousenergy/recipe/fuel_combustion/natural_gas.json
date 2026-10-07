@@ -1,0 +1,13 @@
+{
+  "type": "voluminousenergy:fuel_combustion",
+  "fluid_ingredients": [
+    {
+      "tag": "c:natural_gas",
+      "amount": 250
+    },
+    {
+      "tag": "voluminousenergy:oxidizer",
+      "amount": 250
+    }
+  ]
+}

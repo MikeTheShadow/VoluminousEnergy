@@ -284,4 +284,16 @@ public class VEFluids {
             Hydrogen::HydrogenBucket);
     public static Supplier<FluidType> HYDROGEN_FLUID_TYPE_REG = VE_FLUID_TYPES.register("hydrogen",
             () -> Hydrogen.HYDROGEN_FLUID_TYPE);
+
+    // Natural Gas
+    public static Supplier<FlowingFluid> NATURAL_GAS_REG = VE_FLUIDS.register("natural_gas",
+            NaturalGas::NaturalGasFluid);
+    public static Supplier<FlowingFluid> FLOWING_NATURAL_GAS_REG = VE_FLUIDS.register("flowing_natural_gas",
+            NaturalGas::FlowingNaturalGasFluid);
+    public static Supplier<LiquidBlock> FLOWING_NATURAL_GAS_BLOCK_REG = VE_FLUID_BLOCKS.register("natural_gas_block",
+            NaturalGas::FlowingNaturalGasBlock);
+    public static Supplier<Item> NATURAL_GAS_BUCKET_REG = VE_ITEM_REGISTRY.register("natural_gas_bucket",
+            NaturalGas::NaturalGasBucket);
+    public static Supplier<FluidType> NATURAL_GAS_FLUID_TYPE_REG = VE_FLUID_TYPES.register("natural_gas",
+            () -> NaturalGas.NATURAL_GAS_FLUID_TYPE);
 }
