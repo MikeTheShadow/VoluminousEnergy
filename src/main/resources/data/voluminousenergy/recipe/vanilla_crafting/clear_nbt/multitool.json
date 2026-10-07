@@ -5,10 +5,10 @@
   ],
   "key": {
     "#": {
-      "item": "voluminousenergy:empty_multitool"
+      "item": "voluminousenergy:multitool"
     }
   },
   "result": {
-    "id": "voluminousenergy:empty_multitool"
+    "id": "voluminousenergy:multitool"
   }
 }
