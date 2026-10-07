@@ -60,6 +60,9 @@ NeoForge 21.1, Java 21, with Parchment mappings. Resource ids are `ResourceLocat
 Other long-lived version branches receive independent work (see the README). If a change belongs on
 another branch, say so instead of writing it here, and note any follow-up port in the proposal.
 
+Work branches are cut from `1.21.1-dev` and named `<mc-version>-<short-kebab-description>`, prefixed
+with the Minecraft version they target: `1.21.1-oil-feature-rework`, never `oil-feature-rework`.
+
 ## Architecture you must respect
 
 ### Naming and registration
