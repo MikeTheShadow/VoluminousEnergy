@@ -111,7 +111,7 @@ public class GeyserFeature extends Feature<GeyserFeature.Configuration> {
         int thickness1 = 20; // Thickness
 
         // Actual Geyser Bottom Generation
-        for (int y = pos.getY(); y > 0; --y) {
+        for (int y = pos.getY(); y >= 0; --y) {
             float fy = (1.0F - (float) y / (float) height1) * (float) thickness1;
             int l = Mth.ceil(fy);
 
