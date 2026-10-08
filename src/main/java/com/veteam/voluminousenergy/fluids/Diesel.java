@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.fluids;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.VEFlowingFluidBlock;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.BucketItem;
@@ -20,7 +21,7 @@ public class Diesel {
     public static final Identifier DIESEL_STILL_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/diesel_still");
     public static final Identifier DIESEL_FLOWING_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/diesel_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
+    public static Block.Properties stdProp = Block.Properties.of().setId(VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
 
     public static FlowingFluid DIESEL;
     public static FlowingFluid FLOWING_DIESEL;
@@ -38,12 +39,12 @@ public class Diesel {
     }
 
     public static VEFlowingFluidBlock FlowingDieselBlock() {
-        DIESEL_BLOCK = new VEFlowingFluidBlock(DIESEL, stdProp.setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId()));
+        DIESEL_BLOCK = new VEFlowingFluidBlock(DIESEL, stdProp.setId(VERegistryHelper.currentBlockId()));
         return DIESEL_BLOCK;
     }
 
     public static Item DieselBucket() {
-        DIESEL_BUCKET = new BucketItem(DIESEL, new Item.Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId()).craftRemainder(Items.BUCKET).stacksTo(1));
+        DIESEL_BUCKET = new BucketItem(DIESEL, new Item.Properties().setId(VERegistryHelper.currentItemId()).craftRemainder(Items.BUCKET).stacksTo(1));
         return DIESEL_BUCKET;
     }
 

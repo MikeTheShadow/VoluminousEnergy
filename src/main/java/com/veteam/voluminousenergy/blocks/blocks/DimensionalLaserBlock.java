@@ -4,6 +4,7 @@ import com.veteam.voluminousenergy.blocks.blocks.machines.VEFaceableMachineBlock
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntities;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import com.veteam.voluminousenergy.sounds.VESounds;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.core.BlockPos;
@@ -24,7 +25,7 @@ import javax.annotation.Nullable;
 public class DimensionalLaserBlock extends VEFaceableMachineBlock {
 
     public DimensionalLaserBlock() {
-        super(BlockBehaviour.Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
+        super(BlockBehaviour.Properties.of().setId(VERegistryHelper.currentBlockId())
                 .sound(SoundType.METAL)
                 .strength(3.0f)
                 .requiresCorrectToolForDrops()

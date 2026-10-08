@@ -8,9 +8,11 @@ import com.veteam.voluminousenergy.util.TextUtil;
 import com.veteam.voluminousenergy.util.VERelationalTank;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
@@ -71,11 +73,11 @@ public class TankDirectionButton extends VEIOButton {
 
         // Print text
         Component textComponent = TextUtil.slotNameWithDirection(tank.getHoverName(), tank.getSideDirection(), tank.getSlotNum());
-        matrixStack.centeredText(Minecraft.getInstance().font, textComponent.getString(), (getX()) + 48, (getY()) + 5, 0xffffff);
+        TextUtil.renderCenteredShadowedText(matrixStack, Minecraft.getInstance().font, textComponent.getString(), (getX()) + 48, (getY()) + 5, Style.EMPTY.withColor(0xffffff));
     }
 
     @Override
-    public void onPress(net.minecraft.client.input.InputWithModifiers input) {
+    public void onPress(InputWithModifiers input) {
         if (!render) return;
         cycle();
         ClientPacketDistributor.sendToServer(new TankDirectionPayload(this.getDirection().get3DDataValue(), this.getId()));

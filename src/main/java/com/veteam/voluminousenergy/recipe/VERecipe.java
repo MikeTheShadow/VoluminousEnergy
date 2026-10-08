@@ -9,9 +9,11 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,8 +28,8 @@ public abstract class VERecipe implements Recipe<RecipeInput> {
     private List<FluidIngredient> fluidIngredientList = null;
     public List<VERecipeCodecs.RegistryFluidIngredient> registryFluidIngredients;
     public List<FluidStack> fluidOutputList = new ArrayList<>();
-    // Same deferred-materialization deal as resultTemplates below, but for fluid outputs.
-    public List<net.neoforged.neoforge.fluids.FluidStackTemplate> fluidOutputTemplates = null;
+    // Built into fluidOutputList on first access, for the same reason as resultTemplates.
+    public List<FluidStackTemplate> fluidOutputTemplates = null;
     private static final HashMap<RecipeType<?>, List<VERecipe>> recipeCache = new HashMap<>();
     private static final HashMap<RecipeType<?>, List<VERecipe>> newCache = new HashMap<>();
 
@@ -35,10 +37,8 @@ public abstract class VERecipe implements Recipe<RecipeInput> {
 
     public int processTime;
     public List<ItemStack> results = new ArrayList<>();
-    // Templates for results, materialized into `results` lazily on first getResults() call rather
-    // than eagerly at construction time (i.e. during recipe/codec decode), since constructing an
-    // ItemStack from a Holder<Item> that early resolves data components before they're bound.
-    public List<net.minecraft.world.item.ItemStackTemplate> resultTemplates = null;
+    // Built into results on first access, since item data components are unbound while recipes decode.
+    public List<ItemStackTemplate> resultTemplates = null;
 
     private Identifier id;
 
@@ -61,8 +61,8 @@ public abstract class VERecipe implements Recipe<RecipeInput> {
     private static boolean isServerSide = false;
 
     public VERecipe(List<VERecipeCodecs.RegistryIngredient> ingredients,
-            List<VERecipeCodecs.RegistryFluidIngredient> fluidIngredients, List<net.neoforged.neoforge.fluids.FluidStackTemplate> fluidResultTemplates,
-            List<net.minecraft.world.item.ItemStackTemplate> resultTemplates, int processTime) {
+            List<VERecipeCodecs.RegistryFluidIngredient> fluidIngredients, List<FluidStackTemplate> fluidResultTemplates,
+            List<ItemStackTemplate> resultTemplates, int processTime) {
         this.resultTemplates = resultTemplates;
         registryFluidIngredients = fluidIngredients;
         this.fluidOutputTemplates = fluidResultTemplates;
@@ -82,8 +82,13 @@ public abstract class VERecipe implements Recipe<RecipeInput> {
         }
     }
 
+    public boolean hasIngredient(int id) {
+        return id >= 0 && id < this.getIngredients().size();
+    }
+
+    @Nullable
     public Ingredient getIngredient(int id) {
-        return id < this.getIngredients().size() ? getIngredients().get(id) : Ingredient.of();
+        return hasIngredient(id) ? getIngredients().get(id) : null;
     }
 
     @Override
@@ -106,13 +111,8 @@ public abstract class VERecipe implements Recipe<RecipeInput> {
         return "";
     }
 
-    /*
-     * VE recipes are never placed into a crafting grid via the recipe book, so they have no
-     * PlacementInfo. Marking them special keeps RecipeManager#finalizeRecipeLoading from warning
-     * that every one of them "can't be placed due to empty ingredients" -- that check is
-     * !isSpecial() && placementInfo().isImpossibleToPlace(), and NOT_PLACEABLE always satisfies
-     * the latter. Machines resolve recipes through getCachedRecipes, not the recipe book.
-     */
+    // Machine recipes never go through the recipe book; marking them special stops RecipeManager
+    // warning that each NOT_PLACEABLE recipe cannot be placed.
     @Override
     public boolean isSpecial() {
         return true;
@@ -144,7 +144,7 @@ public abstract class VERecipe implements Recipe<RecipeInput> {
      */
     public List<ItemStack> getResults() {
         if (this.results.isEmpty() && this.resultTemplates != null && !this.resultTemplates.isEmpty()) {
-            this.results = this.resultTemplates.stream().map(net.minecraft.world.item.ItemStackTemplate::create).toList();
+            this.results = this.resultTemplates.stream().map(ItemStackTemplate::create).toList();
         }
         return this.results;
     }
@@ -193,7 +193,7 @@ public abstract class VERecipe implements Recipe<RecipeInput> {
 
     public List<FluidStack> getOutputFluids() {
         if (this.fluidOutputList.isEmpty() && this.fluidOutputTemplates != null && !this.fluidOutputTemplates.isEmpty()) {
-            this.fluidOutputList = this.fluidOutputTemplates.stream().map(net.neoforged.neoforge.fluids.FluidStackTemplate::create).toList();
+            this.fluidOutputList = this.fluidOutputTemplates.stream().map(FluidStackTemplate::create).toList();
         }
         return this.fluidOutputList;
     }

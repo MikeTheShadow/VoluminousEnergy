@@ -6,6 +6,7 @@ import com.veteam.voluminousenergy.persistence.ChunkFluids;
 import com.veteam.voluminousenergy.persistence.SingleChunkFluid;
 import com.veteam.voluminousenergy.util.TextUtil;
 import com.veteam.voluminousenergy.util.VEDataComponents;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import com.veteam.voluminousenergy.util.WorldUtil;
 import com.veteam.voluminousenergy.util.records.ChunkFluidData;
 import net.minecraft.ChatFormatting;
@@ -32,7 +33,7 @@ import java.util.function.Consumer;
 public class FluidScanner extends Item {
 
     public FluidScanner() {
-        super(new Item.Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId())
+        super(new Item.Properties().setId(VERegistryHelper.currentItemId())
                 .stacksTo(1)
                 .rarity(Rarity.UNCOMMON)
         );

@@ -4,6 +4,7 @@ import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.util.NumberUtil;
 import com.veteam.voluminousenergy.util.RegistryLookups;
 import com.veteam.voluminousenergy.util.TextUtil;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import com.veteam.voluminousenergy.util.WorldUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -31,7 +32,7 @@ import static net.minecraft.world.level.material.Fluids.WATER;
 public class CreativeFluidScanner extends Item {
 
     public CreativeFluidScanner() {
-        super(new Item.Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId())
+        super(new Item.Properties().setId(VERegistryHelper.currentItemId())
                 .stacksTo(1)
                 .rarity(Rarity.RARE)
         );

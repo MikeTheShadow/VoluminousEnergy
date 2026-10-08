@@ -15,6 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -32,7 +33,7 @@ public class DistillationRecipe extends VERNGRecipe {
     public DistillationRecipe() {
     }
 
-    public DistillationRecipe(List<VERecipeCodecs.RegistryFluidIngredient> fi, List<net.neoforged.neoforge.fluids.FluidStackTemplate> of, List<VERecipeCodecs.VEChancedItemWithCount> oi, int processTime) {
+    public DistillationRecipe(List<VERecipeCodecs.RegistryFluidIngredient> fi, List<FluidStackTemplate> of, List<VERecipeCodecs.VEChancedItemWithCount> oi, int processTime) {
         super(List.of(), fi, of, oi, processTime);
     }
 

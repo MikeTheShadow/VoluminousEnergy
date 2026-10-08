@@ -1,4 +1,5 @@
 package com.veteam.voluminousenergy.items.batteries;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 public class LeadAcidBatteryPack extends VEEnergyItem {
 
@@ -6,7 +7,7 @@ public class LeadAcidBatteryPack extends VEEnergyItem {
     private static final int MAX_TX = 3_000;
 
     public LeadAcidBatteryPack() {
-        super(new Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId())
+        super(new Properties().setId(VERegistryHelper.currentItemId())
                         .stacksTo(1),
                 MAX_ENERGY,
                 MAX_TX

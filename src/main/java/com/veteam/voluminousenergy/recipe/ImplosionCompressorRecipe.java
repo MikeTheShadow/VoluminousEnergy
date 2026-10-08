@@ -12,6 +12,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -32,7 +33,7 @@ public class ImplosionCompressorRecipe extends VERecipe {
     public ImplosionCompressorRecipe() {
     }
 
-    public ImplosionCompressorRecipe(List<VERecipeCodecs.RegistryIngredient> ingredients, List<net.minecraft.world.item.ItemStackTemplate> results, int processTime) {
+    public ImplosionCompressorRecipe(List<VERecipeCodecs.RegistryIngredient> ingredients, List<ItemStackTemplate> results, int processTime) {
         super(ingredients, new ArrayList<>(), new ArrayList<>(), results, processTime);
     }
 

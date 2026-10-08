@@ -2,12 +2,13 @@ package com.veteam.voluminousenergy.blocks.blocks.machines;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlock;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 
 public class TitaniumMachineCasingBlock extends VEBlock {
     public TitaniumMachineCasingBlock() {
-        super(Block.Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
+        super(Block.Properties.of().setId(VERegistryHelper.currentBlockId())
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .requiresCorrectToolForDrops()

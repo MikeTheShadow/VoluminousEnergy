@@ -3,7 +3,9 @@ package com.veteam.voluminousenergy.util;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.recipe.VERNGExperienceRecipe;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -35,7 +37,7 @@ public class ExperienceHelper {
         List<RecipeHolder<?>> list = new ArrayList<>();
 
         for (Object2IntMap.Entry<Identifier> entry : tile.getRecipesUsed().object2IntEntrySet()) {
-            pLevel.recipeAccess().byKey(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE, entry.getKey())).ifPresent(recipeHolder -> {
+            pLevel.recipeAccess().byKey(ResourceKey.create(Registries.RECIPE, entry.getKey())).ifPresent(recipeHolder -> {
                 list.add(recipeHolder);
                 if (recipeHolder.value() instanceof VERNGExperienceRecipe experienceRecipe) {
                     float xp = (experienceRecipe.getMinExp() + experienceRecipe.getMaxExp()) / 2.0f;

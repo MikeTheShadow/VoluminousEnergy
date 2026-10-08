@@ -1,7 +1,6 @@
 {
   "type": "voluminousenergy:animal_fat",
   "addition": {
-    "count": 1,
     "id": "voluminousenergy:animal_fat"
   },
   "conditions": [

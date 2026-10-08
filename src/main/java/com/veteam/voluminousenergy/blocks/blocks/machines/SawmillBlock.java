@@ -5,6 +5,7 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntities;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -36,7 +37,7 @@ public class SawmillBlock extends VEBlock implements EntityBlock { // Based on t
     protected static final VoxelShape SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 9.0D, 16.0D);
 
     public SawmillBlock() {
-        super(Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
+        super(Properties.of().setId(VERegistryHelper.currentBlockId())
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .lightLevel(l -> 0)

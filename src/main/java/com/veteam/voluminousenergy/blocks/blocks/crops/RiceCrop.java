@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.blocks.blocks.crops;
 
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.tools.Config;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -13,7 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class RiceCrop extends VEWaterCrop {
 
     public RiceCrop() {
-        super(BlockBehaviour.Properties.ofFullCopy(Blocks.ALLIUM).setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())); // TODO: Rice Properties
+        super(BlockBehaviour.Properties.ofFullCopy(Blocks.ALLIUM).setId(VERegistryHelper.currentBlockId())); // TODO: Rice Properties
     }
 
     @Override

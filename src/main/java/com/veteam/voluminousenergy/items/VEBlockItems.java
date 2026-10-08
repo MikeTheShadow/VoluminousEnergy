@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.items;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -13,8 +14,8 @@ public class VEBlockItems {
 
     static {
         for(VEBlocks.RegistryWithName registryWithName : VEBlocks.REGISTERED_BLOCKS) {
-            com.veteam.voluminousenergy.util.VERegistryHelper.registerItem(VE_BLOCK_ITEM_REGISTRY, registryWithName.name(),
-                    () -> new BlockItem(registryWithName.block().get(), PROPERTIES.setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId())));
+            VERegistryHelper.registerItem(VE_BLOCK_ITEM_REGISTRY, registryWithName.name(),
+                    () -> new BlockItem(registryWithName.block().get(), PROPERTIES.setId(VERegistryHelper.currentItemId())));
         }
     }
 

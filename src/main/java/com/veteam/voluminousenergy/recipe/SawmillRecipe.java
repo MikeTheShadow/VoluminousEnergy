@@ -15,12 +15,14 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -41,7 +43,7 @@ public class SawmillRecipe extends VERecipe {
 
     }
 
-    public SawmillRecipe(List<VERecipeCodecs.RegistryIngredient> i, List<net.neoforged.neoforge.fluids.FluidStackTemplate> of, List<net.minecraft.world.item.ItemStackTemplate> oi, int processTime, boolean isLogRecipe) {
+    public SawmillRecipe(List<VERecipeCodecs.RegistryIngredient> i, List<FluidStackTemplate> of, List<ItemStackTemplate> oi, int processTime, boolean isLogRecipe) {
         super(i, List.of(), of, oi, processTime);
         this.isLogRecipe = isLogRecipe;
     }

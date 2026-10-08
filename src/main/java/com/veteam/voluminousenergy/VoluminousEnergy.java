@@ -30,7 +30,6 @@ import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
@@ -138,20 +137,6 @@ public class VoluminousEnergy {
     public static class ClientRegister {
 
         @SubscribeEvent
-        public static void RegisterClientOnSetupEvent(FMLClientSetupEvent event) {
-            // Block/item render layers (cutout etc.) are now auto-detected from texture alpha at
-            // model-load time in 26.1; ItemBlockRenderTypes#setRenderLayer no longer exists.
-            // If RICE_CROP/SAWMILL/PRESSURE_LADDER don't render as cutout automatically, use
-            // "force_translucent"/model-level overrides in their model JSON instead.
-
-            // TODO: net.minecraft.client.renderer.item.ItemProperties (range-dispatch item model
-            // overrides) was removed in 26.1; the MULTI_TOOL's per-tool-type/tier model swap needs
-            // to be reimplemented via a data-driven item model (assets/voluminousenergy/items/multi_tool.json
-            // using "minecraft:range_dispatch" keyed on the TOOL_TYPE/TOOL_TIER data components)
-            // rather than this Java registration.
-        }
-
-        @SubscribeEvent
         public static void RegisterMenuScreens(RegisterMenuScreensEvent event) {
             VESetup.registerMenuScreens(event);
         }
@@ -162,7 +147,7 @@ public class VoluminousEnergy {
     public static class OnDatagenEvent {
 
         @SubscribeEvent
-        public static void onGatherData(GatherDataEvent.Server event) {
+        public static void onGatherData(GatherDataEvent.Client event) {
             DataGenerator dataGenerator = event.getGenerator();
             PackOutput packOutput = dataGenerator.getPackOutput();
             CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();

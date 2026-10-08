@@ -10,8 +10,11 @@ import com.veteam.voluminousenergy.items.tools.multitool.bits.VEMultitoolBitData
 import com.veteam.voluminousenergy.util.NumberUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
 import com.veteam.voluminousenergy.util.VEDataComponents;
+import com.veteam.voluminousenergy.util.VEItemCapabilities;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
@@ -26,13 +29,9 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -46,15 +45,9 @@ public class Multitool extends VEItem {
     private static final int TEMP_TANK_CAPACITY = VETileEntity.DEFAULT_TANK_CAPACITY;
 
     public Multitool() {
-        super(new Item.Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId())
+        super(new Item.Properties().setId(VERegistryHelper.currentItemId())
                 .stacksTo(1));
         setRegistryName("multitool");
-    }
-
-    @Nullable
-    private static IFluidHandler getFluidHandler(ItemStack itemStack) {
-        ResourceHandler<FluidResource> handler = ItemAccess.forStack(itemStack).getCapability(Capabilities.Fluid.ITEM);
-        return handler == null ? null : IFluidHandler.of(handler);
     }
 
     @Override
@@ -64,20 +57,23 @@ public class Multitool extends VEItem {
 
     @Override
     public int getBarWidth(ItemStack itemStack) {
-        IFluidHandler fluidHandler = getFluidHandler(itemStack);
-        return (int) Math.round(13 * (fluidHandler.getFluidInTank(0).getAmount() / (double) TEMP_TANK_CAPACITY));
+        return Math.round(13 * getFillRatio(itemStack));
     }
 
     @Override
     public int getBarColor(ItemStack itemStack) {
-        IFluidHandler fluidHandler = getFluidHandler(itemStack);
-        return Mth.hsvToRgb(fluidHandler.getFluidInTank(0).getAmount() / 3.0F, 1.0F, 1.0F);
+        return Mth.hsvToRgb(getFillRatio(itemStack) / 3.0F, 1.0F, 1.0F);
+    }
+
+    private float getFillRatio(ItemStack itemStack) {
+        IFluidHandler fluidHandler = VEItemCapabilities.getFluidHandler(itemStack);
+        return fluidHandler.getFluidInTank(0).getAmount() / (float) TEMP_TANK_CAPACITY;
     }
 
     @Override
     public void appendHoverText(ItemStack itemStack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flag) {
 
-        IFluidHandler fluidHandler = getFluidHandler(itemStack);
+        IFluidHandler fluidHandler = VEItemCapabilities.getFluidHandler(itemStack);
         FluidStack fluidStack = fluidHandler.getFluidInTank(0).copy();
 
         if(fluidStack.isEmpty()) {
@@ -172,7 +168,7 @@ public class Multitool extends VEItem {
     public float getDestroySpeed(@NotNull ItemStack itemStack, @NotNull BlockState blockStateToMine) {
         int energy = itemStack.getOrDefault(VEDataComponents.MULTI_TOOL_ENERGY,0);
         if(energy < 1) {
-            IFluidHandler capability = getFluidHandler(itemStack);
+            IFluidHandler capability = VEItemCapabilities.getFluidHandler(itemStack);
             FluidStack drainedFluid = capability.drain(50, IFluidHandler.FluidAction.EXECUTE);
             if(drainedFluid.isEmpty()) {
                 return 0f;
@@ -280,7 +276,7 @@ public class Multitool extends VEItem {
                 java.util.Random rand = new java.util.Random();
 
                 drops.forEach(d -> {
-                    net.minecraft.world.entity.item.ItemEntity ent = entity.spawnAtLocation((net.minecraft.server.level.ServerLevel) entity.level(), d, 1.0F);
+                    net.minecraft.world.entity.item.ItemEntity ent = entity.spawnAtLocation((ServerLevel) entity.level(), d, 1.0F);
                     ent.setDeltaMovement(ent.getDeltaMovement().add((double) ((rand.nextFloat() - rand.nextFloat()) * 0.1F), (double) (rand.nextFloat() * 0.05F), (double) ((rand.nextFloat() - rand.nextFloat()) * 0.1F)));
                 });
 

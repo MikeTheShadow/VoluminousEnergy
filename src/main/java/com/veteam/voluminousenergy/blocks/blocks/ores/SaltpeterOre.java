@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.blocks.blocks.ores;
 
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
@@ -20,7 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class SaltpeterOre extends ColoredFallingBlock {
     public SaltpeterOre() {
         super(new ColorRGBA(14406560),
-            Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
+            Properties.of().setId(VERegistryHelper.currentBlockId())
                 .sound(SoundType.SAND)
                 .strength(0.6f)
                 .requiresCorrectToolForDrops()

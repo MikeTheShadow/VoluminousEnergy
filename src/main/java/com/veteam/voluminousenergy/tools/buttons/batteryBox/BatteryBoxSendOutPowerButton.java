@@ -5,6 +5,7 @@ import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
 import com.veteam.voluminousenergy.tools.networking.packets.BatteryBoxSendOutPowerPacket.BatteryBoxSendOutPowerPayload;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -48,7 +49,7 @@ public class BatteryBoxSendOutPowerButton extends VEIOButton {
     }
 
     @Override
-    public void onPress(net.minecraft.client.input.InputWithModifiers input) {
+    public void onPress(InputWithModifiers input) {
         cycle();
         ClientPacketDistributor.sendToServer(new BatteryBoxSendOutPowerPayload(this.sendOutPower));
     }

@@ -3,12 +3,13 @@ package com.veteam.voluminousenergy.blocks.blocks.storage.materials;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlock;
 import com.veteam.voluminousenergy.datagen.MaterialConstants;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 
 public class EighzoBlock extends VEBlock {
     public EighzoBlock() {
-        super(Block.Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
+        super(Block.Properties.of().setId(VERegistryHelper.currentBlockId())
                 .sound(SoundType.METAL)
                 .strength(2F)
                 .requiresCorrectToolForDrops()

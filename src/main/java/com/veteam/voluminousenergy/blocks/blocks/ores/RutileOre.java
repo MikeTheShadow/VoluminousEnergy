@@ -2,12 +2,13 @@ package com.veteam.voluminousenergy.blocks.blocks.ores;
 
 import com.veteam.voluminousenergy.datagen.MaterialConstants;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.SoundType;
 
 public class RutileOre extends VEOreBlock {
     public RutileOre() {
-        super(Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
+        super(Properties.of().setId(VERegistryHelper.currentBlockId())
                 .sound(SoundType.STONE)
                 .strength(4.0f)
                 .requiresCorrectToolForDrops()

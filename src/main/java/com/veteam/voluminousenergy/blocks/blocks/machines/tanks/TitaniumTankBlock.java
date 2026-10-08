@@ -5,6 +5,7 @@ import com.veteam.voluminousenergy.blocks.tiles.VETileEntities;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import com.veteam.voluminousenergy.tools.Config;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.EntityBlock;
@@ -20,7 +21,7 @@ import javax.annotation.Nullable;
 public class TitaniumTankBlock extends TankBlock implements EntityBlock {
 
     public TitaniumTankBlock() {
-        super(Properties.of().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
+        super(Properties.of().setId(VERegistryHelper.currentBlockId())
                 .sound(SoundType.METAL)
                 .strength(4.0f)
                 .lightLevel(l -> 0)

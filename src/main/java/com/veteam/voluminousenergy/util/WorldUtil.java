@@ -8,8 +8,10 @@ import com.veteam.voluminousenergy.util.climate.FluidClimateSpawn;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.NoiseRouter;
@@ -153,12 +155,12 @@ public class WorldUtil {
         return 250;
     }
 
-    public static boolean isDirt(net.minecraft.world.level.block.state.BlockState state) {
-        return state.is(net.minecraft.tags.BlockTags.DIRT);
+    public static boolean isDirt(BlockState state) {
+        return state.is(BlockTags.DIRT);
     }
 
-    public static boolean isStone(net.minecraft.world.level.block.state.BlockState state) {
-        return state.is(net.minecraft.tags.BlockTags.BASE_STONE_OVERWORLD);
+    public static boolean isStone(BlockState state) {
+        return state.is(BlockTags.BASE_STONE_OVERWORLD);
     }
 
 }

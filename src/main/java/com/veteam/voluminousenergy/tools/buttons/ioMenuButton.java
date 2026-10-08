@@ -4,6 +4,7 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -43,7 +44,7 @@ public class ioMenuButton extends Button {
     }
 
     @Override
-    public void onPress(net.minecraft.client.input.InputWithModifiers input) {
+    public void onPress(InputWithModifiers input) {
         cycleMode();
     }
 

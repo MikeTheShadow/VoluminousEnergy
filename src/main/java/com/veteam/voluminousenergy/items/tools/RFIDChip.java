@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.items.tools;
 import com.veteam.voluminousenergy.persistence.ChunkFluid;
 import com.veteam.voluminousenergy.util.TextUtil;
 import com.veteam.voluminousenergy.util.VEDataComponents;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import com.veteam.voluminousenergy.util.extensions.VEEnums;
 import com.veteam.voluminousenergy.util.records.ChunkFluidData;
 import net.minecraft.network.chat.Component;
@@ -17,7 +18,7 @@ import java.util.function.Consumer;
 public class RFIDChip extends Item {
 
     public RFIDChip() {
-        super(new Item.Properties().setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentItemId())
+        super(new Item.Properties().setId(VERegistryHelper.currentItemId())
                 .stacksTo(16)
                 .rarity(VEEnums.ELECTRONIC_RARITY.getValue())
         );

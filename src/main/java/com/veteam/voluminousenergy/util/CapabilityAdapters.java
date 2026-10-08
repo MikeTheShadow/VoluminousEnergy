@@ -1,140 +1,242 @@
 package com.veteam.voluminousenergy.util;
 
+import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Bridges the mod's legacy (pre-26.1) IItemHandler / IFluidHandler / IEnergyStorage based
- * storage implementations onto NeoForge's newer transfer API.
- * <p>
- * NeoForge only ships a bridge in the new-to-old direction ({@code IItemHandler.of(ResourceHandler)},
- * {@code IEnergyStorage.of(EnergyHandler)}, {@code IFluidHandler.of(ResourceHandler)} - see
- * {@link com.veteam.voluminousenergy.items.tools.multitool.Multitool}). There is no equivalent
- * old-to-new bridge anywhere in NeoForge (confirmed via javap against the 26.1 universal jar and
- * the decompiled sources), which is what RegisterCapabilitiesEvent providers need to return.
- * This class fills that gap so the mod's existing IItemHandler/IFluidHandler/IEnergyStorage backed
- * storage classes (VEEnergyStorage, ItemStackHandler-based wrappers, FluidHandlerItemStack, etc.)
- * can still be registered without rewriting their internals.
- * <p>
- * Note: these adapters execute immediately against the wrapped legacy handler and do not
- * participate in the transaction rollback machinery (the legacy handlers have no concept of
- * snapshot/restore). The old behaviour never supported atomic multi-handler transactions either,
- * so this introduces no functional regression versus pre-port behaviour.
+ * Adapts the item, fluid, and energy storage of machines to the transfer API handlers that block
+ * capability providers return. NeoForge only bridges the other way. Each adapter applies a change to
+ * the wrapped storage immediately and restores a snapshot of it if the transaction is aborted, so
+ * simulated transfers leave the machine unchanged.
  */
-public final class CapabilityAdapters {
+public class CapabilityAdapters {
 
     private CapabilityAdapters() {
     }
 
-    public static ResourceHandler<ItemResource> toResourceHandler(IItemHandler itemHandler) {
-        return new ResourceHandler<>() {
-            @Override
-            public int size() {
-                return itemHandler.getSlots();
-            }
-
-            @Override
-            public ItemResource getResource(int index) {
-                return ItemResource.of(itemHandler.getStackInSlot(index));
-            }
-
-            @Override
-            public long getAmountAsLong(int index) {
-                return itemHandler.getStackInSlot(index).getCount();
-            }
-
-            @Override
-            public long getCapacityAsLong(int index, ItemResource resource) {
-                return itemHandler.getSlotLimit(index);
-            }
-
-            @Override
-            public boolean isValid(int index, ItemResource resource) {
-                return itemHandler.isItemValid(index, resource.toStack(1));
-            }
-
-            @Override
-            public int insert(int index, ItemResource resource, int amount, TransactionContext context) {
-                ItemStack remainder = itemHandler.insertItem(index, resource.toStack(amount), false);
-                return amount - remainder.getCount();
-            }
-
-            @Override
-            public int extract(int index, ItemResource resource, int amount, TransactionContext context) {
-                ItemStack current = itemHandler.getStackInSlot(index);
-                if (current.isEmpty() || !resource.matches(current)) return 0;
-                return itemHandler.extractItem(index, amount, false).getCount();
-            }
-        };
+    public static ResourceHandler<ItemResource> toResourceHandler(IItemHandlerModifiable itemHandler) {
+        return new ItemHandlerAdapter(itemHandler);
     }
 
-    public static EnergyHandler toEnergyHandler(IEnergyStorage energyStorage) {
-        return new EnergyHandler() {
-            @Override
-            public long getAmountAsLong() {
-                return energyStorage.getEnergyStored();
-            }
-
-            @Override
-            public long getCapacityAsLong() {
-                return energyStorage.getMaxEnergyStored();
-            }
-
-            @Override
-            public int insert(int amount, TransactionContext context) {
-                return energyStorage.receiveEnergy(amount, false);
-            }
-
-            @Override
-            public int extract(int amount, TransactionContext context) {
-                return energyStorage.extractEnergy(amount, false);
-            }
-        };
+    public static EnergyHandler toEnergyHandler(VEEnergyStorage energyStorage) {
+        return new EnergyStorageAdapter(energyStorage);
     }
 
-    public static ResourceHandler<FluidResource> toResourceHandler(IFluidHandler fluidHandler) {
-        return new ResourceHandler<>() {
-            @Override
-            public int size() {
-                return fluidHandler.getTanks();
-            }
+    public static ResourceHandler<FluidResource> toResourceHandler(MultiFluidSlotWrapper fluidHandler) {
+        return new FluidHandlerAdapter(fluidHandler);
+    }
 
-            @Override
-            public FluidResource getResource(int index) {
-                return FluidResource.of(fluidHandler.getFluidInTank(index));
-            }
+    private static class ItemHandlerAdapter extends SnapshotJournal<List<ItemStack>> implements ResourceHandler<ItemResource> {
+        private final IItemHandlerModifiable itemHandler;
 
-            @Override
-            public long getAmountAsLong(int index) {
-                return fluidHandler.getFluidInTank(index).getAmount();
-            }
+        private ItemHandlerAdapter(IItemHandlerModifiable itemHandler) {
+            this.itemHandler = itemHandler;
+        }
 
-            @Override
-            public long getCapacityAsLong(int index, FluidResource resource) {
-                return fluidHandler.getTankCapacity(index);
-            }
+        @Override
+        public int size() {
+            return itemHandler.getSlots();
+        }
 
-            @Override
-            public boolean isValid(int index, FluidResource resource) {
-                return fluidHandler.isFluidValid(index, resource.toStack(1));
-            }
+        @Override
+        public ItemResource getResource(int index) {
+            return ItemResource.of(itemHandler.getStackInSlot(index));
+        }
 
-            @Override
-            public int insert(int index, FluidResource resource, int amount, TransactionContext context) {
-                return fluidHandler.fill(resource.toStack(amount), IFluidHandler.FluidAction.EXECUTE);
-            }
+        @Override
+        public long getAmountAsLong(int index) {
+            return itemHandler.getStackInSlot(index).getCount();
+        }
 
-            @Override
-            public int extract(int index, FluidResource resource, int amount, TransactionContext context) {
-                return fluidHandler.drain(resource.toStack(amount), IFluidHandler.FluidAction.EXECUTE).getAmount();
+        @Override
+        public long getCapacityAsLong(int index, ItemResource resource) {
+            return itemHandler.getSlotLimit(index);
+        }
+
+        @Override
+        public boolean isValid(int index, ItemResource resource) {
+            return itemHandler.isItemValid(index, resource.toStack(1));
+        }
+
+        @Override
+        public int insert(int index, ItemResource resource, int amount, TransactionContext transaction) {
+            TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+            ItemStack remainder = itemHandler.insertItem(index, resource.toStack(amount), true);
+            int inserted = amount - remainder.getCount();
+            if (inserted > 0) {
+                updateSnapshots(transaction);
+                itemHandler.insertItem(index, resource.toStack(inserted), false);
             }
-        };
+            return inserted;
+        }
+
+        @Override
+        public int extract(int index, ItemResource resource, int amount, TransactionContext transaction) {
+            TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+            if (!resource.matches(itemHandler.getStackInSlot(index))) {
+                return 0;
+            }
+            int extracted = itemHandler.extractItem(index, amount, true).getCount();
+            if (extracted > 0) {
+                updateSnapshots(transaction);
+                itemHandler.extractItem(index, extracted, false);
+            }
+            return extracted;
+        }
+
+        @Override
+        protected List<ItemStack> createSnapshot() {
+            List<ItemStack> stacks = new ArrayList<>(itemHandler.getSlots());
+            for (int slot = 0; slot < itemHandler.getSlots(); slot++) {
+                stacks.add(itemHandler.getStackInSlot(slot).copy());
+            }
+            return stacks;
+        }
+
+        // Only changed slots are written back, since side wrappers report slots they do not expose as empty.
+        @Override
+        protected void revertToSnapshot(List<ItemStack> snapshot) {
+            for (int slot = 0; slot < snapshot.size(); slot++) {
+                if (!ItemStack.matches(itemHandler.getStackInSlot(slot), snapshot.get(slot))) {
+                    itemHandler.setStackInSlot(slot, snapshot.get(slot));
+                }
+            }
+        }
+    }
+
+    private static class EnergyStorageAdapter extends SnapshotJournal<Integer> implements EnergyHandler {
+        private final VEEnergyStorage energyStorage;
+
+        private EnergyStorageAdapter(VEEnergyStorage energyStorage) {
+            this.energyStorage = energyStorage;
+        }
+
+        @Override
+        public long getAmountAsLong() {
+            return energyStorage.getEnergyStored();
+        }
+
+        @Override
+        public long getCapacityAsLong() {
+            return energyStorage.getMaxEnergyStored();
+        }
+
+        @Override
+        public int insert(int amount, TransactionContext transaction) {
+            TransferPreconditions.checkNonNegative(amount);
+            int inserted = energyStorage.receiveEnergy(amount, true);
+            if (inserted > 0) {
+                updateSnapshots(transaction);
+                energyStorage.receiveEnergy(inserted, false);
+            }
+            return inserted;
+        }
+
+        @Override
+        public int extract(int amount, TransactionContext transaction) {
+            TransferPreconditions.checkNonNegative(amount);
+            int extracted = energyStorage.extractEnergy(amount, true);
+            if (extracted > 0) {
+                updateSnapshots(transaction);
+                energyStorage.extractEnergy(extracted, false);
+            }
+            return extracted;
+        }
+
+        @Override
+        protected Integer createSnapshot() {
+            return energyStorage.getEnergyStored();
+        }
+
+        @Override
+        protected void revertToSnapshot(Integer snapshot) {
+            energyStorage.setEnergy(snapshot);
+        }
+    }
+
+    private static class FluidHandlerAdapter extends SnapshotJournal<List<FluidStack>> implements ResourceHandler<FluidResource> {
+        private final MultiFluidSlotWrapper fluidHandler;
+
+        private FluidHandlerAdapter(MultiFluidSlotWrapper fluidHandler) {
+            this.fluidHandler = fluidHandler;
+        }
+
+        @Override
+        public int size() {
+            return fluidHandler.getTanks();
+        }
+
+        @Override
+        public FluidResource getResource(int index) {
+            return FluidResource.of(fluidHandler.getFluidInTank(index));
+        }
+
+        @Override
+        public long getAmountAsLong(int index) {
+            return fluidHandler.getFluidInTank(index).getAmount();
+        }
+
+        @Override
+        public long getCapacityAsLong(int index, FluidResource resource) {
+            return fluidHandler.getTankCapacity(index);
+        }
+
+        @Override
+        public boolean isValid(int index, FluidResource resource) {
+            return fluidHandler.isFluidValid(index, resource.toStack(1));
+        }
+
+        @Override
+        public int insert(int index, FluidResource resource, int amount, TransactionContext transaction) {
+            TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+            int filled = fluidHandler.fill(index, resource.toStack(amount), IFluidHandler.FluidAction.SIMULATE);
+            if (filled > 0) {
+                updateSnapshots(transaction);
+                fluidHandler.fill(index, resource.toStack(filled), IFluidHandler.FluidAction.EXECUTE);
+            }
+            return filled;
+        }
+
+        @Override
+        public int extract(int index, FluidResource resource, int amount, TransactionContext transaction) {
+            TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+            int drained = fluidHandler.drain(index, resource.toStack(amount), IFluidHandler.FluidAction.SIMULATE).getAmount();
+            if (drained > 0) {
+                updateSnapshots(transaction);
+                fluidHandler.drain(index, resource.toStack(drained), IFluidHandler.FluidAction.EXECUTE);
+            }
+            return drained;
+        }
+
+        @Override
+        protected List<FluidStack> createSnapshot() {
+            List<FluidStack> fluids = new ArrayList<>(fluidHandler.getTanks());
+            for (int tank = 0; tank < fluidHandler.getTanks(); tank++) {
+                fluids.add(fluidHandler.getFluidInTank(tank).copy());
+            }
+            return fluids;
+        }
+
+        @Override
+        protected void revertToSnapshot(List<FluidStack> snapshot) {
+            for (int tank = 0; tank < snapshot.size(); tank++) {
+                if (!FluidStack.matches(fluidHandler.getFluidInTank(tank), snapshot.get(tank))) {
+                    fluidHandler.setFluidInTank(tank, snapshot.get(tank));
+                }
+            }
+        }
     }
 }

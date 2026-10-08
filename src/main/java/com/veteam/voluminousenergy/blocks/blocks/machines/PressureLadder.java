@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.blocks.blocks.machines;
 
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -38,7 +39,7 @@ public class PressureLadder extends LadderBlock {
 
     public PressureLadder() {
         super(BlockBehaviour.Properties.ofFullCopy(Blocks.LADDER)
-                .setId(com.veteam.voluminousenergy.util.VERegistryHelper.currentBlockId())
+                .setId(VERegistryHelper.currentBlockId())
                 .requiresCorrectToolForDrops()
                 .randomTicks()
                 .pushReaction(PushReaction.DESTROY)

@@ -13,6 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public class AqueoulizerRecipe extends VERecipe {
     public AqueoulizerRecipe() {
     }
 
-    public AqueoulizerRecipe(List<VERecipeCodecs.RegistryIngredient> i, List<VERecipeCodecs.RegistryFluidIngredient> fi, List<net.neoforged.neoforge.fluids.FluidStackTemplate> of, int processTime) {
+    public AqueoulizerRecipe(List<VERecipeCodecs.RegistryIngredient> i, List<VERecipeCodecs.RegistryFluidIngredient> fi, List<FluidStackTemplate> of, int processTime) {
         super(i, fi, of, List.of(), processTime);
     }
 

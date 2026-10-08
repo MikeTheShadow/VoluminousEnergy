@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.events;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.client.renderers.fluid.GaseousFluidRenderer;
 import com.veteam.voluminousenergy.fluids.*;
 import com.veteam.voluminousenergy.items.data.CombustibleFluidsData;
 import com.veteam.voluminousenergy.items.data.OxidizerFluidsData;
@@ -9,7 +10,6 @@ import com.veteam.voluminousenergy.persistence.ChunkFluids;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.util.extensions.VEFluidClientExtension;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.color.block.BlockTintSource;
 import net.minecraft.client.renderer.block.FluidModel;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.client.server.IntegratedServer;
@@ -35,6 +35,8 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ExtractBlockOutlineRenderStateEvent;
 import net.neoforged.neoforge.client.event.RecipesReceivedEvent;
 import net.neoforged.neoforge.client.event.RegisterFluidModelsEvent;
+import net.neoforged.neoforge.client.fluid.CustomFluidRenderer;
+import net.neoforged.neoforge.client.fluid.FluidTintSource;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -133,6 +135,7 @@ public class VEClientSideListener {
 
     @SubscribeEvent
     public static void onRegisterFluidModels(RegisterFluidModelsEvent event) {
+        CustomFluidRenderer gaseousFluidRenderer = new GaseousFluidRenderer();
         for (DeferredHolder<Fluid, ? extends Fluid> holder : VEFluids.VE_FLUIDS.getEntries()) {
             Fluid fluid = holder.get();
             if (fluid.getFluidType() instanceof VEFluidType veFluidType) {
@@ -141,8 +144,9 @@ public class VEClientSideListener {
                 Material flowingMaterial = new Material(ext.getFlowingTexture());
                 Identifier overlay = ext.getOverlayTexture();
                 Material overlayMaterial = overlay != null ? new Material(overlay) : null;
-                BlockTintSource tintSource = state -> ext.getTintColor();
-                event.register(new FluidModel.Unbaked(stillMaterial, flowingMaterial, overlayMaterial, tintSource), fluid);
+                FluidTintSource tintSource = fluidState -> ext.getTintColor();
+                CustomFluidRenderer customRenderer = fluid instanceof VEFlowingGasFluid ? gaseousFluidRenderer : null;
+                event.register(new FluidModel.Unbaked(stillMaterial, flowingMaterial, overlayMaterial, tintSource, customRenderer), fluid);
             }
         }
     }

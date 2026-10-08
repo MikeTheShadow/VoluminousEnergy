@@ -23,7 +23,6 @@ public class VERender {
         throw new IllegalAccessError("Utility class");
     }
 
-    // 1. ADDED GuiGraphicsExtractor: Essential for modern GUI rendering so the tank scales and moves correctly with the menu.
     public static void renderGuiTank(GuiGraphicsExtractor guiGraphics, Level level, BlockPos tilePos, IFluidHandler fluidHandler, int tank, double x, double y, double zLevel, double width, double height) {
         FluidStack stack = fluidHandler.getFluidInTank(tank);
         int tankCapacity = fluidHandler.getTankCapacity(tank);
@@ -58,14 +57,11 @@ public class VERender {
         if (!Config.USE_BIOME_WATER_COLOUR.get() || (stack.getFluid() != Fluids.WATER && stack.getFluid() != Fluids.FLOWING_WATER)) {
             color = tintColor;
         } else {
-            // 2. FIXED REDUNDANT MATH: The water color is already an integer. No need to convert to Hex string and back!
             int waterColor = level.getBiome(tilePos).value().getWaterColor();
             int alpha = tintColor & 0xFF000000; // Preserve the original alpha
             color = alpha | (waterColor & 0x00FFFFFF);
         }
 
-        // 3. Tile the fluid sprite in 16x16 blocks via the GUI extraction pipeline, matching the old
-        // per-vertex tiled quad behaviour without needing raw Tesselator/BufferUploader access (both removed).
         for (int i = 0; i < width; i += 16) {
             for (int j = 0; j < renderAmount; j += 16) {
                 int drawWidth = (int) Math.min(width - i, 16);
@@ -81,7 +77,6 @@ public class VERender {
 
     @Nullable
     public static TextureAtlasSprite getFluidTexture(FluidStack stack) {
-        // 6. GUI-SAFE TEXTURE FETCH: querying the baked FluidModel directly avoids needing block/level context.
         FluidModel fluidModel = Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(stack.getFluid().defaultFluidState());
         return fluidModel.stillMaterial().sprite();
     }
