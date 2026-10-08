@@ -8,7 +8,7 @@ context: |
   recipes, worldgen. Machines are factory-assembled (VEBlocks, VETileEntities, VEContainers, a screen,
   a recipe processor, an inventory validator); there are no per-machine tile or container classes.
   Configurable numbers come from tools/Config. JEI is optional and confined to compat/.
-  There are no unit tests or gametests. Verification is ./gradlew compileJava, ./gradlew runData
+  There are no unit tests or gametests. Verification is ./gradlew compileJava, ./gradlew runClientData
   for datagen output, and an in-game check via ./gradlew runClient for behaviour, rendering, and GUI.
 
 rules:
@@ -25,7 +25,7 @@ rules:
     - Explain any deliberate deviation from vanilla or NeoForge behaviour
   tasks:
     - Keep each task small enough to review as one diff
-    - End with verification tasks, ./gradlew compileJava, ./gradlew runData when registries, tags, loot, or models change, and a named in-game check for behaviour, GUI, or rendering
+    - End with verification tasks, ./gradlew compileJava, ./gradlew runClientData when registries, tags, loot, or models change, and a named in-game check for behaviour, GUI, or rendering
 
 operations:
   apply:

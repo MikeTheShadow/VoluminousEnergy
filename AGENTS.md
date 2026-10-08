@@ -53,8 +53,8 @@ touching an area also writes its baseline requirements.
 
 ### This branch
 
-`26.1-dev` ports the mod to Minecraft 26.1 on NeoForge 26.1 and Java 25. Minecraft 26.1 ships
-unobfuscated, so the code uses official Mojang names with no Parchment layer. Resource ids are
+`26.1-dev` ports the mod to Minecraft 26.1 on NeoForge 26.1 and Java 25, with official Mojang
+names. Parchment was removed because it caused crashes on 26.1; do not add it back. Resource ids are
 `Identifier`. Versions live in `gradle.properties`. The default branch is `1.21.1-dev`.
 
 Other long-lived version branches receive independent work (see the README). If a change belongs on
@@ -106,9 +106,10 @@ per-machine tile or container class when the factory can express it; extend the 
   factory.
 - JEI is optional: `compileOnly`, gated at runtime by `VoluminousEnergy.JEI_LOADED`. Never reference
   JEI classes outside `compat/`.
-- Client-only code is annotated `@OnlyIn(Dist.CLIENT)` or lives behind a client event subscriber.
-  Server-safe code must not touch client classes; a dedicated server crash has already forced one
-  config option out of the mod.
+- Client-only code is reached only through a client event subscriber. NeoForge 26.1 no longer
+  strips `@OnlyIn` members and logs an error for each use, so do not add it. Server-safe code must
+  not touch client classes; a dedicated server crash has already forced one config option out of
+  the mod.
 - Gases are identified by their fluid type (`VEFlowingGasFluid`), not by a render flag.
 - Nullability annotations: `org.jetbrains.annotations.NotNull`/`Nullable` (the dominant choice). Do
   not add new `javax.annotation` imports.
@@ -220,8 +221,9 @@ the build files.
 There is no unit test suite. A task is done when:
 
 1. `./gradlew compileJava` (or `./gradlew build`) succeeds.
-2. If the change touches registries, tags, loot, models, or other datagen output, `./gradlew runData`
-   has been run and the diff in `src/generated/resources` reviewed and included.
+2. If the change touches registries, tags, loot, models, or other datagen output,
+   `./gradlew runClientData` has been run and the diff in `src/generated/resources` reviewed and
+   included.
 3. If the change adds or touches gametests (none exist yet), `./gradlew runGameTestServer` passes.
 4. For rendering, GUI, or machine-behaviour changes, say plainly that it needs an in-game check via
    `./gradlew runClient`. Do not claim it works without one.
