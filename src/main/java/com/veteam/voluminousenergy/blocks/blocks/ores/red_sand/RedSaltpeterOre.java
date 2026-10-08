@@ -2,9 +2,9 @@ package com.veteam.voluminousenergy.blocks.blocks.ores.red_sand;
 
 import com.veteam.voluminousenergy.blocks.blocks.ores.SaltpeterOre;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.util.ColorRGBA;
 import net.minecraft.world.level.block.SoundType;
-import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 public class RedSaltpeterOre extends SaltpeterOre {
     public RedSaltpeterOre() {

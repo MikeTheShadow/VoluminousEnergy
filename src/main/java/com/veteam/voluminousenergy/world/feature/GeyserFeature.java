@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.world.feature;
 
 import com.mojang.serialization.Codec;
+import com.veteam.voluminousenergy.util.WorldUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -15,7 +16,6 @@ import net.minecraft.world.level.material.FluidState;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import com.veteam.voluminousenergy.util.WorldUtil;
 
 public class GeyserFeature extends Feature<GeyserFeature.Configuration> {
 

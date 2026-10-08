@@ -9,27 +9,14 @@ import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import com.veteam.voluminousenergy.items.tools.multitool.Multitool;
 
 /**
- * Bridges the mod's legacy (pre-26.1) IItemHandler / IFluidHandler / IEnergyStorage based
- * storage implementations onto NeoForge's newer transfer API.
- * <p>
- * NeoForge only ships a bridge in the new-to-old direction ({@code IItemHandler.of(ResourceHandler)},
- * {@code IEnergyStorage.of(EnergyHandler)}, {@code IFluidHandler.of(ResourceHandler)} - see
- * {@link Multitool}). There is no equivalent
- * old-to-new bridge anywhere in NeoForge (confirmed via javap against the 26.1 universal jar and
- * the decompiled sources), which is what RegisterCapabilitiesEvent providers need to return.
- * This class fills that gap so the mod's existing IItemHandler/IFluidHandler/IEnergyStorage backed
- * storage classes (VEEnergyStorage, ItemStackHandler-based wrappers, FluidHandlerItemStack, etc.)
- * can still be registered without rewriting their internals.
- * <p>
- * Note: these adapters execute immediately against the wrapped legacy handler and do not
- * participate in the transaction rollback machinery (the legacy handlers have no concept of
- * snapshot/restore). The old behaviour never supported atomic multi-handler transactions either,
- * so this introduces no functional regression versus pre-port behaviour.
+ * Adapts {@link IItemHandler}, {@link IFluidHandler}, and {@link IEnergyStorage} implementations to
+ * the transfer API handlers that capability providers return. NeoForge only bridges the other way.
+ * The adapters act on the wrapped handler immediately and ignore the transaction context, so an
+ * aborted transaction does not undo their changes.
  */
-public final class CapabilityAdapters {
+public class CapabilityAdapters {
 
     private CapabilityAdapters() {
     }
@@ -70,7 +57,9 @@ public final class CapabilityAdapters {
             @Override
             public int extract(int index, ItemResource resource, int amount, TransactionContext context) {
                 ItemStack current = itemHandler.getStackInSlot(index);
-                if (current.isEmpty() || !resource.matches(current)) return 0;
+                if (current.isEmpty() || !resource.matches(current)) {
+                    return 0;
+                }
                 return itemHandler.extractItem(index, amount, false).getCount();
             }
         };

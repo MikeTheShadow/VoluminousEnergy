@@ -20,8 +20,6 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.fluid.CustomFluidRenderer;
 
 /**
@@ -29,7 +27,6 @@ import net.neoforged.neoforge.client.fluid.CustomFluidRenderer;
  * upward against a ceiling instead of downward on a floor. The cap and the free surface swap
  * ends of the block: heights go through {@link #flipY} and quad winding is reversed.
  */
-@OnlyIn(Dist.CLIENT)
 public class GaseousFluidRenderer implements CustomFluidRenderer {
 
     private static float flipY(float height) {

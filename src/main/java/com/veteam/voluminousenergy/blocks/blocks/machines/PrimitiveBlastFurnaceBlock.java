@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.blocks.blocks.machines;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntities;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -18,7 +19,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 public class PrimitiveBlastFurnaceBlock extends VEFaceableMachineBlock {
 

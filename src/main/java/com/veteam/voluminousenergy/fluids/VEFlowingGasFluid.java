@@ -39,8 +39,7 @@ public class VEFlowingGasFluid extends BaseFlowingFluid {
         return object2bytelinkedopenhashmap;
     });
 
-    // net.minecraft.world.level.material.FlowingFluid$BlockStatePairKey is package-private in
-    // vanilla, so this mod keeps its own equivalent occlusion-cache key.
+    // Mirrors FlowingFluid.BlockStatePairKey, which is package-private.
     private record BlockStatePairKey(BlockState first, BlockState second, Direction direction) {
     }
     //
@@ -276,9 +275,7 @@ public class VEFlowingGasFluid extends BaseFlowingFluid {
         return fluidState.getType().isSame(this) && fluidState.isSource();
     }
 
-    // net.minecraft.world.level.material.FlowingFluid#canSpreadTo (the old subclass-visible spread-eligibility
-    // check) was removed and its logic inlined into vanilla's own spread()/getSpread(); this mod still needs it
-    // as an explicit hook since its spread() override implements different (upward-flowing) gas physics.
+    // FlowingFluid inlines this check into its own spread, which this class replaces.
     private boolean canSpreadTo(BlockGetter level, BlockPos pos, BlockState state, Direction direction, BlockPos targetPos, BlockState targetState, FluidState targetFluidState, Fluid newFluidType) {
         if (!this.canPassThroughWall(direction, level, pos, state, targetPos, targetState)) {
             return false;

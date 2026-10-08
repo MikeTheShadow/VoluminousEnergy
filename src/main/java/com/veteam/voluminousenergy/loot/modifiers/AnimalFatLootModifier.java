@@ -27,10 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Supplier;
 
 public class AnimalFatLootModifier extends LootModifier {
-    // Decodes to an ItemStackTemplate rather than an ItemStack: constructing an ItemStack from a
-    // Holder<Item> eagerly resolves the holder's data components, which are not bound yet while
-    // loot modifiers are decoded during a datapack reload. ItemStackTemplate defers that
-    // resolution to #create(), called from doApply() once the world is fully loaded.
+    // Item data components are unbound while loot modifiers decode, so the addition stays a template until doApply.
     public static final Supplier<MapCodec<AnimalFatLootModifier>> CODEC = Suppliers.memoize(() ->
             RecordCodecBuilder.mapCodec(animalFatLootModifierInstance -> animalFatLootModifierInstance.group(
                             LOOT_CONDITIONS_CODEC.fieldOf("conditions").forGetter(AnimalFatLootModifier::getLootItemConditions),

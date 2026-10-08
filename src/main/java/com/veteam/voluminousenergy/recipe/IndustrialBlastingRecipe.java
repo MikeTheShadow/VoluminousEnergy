@@ -14,6 +14,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.material.Fluid;
@@ -69,7 +70,7 @@ public class IndustrialBlastingRecipe extends VERecipe {
 
     }
 
-    public IndustrialBlastingRecipe(List<VERecipeCodecs.RegistryIngredient> i, List<net.minecraft.world.item.ItemStackTemplate> oi, int processTime, int minimumHeat) {
+    public IndustrialBlastingRecipe(List<VERecipeCodecs.RegistryIngredient> i, List<ItemStackTemplate> oi, int processTime, int minimumHeat) {
         super(i, List.of(), List.of(), oi, processTime);
         this.minimumHeat = minimumHeat;
     }

@@ -2,9 +2,9 @@ package com.veteam.voluminousenergy.blocks.blocks.ores;
 
 import com.veteam.voluminousenergy.datagen.MaterialConstants;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.SoundType;
-import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 public class BauxiteOre extends VEOreBlock {
     public BauxiteOre() {

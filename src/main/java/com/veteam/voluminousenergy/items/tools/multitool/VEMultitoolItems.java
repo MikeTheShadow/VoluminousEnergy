@@ -2,10 +2,10 @@ package com.veteam.voluminousenergy.items.tools.multitool;
 
 import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItem;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.VEMultitoolBitData;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.world.item.Item;
 
 import java.util.function.Supplier;
-import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 import static com.veteam.voluminousenergy.items.VEItems.VE_ITEM_REGISTRY;
 

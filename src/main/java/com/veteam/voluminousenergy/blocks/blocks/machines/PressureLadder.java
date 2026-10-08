@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.blocks.blocks.machines;
 
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -29,7 +30,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 public class PressureLadder extends LadderBlock {
     private String registryName; // Voluminous Energy 1.19 port

@@ -2,8 +2,8 @@ package com.veteam.voluminousenergy.recipe.parser;
 
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.blocks.tiles.inventory.VEItemStackHandler;
-import net.minecraft.world.item.ItemStack;
 import com.veteam.voluminousenergy.recipe.processor.DimensionalLaserRecipeProcessor;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * A recipe parser system for taking a recipe and translating it into something more consumable

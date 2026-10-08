@@ -20,6 +20,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import oshi.util.tuples.Pair;
 
 import java.util.ArrayList;
@@ -74,10 +75,7 @@ public class VERecipeCodecs {
         }
     }
 
-    // Decodes to an ItemStackTemplate rather than an ItemStack: constructing an ItemStack from a
-    // Holder<Item> eagerly resolves the holder's data components, which are not bound yet while
-    // recipes are being parsed during resource reload. ItemStackTemplate defers that resolution
-    // to #create(), which must only be called once the world/registries are fully loaded.
+    // Decodes to a template because item data components are unbound while recipes decode.
     public static final Codec<ItemStackTemplate> VE_OUTPUT_ITEM_CODEC = RecordCodecBuilder.create((instance) ->
             instance.group(ITEM_NONAIR_CODEC.fieldOf("item").forGetter(ItemStackTemplate::item),
                     Codec.INT.optionalFieldOf("count",1)
@@ -220,14 +218,12 @@ public class VERecipeCodecs {
 
     }
 
-    // Decodes to a FluidStackTemplate rather than a FluidStack for the same reason as
-    // VE_OUTPUT_ITEM_CODEC above: constructing a FluidStack resolves the fluid's Holder
-    // components eagerly, which are not bound yet while recipes are parsed during resource reload.
-    public static final Codec<net.neoforged.neoforge.fluids.FluidStackTemplate> VE_OUTPUT_FLUID_CODEC = RecordCodecBuilder.create((instance) ->
+    // Decodes to a template for the same reason as VE_OUTPUT_ITEM_CODEC.
+    public static final Codec<FluidStackTemplate> VE_OUTPUT_FLUID_CODEC = RecordCodecBuilder.create((instance) ->
             instance.group(FLUID_NONAIR_CODEC.fieldOf("fluid").forGetter(t -> t.fluid().value()),
                     Codec.INT.fieldOf("amount")
-                            .forGetter(net.neoforged.neoforge.fluids.FluidStackTemplate::amount))
-                    .apply(instance, net.neoforged.neoforge.fluids.FluidStackTemplate::new));
+                            .forGetter(FluidStackTemplate::amount))
+                    .apply(instance, FluidStackTemplate::new));
 
     public static final Codec<VERecipeExperience> VE_EXPERIENCE_RANGE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
             Codec.INT.fieldOf("minimum").forGetter(VERecipeExperience::minimum),
@@ -249,8 +245,7 @@ public class VERecipeCodecs {
             return new Pair<>(new ItemStack(item, count), chance);
         }
 
-        // Safe to call during recipe/codec decode: unlike getAsItemStack(), this does not resolve
-        // the item Holder's data components (which are not bound yet at that point in the reload).
+        // Unlike getAsItemStack, safe to call while recipes decode.
         public ItemStackTemplate toTemplate() {
             return new ItemStackTemplate(item, count, DataComponentPatch.EMPTY);
         }

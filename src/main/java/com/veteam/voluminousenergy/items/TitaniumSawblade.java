@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.items;
 
-import net.minecraft.world.item.Item;
 import com.veteam.voluminousenergy.util.VERegistryHelper;
+import net.minecraft.world.item.Item;
 
 public class TitaniumSawblade extends VEItem {
     public TitaniumSawblade() {

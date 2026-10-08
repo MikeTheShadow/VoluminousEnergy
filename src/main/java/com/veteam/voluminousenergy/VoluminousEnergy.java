@@ -139,16 +139,7 @@ public class VoluminousEnergy {
 
         @SubscribeEvent
         public static void RegisterClientOnSetupEvent(FMLClientSetupEvent event) {
-            // Block/item render layers (cutout etc.) are now auto-detected from texture alpha at
-            // model-load time in 26.1; ItemBlockRenderTypes#setRenderLayer no longer exists.
-            // If RICE_CROP/SAWMILL/PRESSURE_LADDER don't render as cutout automatically, use
-            // "force_translucent"/model-level overrides in their model JSON instead.
-
-            // TODO: net.minecraft.client.renderer.item.ItemProperties (range-dispatch item model
-            // overrides) was removed in 26.1; the MULTI_TOOL's per-tool-type/tier model swap needs
-            // to be reimplemented via a data-driven item model (assets/voluminousenergy/items/multi_tool.json
-            // using "minecraft:range_dispatch" keyed on the TOOL_TYPE/TOOL_TIER data components)
-            // rather than this Java registration.
+            // TODO: Restore the multitool's per tool type and tier model with a range_dispatch item model.
         }
 
         @SubscribeEvent

@@ -20,6 +20,7 @@ import com.veteam.voluminousenergy.blocks.tiles.VETileEntities;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntityFactory;
 import com.veteam.voluminousenergy.util.VEClientSide;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;
@@ -34,7 +35,6 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
-import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 @Mod(VoluminousEnergy.MODID)
 public class VEBlocks {

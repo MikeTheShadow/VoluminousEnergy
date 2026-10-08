@@ -10,8 +10,10 @@ import com.veteam.voluminousenergy.items.tools.multitool.bits.VEMultitoolBitData
 import com.veteam.voluminousenergy.util.NumberUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
 import com.veteam.voluminousenergy.util.VEDataComponents;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
@@ -39,7 +41,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 public class Multitool extends VEItem {
 
@@ -284,7 +285,7 @@ public class Multitool extends VEItem {
                 java.util.Random rand = new java.util.Random();
 
                 drops.forEach(d -> {
-                    net.minecraft.world.entity.item.ItemEntity ent = entity.spawnAtLocation((net.minecraft.server.level.ServerLevel) entity.level(), d, 1.0F);
+                    net.minecraft.world.entity.item.ItemEntity ent = entity.spawnAtLocation((ServerLevel) entity.level(), d, 1.0F);
                     ent.setDeltaMovement(ent.getDeltaMovement().add((double) ((rand.nextFloat() - rand.nextFloat()) * 0.1F), (double) (rand.nextFloat() * 0.05F), (double) ((rand.nextFloat() - rand.nextFloat()) * 0.1F)));
                 });
 

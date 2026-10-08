@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.items.tools;
 import com.veteam.voluminousenergy.persistence.ChunkFluid;
 import com.veteam.voluminousenergy.util.TextUtil;
 import com.veteam.voluminousenergy.util.VEDataComponents;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import com.veteam.voluminousenergy.util.extensions.VEEnums;
 import com.veteam.voluminousenergy.util.records.ChunkFluidData;
 import net.minecraft.network.chat.Component;
@@ -13,7 +14,6 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
-import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 public class RFIDChip extends Item {
 

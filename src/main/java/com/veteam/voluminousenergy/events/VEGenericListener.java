@@ -102,13 +102,8 @@ public class VEGenericListener {
         VoluminousEnergy.LOGGER.info("Running: " + blockRegistryEvent.getRegistryKey()); // If you delete this you have to fix it
     }
 
-    /*
-     * NeoForge 26.1 only sends full recipe content to clients for types explicitly
-     * requested here; without this, RecipesReceivedEvent#getRecipeMap() on the client
-     * never contains VE recipes, so VERecipe's cache (used by JEI and, in singleplayer,
-     * by machines too since the cache is shared static state with the integrated server)
-     * stays empty. Unrestricted dist so this also fires for the integrated server.
-     */
+    // Clients receive only the recipe types sent here. JEI and, in singleplayer, the integrated
+    // server read the VERecipe cache that the client fills from them.
     @SubscribeEvent
     public static void onDataPackSync(OnDatapackSyncEvent event) {
         List<RecipeType<?>> recipeTypes = VERecipes.VERecipeTypes.VE_RECIPE_TYPES_REGISTRY.getEntries().stream()

@@ -6,6 +6,7 @@ import com.veteam.voluminousenergy.tools.networking.packets.TankBoolPacket;
 import com.veteam.voluminousenergy.util.VERelationalTank;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -44,7 +45,7 @@ public class TankBoolButton extends VEIOButton {
     }
 
     @Override
-    public void onPress(net.minecraft.client.input.InputWithModifiers input) {
+    public void onPress(InputWithModifiers input) {
         if (!render) return;
         cycle();
         ClientPacketDistributor.sendToServer(new TankBoolPacket.TankBoolPacketPayload(this.status(),this.getId()));

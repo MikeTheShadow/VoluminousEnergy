@@ -8,6 +8,7 @@ import com.veteam.voluminousenergy.util.TextUtil;
 import com.veteam.voluminousenergy.util.VERelationalTank;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -76,7 +77,7 @@ public class TankDirectionButton extends VEIOButton {
     }
 
     @Override
-    public void onPress(net.minecraft.client.input.InputWithModifiers input) {
+    public void onPress(InputWithModifiers input) {
         if (!render) return;
         cycle();
         ClientPacketDistributor.sendToServer(new TankDirectionPayload(this.getDirection().get3DDataValue(), this.getId()));

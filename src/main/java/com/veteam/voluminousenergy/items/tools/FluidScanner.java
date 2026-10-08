@@ -6,6 +6,7 @@ import com.veteam.voluminousenergy.persistence.ChunkFluids;
 import com.veteam.voluminousenergy.persistence.SingleChunkFluid;
 import com.veteam.voluminousenergy.util.TextUtil;
 import com.veteam.voluminousenergy.util.VEDataComponents;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import com.veteam.voluminousenergy.util.WorldUtil;
 import com.veteam.voluminousenergy.util.records.ChunkFluidData;
 import net.minecraft.ChatFormatting;
@@ -28,7 +29,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
-import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 public class FluidScanner extends Item {
 

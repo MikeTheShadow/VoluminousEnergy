@@ -4,6 +4,7 @@ import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.util.NumberUtil;
 import com.veteam.voluminousenergy.util.RegistryLookups;
 import com.veteam.voluminousenergy.util.TextUtil;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import com.veteam.voluminousenergy.util.WorldUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -24,7 +25,6 @@ import oshi.util.tuples.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 import static net.minecraft.world.level.material.Fluids.LAVA;
 import static net.minecraft.world.level.material.Fluids.WATER;

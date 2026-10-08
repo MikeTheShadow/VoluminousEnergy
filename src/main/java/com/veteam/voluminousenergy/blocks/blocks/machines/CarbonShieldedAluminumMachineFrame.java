@@ -2,8 +2,8 @@ package com.veteam.voluminousenergy.blocks.blocks.machines;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlock;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
-import net.minecraft.world.level.block.SoundType;
 import com.veteam.voluminousenergy.util.VERegistryHelper;
+import net.minecraft.world.level.block.SoundType;
 
 public class CarbonShieldedAluminumMachineFrame extends VEBlock {
     public CarbonShieldedAluminumMachineFrame() {

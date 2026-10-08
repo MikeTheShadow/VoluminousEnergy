@@ -42,8 +42,7 @@ public class SolarPanelProcessor implements AbstractRecipeProcessor {
         if (!level.canSeeSky(pos.above()))
             return 0.0f;
 
-        // Zenith = 0rad. SUN_ANGLE is in degrees; convert to radians like the old getSunAngle(1.0f) did.
-        float celestialAngle = (float) (level.environmentAttributes().getValue(EnvironmentAttributes.SUN_ANGLE, pos) * (Math.PI / 180.0));
+        float celestialAngle = (float) Math.toRadians(level.environmentAttributes().getValue(EnvironmentAttributes.SUN_ANGLE, pos)); // Zenith = 0rad
 
         if (celestialAngle > Math.PI)
             celestialAngle = (2 * ((float) Math.PI) - celestialAngle);

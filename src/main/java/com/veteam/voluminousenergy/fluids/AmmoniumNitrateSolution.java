@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.fluids;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.VEFlowingFluidBlock;
 import com.veteam.voluminousenergy.items.AmmoniumNitrateBucket;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.Item;
@@ -15,7 +16,6 @@ import net.minecraft.world.level.pathfinder.PathType;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
-import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 public class AmmoniumNitrateSolution {
     public static final Identifier AMMONIUM_NITRATE_SOLUTION_STILL_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/ammonium_nitrate_solution_still");

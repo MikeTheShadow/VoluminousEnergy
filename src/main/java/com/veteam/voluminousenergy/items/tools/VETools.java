@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.items.tools;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
@@ -9,7 +10,6 @@ import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.level.block.Block;
 
 import java.util.function.Supplier;
-import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 import static com.veteam.voluminousenergy.items.VEItems.VE_ITEM_REGISTRY;
 
@@ -17,35 +17,35 @@ public class VETools {
 
     // Material Tiers
     public static final TagKey<Block> ALUMINUM_TIER_TAG = TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "incorrect_for_iron_tool"));
-    public static final TagKey<net.minecraft.world.item.Item> ALUMINUM_REPAIR_TAG = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "repairs_aluminum_tool"));
+    public static final TagKey<Item> ALUMINUM_REPAIR_TAG = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "repairs_aluminum_tool"));
     public static final ToolMaterial ALUMINUM = new ToolMaterial(ALUMINUM_TIER_TAG, 250, 6.6F, 2.0F, 14, ALUMINUM_REPAIR_TAG);
 
     public static final TagKey<Block> CARBON_TIER_TAG = TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "incorrect_for_stone_tool"));
-    public static final TagKey<net.minecraft.world.item.Item> CARBON_REPAIR_TAG = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "repairs_carbon_tool"));
+    public static final TagKey<Item> CARBON_REPAIR_TAG = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "repairs_carbon_tool"));
     public static final ToolMaterial CARBON = new ToolMaterial(CARBON_TIER_TAG, 95, 4.0F, 0.8F, 5, CARBON_REPAIR_TAG);
 
     public static final TagKey<Block> TITANIUM_TIER_TAG = TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "incorrect_for_titanium_tool"));
-    public static final TagKey<net.minecraft.world.item.Item> TITANIUM_REPAIR_TAG = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "repairs_titanium_tool"));
+    public static final TagKey<Item> TITANIUM_REPAIR_TAG = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "repairs_titanium_tool"));
     public static final ToolMaterial TITANIUM = new ToolMaterial(TITANIUM_TIER_TAG, 2133, 8.5F, 3.5F, 15, TITANIUM_REPAIR_TAG);
 
     public static final TagKey<Block> TUNGSTEN_TIER_TAG = TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "incorrect_for_tungsten_tool"));
-    public static final TagKey<net.minecraft.world.item.Item> TUNGSTEN_REPAIR_TAG = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "repairs_tungsten_tool"));
+    public static final TagKey<Item> TUNGSTEN_REPAIR_TAG = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "repairs_tungsten_tool"));
     public static final ToolMaterial TUNGSTEN = new ToolMaterial(TUNGSTEN_TIER_TAG, 2666, 9.0F, 4.0F, 15, TUNGSTEN_REPAIR_TAG);
 
     public static final TagKey<Block> TUNGSTEN_STEEL_TIER_TAG = TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "incorrect_for_tungstensteel_tool"));
-    public static final TagKey<net.minecraft.world.item.Item> TUNGSTEN_STEEL_REPAIR_TAG = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "repairs_tungsten_steel_tool"));
+    public static final TagKey<Item> TUNGSTEN_STEEL_REPAIR_TAG = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "repairs_tungsten_steel_tool"));
     public static final ToolMaterial TUNGSTEN_STEEL = new ToolMaterial(TUNGSTEN_STEEL_TIER_TAG, 2933, 11.0F, 5.0F, 18, TUNGSTEN_STEEL_REPAIR_TAG);
 
     public static final TagKey<Block> NIGHALITE_TIER_TAG = TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "incorrect_for_nighalite_tool"));
-    public static final TagKey<net.minecraft.world.item.Item> NIGHALITE_REPAIR_TAG = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "repairs_nighalite_tool"));
+    public static final TagKey<Item> NIGHALITE_REPAIR_TAG = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "repairs_nighalite_tool"));
     public static final ToolMaterial NIGHALITE = new ToolMaterial(NIGHALITE_TIER_TAG, 2434, 13F, 4.6F, 18, NIGHALITE_REPAIR_TAG);
 
     public static final TagKey<Block> EIGHZO_TIER_TAG = TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "incorrect_for_eighzo_tool"));
-    public static final TagKey<net.minecraft.world.item.Item> EIGHZO_REPAIR_TAG = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "repairs_eighzo_tool"));
+    public static final TagKey<Item> EIGHZO_REPAIR_TAG = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "repairs_eighzo_tool"));
     public static final ToolMaterial EIGHZO = new ToolMaterial(EIGHZO_TIER_TAG, 7125, 17F, 6.5F, 18, EIGHZO_REPAIR_TAG);
 
     public static final TagKey<Block> SOLARIUM_TIER_TAG = TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "incorrect_for_solarium_tool"));
-    public static final TagKey<net.minecraft.world.item.Item> SOLARIUM_REPAIR_TAG = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "repairs_solarium_tool"));
+    public static final TagKey<Item> SOLARIUM_REPAIR_TAG = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "repairs_solarium_tool"));
     public static final ToolMaterial SOLARIUM = new ToolMaterial(SOLARIUM_TIER_TAG, 17815 /* or 25912 */, 20F, 8F, 22, SOLARIUM_REPAIR_TAG);
 
     /* TOOLS */

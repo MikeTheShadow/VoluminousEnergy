@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.world.feature;
 
 import com.mojang.serialization.Codec;
+import com.veteam.voluminousenergy.util.WorldUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.util.RandomSource;
@@ -15,7 +16,6 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.material.FluidState;
-import com.veteam.voluminousenergy.util.WorldUtil;
 
 public class VELakesFeature extends Feature<VELakesFeature.Configuration> {
     public VELakesFeature(Codec<VELakesFeature.Configuration> lakesConfiguration) {

@@ -4,6 +4,7 @@ import com.veteam.voluminousenergy.blocks.blocks.machines.VEFaceableMachineBlock
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntities;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import com.veteam.voluminousenergy.sounds.VESounds;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.core.BlockPos;
@@ -20,7 +21,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import com.veteam.voluminousenergy.util.VERegistryHelper;
 
 public class DimensionalLaserBlock extends VEFaceableMachineBlock {
 
