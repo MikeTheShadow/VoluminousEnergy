@@ -22,8 +22,8 @@ public class VEFeatures { // TODO: Investigate `BlockTags.FEATURES_CANNOT_REPLAC
     public static Supplier<GeyserFeature> VE_GEYSER_FEATURE = VE_FEATURE_REGISTRY.register("ve_geyser_feature", () -> new GeyserFeature(GeyserFeature.Configuration.CODEC)); // Geyser using BlockStateConfiguration
     public static Supplier<RiceFeature> VE_RICE_FEATURE = VE_FEATURE_REGISTRY.register("ve_rice_feature", () -> new RiceFeature(BlockStateConfiguration.CODEC)); // Rice crop using BlockStateConfiguration
     public static Supplier<VEOreDepositFeature> VE_ORE_DEPOSIT_FEATURE = VE_FEATURE_REGISTRY.register("ve_ore_deposit_feature", () -> new VEOreDepositFeature(VEOreDepositFeature.Configuration.CODEC));
-    public static Supplier<SurfaceMattersLakesFeature> VE_BSC_LAKE_SURFACE_FEATURE = VE_FEATURE_REGISTRY.register("ve_bsc_surface_lake_feature", () -> new SurfaceMattersLakesFeature(VELakesFeature.Configuration.CODEC, true));
-    public static Supplier<SurfaceMattersLakesFeature> VE_BSC_LAKE_UNDERGROUND_FEATURE = VE_FEATURE_REGISTRY.register("ve_bsc_underground_lakes_feature", () -> new SurfaceMattersLakesFeature(VELakesFeature.Configuration.CODEC, false));
+    public static Supplier<SurfaceMattersLakesFeature> VE_BSC_LAKE_SURFACE_FEATURE = VE_FEATURE_REGISTRY.register("ve_bsc_surface_lake_feature", () -> new SurfaceMattersLakesFeature(VELakesFeature.Configuration.CODEC));
+    public static Supplier<VEFluidDepositFeature> VE_FLUID_DEPOSIT_FEATURE = VE_FEATURE_REGISTRY.register("ve_fluid_deposit_feature", () -> new VEFluidDepositFeature(VELakesFeature.Configuration.CODEC));
 
     protected static VEOres.NoPlacement noPlacement = new VEOres.NoPlacement();
 
