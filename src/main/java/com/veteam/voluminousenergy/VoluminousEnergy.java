@@ -30,7 +30,6 @@ import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
@@ -136,11 +135,6 @@ public class VoluminousEnergy {
 
     @EventBusSubscriber(modid = VoluminousEnergy.MODID, value = Dist.CLIENT)
     public static class ClientRegister {
-
-        @SubscribeEvent
-        public static void RegisterClientOnSetupEvent(FMLClientSetupEvent event) {
-            // TODO: Restore the multitool's per tool type and tier model with a range_dispatch item model.
-        }
 
         @SubscribeEvent
         public static void RegisterMenuScreens(RegisterMenuScreensEvent event) {
