@@ -54,8 +54,5 @@ public class HydroponicParser extends RNGBasicParser {
             FluidStack tileFluid = tile.getFluidStackFromTank(pos.tilePos());
             tileFluid.setAmount(tileFluid.getAmount() + result.getAmount());
         }
-
-        // mark fluid IO as dirty
-        tile.markFluidInputDirty();
     }
 }

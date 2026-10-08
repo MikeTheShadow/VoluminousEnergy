@@ -6,7 +6,6 @@ import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.recipe.processor.MultiBlockRecipeProcessor;
 import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.tools.VERender;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
@@ -29,7 +28,9 @@ public class DistillationUnitScreen extends VEContainerScreen<VEContainer> {
     public DistillationUnitScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
         tileEntity = screenContainer.getTileEntity();
-
+        addTankArea(0, 44, 18);
+        addTankArea(1, 104, 18);
+        addTankArea(2, 152, 18);
     }
 
     @Override
@@ -63,25 +64,6 @@ public class DistillationUnitScreen extends VEContainerScreen<VEContainer> {
         } else if (!VoluminousEnergy.JEI_LOADED && isHovering(getTooltipArea(), mouseX, mouseY)) {
             matrixStack.renderComponentTooltip(this.font, this.getTooltips(), mouseX, mouseY);
         }
-
-        if (isHovering(61, 18, 12, 50, mouseX, mouseY)) { // Input Tank
-            int amount = tileEntity.getFluidStackFromTank(0).getAmount();
-            String name = tileEntity.getFluidStackFromTank(0).getHoverName().getString();
-            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity(0)), mouseX, mouseY);
-        }
-
-        if (isHovering(119, 11, 12, 50, mouseX, mouseY)) { // First Output Tank
-            int amount = tileEntity.getFluidStackFromTank(1).getAmount();
-            String name = tileEntity.getFluidStackFromTank(1).getHoverName().getString();
-            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity(1)), mouseX, mouseY);
-        }
-
-        if (isHovering(157, 11, 12, 50, mouseX, mouseY)) { // Second Output Tank
-            int amount = tileEntity.getFluidStackFromTank(2).getAmount();
-            String name = tileEntity.getFluidStackFromTank(2).getHoverName().getString();
-            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity(2)), mouseX, mouseY);
-        }
-
         super.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
@@ -116,20 +98,15 @@ public class DistillationUnitScreen extends VEContainerScreen<VEContainer> {
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            matrixStack.blit(GUI, i + 81, j + 31, 176, 0, progress, 17);
+            Rect2i progressArea = getTooltipArea();
+            matrixStack.blit(GUI, i + progressArea.getX(), j + progressArea.getY(), 176, 0, progress, progressArea.getHeight());
             matrixStack.blit(GUI, i + 11, j + (16 + (49 - power)), 176, 24 + (49 - power), 12, power);
 
-            VERender.renderGuiTank(matrixStack, tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(0), tileEntity.getTankCapacity(0), i + 61, j + 18, 0, 12, 50);
+            renderTank(matrixStack, 0);
 
-            try {
-                VERender.renderGuiTank(matrixStack, tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(1), tileEntity.getTankCapacity(1), i + 119, j + 11, 0, 12, 50);
-            } catch (Exception e) {
-            }
+            renderTank(matrixStack, 1);
 
-            try {
-                VERender.renderGuiTank(matrixStack, tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(2), tileEntity.getTankCapacity(2), i + 157, j + 11, 0, 12, 50);
-            } catch (Exception e) {
-            }
+            renderTank(matrixStack, 2);
             drawIOSideHelper();
             // Upgrade slot
             RenderSystem.setShaderTexture(0, GUI_TOOLS);

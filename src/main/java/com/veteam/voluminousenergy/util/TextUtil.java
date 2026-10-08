@@ -14,6 +14,9 @@ import net.neoforged.neoforge.fluids.FluidStack;
 
 import javax.annotation.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TextUtil {
 
     // Slots
@@ -43,6 +46,16 @@ public class TextUtil {
         }
 
         return Component.translatable(fluidName).append(Component.nullToEmpty(": " + stringAmount + " mB / " + stringTankCapacity + " mB"));
+    }
+
+    public static List<Component> tankTooltip(String fluidName, int amount, int tankCapacity, boolean canInsert) {
+        List<Component> tooltip = new ArrayList<>();
+        tooltip.add(tankTooltip(fluidName, amount, tankCapacity));
+        tooltip.add(Component.translatable("gui.voluminousenergy.tank.take_fluid").withStyle(ChatFormatting.GRAY));
+        if (canInsert) {
+            tooltip.add(Component.translatable("gui.voluminousenergy.tank.put_fluid").withStyle(ChatFormatting.GRAY));
+        }
+        return tooltip;
     }
 
     public static Component powerBarTooltip(VEEnergyStorage veEnergyStorage, int configuredMaxPower) {

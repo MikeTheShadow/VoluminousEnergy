@@ -130,9 +130,6 @@ public class BasicParser {
             FluidStack result = recipe.getOutputFluid(pos.recipePos());
             tile.getRelationalTank(pos.tilePos()).fillTank(result.copy());
         }
-
-        // mark fluid IO as dirty
-        tile.markFluidInputDirty();
     }
 
 

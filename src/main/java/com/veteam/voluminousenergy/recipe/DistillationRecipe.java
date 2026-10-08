@@ -24,7 +24,7 @@ public class DistillationRecipe extends VERNGRecipe {
     public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.DISTILLING.get();
 
     private final BasicParser parser = new RNGBasicParser(this)
-            .addChancedItemResult(6, 0)
+            .addChancedItemResult(0, 0)
             .addFluidIngredient(0, 0)
             .addFluidResult(1, 0)
             .addFluidResult(2, 1);

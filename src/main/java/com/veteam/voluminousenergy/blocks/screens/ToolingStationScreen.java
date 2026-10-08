@@ -5,7 +5,6 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.recipe.processor.BasicProcessor;
-import com.veteam.voluminousenergy.tools.VERender;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
@@ -22,7 +21,7 @@ public class ToolingStationScreen extends VEContainerScreen<VEContainer> {
     public ToolingStationScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
         tileEntity = screenContainer.getTileEntity();
-
+        addTankArea(0, 44, 18);
     }
 
     @Override
@@ -47,13 +46,6 @@ public class ToolingStationScreen extends VEContainerScreen<VEContainer> {
 
     @Override
     protected void renderTooltip(GuiGraphics matrixStack, int mouseX, int mouseY) {
-
-        if (isHovering(61, 18, 12, 50, mouseX, mouseY)) { // Input Tank
-            int amount = tileEntity.getFluidStackFromTank(0).getAmount();
-            String name = tileEntity.getFluidStackFromTank(0).getHoverName().getString();
-            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity(0)), mouseX, mouseY);
-        }
-
         super.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
@@ -85,11 +77,8 @@ public class ToolingStationScreen extends VEContainerScreen<VEContainer> {
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
             if (lightArrow) matrixStack.blit(GUI, i + 109, j + 18, 188, 0, 22, 47);
-            VERender.renderGuiTank(matrixStack, tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(0), tileEntity.getTankCapacity(0), i + 61, j + 18, 0, 12, 50);
+            renderTank(matrixStack, 0);
 
-            /*try{
-                VERender.renderGuiTank(matrixStack, tileEntity.getFluidStackFromTank(1),tileEntity.getTankCapacity(), i + 157, j + 18, 0, 12, 50);
-            } catch (Exception ignored){ }*/
             drawIOSideHelper();
         }
 

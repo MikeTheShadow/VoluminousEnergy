@@ -162,16 +162,19 @@ public abstract class VEContainer extends AbstractContainerMenu {
     @Nonnull
     @Override
     public ItemStack quickMoveStack(final @NotNull Player player, final int index) {
+        if (index < 0 || index >= this.slots.size()) {
+            return ItemStack.EMPTY;
+        }
+
         ItemStack returnStack = ItemStack.EMPTY;
         final Slot slot = this.slots.get(index);
-
-        int tileEntitySlotCount = this.tileEntity.getSlotManagers().size();
+        int tileEntitySlotCount = this.tileEntity.getInventory().getSlots();
 
         if (slot.hasItem()) {
             final ItemStack slotStack = slot.getItem();
             returnStack = slotStack.copy();
 
-            if (index <= tileEntitySlotCount) {
+            if (index < tileEntitySlotCount) {
 
                 if(slot instanceof VEContainerFactory.VESlot veSlot) {
                     veSlot.preQuickMoveStack(slotStack);
@@ -182,8 +185,14 @@ public abstract class VEContainer extends AbstractContainerMenu {
                 }
                 slot.onQuickCraft(slotStack, returnStack);
             } else {
-                if (TagUtil.isTaggedMachineUpgradeItem(slotStack)) {
-                    int upgradeSlotId = getUpgradeSlotId();
+                if (tileEntitySlotCount == 0) {
+                    return ItemStack.EMPTY;
+                }
+
+                VEEnergyStorage storage = this.tileEntity.getEnergy();
+                if (TagUtil.isTaggedMachineUpgradeItem(slotStack) && storage != null
+                        && storage.getUpgradeSlotId() >= 0) {
+                    int upgradeSlotId = storage.getUpgradeSlotId();
                     if (!this.moveItemStackTo(slotStack, upgradeSlotId, upgradeSlotId + 1, false)) {
                         return ItemStack.EMPTY;
                     }

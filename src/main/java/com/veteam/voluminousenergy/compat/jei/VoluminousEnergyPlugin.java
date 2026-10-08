@@ -160,7 +160,6 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addGuiContainerHandler(PrimitiveStirlingGeneratorScreen.class, new PrimitiveStirlingGeneratorContainerHandler());
         registration.addGuiContainerHandler(StirlingGeneratorScreen.class, new StirlingGeneratorContainerHandler());
         registration.addGuiContainerHandler(CentrifugalAgitatorScreen.class, new CentrifugalAgitatorContainerHandler());
-        registration.addRecipeClickArea(AqueoulizerScreen.class, 79, 31, 11, 18, AqueoulizingCategory.RECIPE_TYPE); // X offset: 3, Y offset: 3
         registration.addGuiContainerHandler(AqueoulizerScreen.class, new AqueoulizerContainerHandler());
         registration.addGuiContainerHandler(DistillationUnitScreen.class, new DistillationUnitContainerHandler());
         registration.addGuiContainerHandler(GasFiredFurnaceScreen.class, new GasFiredFurnaceContainerHandler());
@@ -171,7 +170,6 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addGuiContainerHandler(SawmillScreen.class, new SawmillContainerHandler());
         registration.addGuiContainerHandler(FluidElectrolyzerScreen.class, new FluidElectrolyzerContainerHandler());
         registration.addGuiContainerHandler(FluidMixerScreen.class, new FluidMixerContainerHandler());
-        registration.addRecipeClickArea(FluidMixerScreen.class, 75, 31, 11, 18, FluidMixingCategory.RECIPE_TYPE); // X offset: 3, Y offset: 3
         registration.addGuiContainerHandler(PrimitiveBlastFurnaceScreen.class, new PrimitiveBlastFurnaceContainerHandler());
         registration.addGuiContainerHandler(HydroponicIncubatorScreen.class, new HydroponicIncubatorContainerHandler());
         registration.addGuiContainerHandler(DimensionalLaserScreen.class, new DimensionalLaserContainerHandler());

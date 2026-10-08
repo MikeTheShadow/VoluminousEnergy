@@ -132,7 +132,6 @@ public class PumpTileProcessor implements AbstractRecipeProcessor {
             .fill(new FluidStack(fluid, 1000), IFluidHandler.FluidAction.EXECUTE);
         tile.setData(VEAttachments.FLUID_PUMP, new FluidPumpData(lX, lY, lZ, fluid));
         tile.setChanged();
-        tile.markFluidInputDirty();
     }
 
     @Override

@@ -19,8 +19,6 @@ public class VESlotManager {
     private final AtomicBoolean enabled = new AtomicBoolean();
     private final SlotType slotType;
     private final String nbtName;
-    private int output = -1;
-    private int tankId = -1;
     private final Set<Item> allowedItems = new HashSet<>();
 
     public VESlotManager(int slotNum, Direction direction, boolean status, SlotType slotType) {
@@ -29,26 +27,6 @@ public class VESlotManager {
         this.enabled.set(status);
         this.slotType = slotType;
         this.nbtName = slotType.getNBTName(slotNum);
-    }
-
-    /**
-     * Use this for when you have an input slot type
-     *
-     * @param slotNum    The slot number is the index in the array of the slotManagers
-     * @param direction  The direction it will be facing by default
-     * @param status     The status of the IO
-     * @param slotType   The type of slot
-     * @param outputSlot The slotNum of the tank to which a bucket will be placed when this has processed a bucket
-     * @param tankId     The index of the tank in the fluidManagers
-     */
-    public VESlotManager(int slotNum, Direction direction, boolean status, SlotType slotType, int outputSlot, int tankId) {
-        this.side.set(direction);
-        this.slot = slotNum;
-        this.enabled.set(status);
-        this.slotType = slotType;
-        this.nbtName = slotType.getNBTName(slotNum);
-        this.output = outputSlot;
-        this.tankId = tankId;
     }
 
     public void setStatus(boolean bool) {
@@ -118,14 +96,6 @@ public class VESlotManager {
 
     public void setItem(ItemStack stack, ItemStackHandler handler) {
         handler.setStackInSlot(this.slot, stack.copy());
-    }
-
-    public int getOutputSlotId() {
-        return output;
-    }
-
-    public int getTankId() {
-        return tankId;
     }
 
     public Set<Item> getAllowedItems() {

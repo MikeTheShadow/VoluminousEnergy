@@ -14,7 +14,7 @@ public class ToolingStationProcessor implements AbstractRecipeProcessor {
 
     @Override
     public void tick(VETileEntity tile) {
-        ItemStack stack = tile.getInventory().getStackInSlot(2);
+        ItemStack stack = tile.getInventory().getStackInSlot(0);
 
         if (stack.getItem() instanceof Multitool) {
             VERelationalTank tank = tile.getRelationalTank(0);

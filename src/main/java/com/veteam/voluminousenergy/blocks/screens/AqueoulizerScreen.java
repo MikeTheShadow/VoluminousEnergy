@@ -5,7 +5,6 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.tools.VERender;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -28,7 +27,8 @@ public class AqueoulizerScreen extends VEContainerScreen<VEContainer> {
     public AqueoulizerScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
         tileEntity = screenContainer.getTileEntity();
-
+        addTankArea(0, 44, 18);
+        addTankArea(1, 141, 18);
     }
 
     @Override
@@ -47,19 +47,9 @@ public class AqueoulizerScreen extends VEContainerScreen<VEContainer> {
     @Override
     protected void renderLabels(@NotNull GuiGraphics matrixStack, int mouseX, int mouseY) {
         TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateVEBlock("aqueoulizer"), 8, 6, WHITE_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty("+"), 82, 34, GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty("+"), 71, 36, GREY_TEXT_STYLE);
         TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateString("container.inventory"), 8, (this.imageHeight - 96 + 2), WHITE_TEXT_STYLE);
         super.renderLabels(matrixStack, mouseX, mouseY);
-    }
-
-    @Override
-    protected void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
-        // Tanks
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("0")), 61, 18, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("1")), 157, 18, WHITE_TEXT_STYLE);
-
-        // Slots handled by super
-        super.renderSlotAndTankLabels(matrixStack, mouseX, mouseY);
     }
 
     @Override
@@ -69,24 +59,11 @@ public class AqueoulizerScreen extends VEContainerScreen<VEContainer> {
         } else if (!VoluminousEnergy.JEI_LOADED && isHovering(getTooltipArea(), mouseX, mouseY)) {
             matrixStack.renderComponentTooltip(this.font, this.getTooltips(), mouseX, mouseY);
         }
-
-        if (isHovering(61, 18, 12, 50, mouseX, mouseY)) { // Input Tank
-            int amount = tileEntity.getFluidStackFromTank(0).getAmount();
-            String name = tileEntity.getFluidStackFromTank(0).getHoverName().getString();
-            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity(0)), mouseX, mouseY);
-        }
-
-        if (isHovering(157, 18, 12, 50, mouseX, mouseY)) { // First Output Tank
-            int amount = tileEntity.getFluidStackFromTank(1).getAmount();
-            String name = tileEntity.getFluidStackFromTank(1).getHoverName().getString();
-            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity(1)), mouseX, mouseY);
-        }
-
         super.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
     public Rect2i getTooltipArea() {
-        return new Rect2i(127, 31, 9, 17);
+        return new Rect2i(111, 31, 9, 17);
     }
 
     public List<Component> getTooltips() {
@@ -115,15 +92,13 @@ public class AqueoulizerScreen extends VEContainerScreen<VEContainer> {
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            matrixStack.blit(this.GUI, i + 127, j + 31, 176, 0, progress, 17);
+            Rect2i progressArea = getTooltipArea();
+            matrixStack.blit(this.GUI, i + progressArea.getX(), j + progressArea.getY(), 176, 0, progress, progressArea.getHeight());
             matrixStack.blit(this.GUI, i + 11, j + (16 + (49 - power)), 176, 24 + (49 - power), 12, power);
 
-            VERender.renderGuiTank(matrixStack, tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(0), tileEntity.getTankCapacity(0), i + 61, j + 18, 0, 12, 50);
+            renderTank(matrixStack, 0);
 
-            try {
-                VERender.renderGuiTank(matrixStack, tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(1), tileEntity.getTankCapacity(1), i + 157, j + 18, 0, 12, 50);
-            } catch (Exception e) {
-            }
+            renderTank(matrixStack, 1);
             drawIOSideHelper();
             // Upgrade slot
             RenderSystem.setShaderTexture(0, GUI_TOOLS);
@@ -133,4 +108,3 @@ public class AqueoulizerScreen extends VEContainerScreen<VEContainer> {
     }
 
 }
-

@@ -58,7 +58,6 @@ public class BasicProcessor implements AbstractRecipeProcessor {
             tile.consumeEnergy();
             this.markRecipeDirty();
             this.setRecipeReady(false);
-            tile.markFluidInputDirty();
             tickCounter(tile,currentTick);
         }
     }

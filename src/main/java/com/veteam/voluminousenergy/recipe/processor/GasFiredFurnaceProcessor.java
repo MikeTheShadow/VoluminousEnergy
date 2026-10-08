@@ -64,7 +64,7 @@ public class GasFiredFurnaceProcessor extends BasicProcessor {
                 tile.getRelationalTank(0).getTank().drain(250, IFluidHandler.FluidAction.EXECUTE);
                 fuelCounter = 400 * CombustibleFluidsData.getEnergyPerTick(fuel) / 4;
                 VEItemStackHandler inventory = tile.getInventory();
-                ItemStack upgradeItem = inventory.getStackInSlot(4);
+                ItemStack upgradeItem = inventory.getStackInSlot(tile.getEnergy().getUpgradeSlotId());
                 if (upgradeItem.getCount() > 0 && upgradeItem.getItem() == VEItems.QUARTZ_MULTIPLIER.get()) {
                     fuelCounter = fuelCounter / (upgradeItem.getCount() * upgradeItem.getCount());
                 } else if (!upgradeItem.isEmpty() && upgradeItem.has(VEDataComponents.MULTIPLIER_DATA)) {
@@ -94,7 +94,7 @@ public class GasFiredFurnaceProcessor extends BasicProcessor {
     @Override
     public boolean validateRecipe(VETileEntity tile) {
         Level level = tile.getLevel();
-        ItemStack furnaceInput = tile.getInventory().getStackInSlot(2);
+        ItemStack furnaceInput = tile.getInventory().getStackInSlot(0);
         var blastingRecipeNew = level.getRecipeManager()
                 .getRecipeFor(RecipeType.BLASTING, new SingleRecipeInput(furnaceInput.copy()), level).orElse(null);
         if (blastingRecipeNew != null) {
@@ -132,12 +132,12 @@ public class GasFiredFurnaceProcessor extends BasicProcessor {
 
     private boolean createOutput(VETileEntity tile, RecipeHolder<? extends Recipe<?>> recipeHolder) {
         Recipe<?> recipe = recipeHolder.value();
-        if (!canInsertIntoResult(recipe, tile.getLevel().registryAccess(), tile.getInventory().getStackInSlot(3))) {
+        if (!canInsertIntoResult(recipe, tile.getLevel().registryAccess(), tile.getInventory().getStackInSlot(1))) {
             return false;
         }
-        tile.getInventory().extractItem(2, 1, false);
+        tile.getInventory().extractItem(0, 1, false);
         ItemStack output = recipe.getResultItem(tile.getLevel().registryAccess()).copy();
-        tile.getInventory().insertItem(3, output, false);
+        tile.getInventory().insertItem(1, output, false);
         return true;
     }
 

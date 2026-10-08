@@ -21,12 +21,12 @@ public class HydroponicIncubatorRecipe extends VERNGRecipe {
     public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.HYDROPONIC_INCUBATING.get();
 
     private final BasicParser parser = new HydroponicParser(this)
-        .addChancedItemResult(4, 1)
-        .addChancedItemResult(5, 2)
-        .addChancedItemResult(6, 3)
-        .addItemResult(3, 0)
+        .addChancedItemResult(2, 1)
+        .addChancedItemResult(3, 2)
+        .addChancedItemResult(4, 3)
+        .addItemResult(1, 0)
         .addFluidIngredient(0, 0)
-        .addIngredient(2, 0);
+        .addIngredient(0, 0);
 
     public HydroponicIncubatorRecipe() {
     }

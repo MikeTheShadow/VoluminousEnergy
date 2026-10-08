@@ -4,7 +4,6 @@ import com.veteam.voluminousenergy.blocks.tiles.fluids.AbstractFluidValidator;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
@@ -13,8 +12,6 @@ public class VERelationalTank {
 
     FluidTank tank;
     int slotNum;
-    ItemStack input;
-    ItemStack output;
     TankType tankType;
     private boolean sideStatus = false;
     private Direction sideDirection = Direction.DOWN;
@@ -105,22 +102,6 @@ public class VERelationalTank {
 
     public int getSlotNum() {
         return slotNum;
-    }
-
-    public ItemStack getInput() {
-        return input;
-    }
-
-    public void setInput(ItemStack input) {
-        this.input = input;
-    }
-
-    public ItemStack getOutput() {
-        return output;
-    }
-
-    public void setOutput(ItemStack output) {
-        this.output = output;
     }
 
     public boolean getSideStatus() {

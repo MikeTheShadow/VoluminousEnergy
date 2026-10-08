@@ -2,12 +2,15 @@ package com.veteam.voluminousenergy.blocks.screens;
 
 import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
+import com.veteam.voluminousenergy.tools.VERender;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
 import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotDirectionButton;
 import com.veteam.voluminousenergy.tools.buttons.tanks.TankBoolButton;
 import com.veteam.voluminousenergy.tools.buttons.tanks.TankDirectionButton;
+import com.veteam.voluminousenergy.tools.networking.packets.TankInteractionPacket.Action;
+import com.veteam.voluminousenergy.tools.networking.packets.TankInteractionPacket.TankInteractionPayload;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.TankType;
 import com.veteam.voluminousenergy.util.TextUtil;
@@ -21,13 +24,20 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> {
 
     private VETileEntity tileEntity;
+    private final List<TankArea> tankAreas = new ArrayList<>();
+
+    private static final int TANK_WIDTH = 12;
+    private static final int TANK_HEIGHT = 50;
 
     public static final int WHITE_TEXT_COLOUR = 16777215;
     public static final int GREY_TEXT_COLOUR = 0x606060;
@@ -96,6 +106,11 @@ public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends
             Slot slot = this.menu.getSlot(i);
             TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append(String.valueOf(i))), slot.x, slot.y, WHITE_TEXT_STYLE);
         }
+        for (TankArea tankArea : tankAreas) {
+            TextUtil.renderShadowedText(matrixStack, this.font,
+                    TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append(String.valueOf(tankArea.tankId())),
+                    tankArea.bounds().getX(), tankArea.bounds().getY(), WHITE_TEXT_STYLE);
+        }
     }
 
     /* GuiGraphics matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks old arguments in case you want them back*/
@@ -122,6 +137,65 @@ public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends
 
     protected boolean isHovering(Rect2i rect, double x, double y) {
         return this.isHovering(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight(), x, y);
+    }
+
+    protected void addTankArea(int tankId, int x, int y) {
+        tankAreas.add(new TankArea(tankId, new Rect2i(x, y, TANK_WIDTH, TANK_HEIGHT)));
+    }
+
+    protected void renderTank(GuiGraphics matrixStack, int tankId) {
+        for (TankArea tankArea : tankAreas) {
+            if (tankArea.tankId() == tankId) {
+                Rect2i bounds = tankArea.bounds();
+                VERender.renderGuiTank(matrixStack, tileEntity.getLevel(), tileEntity.getBlockPos(),
+                        tileEntity.getFluidStackFromTank(tankId), tileEntity.getTankCapacity(tankId),
+                        leftPos + bounds.getX(), topPos + bounds.getY(), 0, bounds.getWidth(), bounds.getHeight());
+                return;
+            }
+        }
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (button == 0 || button == 1) {
+            for (TankArea tankArea : tankAreas) {
+                if (isHovering(tankArea.bounds(), mouseX, mouseY)) {
+                    Action action = button == 0 ? Action.TAKE : Action.PUT;
+                    PacketDistributor.sendToServer(new TankInteractionPayload(action, tankArea.tankId()));
+                    return true;
+                }
+            }
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    protected void renderTooltip(@NotNull GuiGraphics matrixStack, int mouseX, int mouseY) {
+        super.renderTooltip(matrixStack, mouseX, mouseY);
+        for (TankArea tankArea : tankAreas) {
+            if (!isHovering(tankArea.bounds(), mouseX, mouseY)
+                    || tankArea.tankId() < 0
+                    || tankArea.tankId() >= tileEntity.getRelationalTanks().size()) {
+                continue;
+            }
+
+            VERelationalTank tank = tileEntity.getRelationalTank(tankArea.tankId());
+            int amount = tank.getTank().getFluidAmount();
+            String name = tank.getTank().getFluid().getHoverName().getString();
+            matrixStack.renderComponentTooltip(
+                    font,
+                    TextUtil.tankTooltip(
+                            name,
+                            amount,
+                            tank.getTank().getCapacity(),
+                            tank.getTankType() != TankType.OUTPUT),
+                    mouseX,
+                    mouseY);
+            return;
+        }
+    }
+
+    private record TankArea(int tankId, Rect2i bounds) {
     }
 
 }

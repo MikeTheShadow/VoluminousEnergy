@@ -53,7 +53,6 @@ public class VETileEntityFactory {
             @Override
             public AbstractContainerMenu createMenu(int id, @NotNull Inventory playerInventory, @NotNull Player player) {
                 // This fixes a race condition issue where the client doesn't have the recipe cache built yet
-                this.markFluidInputDirty();
                 if(this.recipeProcessor instanceof BasicProcessor basicProcessor)
                     basicProcessor.markRecipeDirty();
                 return containerFactory.create(id, level, worldPosition, playerInventory, player);
@@ -159,20 +158,6 @@ public class VETileEntityFactory {
         @Override
         public VESlotManager asManager(int id) {
             return new VESlotManager(id, direction, true, SlotType.OUTPUT);
-        }
-    }
-
-    public record BucketInputSlot(Direction direction, int tankId) implements TileSlot {
-        @Override
-        public VESlotManager asManager(int id) {
-            return new VESlotManager(id, direction, true, SlotType.FLUID_INPUT, id + 1, tankId);
-        }
-    }
-
-    public record BucketOutputSlot(Direction direction) implements TileSlot {
-        @Override
-        public VESlotManager asManager(int id) {
-            return new VESlotManager(id, direction, true, SlotType.FLUID_OUTPUT);
         }
     }
 

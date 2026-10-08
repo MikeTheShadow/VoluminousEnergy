@@ -64,7 +64,7 @@ public class VEContainerFactory {
                         break;
                     }
                     SlotType slotType = this.tileEntity.getSlotManagers().get(i).getSlotType();
-                    boolean isOutput = (slotType == SlotType.FLUID_OUTPUT || slotType == SlotType.OUTPUT);
+                    boolean isOutput = slotType == SlotType.OUTPUT;
                     Slot slot = slots.get(i);
                     addSlot(new VESlot(h, slot.index, slot.x, slot.y, !isOutput, slot.listener, isClientSide));
                 }

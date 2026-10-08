@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.util;
 
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
-import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.recipe.processor.BasicProcessor;
 import com.veteam.voluminousenergy.tools.Config;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -9,7 +8,6 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MultiFluidSlotWrapper implements IFluidHandler {
@@ -44,32 +42,18 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
 
     @Override
     public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
-        VERelationalTank relationalTank = tanks.get(tank);
-        if (relationalTank.isAllowAny())
-            return true;
-        if (relationalTank.getValidator() != null)
-            return relationalTank.getValidator().validateFluid(stack, tileEntity);
-
-        List<VERecipe> recipes = new ArrayList<>();
-        if (tileEntity.getRecipeProcessor() instanceof BasicProcessor basicProcessor) {
-            recipes = basicProcessor.getPotentialRecipes();
-        }
-
-        for (VERecipe recipe : recipes) {
-            if (recipe.getFluidIngredient(relationalTank.getRecipePos()).test(stack)) {
-                return true;
-            }
-        }
-        return relationalTank.getTank().isFluidValid(stack);
+        return tank >= 0 && tank < tanks.size() && tileEntity.isFluidValidForTank(tanks.get(tank), stack);
     }
 
     @Override
     public int fill(@NotNull FluidStack resource, @NotNull FluidAction action) {
-        for (VERelationalTank tank : tanks) {
-            if (tank.getTankType() == TankType.OUTPUT)
+        for (int tankIndex = 0; tankIndex < tanks.size(); tankIndex++) {
+            VERelationalTank tank = tanks.get(tankIndex);
+            if (tank.getTankType() == TankType.OUTPUT) {
                 continue;
+            }
 
-            if (isFluidValid(tank.getSlotNum(), resource) && (tank.getTank().isEmpty() || resource.is(tank.getTank().getFluid().getFluid()))) {
+            if (isFluidValid(tankIndex, resource) && (tank.getTank().isEmpty() || resource.is(tank.getTank().getFluid().getFluid()))) {
                 if (tileEntity.getRecipeProcessor() instanceof BasicProcessor basicProcessor) {
                     basicProcessor.markRecipeDirty();
                 }

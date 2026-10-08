@@ -5,7 +5,6 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.tools.VERender;
 import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotDirectionButton;
@@ -28,7 +27,7 @@ public class PumpScreen extends VEContainerScreen<VEContainer> {
     public PumpScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
         tileEntity = screenContainer.getTileEntity();
-
+        addTankArea(0, 82, 18);
     }
 
     @Override
@@ -52,27 +51,10 @@ public class PumpScreen extends VEContainerScreen<VEContainer> {
     }
 
     @Override
-    protected void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
-        // Tank
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("0")), 93, 18, WHITE_TEXT_STYLE);
-
-        // Slots handled by super
-        super.renderSlotAndTankLabels(matrixStack, mouseX, mouseY);
-    }
-
-    @Override
     protected void renderTooltip(GuiGraphics matrixStack, int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
             matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(tileEntity.getEnergy(), Config.PUMP_MAX_POWER.get()), mouseX, mouseY);
         }
-
-        if (isHovering(93, 18, 12, 50, mouseX, mouseY)) { // Oxidizer Tank
-            FluidStack stack = tileEntity.getRelationalTank(0).getTank().getFluid();
-            String name = stack.getHoverName().getString();
-            int amount = stack.getAmount();
-            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity(0)), mouseX, mouseY);
-        }
-
         super.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
@@ -97,10 +79,7 @@ public class PumpScreen extends VEContainerScreen<VEContainer> {
              */
             matrixStack.blit(GUI, i + 11, j + (16 + (49 - power)), 176, 24 + (49 - power), 12, power);
 
-            try {
-                VERender.renderGuiTank(matrixStack, tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getRelationalTank(0).getTank().getFluid(), tileEntity.getTankCapacity(0), i + 93, j + 18, 0, 12, 50);
-            } catch (Exception e) {
-            }
+            renderTank(matrixStack, 0);
             drawIOSideHelper();
         }
     }

@@ -5,13 +5,6 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.recipe.processor.DimensionalLaserRecipeProcessor;
-import com.veteam.voluminousenergy.tools.VERender;
-import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
-import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
-import com.veteam.voluminousenergy.tools.buttons.slots.SlotDirectionButton;
-import com.veteam.voluminousenergy.tools.buttons.tanks.TankBoolButton;
-import com.veteam.voluminousenergy.tools.buttons.tanks.TankDirectionButton;
-import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
@@ -19,8 +12,6 @@ import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -36,7 +27,7 @@ public class DimensionalLaserScreen extends VEContainerScreen<VEContainer> {
     public DimensionalLaserScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
         tileEntity = screenContainer.getTileEntity();
-
+        addTankArea(0, 135, 18);
     }
 
     @Override
@@ -49,48 +40,7 @@ public class DimensionalLaserScreen extends VEContainerScreen<VEContainer> {
     @Override
     protected void init() {
         super.init();
-        // Buttons
-        addRenderableWidget(new ioMenuButton(64 + (this.width / 2), this.topPos - 18, buttons -> {
-
-        }));
-
-        List<VESlotManager> slotManagers = tileEntity.getSlotManagers();
-
-        // Bucket Top
-        addRenderableWidget(new SlotBoolButton(slotManagers.get(0), (this.width / 2) - 198, this.topPos, button -> {
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(slotManagers.get(0), (this.width / 2) - 184, this.topPos, button -> {
-            // Do nothing
-        }));
-
-        // Bucket Bottom
-        addRenderableWidget(new SlotBoolButton(slotManagers.get(1), (this.width / 2) - 198, this.topPos + 20, button -> {
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(slotManagers.get(1), (this.width / 2) - 184, this.topPos + 20, button -> {
-            // Do nothing
-        }));
-
-        // RFID slot
-        addRenderableWidget(new SlotBoolButton(slotManagers.get(2), (this.width / 2) - 198, this.topPos + 40, button -> {
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(slotManagers.get(2), (this.width / 2) - 184, this.topPos + 40, button -> {
-            // Do nothing
-        }));
-
-        // Tank
-        addRenderableWidget(new TankBoolButton(tileEntity.getRelationalTanks().get(0), (this.width / 2) - 198, this.topPos + 60, button -> {
-            // Do nothing
-        }));
-
-        addRenderableWidget(new TankDirectionButton(tileEntity.getRelationalTanks().get(0), (this.width / 2) - 184, this.topPos + 60, button -> {
-            // Do nothing
-        }));
+        renderIOMenu(tileEntity);
     }
 
     @Override
@@ -106,35 +56,17 @@ public class DimensionalLaserScreen extends VEContainerScreen<VEContainer> {
     }
 
     @Override
-    protected void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
-        // Slots
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 138, 18, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 138, 49, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("2")), 38, 33, WHITE_TEXT_STYLE);
-
-        // Tanks
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("0")), 119, 18, WHITE_TEXT_STYLE);
-    }
-
-    @Override
     protected void renderTooltip(GuiGraphics matrixStack, int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
             matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(tileEntity.getEnergy(), tileEntity.getEnergy().getMaxEnergyStored()), mouseX, mouseY);
         } else if (!VoluminousEnergy.JEI_LOADED && isHovering(getTooltipArea(), mouseX, mouseY)) {
             matrixStack.renderComponentTooltip(this.font, this.getTooltips(), mouseX, mouseY);
         }
-
-        if (isHovering(119, 18, 12, 50, mouseX, mouseY)) { // Tank
-            int amount = this.getTank().getFluidAmount();
-            String name = this.getFluidStackFromTank().getHoverName().getString();
-            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity(0)), mouseX, mouseY);
-        }
-
         super.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
     public Rect2i getTooltipArea() {
-        return new Rect2i(97, 34, 15, 16);
+        return new Rect2i(97, 34, 15, 17);
     }
 
     public List<Component> getTooltips() {
@@ -164,10 +96,11 @@ public class DimensionalLaserScreen extends VEContainerScreen<VEContainer> {
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            matrixStack.blit(GUI, i + 97, j + 34, 176, 0, 15, progress);
+            Rect2i progressArea = getTooltipArea();
+            matrixStack.blit(GUI, i + progressArea.getX(), j + progressArea.getY(), 176, 0, progressArea.getWidth(), progress);
             matrixStack.blit(GUI, i + 11, j + (16 + (49 - power)), 176, 24 + (49 - power), 12, power);
 
-            VERender.renderGuiTank(matrixStack, tileEntity.getLevel(), tileEntity.getBlockPos(), this.getFluidStackFromTank(), tileEntity.getTankCapacity(0), i + 119, j + 18, 0, 12, 50);
+            renderTank(matrixStack, 0);
 
             drawIOSideHelper();
             // Upgrade slot
@@ -183,11 +116,4 @@ public class DimensionalLaserScreen extends VEContainerScreen<VEContainer> {
 
     }
 
-    private FluidTank getTank() {
-        return this.tileEntity.getRelationalTanks().get(0).getTank();
-    }
-
-    private FluidStack getFluidStackFromTank() {
-        return this.getTank().getFluid();
-    }
 }

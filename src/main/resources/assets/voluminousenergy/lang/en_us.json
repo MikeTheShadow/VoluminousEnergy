@@ -64,6 +64,8 @@
   "_comment": "IO Menu Labels (shorts)",
   "gui.voluminousenergy.slot_short": "S",
   "gui.voluminousenergy.tank_short": "T",
+  "gui.voluminousenergy.tank.take_fluid": "Left-click: Take fluid",
+  "gui.voluminousenergy.tank.put_fluid": "Right-click: Insert fluid",
   "_comment": "Blocks",
   "block.voluminousenergy.primitiveblastfurnace": "Primitive Blast Furnace",
   "block.voluminousenergy.primitivestirlinggenerator": "Primitive Stirling Generator",

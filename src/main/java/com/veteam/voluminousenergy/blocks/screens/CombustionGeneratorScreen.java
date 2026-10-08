@@ -5,7 +5,6 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.tools.VERender;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -28,7 +27,8 @@ public class CombustionGeneratorScreen extends VEContainerScreen<VEContainer> {
     public CombustionGeneratorScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
         tileEntity = screenContainer.getTileEntity();
-
+        addTankArea(0, 55, 18);
+        addTankArea(1, 125, 18);
     }
 
     @Override
@@ -55,36 +55,10 @@ public class CombustionGeneratorScreen extends VEContainerScreen<VEContainer> {
     }
 
     @Override
-    protected void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
-        // Slots
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 38, 18, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 38, 49, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("2")), 138, 18, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("3")), 138, 49, WHITE_TEXT_STYLE);
-
-        // Tanks
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("0")), 61, 18, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("1")), 119, 18, WHITE_TEXT_STYLE);
-    }
-
-    @Override
     protected void renderTooltip(GuiGraphics matrixStack, int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
             matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(tileEntity.getEnergy(), Config.COMBUSTION_GENERATOR_MAX_POWER.get()), mouseX, mouseY);
         }
-
-        if (isHovering(61, 18, 12, 50, mouseX, mouseY)) { // Oxidizer Tank
-            String name = tileEntity.getFluidStackFromTank(0).getHoverName().getString();
-            int amount = tileEntity.getFluidStackFromTank(0).getAmount();
-            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity(0)), mouseX, mouseY);
-        }
-
-        if (isHovering(119, 18, 12, 50, mouseX, mouseY)) { // Fuel Tank
-            String name = tileEntity.getFluidStackFromTank(1).getHoverName().getString();
-            int amount = tileEntity.getFluidStackFromTank(1).getAmount();
-            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity(1)), mouseX, mouseY);
-        }
-
         if (!VoluminousEnergy.JEI_LOADED && isHovering(getTooltipArea(), mouseX, mouseY)) { // Flame blit
             matrixStack.renderComponentTooltip(this.font, getTooltips(), mouseX, mouseY);
         }
@@ -123,18 +97,13 @@ public class CombustionGeneratorScreen extends VEContainerScreen<VEContainer> {
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            matrixStack.blit(GUI, i + 89, j + (36 + (14 - progress)), 176, (14 - progress), 14, progress);
+            Rect2i fuelArea = getTooltipArea();
+            matrixStack.blit(GUI, i + fuelArea.getX(), j + fuelArea.getY() + (fuelArea.getHeight() - progress), 176, (fuelArea.getHeight() - progress), fuelArea.getWidth(), progress);
             matrixStack.blit(GUI, i + 11, j + (16 + (49 - power)), 176, 24 + (49 - power), 12, power);
 
-            try {
-                VERender.renderGuiTank(matrixStack, tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(0), tileEntity.getTankCapacity(0), i + 61, j + 18, 0, 12, 50);
-            } catch (Exception e) {
-            }
+            renderTank(matrixStack, 0);
 
-            try {
-                VERender.renderGuiTank(matrixStack, tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(1), tileEntity.getTankCapacity(1), i + 119, j + 18, 0, 12, 50);
-            } catch (Exception e) {
-            }
+            renderTank(matrixStack, 1);
             RenderSystem.setShaderTexture(0, GUI_TOOLS);
             drawIOSideHelper();
         }

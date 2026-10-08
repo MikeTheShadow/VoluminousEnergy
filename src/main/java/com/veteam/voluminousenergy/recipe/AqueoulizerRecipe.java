@@ -22,7 +22,7 @@ public class AqueoulizerRecipe extends VERecipe {
     public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.AQUEOULIZING.get();
 
     private final BasicParser parser = new BasicParser(this)
-            .addIngredient(4, 0)
+            .addIngredient(0, 0)
             .addFluidIngredient(0, 0)
             .addFluidResult(1, 0);
 
@@ -89,5 +89,4 @@ public class AqueoulizerRecipe extends VERecipe {
         return parser;
     }
 }
-
 
