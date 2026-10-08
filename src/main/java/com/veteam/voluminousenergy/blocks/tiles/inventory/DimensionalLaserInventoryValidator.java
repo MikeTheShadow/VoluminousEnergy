@@ -2,8 +2,7 @@ package com.veteam.voluminousenergy.blocks.tiles.inventory;
 
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.items.tools.RFIDChip;
-import com.veteam.voluminousenergy.util.VEDataComponents;
-import net.minecraft.nbt.CompoundTag;
+import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluids;
@@ -12,8 +11,11 @@ public class DimensionalLaserInventoryValidator implements AbstractItemStackVali
 
     @Override
     public boolean allowItemInsertion(int slot, ItemStack stack,boolean simulate, VETileEntity tile) {
+        if (tile.getEnergy() != null && tile.getEnergy().getUpgradeSlotId() == slot) {
+            return TagUtil.isTaggedMachineUpgradeItem(stack);
+        }
         if (slot == 2) {
-            return stack.has(VEDataComponents.MULTIPLIER_DATA);
+            return stack.getItem() instanceof RFIDChip;
         }
         if (slot == 1) {
             return stack.getItem() instanceof BucketItem;

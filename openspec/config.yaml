@@ -1,0 +1,37 @@
+schema: spec-driven
+
+context: |
+  Voluminous Energy is a NeoForge tech mod. This branch, 26.1-dev, ports it to Minecraft 26.1
+  (NeoForge 26.1, Java 25, Gradle wrapper, official Mojang names). Resource ids are Identifier.
+  AGENTS.md at the repo root is binding for code, comment, and commit style; plans must respect it.
+  Domain: custom ores, a fluid chemistry chain (crude oil to fuels, acids, nitrogen), machines with GUIs,
+  recipes, worldgen. Machines are factory-assembled (VEBlocks, VETileEntities, VEContainers, a screen,
+  a recipe processor, an inventory validator); there are no per-machine tile or container classes.
+  Configurable numbers come from tools/Config. JEI is optional and confined to compat/.
+  There are no unit tests or gametests. Verification is ./gradlew compileJava, ./gradlew runData
+  for datagen output, and an in-game check via ./gradlew runClient for behaviour, rendering, and GUI.
+
+rules:
+  proposal:
+    - State the player-visible or modpack-visible effect first; internal refactors say why the refactor is needed now
+    - Call out save compatibility (NBT, data components, attachments, registry ids) and config changes explicitly
+    - List anything that should also be ported to other version branches as a follow-up, not as scope
+  specs:
+    - Organize capabilities by game concept, e.g. machines/air-compressor, fluids/gases, worldgen/ores, items/multitool
+    - Requirements describe observable game behaviour (what a player, server, or datapack sees), not class structure
+    - Scenarios use concrete in-game setups (block placed, slot contents, tank contents, config value)
+  design:
+    - Name the existing classes and factories being extended; prefer extending VETileEntityFactory and VEContainerFactory over new bespoke classes
+    - Explain any deliberate deviation from vanilla or NeoForge behaviour
+  tasks:
+    - Keep each task small enough to review as one diff
+    - End with verification tasks, ./gradlew compileJava, ./gradlew runData when registries, tags, loot, or models change, and a named in-game check for behaviour, GUI, or rendering
+
+operations:
+  apply:
+    guidance:
+      - Follow AGENTS.md for Java style, comments, and commit messages
+      - Do not commit unless the user asks; when asked, one single-line commit per logical change, no AI trailers
+  archive:
+    guidance:
+      - Archive only after the in-game checks listed in tasks.md were confirmed by a human, or record which are still outstanding

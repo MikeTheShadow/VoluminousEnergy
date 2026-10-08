@@ -38,6 +38,8 @@ forge*changelog.txt
 
 .editorconfig
 .nvim.lua
+.DS_Store
 
-# Serena MCP
-.serena
+# Local agent tool state
+.claude/settings.local.json
+.claude/scheduled_tasks.lock

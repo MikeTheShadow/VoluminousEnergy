@@ -22,7 +22,7 @@ public class Nitrogen {
     public static final Identifier NITROGEN_FLOWING_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/nitrogen_flowing");
     public static final int NITROGEN_FLUID_WIDTH = 4;
 
-    public static Block.Properties stdProp = Block.Properties.of().setId(VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
+    public static Block.Properties stdProp = Block.Properties.of().setId(VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).air();
 
     public static FlowingFluid NITROGEN;
     public static FlowingFluid FLOWING_NITROGEN;
