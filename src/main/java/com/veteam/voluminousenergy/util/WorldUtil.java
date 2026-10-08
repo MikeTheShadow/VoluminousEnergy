@@ -49,7 +49,9 @@ public class WorldUtil {
     }
 
     public static HashMap<ClimateParameters, Double> sampleClimate(Level level, BlockPos pos) {
-        if (level.isClientSide()) new HashMap<>();
+        if (level.isClientSide()) {
+            return new HashMap<>();
+        }
 
         ServerLevel serverLevel = level.getServer().getLevel(level.dimension());
         ServerChunkCache serverchunkcache = serverLevel.getChunkSource();

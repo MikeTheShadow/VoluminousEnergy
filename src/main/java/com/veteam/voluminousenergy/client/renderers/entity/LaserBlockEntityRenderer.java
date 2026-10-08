@@ -104,10 +104,8 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
         float f16 = (float) beaconListSize * static10F * (0.5F / static02F) + f15;
 
         collector.submitCustomGeometry(poseStack, RenderTypes.energySwirl(BEAM_RESOURCE_LOCATION, 0, 0), (quadPose, vertexConsumer) ->
-                renderPart(poseStack, vertexConsumer, beaconColorR, beaconColorG, beaconColorB, 1.0F, totalHeight, beamHeight, 0.0F, static02F, static02F, 0.0F, f9, 0.0F, 0.0F, f12, f16, f15));
+                renderPart(quadPose, vertexConsumer, beaconColorR, beaconColorG, beaconColorB, 1.0F, totalHeight, beamHeight, 0.0F, static02F, static02F, 0.0F, f9, 0.0F, 0.0F, f12, f16, f15));
         poseStack.popPose();
-        PoseStack.Pose pose = poseStack.last();
-        Matrix4f matrix4f = pose.pose();
 
         float pylonBeamHeight = 4.5f;
         float xzPos = 3.4f;
@@ -120,7 +118,7 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
             poseStack.mulPose(Axis.ZP.rotationDegrees(45.0F));
             poseStack.mulPose(Axis.YP.rotationDegrees(45.0F));
             collector.submitCustomGeometry(poseStack, RenderTypes.energySwirl(BEAM_RESOURCE_LOCATION, 0, 0), (quadPose, vertexConsumer) ->
-                    renderPart(poseStack, vertexConsumer, 5, 5, 5, 1.0F, totalHeight, pylonBeamHeight, 0.0F, static02F, static02F, 0.0F, f9, 0.0F, 0.0F, f12, f16, f15));
+                    renderPart(quadPose, vertexConsumer, 5, 5, 5, 1.0F, totalHeight, pylonBeamHeight, 0.0F, static02F, static02F, 0.0F, f9, 0.0F, 0.0F, f12, f16, f15));
             poseStack.popPose();
         }
         if(staticBuildTick > 150) {
@@ -129,7 +127,7 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
             poseStack.mulPose(Axis.XP.rotationDegrees(45.0F));
             poseStack.mulPose(Axis.YP.rotationDegrees(45.0F));
             collector.submitCustomGeometry(poseStack, RenderTypes.energySwirl(BEAM_RESOURCE_LOCATION, 0, 0), (quadPose, vertexConsumer) ->
-                    renderPart(poseStack, vertexConsumer, 5, 5, 5, 1.0F, totalHeight, pylonBeamHeight, 0.0F, static02F, static02F, 0.0F, f9, 0.0F, 0.0F, f12, f16, f15));
+                    renderPart(quadPose, vertexConsumer, 5, 5, 5, 1.0F, totalHeight, pylonBeamHeight, 0.0F, static02F, static02F, 0.0F, f9, 0.0F, 0.0F, f12, f16, f15));
             poseStack.popPose();
         }
         if(staticBuildTick > 250) {
@@ -138,7 +136,7 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
             poseStack.mulPose(Axis.ZP.rotationDegrees(135.0F));
             poseStack.mulPose(Axis.YP.rotationDegrees(45.0F));
             collector.submitCustomGeometry(poseStack, RenderTypes.energySwirl(BEAM_RESOURCE_LOCATION, 0, 0), (quadPose, vertexConsumer) ->
-                    renderPart(poseStack, vertexConsumer, 5, 5, 5, 1.0F, totalHeight, -pylonBeamHeight, 0.0F, static02F, static02F, 0.0F, f9, 0.0F, 0.0F, f12, f16, f15));
+                    renderPart(quadPose, vertexConsumer, 5, 5, 5, 1.0F, totalHeight, -pylonBeamHeight, 0.0F, static02F, static02F, 0.0F, f9, 0.0F, 0.0F, f12, f16, f15));
             poseStack.popPose();
         }
         if(staticBuildTick > 350) {
@@ -147,7 +145,7 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
             poseStack.mulPose(Axis.XP.rotationDegrees(135.0F));
             poseStack.mulPose(Axis.YP.rotationDegrees(45.0F));
             collector.submitCustomGeometry(poseStack, RenderTypes.energySwirl(BEAM_RESOURCE_LOCATION, 0, 0), (quadPose, vertexConsumer) ->
-                    renderPart(poseStack, vertexConsumer, 5, 5, 5, 1.0F, totalHeight, -pylonBeamHeight, 0.0F, static02F, static02F, 0.0F, f9, 0.0F, 0.0F, f12, f16, f15));
+                    renderPart(quadPose, vertexConsumer, 5, 5, 5, 1.0F, totalHeight, -pylonBeamHeight, 0.0F, static02F, static02F, 0.0F, f9, 0.0F, 0.0F, f12, f16, f15));
             poseStack.popPose();
         }
 
@@ -172,7 +170,7 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
                     float r = (float) Math.sqrt(dx * dx + dy * dy);
 
                     if (arrayMap[xPos][zPos] != 0 && r <= maxRadius) {
-                        renderFace(matrix4f, vertexConsumer,
+                        renderFace(quadPose.pose(), vertexConsumer,
                             0.0F + xPos - xMiddle, 1.0F + xPos - xMiddle, beamHeight, beamHeight,
                             0.0F + zPos - zMiddle, 0.0F + zPos - zMiddle, 1.0F + zPos - zMiddle, 1.0F + zPos - zMiddle,
                             Direction.DOWN);
@@ -193,8 +191,7 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
         return true;
     }
 
-    private static void renderPart(PoseStack poseStack, VertexConsumer vertexConsumer, float beaconColorR, float beaconColorG, float beaconColorB, float static0P3F, int totalHeight, float height, float f6, float f7, float nfloat1, float f8, float nfloat2, float nfloat3, float nfloat4, float nfloat5, float f16, float f15) {
-        PoseStack.Pose pose = poseStack.last();
+    private static void renderPart(PoseStack.Pose pose, VertexConsumer vertexConsumer, float beaconColorR, float beaconColorG, float beaconColorB, float static0P3F, int totalHeight, float height, float f6, float f7, float nfloat1, float f8, float nfloat2, float nfloat3, float nfloat4, float nfloat5, float f16, float f15) {
         Matrix4f matrix4f = pose.pose();
         Matrix3f matrix3f = pose.normal();
         renderQuad(pose, matrix4f, matrix3f, vertexConsumer, beaconColorR, beaconColorG, beaconColorB, static0P3F, totalHeight, height, f6, f7, nfloat1, f8, (float) 0.0, (float) 1.0, f16, f15);
