@@ -64,7 +64,6 @@ public class VEOreGeneration {
         public static final RuleTest END = createRuleFromTag("forge:ore_bearing_ground/end_stone");
 
         // WARN: Not tag based
-        // Colored terracotta blocks are now stored in the Blocks.DYED_TERRACOTTA ColorCollection instead of individual fields.
         public static final RuleTest TERRACOTTA = new MultiBlockStateMatchRuleTest(terracottaStates());
 
         private static ArrayList<BlockState> terracottaStates() {

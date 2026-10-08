@@ -103,7 +103,6 @@ public class VETagDataGenerator extends BlockTagsProvider {
 
     }
 
-    // TagAppender#add now takes a ResourceKey<Block> instead of the Block instance directly.
     private static ResourceKey<Block> key(Block block) {
         return block.builtInRegistryHolder().key();
     }

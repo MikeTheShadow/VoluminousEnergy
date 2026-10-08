@@ -32,7 +32,6 @@ public class GeyserFeature extends Feature<GeyserFeature.Configuration> {
     ));
 
     {
-        // Colored terracotta blocks are now stored in the Blocks.DYED_TERRACOTTA ColorCollection instead of individual fields.
         allowList.addAll(Blocks.DYED_TERRACOTTA.asList());
     }
 
