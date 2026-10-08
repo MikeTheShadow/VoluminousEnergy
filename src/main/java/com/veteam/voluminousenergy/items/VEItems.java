@@ -49,6 +49,7 @@ public class VEItems {
     public static Supplier<Item> ROSIN = VE_ITEM_REGISTRY.register("rosin", Rosin::new);
     public static Supplier<AnimalFat> ANIMAL_FAT = VE_ITEM_REGISTRY.register("animal_fat", AnimalFat::new);
     public static Supplier<Dough> DOUGH = VE_ITEM_REGISTRY.register("dough", Dough::new);
+    public static Supplier<Bitumen> BITUMEN = VE_ITEM_REGISTRY.register("bitumen", Bitumen::new);
 
     // Raw Ore
     public static Supplier<RawBauxite> RAW_BAUXITE = VE_ITEM_REGISTRY.register("raw_bauxite", RawBauxite::new);

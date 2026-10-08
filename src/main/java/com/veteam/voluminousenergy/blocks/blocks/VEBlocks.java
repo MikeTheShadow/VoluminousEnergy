@@ -353,6 +353,13 @@ public class VEBlocks {
 
     public static Supplier<Block> RED_SALTPETER_ORE = registerWithBlockItemSupport("red_saltpeter_ore", RedSaltpeterOre::new);
 
+    // Bituminous ground
+    public static Supplier<Block> BITUMINOUS_GRAVEL = registerWithBlockItemSupport("bituminous_gravel", () -> new BituminousBlock("bituminous_gravel"));
+
+    public static Supplier<Block> BITUMINOUS_SAND = registerWithBlockItemSupport("bituminous_sand", () -> new BituminousBlock("bituminous_sand"));
+
+    public static Supplier<Block> BITUMINOUS_RED_SAND = registerWithBlockItemSupport("bituminous_red_sand", () -> new BituminousBlock("bituminous_red_sand"));
+
     //Crops
     //public static VEWaterCrop WATER_CROP;
 

@@ -1,7 +1,6 @@
 {
+  "replace": false,
   "values": [
-    "voluminousenergy:saltpeterore",
-    "voluminousenergy:red_saltpeter_ore",
     "voluminousenergy:bituminous_gravel",
     "voluminousenergy:bituminous_sand",
     "voluminousenergy:bituminous_red_sand"
