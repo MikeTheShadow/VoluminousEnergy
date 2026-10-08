@@ -5,9 +5,6 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
-import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
-import com.veteam.voluminousenergy.tools.buttons.slots.SlotDirectionButton;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.gui.GuiGraphics;
@@ -52,6 +49,10 @@ public class PumpScreen extends VEContainerScreen<VEContainer> {
 
     @Override
     protected void renderTooltip(GuiGraphics matrixStack, int mouseX, int mouseY) {
+        if (isIOControlsHovered(mouseX, mouseY)) {
+            super.renderTooltip(matrixStack, mouseX, mouseY);
+            return;
+        }
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
             matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(tileEntity.getEnergy(), Config.PUMP_MAX_POWER.get()), mouseX, mouseY);
         }
@@ -80,7 +81,6 @@ public class PumpScreen extends VEContainerScreen<VEContainer> {
             matrixStack.blit(GUI, i + 11, j + (16 + (49 - power)), 176, 24 + (49 - power), 12, power);
 
             renderTank(matrixStack, 0);
-            drawIOSideHelper();
         }
     }
 }

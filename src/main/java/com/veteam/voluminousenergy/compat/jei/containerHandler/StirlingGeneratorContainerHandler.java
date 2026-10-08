@@ -6,7 +6,6 @@ import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.compat.jei.category.StirlingCategory;
 import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;
-import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import mezz.jei.api.recipe.IFocusFactory;
 import mezz.jei.api.runtime.IRecipesGui;
 import net.minecraft.client.renderer.Rect2i;
@@ -17,9 +16,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class StirlingGeneratorContainerHandler implements IGuiContainerHandler<StirlingGeneratorScreen> {
+public class StirlingGeneratorContainerHandler extends VEIOContainerHandler<StirlingGeneratorScreen> {
     @Override
     public @NotNull Collection<IGuiClickableArea> getGuiClickableAreas(@NotNull StirlingGeneratorScreen containerScreen, double guiMouseX, double guiMouseY) {
+        if (containerScreen.isIOControlsCovering(guiMouseX, guiMouseY)) {
+            return List.of();
+        }
         List<IGuiClickableArea> areas = new ArrayList<>();
         areas.add(new IGuiClickableArea() {
             @Override

@@ -5,6 +5,12 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.blocks.screens.*;
+import com.veteam.voluminousenergy.blocks.screens.tank.AluminumTankScreen;
+import com.veteam.voluminousenergy.blocks.screens.tank.EighzoTankScreen;
+import com.veteam.voluminousenergy.blocks.screens.tank.NetheriteTankScreen;
+import com.veteam.voluminousenergy.blocks.screens.tank.NighaliteTankScreen;
+import com.veteam.voluminousenergy.blocks.screens.tank.SolariumTankScreen;
+import com.veteam.voluminousenergy.blocks.screens.tank.TitaniumTankScreen;
 import com.veteam.voluminousenergy.compat.jei.category.*;
 import com.veteam.voluminousenergy.compat.jei.containerHandler.*;
 import com.veteam.voluminousenergy.fluids.VEFluids;
@@ -153,6 +159,16 @@ public class VoluminousEnergyPlugin implements IModPlugin {
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
+        registration.addGuiContainerHandler(AirCompressorScreen.class, new VEIOContainerHandler<>());
+        registration.addGuiContainerHandler(BatteryBoxScreen.class, new VEIOContainerHandler<>());
+        registration.addGuiContainerHandler(PumpScreen.class, new VEIOContainerHandler<>());
+        registration.addGuiContainerHandler(ToolingStationScreen.class, new VEIOContainerHandler<>());
+        registration.addGuiContainerHandler(AluminumTankScreen.class, new VEIOContainerHandler<>());
+        registration.addGuiContainerHandler(EighzoTankScreen.class, new VEIOContainerHandler<>());
+        registration.addGuiContainerHandler(NetheriteTankScreen.class, new VEIOContainerHandler<>());
+        registration.addGuiContainerHandler(NighaliteTankScreen.class, new VEIOContainerHandler<>());
+        registration.addGuiContainerHandler(SolariumTankScreen.class, new VEIOContainerHandler<>());
+        registration.addGuiContainerHandler(TitaniumTankScreen.class, new VEIOContainerHandler<>());
         registration.addGuiContainerHandler(CrusherScreen.class, new CrusherContainerHandler());
         registration.addGuiContainerHandler(ElectrolyzerScreen.class, new ElectrolyzingContainerHandler());
         registration.addGuiContainerHandler(CompressorScreen.class, new CompressorContainerHandler());

@@ -7,16 +7,15 @@ import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import org.jetbrains.annotations.Nullable;
 
-public class VERelationalTank {
+public class VERelationalTank implements VEIOPort {
 
     FluidTank tank;
     int slotNum;
     TankType tankType;
-    private boolean sideStatus = false;
-    private Direction sideDirection = Direction.DOWN;
+    private @Nullable Direction sideDirection = Direction.DOWN;
     private boolean allowAny = false;
-    private boolean ignoreDirection = false;
     private int recipePos;
     private AbstractFluidValidator validator;
 
@@ -72,14 +71,6 @@ public class VERelationalTank {
     }
 
 
-    public boolean isIgnoreDirection() {
-        return ignoreDirection;
-    }
-
-    public void setIgnoreDirection(boolean ignoreDirection) {
-        this.ignoreDirection = ignoreDirection;
-    }
-
     public void setAllowAny(boolean allowAny) {
         this.allowAny = allowAny;
     }
@@ -104,19 +95,11 @@ public class VERelationalTank {
         return slotNum;
     }
 
-    public boolean getSideStatus() {
-        return sideStatus;
-    }
-
-    public void setSideStatus(boolean status) {
-        sideStatus = status;
-    }
-
-    public Direction getSideDirection() {
+    public @Nullable Direction getSideDirection() {
         return sideDirection;
     }
 
-    public void setSideDirection(Direction direction) {
+    public void setSideDirection(@Nullable Direction direction) {
         sideDirection = direction;
     }
 
@@ -148,13 +131,36 @@ public class VERelationalTank {
     }
 
     public void writeGuiProperties(CompoundTag nbt) {
-        nbt.putBoolean(getNBTPrefix() + "_enabled", getSideStatus());
-        nbt.putInt(getNBTPrefix() + "_direction", getSideDirection().get3DDataValue());
+        nbt.putInt(getNBTPrefix() + "_direction", isAssigned() ? getSideDirection().get3DDataValue() : -1);
     }
 
     public void readGuiProperties(CompoundTag nbt) {
-        setSideStatus(nbt.getBoolean(getNBTPrefix() + "_enabled"));
         int sideInt = nbt.getInt(getNBTPrefix() + "_direction");
-        setSideDirection(IntToDirection.IntegerToDirection(sideInt));
+        setSideDirection(sideInt == -1 ? null : IntToDirection.IntegerToDirection(sideInt));
+    }
+
+    @Override
+    public boolean isFluid() {
+        return true;
+    }
+
+    @Override
+    public @Nullable Direction getDirection() {
+        return getSideDirection();
+    }
+
+    @Override
+    public void setDirection(@Nullable Direction direction) {
+        setSideDirection(direction);
+    }
+
+    @Override
+    public boolean canPush() {
+        return tankType == TankType.OUTPUT || tankType == TankType.BOTH;
+    }
+
+    @Override
+    public boolean canPull() {
+        return tankType == TankType.INPUT || tankType == TankType.BOTH;
     }
 }

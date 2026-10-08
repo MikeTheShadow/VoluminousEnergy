@@ -57,6 +57,10 @@ public class DimensionalLaserScreen extends VEContainerScreen<VEContainer> {
 
     @Override
     protected void renderTooltip(GuiGraphics matrixStack, int mouseX, int mouseY) {
+        if (isIOControlsHovered(mouseX, mouseY)) {
+            super.renderTooltip(matrixStack, mouseX, mouseY);
+            return;
+        }
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
             matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(tileEntity.getEnergy(), tileEntity.getEnergy().getMaxEnergyStored()), mouseX, mouseY);
         } else if (!VoluminousEnergy.JEI_LOADED && isHovering(getTooltipArea(), mouseX, mouseY)) {
@@ -102,7 +106,6 @@ public class DimensionalLaserScreen extends VEContainerScreen<VEContainer> {
 
             renderTank(matrixStack, 0);
 
-            drawIOSideHelper();
             // Upgrade slot
             RenderSystem.setShaderTexture(0, GUI_TOOLS);
             matrixStack.blit(GUI_TOOLS, i + 129, j - 16, 0, 0, 18, 18);

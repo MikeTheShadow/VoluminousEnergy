@@ -129,35 +129,35 @@ public class VETileEntityFactory {
     public record ItemInputSlot(Direction direction) implements TileSlot {
         @Override
         public VESlotManager asManager(int id) {
-            return new VESlotManager(id, direction, true, SlotType.INPUT);
+            return new VESlotManager(id, direction, SlotType.INPUT);
         }
     }
 
     public record ListenedItemInputSlot(Direction direction, SlotWithIOListener listener) implements TileSlot {
         @Override
         public VESlotManager asManager(int id) {
-            return new VESlotManager(id, direction, false, SlotType.INPUT);
+            return new VESlotManager(id, direction, SlotType.INPUT);
         }
     }
 
     public record ListenedItemOutputSlot(Direction direction, SlotWithIOListener listener) implements TileSlot {
         @Override
         public VESlotManager asManager(int id) {
-            return new VESlotManager(id, direction, false, SlotType.OUTPUT);
+            return new VESlotManager(id, direction, SlotType.OUTPUT);
         }
     }
 
     public record InputSlot(Direction direction) implements TileSlot {
         @Override
         public VESlotManager asManager(int id) {
-            return new VESlotManager(id, direction, true, SlotType.INPUT);
+            return new VESlotManager(id, direction, SlotType.INPUT);
         }
     }
 
     public record ItemOutputSlot(Direction direction) implements TileSlot {
         @Override
         public VESlotManager asManager(int id) {
-            return new VESlotManager(id, direction, true, SlotType.OUTPUT);
+            return new VESlotManager(id, direction, SlotType.OUTPUT);
         }
     }
 
@@ -190,7 +190,6 @@ public class VETileEntityFactory {
         public VERelationalTank asTank(int id) {
             VERelationalTank tank = new VERelationalTank(new FluidTank(capacity), id, recipePos, TankType.BOTH, "both_tank_" + id + ":output_tank_gui",fluidValidator);
             tank.setAllowAny((fluidValidator == null));
-            tank.setIgnoreDirection(true);
             return tank;
         }
     }

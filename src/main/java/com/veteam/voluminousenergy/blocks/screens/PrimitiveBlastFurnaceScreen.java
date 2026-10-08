@@ -4,9 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
-import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
-import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
-import com.veteam.voluminousenergy.tools.buttons.slots.SlotDirectionButton;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.TextUtil;
 import com.veteam.voluminousenergy.util.VEAttachments;
@@ -43,30 +40,7 @@ public class PrimitiveBlastFurnaceScreen extends VEContainerScreen<VEContainer> 
     @Override
     protected void init() {
         super.init();
-        // Buttons
-        addRenderableWidget(new ioMenuButton(64 + (this.width / 2), this.topPos + 4, buttons -> {
-
-        }));
-
-        List<VESlotManager> managers = tileEntity.getSlotManagers();
-
-        // Input
-        addRenderableWidget(new SlotBoolButton(managers.get(0), (this.width / 2) - 198, this.topPos, button -> {
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(managers.get(0), (this.width / 2) - 184, this.topPos, button -> {
-            // Do nothing
-        }));
-
-        // Output
-        addRenderableWidget(new SlotBoolButton(managers.get(1), (this.width / 2) - 198, this.topPos + 20, button -> {
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(managers.get(1), (this.width / 2) - 184, this.topPos + 20, button -> {
-            // Do nothing
-        }));
+        renderIOMenu(tileEntity, 64 + (this.width / 2), this.topPos + 4);
     }
 
     @Override
@@ -77,14 +51,11 @@ public class PrimitiveBlastFurnaceScreen extends VEContainerScreen<VEContainer> 
     }
 
     @Override
-    protected void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
-        // Slots
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 53, 33, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 116, 33, WHITE_TEXT_STYLE);
-    }
-
-    @Override
     protected void renderTooltip(GuiGraphics matrixStack, int mouseX, int mouseY) {
+        if (isIOControlsHovered(mouseX, mouseY)) {
+            super.renderTooltip(matrixStack, mouseX, mouseY);
+            return;
+        }
         if (!VoluminousEnergy.JEI_LOADED && isHovering(getTooltipArea(), mouseX, mouseY)) {
             matrixStack.renderComponentTooltip(this.font, this.getTooltips(), mouseX, mouseY);
         }
@@ -126,7 +97,6 @@ public class PrimitiveBlastFurnaceScreen extends VEContainerScreen<VEContainer> 
              */
             matrixStack.blit(GUI, i + 78, j + 32, 176, 0, progress, 17);
             //this.blit(i,j,180,1,progress,15);
-            drawIOSideHelper();
         }
         // Upgrade slot
         RenderSystem.setShaderTexture(0, GUI_TOOLS);

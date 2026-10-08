@@ -50,18 +50,11 @@ public class CentrifugalSeparatorScreen extends VEContainerScreen<VEContainer> {
     }
 
     @Override
-    protected void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
-        // Slots
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 53, 24, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 53, 42, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("2")), 99, 33, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("3")), 117, 15, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("4")), 135, 33, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("5")), 117, 51, WHITE_TEXT_STYLE);
-    }
-
-    @Override
     protected void renderTooltip(GuiGraphics matrixStack, int mouseX, int mouseY) {
+        if (isIOControlsHovered(mouseX, mouseY)) {
+            super.renderTooltip(matrixStack, mouseX, mouseY);
+            return;
+        }
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
             matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(tileEntity.getEnergy(), Config.CENTRIFUGAL_SEPARATOR_MAX_POWER.get()), mouseX, mouseY);
         } else if (!VoluminousEnergy.JEI_LOADED && isHovering(getTooltipArea(), mouseX, mouseY)) {
@@ -101,7 +94,6 @@ public class CentrifugalSeparatorScreen extends VEContainerScreen<VEContainer> {
              */
             matrixStack.blit(this.GUI, i + 81, j + 31, 176, 0, progress, 17);
             matrixStack.blit(this.GUI, i + 11, j + (16 + (49 - power)), 176, 24 + (49 - power), 12, power);
-            drawIOSideHelper();
         }
         // Upgrade slot
         RenderSystem.setShaderTexture(0, GUI_TOOLS);

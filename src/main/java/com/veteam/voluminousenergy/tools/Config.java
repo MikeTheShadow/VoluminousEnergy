@@ -12,6 +12,7 @@ public class Config {
 
     // COMMON Config variables and categories
     public static final String CATEGORY_GENERAL = "General";
+    public static final String CATEGORY_MACHINE_IO = "Machine IO";
     public static final String CATEGORY_FOOD = "Food";
     public static final String CATEGORY_WORLDGEN = "World Generation";
     public static final String CATEGORY_PRIMITIVE_STIRLING_GENERATOR = "Primitive Stirling Generator";
@@ -76,6 +77,9 @@ public class Config {
     public static ModConfigSpec.IntValue SOLARIUM_PROTECTIVE_SHEATH_HITS;
     public static ModConfigSpec.DoubleValue SOLARIUM_SHEATH_REGENERATION_CHANCE;
     public static ModConfigSpec.IntValue DECREMENT_SPEED_ON_NO_POWER;
+    public static ModConfigSpec.IntValue MACHINE_IO_INTERVAL;
+    public static ModConfigSpec.IntValue MACHINE_IO_ITEMS;
+    public static ModConfigSpec.IntValue MACHINE_IO_FLUID;
 
     // Primitive Stirling Generator Variables
     public static ModConfigSpec.IntValue PRIMITIVE_STIRLING_GENERATOR_MAX_POWER;
@@ -231,6 +235,15 @@ public class Config {
     private static void buildCommonConfig(){
         VE_STARTUP_CONFIG_BUILDER.comment("General Settings").push(CATEGORY_GENERAL);
         setupGeneralSettings();
+        VE_STARTUP_CONFIG_BUILDER.pop();
+
+        VE_STARTUP_CONFIG_BUILDER.push(CATEGORY_MACHINE_IO);
+        MACHINE_IO_INTERVAL = VE_STARTUP_CONFIG_BUILDER.comment("Ticks between automatic port transfers")
+                .defineInRange("Transfer Interval", 8, 1, 1200);
+        MACHINE_IO_ITEMS = VE_STARTUP_CONFIG_BUILDER.comment("Maximum items transferred per port per interval")
+                .defineInRange("Item Transfer Limit", 16, 1, 64);
+        MACHINE_IO_FLUID = VE_STARTUP_CONFIG_BUILDER.comment("Maximum fluid transferred per port per interval in mB")
+                .defineInRange("Fluid Transfer Limit", 250, 1, Integer.MAX_VALUE);
         VE_STARTUP_CONFIG_BUILDER.pop();
 
         VE_STARTUP_CONFIG_BUILDER.comment("Food Settings").push(CATEGORY_FOOD);

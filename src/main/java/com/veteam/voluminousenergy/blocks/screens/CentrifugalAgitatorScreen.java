@@ -55,6 +55,10 @@ public class CentrifugalAgitatorScreen extends VEContainerScreen<VEContainer> {
 
     @Override
     protected void renderTooltip(GuiGraphics matrixStack, int mouseX, int mouseY) {
+        if (isIOControlsHovered(mouseX, mouseY)) {
+            super.renderTooltip(matrixStack, mouseX, mouseY);
+            return;
+        }
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
 
             matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(tileEntity.getEnergy(), Config.CENTRIFUGAL_AGITATOR_MAX_POWER.get()), mouseX, mouseY);
@@ -102,7 +106,6 @@ public class CentrifugalAgitatorScreen extends VEContainerScreen<VEContainer> {
             renderTank(matrixStack, 0);
             renderTank(matrixStack, 1);
             renderTank(matrixStack, 2);
-            drawIOSideHelper();
             // Upgrade slot
             RenderSystem.setShaderTexture(0, GUI_TOOLS);
             matrixStack.blit(GUI_TOOLS, i + 129, j - 16, 0, 0, 18, 18);

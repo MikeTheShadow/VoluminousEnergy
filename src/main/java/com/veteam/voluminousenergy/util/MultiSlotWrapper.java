@@ -1,8 +1,10 @@
 package com.veteam.voluminousenergy.util;
 
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
+import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -11,10 +13,12 @@ import java.util.List;
 public class MultiSlotWrapper implements IItemHandlerModifiable {
 
     private final IItemHandlerModifiable inventory;
+    private final @Nullable Direction face;
     HashMap<Integer, VESlotManager> managerHashMap = new HashMap<>();
 
-    public MultiSlotWrapper(IItemHandlerModifiable inventory, List<VESlotManager> slotManager) {
+    public MultiSlotWrapper(IItemHandlerModifiable inventory, List<VESlotManager> slotManager, @Nullable Direction face) {
         this.inventory = inventory;
+        this.face = face;
         slotManager.forEach(m -> managerHashMap.put(m.getSlotNum(), m));
     }
 
@@ -26,7 +30,7 @@ public class MultiSlotWrapper implements IItemHandlerModifiable {
     @Override
     @Nonnull
     public ItemStack getStackInSlot(int slot) {
-        if (managerHashMap.containsKey(slot)) {
+        if (checkSlot(slot)) {
             return inventory.getStackInSlot(slot);
         }
         return ItemStack.EMPTY;
@@ -35,9 +39,11 @@ public class MultiSlotWrapper implements IItemHandlerModifiable {
     @Override
     @Nonnull
     public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-        if (managerHashMap.containsKey(slot)) {
+        if (checkSlot(slot)) {
             VESlotManager manager = managerHashMap.get(slot);
-            if (manager.getSlotType() == SlotType.OUTPUT || !manager.getStatus()) return stack;
+            if (manager.getSlotType() == SlotType.OUTPUT) {
+                return stack;
+            }
             return inventory.insertItem(manager.getSlotNum(), stack, simulate);
         }
         return stack;
@@ -46,9 +52,11 @@ public class MultiSlotWrapper implements IItemHandlerModifiable {
     @Override
     @Nonnull
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        if (managerHashMap.containsKey(slot)) {
+        if (checkSlot(slot)) {
             VESlotManager manager = managerHashMap.get(slot);
-            if (manager.getSlotType() == SlotType.INPUT || !manager.getStatus()) return ItemStack.EMPTY;
+            if (manager.getSlotType() == SlotType.INPUT) {
+                return ItemStack.EMPTY;
+            }
             return inventory.extractItem(managerHashMap.get(slot).getSlotNum(), amount, simulate);
         }
         return ItemStack.EMPTY;
@@ -78,7 +86,9 @@ public class MultiSlotWrapper implements IItemHandlerModifiable {
     }
 
     private boolean checkSlot(int localSlot) {
-        return localSlot < getSlots();
+        return localSlot >= 0 && localSlot < getSlots() && managerHashMap.containsKey(localSlot)
+                && managerHashMap.get(localSlot).isAssigned()
+                && (face == null || managerHashMap.get(localSlot).getDirection() == face);
     }
 
     public void addSlotManager(VESlotManager manager) {

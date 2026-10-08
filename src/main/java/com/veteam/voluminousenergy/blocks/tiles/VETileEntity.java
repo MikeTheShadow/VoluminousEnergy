@@ -8,6 +8,7 @@ import com.veteam.voluminousenergy.recipe.processor.AbstractRecipeProcessor;
 import com.veteam.voluminousenergy.recipe.processor.BasicProcessor;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
+import com.veteam.voluminousenergy.tools.sidemanager.VEPortTransfer;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.*;
 import com.veteam.voluminousenergy.util.records.CounterLength;
@@ -59,6 +60,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
     final List<VERelationalTank> tanks = new ArrayList<>();
     final List<VESlotManager> managers = new ArrayList<>();
+    private final VEFaceIO faceIO = new VEFaceIO();
     AbstractRecipeProcessor recipeProcessor;
     boolean sendsOutPower;
 
@@ -84,21 +86,6 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         voluminousTile.tick();
     }
 
-    public void updateTankPacketFromGui(boolean status, int id) {
-        for (VERelationalTank tank : getRelationalTanks()) {
-            if (id == tank.getSlotNum())
-                tank.setSideStatus(status);
-        }
-    }
-
-    public void updateTankPacketFromGui(int direction, int id) {
-        for (VERelationalTank tank : getRelationalTanks()) {
-            if (id == tank.getSlotNum()) {
-                this.getCapabilityMap().moveFluidSlotManagerPos(tank, IntToDirection.IntegerToDirection(direction));
-            }
-        }
-    }
-
     public @Nonnull List<VERelationalTank> getRelationalTanks() {
         return tanks;
     }
@@ -122,7 +109,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
             return false;
         }
 
-        IFluidHandler selectedTank = new GuiTankFluidHandler(this, relationalTank);
+        IFluidHandler selectedTank = getSelectedTankHandler(tankId);
         FluidActionResult result = putFluid
                 ? FluidUtil.tryEmptyContainerAndStow(
                         carriedStack, selectedTank, playerInventory, Integer.MAX_VALUE, player, true)
@@ -177,6 +164,8 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         if(this.recipeProcessor != null)
             recipeProcessor.tick(this);
 
+        VEPortTransfer.tick(this);
+
         if (this.sendsOutPower)
             sendOutPower();
     }
@@ -200,12 +189,40 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 3);
     }
 
-    private static class GuiTankFluidHandler implements IFluidHandler {
+    public IFluidHandler getSelectedTankHandler(int tankId) {
+        return new SelectedTankFluidHandler(this, getRelationalTank(tankId));
+    }
+
+    public List<VEIOPort> getIOPorts() {
+        List<VEIOPort> ports = new ArrayList<>(managers);
+        ports.addAll(tanks);
+        return ports;
+    }
+
+    public VEFaceIO getFaceIO() {
+        return faceIO;
+    }
+
+    public @org.jetbrains.annotations.Nullable VEIOPort getIOPort(boolean fluid, int portId) {
+        if (portId < 0 || portId >= (fluid ? tanks.size() : managers.size())) {
+            return null;
+        }
+        return fluid ? tanks.get(portId) : managers.get(portId);
+    }
+
+    public void refreshPortFaces() {
+        capabilityMap = null;
+        if (level != null && !level.isClientSide) {
+            level.invalidateCapabilities(worldPosition);
+        }
+    }
+
+    private static class SelectedTankFluidHandler implements IFluidHandler {
 
         private final VETileEntity tile;
         private final VERelationalTank relationalTank;
 
-        private GuiTankFluidHandler(VETileEntity tile, VERelationalTank relationalTank) {
+        private SelectedTankFluidHandler(VETileEntity tile, VERelationalTank relationalTank) {
             this.tile = tile;
             this.relationalTank = relationalTank;
         }
@@ -316,6 +333,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
      */
     @Override
     public void loadAdditional(CompoundTag tag, @NotNull HolderLookup.Provider registry) {
+        faceIO.load(tag.getCompound("face_io"));
         CompoundTag inv = tag.getCompound("inv");
         VEItemStackHandler handler = getInventory();
 
@@ -356,6 +374,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
      */
     @Override
     public void saveAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registry) {
+        tag.put("face_io", faceIO.save());
         ItemStackHandler handler = getInventory();
         if (handler != null) {
             CompoundTag compound = handler.serializeNBT(registry);
@@ -451,28 +470,6 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
                 if (energy.getEnergyStored() <= 0) {
                     break;
                 }
-            }
-        }
-    }
-
-    /**
-     * @param status boolean status of the slot
-     * @param slotId int id of the slot
-     */
-    public void updatePacketFromGui(boolean status, int slotId) {
-        for (VESlotManager slot : getSlotManagers()) {
-            if (slotId == slot.getSlotNum()) {
-                slot.setStatus(status);
-                return;
-            }
-        }
-    }
-
-    public void updatePacketFromGui(int direction, int slotId) {
-        for (VESlotManager slot : getSlotManagers()) {
-            if (slotId == slot.getSlotNum()) {
-                this.getCapabilityMap().moveSlotManagerPos(slot, direction);
-                return;
             }
         }
     }

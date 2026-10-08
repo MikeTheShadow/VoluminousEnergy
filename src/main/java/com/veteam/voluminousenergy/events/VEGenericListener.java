@@ -90,10 +90,8 @@ public class VEGenericListener {
     @SubscribeEvent
     public static void onPayloadRegister(RegisterPayloadHandlersEvent event) {
         PayloadRegistrar registrar = event.registrar("ve_1");
-        registrar.playBidirectional(BoolButtonPacket.BoolButtonPayload.TYPE, BoolButtonPacket.BoolButtonPayload.STREAM_CODEC,BoolButtonPacket::handle);
-        registrar.playBidirectional(DirectionButtonPacket.DirectionButtonPayload.TYPE, DirectionButtonPacket.DirectionButtonPayload.STREAM_CODEC,DirectionButtonPacket::handle);
-        registrar.playToServer(TankBoolPacket.TankBoolPacketPayload.TYPE, TankBoolPacket.TankBoolPacketPayload.STREAM_CODEC,TankBoolPacket::handle);
-        registrar.playToServer(TankDirectionPacket.TankDirectionPayload.TYPE, TankDirectionPacket.TankDirectionPayload.STREAM_CODEC,TankDirectionPacket::handle);
+        registrar.playToServer(PortConfigurationPacket.PortConfigurationPayload.TYPE, PortConfigurationPacket.PortConfigurationPayload.STREAM_CODEC, PortConfigurationPacket::handle);
+        registrar.playToServer(FaceConfigurationPacket.FaceConfigurationPayload.TYPE, FaceConfigurationPacket.FaceConfigurationPayload.STREAM_CODEC, FaceConfigurationPacket::handle);
         registrar.playToServer(TankInteractionPacket.TankInteractionPayload.TYPE, TankInteractionPacket.TankInteractionPayload.STREAM_CODEC, TankInteractionPacket::handle);
         registrar.playToServer(BatteryBoxSendOutPowerPacket.BatteryBoxSendOutPowerPayload.TYPE, BatteryBoxSendOutPowerPacket.BatteryBoxSendOutPowerPayload.STREAM_CODEC,BatteryBoxSendOutPowerPacket::handle);
         registrar.playToClient(ClientBoundFluidDataPacket.ClientBoundFluidDataPayload.TYPE, ClientBoundFluidDataPacket.ClientBoundFluidDataPayload.STREAM_CODEC,ClientBoundFluidDataPacket::handle);

@@ -5,9 +5,6 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
-import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
-import com.veteam.voluminousenergy.tools.buttons.slots.SlotDirectionButton;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.gui.GuiGraphics;
@@ -37,39 +34,7 @@ public class ImplosionCompressorScreen extends VEContainerScreen<VEContainer> {
     @Override
     protected void init() {
         super.init();
-        // Buttons
-        addRenderableWidget(new ioMenuButton(64 + (this.width / 2), this.topPos + 4, buttons -> {
-
-        }));
-
-        List<VESlotManager> managers = tileEntity.getSlotManagers();
-
-        // Input insert
-        addRenderableWidget(new SlotBoolButton(managers.get(0), (this.width / 2) - 198, this.topPos, button -> {
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(managers.get(0), (this.width / 2) - 184, this.topPos, button -> {
-            // Do nothing
-        }));
-
-        // Input Gunpowder
-        addRenderableWidget(new SlotBoolButton(managers.get(1), (this.width / 2) - 198, this.topPos + 20, button -> {
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(managers.get(1), (this.width / 2) - 184, this.topPos + 20, button -> {
-            // Do nothing
-        }));
-
-        // Output
-        addRenderableWidget(new SlotBoolButton(managers.get(2), (this.width / 2) - 198, this.topPos + 40, button -> {
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(managers.get(2), (this.width / 2) - 184, this.topPos + 40, button -> {
-            // Do nothing
-        }));
+        renderIOMenu(tileEntity, 64 + (this.width / 2), this.topPos + 4);
     }
 
     @Override
@@ -87,15 +52,11 @@ public class ImplosionCompressorScreen extends VEContainerScreen<VEContainer> {
     }
 
     @Override
-    protected void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
-        // Slots
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 53, 23, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 53, 41, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("2")), 116, 33, WHITE_TEXT_STYLE);
-    }
-
-    @Override
     protected void renderTooltip(GuiGraphics matrixStack, int mouseX, int mouseY) {
+        if (isIOControlsHovered(mouseX, mouseY)) {
+            super.renderTooltip(matrixStack, mouseX, mouseY);
+            return;
+        }
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
             matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(tileEntity.getEnergy(), Config.IMPLOSION_COMPRESSOR_MAX_POWER.get()), mouseX, mouseY);
         } else if (!VoluminousEnergy.JEI_LOADED && isHovering(getTooltipArea(), mouseX, mouseY)) {
@@ -140,7 +101,6 @@ public class ImplosionCompressorScreen extends VEContainerScreen<VEContainer> {
         // Upgrade slot
         RenderSystem.setShaderTexture(0, GUI_TOOLS);
         matrixStack.blit(GUI_TOOLS, i + 153, j - 16, 0, 0, 18, 18);
-        drawIOSideHelper();
     }
 
 }

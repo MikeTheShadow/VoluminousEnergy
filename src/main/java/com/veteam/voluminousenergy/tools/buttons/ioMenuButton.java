@@ -49,7 +49,11 @@ public class ioMenuButton extends Button {
 
     @Override
     public void onPress() {
-        cycleMode();
+        super.onPress();
+    }
+
+    public void setOpen(boolean open) {
+        cycled = open;
     }
 
     public boolean shouldIOBeOpen() {

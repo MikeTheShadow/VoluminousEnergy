@@ -6,7 +6,6 @@ import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.compat.jei.category.CompressingCategory;
 import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;
-import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import mezz.jei.api.recipe.IFocusFactory;
 import mezz.jei.api.runtime.IRecipesGui;
 import net.minecraft.client.renderer.Rect2i;
@@ -16,9 +15,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class CompressorContainerHandler implements IGuiContainerHandler<CompressorScreen> {
+public class CompressorContainerHandler extends VEIOContainerHandler<CompressorScreen> {
     @Override
     public @NotNull Collection<IGuiClickableArea> getGuiClickableAreas(@NotNull CompressorScreen containerScreen, double guiMouseX, double guiMouseY) {
+        if (containerScreen.isIOControlsCovering(guiMouseX, guiMouseY)) {
+            return List.of();
+        }
         List<IGuiClickableArea> areas = new ArrayList<>();
         areas.add(new IGuiClickableArea() {
             @Override

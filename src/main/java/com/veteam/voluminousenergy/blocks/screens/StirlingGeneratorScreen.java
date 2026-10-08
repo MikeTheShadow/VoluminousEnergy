@@ -5,9 +5,6 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
-import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
-import com.veteam.voluminousenergy.tools.buttons.slots.SlotDirectionButton;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -43,19 +40,7 @@ public class StirlingGeneratorScreen extends VEContainerScreen<VEContainer> {
     @Override
     protected void init() {
         super.init();
-        // Buttons
-        addRenderableWidget(new ioMenuButton(64 + (this.width / 2), this.topPos + 4, buttons -> {
-
-        }));
-
-        // Input insert
-        addRenderableWidget(new SlotBoolButton(tileEntity.getSlotManagers().get(0), (this.width / 2) - 198, this.topPos, button -> {
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.getSlotManagers().get(0), (this.width / 2) - 184, this.topPos, button -> {
-            // Do nothing
-        }));
+        renderIOMenu(tileEntity, 64 + (this.width / 2), this.topPos + 4);
     }
 
     @Override
@@ -67,13 +52,11 @@ public class StirlingGeneratorScreen extends VEContainerScreen<VEContainer> {
     }
 
     @Override
-    protected void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
-        // Slots
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 80, 35, WHITE_TEXT_STYLE);
-    }
-
-    @Override
     protected void renderTooltip(GuiGraphics matrixStack, int mouseX, int mouseY) {
+        if (isIOControlsHovered(mouseX, mouseY)) {
+            super.renderTooltip(matrixStack, mouseX, mouseY);
+            return;
+        }
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
             matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(tileEntity.getEnergy(), Config.STIRLING_GENERATOR_MAX_POWER.get()), mouseX, mouseY);
         } else if (!VoluminousEnergy.JEI_LOADED && isHovering(getTooltipArea(), mouseX, mouseY)) {
@@ -116,7 +99,6 @@ public class StirlingGeneratorScreen extends VEContainerScreen<VEContainer> {
             matrixStack.blit(GUI, i + 81, j + (55 + (14 - progress)), 176, (14 - progress), 14, progress); // 55 = full, 55+14 = end
             matrixStack.blit(GUI, i + 11, j + (16 + (49 - power)), 176, 14 + (49 - power), 12, power);
             RenderSystem.setShaderTexture(0, GUI_TOOLS);
-            drawIOSideHelper();
         }
     }
 

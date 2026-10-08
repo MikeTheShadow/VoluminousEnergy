@@ -1,39 +1,34 @@
 package com.veteam.voluminousenergy.tools.sidemanager;
 
 import com.veteam.voluminousenergy.util.SlotType;
+import com.veteam.voluminousenergy.util.VEIOPort;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.apache.commons.lang3.NotImplementedException;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class VESlotManager {
+public class VESlotManager implements VEIOPort {
     private final int slot;
     private final AtomicReference<Direction> side = new AtomicReference<>();
-    private final AtomicBoolean enabled = new AtomicBoolean();
     private final SlotType slotType;
     private final String nbtName;
     private final Set<Item> allowedItems = new HashSet<>();
 
-    public VESlotManager(int slotNum, Direction direction, boolean status, SlotType slotType) {
+    public VESlotManager(int slotNum, @Nullable Direction direction, SlotType slotType) {
         this.side.set(direction);
         this.slot = slotNum;
-        this.enabled.set(status);
         this.slotType = slotType;
         this.nbtName = slotType.getNBTName(slotNum);
     }
 
-    public void setStatus(boolean bool) {
-        this.enabled.set(bool);
-    }
-
-    public void setDirection(Direction direction) {
+    public void setDirection(@Nullable Direction direction) {
         this.side.set(direction);
     }
 
@@ -41,12 +36,8 @@ public class VESlotManager {
         this.side.set(directionFromInt(direction));
     }
 
-    public Direction getDirection() {
+    public @Nullable Direction getDirection() {
         return this.side.get();
-    }
-
-    public boolean getStatus() {
-        return this.enabled.get();
     }
 
     public int getSlotNum() {
@@ -62,23 +53,37 @@ public class VESlotManager {
     }
 
     public void write(CompoundTag nbt) {
-        nbt.putBoolean(nbtName + "_enabled", getStatus());
-        nbt.putInt(nbtName + "_direction", getDirection().get3DDataValue());
+        nbt.putInt(nbtName + "_direction", isAssigned() ? getDirection().get3DDataValue() : -1);
     }
 
     public void read(CompoundTag nbt) {
-        setStatus(nbt.getBoolean(nbtName + "_enabled"));
         int sideInt = nbt.getInt(nbtName + "_direction");
         setDirection(directionFromInt(sideInt));
+    }
+
+    @Override
+    public boolean isFluid() {
+        return false;
+    }
+
+    @Override
+    public boolean canPush() {
+        return slotType == SlotType.OUTPUT;
+    }
+
+    @Override
+    public boolean canPull() {
+        return slotType == SlotType.INPUT;
     }
 
     public SlotType getSlotType() {
         return slotType;
     }
 
-    public Direction directionFromInt(int sideInt) {
+    public @Nullable Direction directionFromInt(int sideInt) {
         // 1 = top, 0 = bottom, 2 = north, 3 = south, 4 = west, 5 = east
         return switch (sideInt) {
+            case -1 -> null;
             case 0 -> Direction.DOWN;
             case 1 -> Direction.UP;
             case 2 -> Direction.NORTH;

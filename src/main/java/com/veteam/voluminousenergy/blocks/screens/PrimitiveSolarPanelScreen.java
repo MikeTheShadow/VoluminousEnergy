@@ -33,6 +33,10 @@ public class PrimitiveSolarPanelScreen extends VEContainerScreen<VEContainer> {
 
     @Override
     protected void renderTooltip(@NotNull GuiGraphics matrixStack, int mouseX, int mouseY) {
+        if (isIOControlsHovered(mouseX, mouseY)) {
+            super.renderTooltip(matrixStack, mouseX, mouseY);
+            return;
+        }
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
             matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(tileEntity.getEnergy(), Config.PRIMITIVE_SOLAR_PANEL_MAX_POWER.get()), mouseX, mouseY);
         }
@@ -46,10 +50,6 @@ public class PrimitiveSolarPanelScreen extends VEContainerScreen<VEContainer> {
             TextUtil.renderCenteredShadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.generating").getString() + ": " + tileEntity.getEnergy().getProduction() + " FE/t"), 90, 32, WHITE_TEXT_STYLE);
         TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateString("container.inventory"), 8, (this.imageHeight - 96 + 2), WHITE_TEXT_STYLE);
         //super.renderLabels(matrixStack, mouseX, mouseY);
-    }
-
-    @Override
-    protected void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
     }
 
     @Override

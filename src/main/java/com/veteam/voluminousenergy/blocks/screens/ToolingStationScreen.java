@@ -46,6 +46,10 @@ public class ToolingStationScreen extends VEContainerScreen<VEContainer> {
 
     @Override
     protected void renderTooltip(GuiGraphics matrixStack, int mouseX, int mouseY) {
+        if (isIOControlsHovered(mouseX, mouseY)) {
+            super.renderTooltip(matrixStack, mouseX, mouseY);
+            return;
+        }
         super.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
@@ -79,7 +83,6 @@ public class ToolingStationScreen extends VEContainerScreen<VEContainer> {
             if (lightArrow) matrixStack.blit(GUI, i + 109, j + 18, 188, 0, 22, 47);
             renderTank(matrixStack, 0);
 
-            drawIOSideHelper();
         }
 
     }

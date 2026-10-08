@@ -51,6 +51,10 @@ public class GasFiredFurnaceScreen extends VEContainerScreen<VEContainer> {
 
     @Override
     protected void renderTooltip(GuiGraphics matrixStack, int mouseX, int mouseY) {
+        if (isIOControlsHovered(mouseX, mouseY)) {
+            super.renderTooltip(matrixStack, mouseX, mouseY);
+            return;
+        }
         if (!VoluminousEnergy.JEI_LOADED && isHovering(getFuelTooltipArea(), mouseX, mouseY)) {
             matrixStack.renderComponentTooltip(this.font, getFuelTooltips(), mouseX, mouseY);
         } else if (!VoluminousEnergy.JEI_LOADED && isHovering(getCounterTooltipArea(), mouseX, mouseY)) {
@@ -109,7 +113,6 @@ public class GasFiredFurnaceScreen extends VEContainerScreen<VEContainer> {
             matrixStack.blit(GUI, i + fuelArea.getX(), j + fuelArea.getY() + (flameHeight - fuelProgress), 176, 24 + (flameHeight - fuelProgress), flameHeight, fuelProgress);
 
             renderTank(matrixStack, 0);
-            drawIOSideHelper();
         }
         RenderSystem.setShaderTexture(0, GUI_TOOLS);
         matrixStack.blit(GUI_TOOLS, i + 153, j - 16, 0, 0, 18, 18);
