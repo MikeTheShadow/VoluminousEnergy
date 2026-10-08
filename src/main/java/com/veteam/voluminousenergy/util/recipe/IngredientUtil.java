@@ -1,7 +1,5 @@
 package com.veteam.voluminousenergy.util.recipe;
 
-import net.minecraft.core.Holder;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.Nullable;

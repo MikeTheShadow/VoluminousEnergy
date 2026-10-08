@@ -8,18 +8,14 @@ import com.veteam.voluminousenergy.recipe.parser.ExperienceParser;
 import com.veteam.voluminousenergy.recipe.parser.BasicParser;
 import com.veteam.voluminousenergy.recipe.serializer.IngredientSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 

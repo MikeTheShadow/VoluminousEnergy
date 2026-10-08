@@ -54,9 +54,9 @@ touching an area also writes its baseline requirements.
 ### This branch
 
 `26.2-dev` ports the mod to Minecraft 26.2 on NeoForge 26.2 and Java 25, with official Mojang
-names. Parchment was removed because it caused crashes on 26.1 and has not been updated past
-1.21.11; do not add it back. Resource ids are `Identifier`. Versions live in `gradle.properties`.
-The default branch is `1.21.1-dev`.
+names. Parchment was removed because it stopped worlds loading in the dev environment on 26.1 and
+later, and it has not been updated past 1.21.11; do not add it back. Resource ids are `Identifier`.
+Versions live in `gradle.properties`. The default branch is `1.21.1-dev`.
 
 Other long-lived version branches receive independent work (see the README). If a change belongs on
 another branch, say so instead of writing it here, and note any follow-up port in the proposal.

@@ -1,20 +1,17 @@
 package com.veteam.voluminousenergy.recipe;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.recipe.parser.BasicParser;
 import com.veteam.voluminousenergy.recipe.serializer.FluidSerializerHelper;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 

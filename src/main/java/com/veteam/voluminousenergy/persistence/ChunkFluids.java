@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.persistence;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.datafix.DataFixTypes;
@@ -25,7 +26,7 @@ public class ChunkFluids extends SavedData {
     ).apply(instance, ChunkFluids::new));
 
     public static final SavedDataType<ChunkFluids> TYPE = new SavedDataType<>(
-            Identifier.fromNamespaceAndPath("voluminousenergy", "chunk_fluids"),
+            Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "chunk_fluids"),
             ChunkFluids::new,
             CODEC,
             DataFixTypes.SAVED_DATA_RAIDS);

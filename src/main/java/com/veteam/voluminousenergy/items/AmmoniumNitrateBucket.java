@@ -129,7 +129,7 @@ public class AmmoniumNitrateBucket extends BucketItem {
                         if (i == 0 && direction != null && direction.getAxis().isHorizontal()) {
                             blockstate = BuiltInRegistries.BLOCK
                                     .getRandomElementOf(BlockTags.WALL_CORALS, level.getRandom())
-                                    .map((p_204100_) -> p_204100_.value().defaultBlockState())
+                                    .map(wallCoral -> wallCoral.value().defaultBlockState())
                                     .orElse(blockstate);
                             if (blockstate.hasProperty(BaseCoralWallFanBlock.FACING)) {
                                 blockstate = blockstate.setValue(BaseCoralWallFanBlock.FACING, direction);
@@ -137,7 +137,7 @@ public class AmmoniumNitrateBucket extends BucketItem {
                         } else if (random.nextInt(4) == 0) {
                             blockstate = BuiltInRegistries.BLOCK
                                     .getRandomElementOf(BlockTags.UNDERWATER_BONEMEALS, level.getRandom())
-                                    .map((p_204095_) -> p_204095_.value().defaultBlockState())
+                                    .map(underwaterPlant -> underwaterPlant.value().defaultBlockState())
                                     .orElse(blockstate);
                         }
                     }

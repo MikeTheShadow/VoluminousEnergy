@@ -3,14 +3,13 @@ package com.veteam.voluminousenergy.achievements.triggers;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.advancements.predicates.ContextAwarePredicate;
-import net.minecraft.advancements.predicates.entity.EntityPredicate;
 import net.minecraft.advancements.predicates.MinMaxBounds;
+import net.minecraft.advancements.predicates.entity.EntityPredicate;
+import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.advancements.triggers.SimpleCriterionTrigger;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.ExtraCodecs;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;

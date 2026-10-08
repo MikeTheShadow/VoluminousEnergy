@@ -7,7 +7,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FlowingFluid;
 
-import java.util.function.Supplier;
 
 public class FumingAcidFlowingFluidBlock extends AcidFlowingFluidBlock {
     public FumingAcidFlowingFluidBlock(FlowingFluid flowingFluid, Properties properties) {

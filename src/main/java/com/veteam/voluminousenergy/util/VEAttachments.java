@@ -5,7 +5,6 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.util.records.BlastFurnaceData;
 import com.veteam.voluminousenergy.util.records.CounterLength;
 import com.veteam.voluminousenergy.util.records.FluidPumpData;
-import net.minecraft.world.item.crafting.Recipe;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;

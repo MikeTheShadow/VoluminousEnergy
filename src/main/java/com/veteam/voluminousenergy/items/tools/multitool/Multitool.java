@@ -17,16 +17,18 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.item.component.TooltipDisplay;
-import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.ItemAbility;
@@ -253,7 +255,7 @@ public class Multitool extends VEItem {
 
     // Trimmer Multitool stuff
     @Override
-    public net.minecraft.world.@NotNull InteractionResult interactLivingEntity(@NotNull ItemStack multitool, net.minecraft.world.entity.player.@NotNull Player playerIn, @NotNull LivingEntity entity, net.minecraft.world.@NotNull InteractionHand hand) {
+    public @NotNull InteractionResult interactLivingEntity(@NotNull ItemStack multitool, @NotNull Player playerIn, @NotNull LivingEntity entity, @NotNull InteractionHand hand) {
 
         List<ItemStack> inventory = multitool.getOrDefault(VEDataComponents.ITEM_STACK_LIST_COMPONENT,new ArrayList<>());
 
@@ -265,7 +267,7 @@ public class Multitool extends VEItem {
         }
 
         if (bit != null && bit.getBitItemData().getToolType() == ToolType.TRIMMER.value() && entity instanceof net.neoforged.neoforge.common.IShearable target) {
-            if (entity.level().isClientSide()) return net.minecraft.world.InteractionResult.SUCCESS;
+            if (entity.level().isClientSide()) return InteractionResult.SUCCESS;
             BlockPos pos = new BlockPos(Mth.floor(entity.getX()), Mth.floor(entity.getY()), Mth.floor(entity.getZ()));
             if (target.isShearable(playerIn, multitool, entity.level(), pos)) {
 
@@ -286,7 +288,7 @@ public class Multitool extends VEItem {
                 }
 
             }
-            return net.minecraft.world.InteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
         return super.interactLivingEntity(multitool, playerIn, entity, hand); // Revert to previous super code if not trimmer
     }

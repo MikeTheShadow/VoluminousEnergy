@@ -2,24 +2,17 @@ package com.veteam.voluminousenergy.items.batteries;
 
 import com.veteam.voluminousenergy.items.VEItem;
 import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.util.NumberUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
-import com.veteam.voluminousenergy.util.VEDataComponents;
 import com.veteam.voluminousenergy.util.VEItemCapabilities;
-import net.minecraft.core.Direction;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
-import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
 public class VEEnergyItem extends VEItem {

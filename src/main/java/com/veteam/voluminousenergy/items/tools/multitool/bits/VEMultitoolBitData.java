@@ -9,7 +9,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.ItemAbilities;
-import net.neoforged.neoforge.common.ItemAbility;
 
 import java.util.Set;
 

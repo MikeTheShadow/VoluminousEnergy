@@ -2,11 +2,8 @@ package com.veteam.voluminousenergy.fluids;
 
 import com.veteam.voluminousenergy.util.extensions.VEFluidClientExtension;
 import net.minecraft.resources.Identifier;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidType;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Consumer;
 
 public class VEFluidType extends FluidType {
 

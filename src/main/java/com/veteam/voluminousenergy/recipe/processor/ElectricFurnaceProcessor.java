@@ -2,13 +2,10 @@ package com.veteam.voluminousenergy.recipe.processor;
 
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.sounds.VESounds;
-import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.VEAttachments;
 import com.veteam.voluminousenergy.util.records.CounterLength;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
@@ -22,7 +19,7 @@ public class ElectricFurnaceProcessor extends BasicProcessor {
     public boolean validateRecipe(VETileEntity tile) {
         Level level = tile.getLevel();
         ItemStack furnaceInput = tile.getInventory().getStackInSlot(0);
-        var blastingRecipeNew = ((ServerLevel) level).recipeAccess()
+        RecipeHolder<BlastingRecipe> blastingRecipeNew = ((ServerLevel) level).recipeAccess()
                 .getRecipeFor(RecipeType.BLASTING, new SingleRecipeInput(furnaceInput.copy()), level).orElse(null);
         if (blastingRecipeNew != null) {
             blastingRecipe = blastingRecipeNew;
@@ -30,7 +27,7 @@ public class ElectricFurnaceProcessor extends BasicProcessor {
             return true;
         } else
             blastingRecipe = null;
-        var furnaceRecipeNew = ((ServerLevel) level).recipeAccess()
+        RecipeHolder<SmeltingRecipe> furnaceRecipeNew = ((ServerLevel) level).recipeAccess()
                 .getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(furnaceInput.copy()), level).orElse(null);
         if (furnaceRecipeNew != null) {
             furnaceRecipe = furnaceRecipeNew;

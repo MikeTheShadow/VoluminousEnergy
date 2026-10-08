@@ -27,7 +27,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.function.Consumer;
 
 public class FluidScanner extends Item {
@@ -39,7 +38,7 @@ public class FluidScanner extends Item {
         );
     }
 
-    public @NotNull ItemUseAnimation getUseAnimation(ItemStack p_40678_) {
+    public @NotNull ItemUseAnimation getUseAnimation(ItemStack stack) {
         return ItemUseAnimation.CROSSBOW;
     }
 

@@ -30,7 +30,7 @@ public class CombustibleFluidsData {
 
     public static void loadData(ResourceManager manager) {
         resetCache();
-        Identifier prefix = Identifier.fromNamespaceAndPath("voluminousenergy", "fluid_data/combustion");
+        Identifier prefix = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "fluid_data/combustion");
         Map<Identifier, Resource> resourceLocations = manager.listResources(prefix.getPath(), s -> s.getPath().endsWith(".json"));
 
         for (Resource resource : resourceLocations.values()) {

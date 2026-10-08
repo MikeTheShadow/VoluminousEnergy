@@ -2,7 +2,6 @@ package com.veteam.voluminousenergy.blocks.tiles.inventory;
 
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.util.TagUtil;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeAccess;
 import net.minecraft.world.item.crafting.RecipePropertySet;

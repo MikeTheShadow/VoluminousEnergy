@@ -5,21 +5,14 @@ import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.VERender;
-import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
-import com.veteam.voluminousenergy.tools.buttons.slots.SlotDirectionButton;
-import com.veteam.voluminousenergy.tools.buttons.tanks.TankBoolButton;
-import com.veteam.voluminousenergy.tools.buttons.tanks.TankDirectionButton;
 import com.veteam.voluminousenergy.util.TextUtil;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.UUID;
 
 public class TankScreen extends VEContainerScreen<VEContainer> {
     private VETileEntity tileEntity;

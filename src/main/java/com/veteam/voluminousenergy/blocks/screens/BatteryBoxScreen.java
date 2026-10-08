@@ -5,8 +5,6 @@ import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.buttons.batteryBox.BatteryBoxSendOutPowerButton;
-import com.veteam.voluminousenergy.tools.buttons.batteryBox.BatteryBoxSlotPairButton;
-import com.veteam.voluminousenergy.tools.buttons.batteryBox.VEBatterySwitchManager;
 import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotDirectionButton;

@@ -3,7 +3,6 @@ package com.veteam.voluminousenergy.tools.buttons.slots;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
 import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
-import com.veteam.voluminousenergy.tools.networking.packets.TankBoolPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.InputWithModifiers;

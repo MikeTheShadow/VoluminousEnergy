@@ -13,7 +13,6 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -63,15 +62,13 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
 
     @Override
     public void submit(LaserRenderState state, @NotNull PoseStack poseStack, @NotNull SubmitNodeCollector collector, @NotNull CameraRenderState cameraState) {
-        // 1.21 Migration: BeaconBeamSection now uses a packed ARGB integer.
-        // 0xFFFFFFFF is fully opaque white.
         int whiteColorARGB = 0xFFFFFFFF;
         BeaconBeamOwner.Section section = new BeaconBeamOwner.Section(whiteColorARGB);
 
         renderBeaconBeam(poseStack, collector, state.partialTick, state.gameTime, 0, 1024, section.getColor(), state.height, state.buildTick);
     }
 
-    public void renderBeaconBeam(PoseStack poseStack, SubmitNodeCollector collector, float p_112188_, long gameTime, int totalHeight, int beaconListSize, int beaconColor, int height, int staticBuildTick) {
+    public void renderBeaconBeam(PoseStack poseStack, SubmitNodeCollector collector, float partialTick, long gameTime, int totalHeight, int beaconListSize, int beaconColor, int height, int staticBuildTick) {
 
         int buildTick = staticBuildTick;
         boolean fullyBuilt = buildTick == 1000;
@@ -79,12 +76,7 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
 
         if (firstStageBuilt) buildTick -= 400;
 
-        height += 2;
-
-        if (!firstStageBuilt) {
-            height = 1;
-        }
-        final int height1 = height;
+        int beamHeight = firstStageBuilt ? height + 2 : 1;
         SoundManager manager = Minecraft.getInstance().getSoundManager();
         if (buildTick == 0) {
             manager.stop(VESounds.ENERGY_BEAM_ACTIVATE.location(), SoundSource.BLOCKS);
@@ -95,15 +87,14 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
         float staticRotationNumber = -1.0F;
         poseStack.pushPose();
         poseStack.translate(0.5D, 0.0D, 0.5D);
-        float somethingToDoWithTimeAndRotation = (float) Math.floorMod(gameTime, 40) + p_112188_;
+        float somethingToDoWithTimeAndRotation = (float) Math.floorMod(gameTime, 40) + partialTick;
         float rotationStuff = beaconListSize < 0 ? somethingToDoWithTimeAndRotation : -somethingToDoWithTimeAndRotation;
 
         float downwardMovement = Mth.frac(rotationStuff * -0.2F - (float) Mth.floor(rotationStuff * -0.1F));
 
-        // 1.21 Migration: Extract R, G, B floats (0.0F - 1.0F) from the packed ARGB int
-        float beaconColorR = (float) (beaconColor >> 16 & 255) / 255.0F;
-        float beaconColorG = (float) (beaconColor >> 8 & 255) / 255.0F;
-        float beaconColorB = (float) (beaconColor & 255) / 255.0F;
+        float beaconColorR = (float) (beaconColor >> 16 & 0xFF) / 255.0F;
+        float beaconColorG = (float) (beaconColor >> 8 & 0xFF) / 255.0F;
+        float beaconColorB = (float) (beaconColor & 0xFF) / 255.0F;
 
         poseStack.pushPose();
         poseStack.mulPose(Axis.YP.rotationDegrees(45.0F));
@@ -113,7 +104,7 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
         float f16 = (float) beaconListSize * static10F * (0.5F / static02F) + f15;
 
         collector.submitCustomGeometry(poseStack, RenderTypes.energySwirl(BEAM_RESOURCE_LOCATION, 0, 0), (quadPose, vertexConsumer) ->
-                renderPart(poseStack, vertexConsumer, beaconColorR, beaconColorG, beaconColorB, 1.0F, totalHeight, height1, 0.0F, static02F, static02F, 0.0F, f9, 0.0F, 0.0F, f12, f16, f15));
+                renderPart(poseStack, vertexConsumer, beaconColorR, beaconColorG, beaconColorB, 1.0F, totalHeight, beamHeight, 0.0F, static02F, static02F, 0.0F, f9, 0.0F, 0.0F, f12, f16, f15));
         poseStack.popPose();
         PoseStack.Pose pose = poseStack.last();
         Matrix4f matrix4f = pose.pose();
@@ -182,7 +173,7 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
 
                     if (arrayMap[xPos][zPos] != 0 && r <= maxRadius) {
                         renderFace(matrix4f, vertexConsumer,
-                            0.0F + xPos - xMiddle, 1.0F + xPos - xMiddle, height1, height1,
+                            0.0F + xPos - xMiddle, 1.0F + xPos - xMiddle, beamHeight, beamHeight,
                             0.0F + zPos - zMiddle, 0.0F + zPos - zMiddle, 1.0F + zPos - zMiddle, 1.0F + zPos - zMiddle,
                             Direction.DOWN);
                     }
@@ -219,7 +210,6 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
         addVertex(pose, matrix4f, matrix3f, vertexConsumer, beaconColorR, beaconColorG, beaconColorB, staticOP3F, height, point2x, point2z, patternRepeatHorizontalPositive, patternLocationYNegative);
     }
 
-    // 1.21 Migration: Chained builder without .endVertex()
     private static void addVertex(PoseStack.Pose pose, Matrix4f matrix4f, Matrix3f matrix3f, VertexConsumer vertexConsumer, float beaconColorR, float beaconColorG, float beaconColorB, float staticOP3F, float heightOrTotalHeight, float xPos, float zPos, float patternRepeat, float patternRepeat2) {
         vertexConsumer.addVertex(matrix4f, xPos, heightOrTotalHeight, zPos)
             .setColor(beaconColorR, beaconColorG, beaconColorB, staticOP3F)
@@ -231,7 +221,6 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
 
     static int scale = 4;
 
-    // 1.21 Migration: Replaced chained standard builder with simple addVertex calls
     private static void renderFace(Matrix4f matrix4f, VertexConsumer vertexConsumer, float xPoint1, float xPoint2, float heightOffset, float heightOffset2, float zPoint1, float zPoint2, float zPoint3, float zPoint4, Direction direction) {
         vertexConsumer.addVertex(matrix4f, xPoint1 * scale, heightOffset, zPoint1 * scale);
         vertexConsumer.addVertex(matrix4f, xPoint2 * scale, heightOffset, zPoint2 * scale);

@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.tools.buttons;
 
-
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 

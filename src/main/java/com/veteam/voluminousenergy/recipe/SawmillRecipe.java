@@ -10,7 +10,6 @@ import com.veteam.voluminousenergy.recipe.serializer.FluidSerializerHelper;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;

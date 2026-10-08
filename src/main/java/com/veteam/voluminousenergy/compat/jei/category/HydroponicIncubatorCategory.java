@@ -1,13 +1,12 @@
 package com.veteam.voluminousenergy.compat.jei.category;
 
-import com.veteam.voluminousenergy.util.recipe.IngredientUtil;
-
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.HydroponicIncubatorRecipe;
 import com.veteam.voluminousenergy.util.TextUtil;
+import com.veteam.voluminousenergy.util.recipe.IngredientUtil;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IIngredientAcceptor;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;

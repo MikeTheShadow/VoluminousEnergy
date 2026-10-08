@@ -5,7 +5,6 @@ import com.veteam.voluminousenergy.recipe.parser.BasicParser;
 import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
 import com.veteam.voluminousenergy.util.recipe.IngredientUtil;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
@@ -174,9 +173,8 @@ public abstract class VERecipe implements Recipe<RecipeInput> {
         if (slot >= this.getIngredients().size()) {
             return 0;
         }
-        return IngredientUtil.getItems(this.getIngredients().get(slot)).length > 0
-                ? IngredientUtil.getItems(this.ingredients.get(slot))[0].getCount()
-                : 0;
+        ItemStack[] matchingStacks = IngredientUtil.getItems(this.getIngredients().get(slot));
+        return matchingStacks.length > 0 ? matchingStacks[0].getCount() : 0;
     }
 
     public int getProcessTime() {
