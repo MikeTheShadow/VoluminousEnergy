@@ -4,7 +4,7 @@ Rules for any automated contributor (Claude, Codex, Copilot, Serena-driven agent
 code, comments, or commits in Voluminous Energy. They are binding. When a rule here conflicts with
 your tool's defaults, this file wins.
 
-This file is tracked per branch and describes `26.1-dev`. Other version branches carry their own
+This file is tracked per branch and describes `26.2-dev`. Other version branches carry their own
 copy; do not document another branch's APIs or quirks here.
 
 ## Precedence
@@ -53,15 +53,16 @@ touching an area also writes its baseline requirements.
 
 ### This branch
 
-`26.1-dev` ports the mod to Minecraft 26.1 on NeoForge 26.1 and Java 25, with official Mojang
-names. Parchment was removed because it caused crashes on 26.1; do not add it back. Resource ids are
-`Identifier`. Versions live in `gradle.properties`. The default branch is `1.21.1-dev`.
+`26.2-dev` ports the mod to Minecraft 26.2 on NeoForge 26.2 and Java 25, with official Mojang
+names. Parchment was removed because it caused crashes on 26.1 and has not been updated past
+1.21.11; do not add it back. Resource ids are `Identifier`. Versions live in `gradle.properties`.
+The default branch is `1.21.1-dev`.
 
 Other long-lived version branches receive independent work (see the README). If a change belongs on
 another branch, say so instead of writing it here, and note any follow-up port in the proposal.
 
-Work branches are cut from `26.1-dev` and named `<mc-version>-<short-kebab-description>`, prefixed
-with the Minecraft version they target: `26.1-oil-feature-rework`, never `oil-feature-rework`.
+Work branches are cut from `26.2-dev` and named `<mc-version>-<short-kebab-description>`, prefixed
+with the Minecraft version they target: `26.2-oil-feature-rework`, never `oil-feature-rework`.
 
 ## Architecture you must respect
 
@@ -106,10 +107,10 @@ per-machine tile or container class when the factory can express it; extend the 
   factory.
 - JEI is optional: `compileOnly`, gated at runtime by `VoluminousEnergy.JEI_LOADED`. Never reference
   JEI classes outside `compat/`.
-- Client-only code is reached only through a client event subscriber. NeoForge 26.1 no longer
-  strips `@OnlyIn` members and logs an error for each use, so do not add it. Server-safe code must
-  not touch client classes; a dedicated server crash has already forced one config option out of
-  the mod.
+- Client-only code is reached only through a client event subscriber. NeoForge 26.1 and later no
+  longer strip `@OnlyIn` members and log an error for each use, so do not add it. Server-safe code
+  must not touch client classes; a dedicated server crash has already forced one config option out
+  of the mod.
 - Gases are identified by their fluid type (`VEFlowingGasFluid`), not by a render flag.
 - Nullability annotations: `org.jetbrains.annotations.NotNull`/`Nullable` (the dominant choice). Do
   not add new `javax.annotation` imports.
@@ -234,14 +235,14 @@ If `./gradlew clean` fails with "Unable to delete build", run `./gradlew --stop`
 
 Releases are manual; there is no CI. Do not cut one unless asked.
 
-- Release branch `26.1-<modver>` cut from `26.1-dev`. One commit bumps `mod_version` in
+- Release branch `26.2-<modver>` cut from `26.2-dev`. One commit bumps `mod_version` in
   `gradle.properties` (`neoforge.mods.toml` expands `${mod_version}`).
-- Version string has no `v` and may contain spaces: `26.1-<modver> Alpha 1`, then Betas, then stable
-  `26.1-<modver>.0.0`. Hotfixes add a letter: `Alpha 1a`.
+- Version string has no `v` and may contain spaces: `26.2-<modver> Alpha 1`, then Betas, then stable
+  `26.2-<modver>.0.0`. Hotfixes add a letter: `Alpha 1a`.
 - Commit message: `Release <version>`.
 - Build with `./gradlew clean publish`; artifacts land in
   `repo/com/veteam/voluminousenergy/VoluminousEnergy/<version>/`.
-- GitHub tag `v<version>` with spaces as underscores (`v26.1-<modver>_Alpha_1`), title
+- GitHub tag `v<version>` with spaces as underscores (`v26.2-<modver>_Alpha_1`), title
   `Voluminous Energy v<version>`, targeting the release branch. Alpha and Beta are always
   pre-releases. Attach every file from the version folder. Notes use `# Additions`, `# Fixes`,
   `# Changes` sections.

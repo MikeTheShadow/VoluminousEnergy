@@ -1,8 +1,8 @@
 schema: spec-driven
 
 context: |
-  Voluminous Energy is a NeoForge tech mod. This branch, 26.1-dev, ports it to Minecraft 26.1
-  (NeoForge 26.1, Java 25, Gradle wrapper, official Mojang names). Resource ids are Identifier.
+  Voluminous Energy is a NeoForge tech mod. This branch, 26.2-dev, ports it to Minecraft 26.2
+  (NeoForge 26.2, Java 25, Gradle wrapper, official Mojang names). Resource ids are Identifier.
   AGENTS.md at the repo root is binding for code, comment, and commit style; plans must respect it.
   Domain: custom ores, a fluid chemistry chain (crude oil to fuels, acids, nitrogen), machines with GUIs,
   recipes, worldgen. Machines are factory-assembled (VEBlocks, VETileEntities, VEContainers, a screen,

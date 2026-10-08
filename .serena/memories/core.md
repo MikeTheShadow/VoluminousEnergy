@@ -1,6 +1,6 @@
-## Voluminous Energy (`26.1-dev`)
+## Voluminous Energy (`26.2-dev`)
 
-NeoForge mod for Minecraft 26.1, mod id `voluminousenergy`, Java 25 toolchain, official Mojang names (no Parchment, it crashed on 26.1).
+NeoForge mod for Minecraft 26.2, mod id `voluminousenergy`, Java 25 toolchain, official Mojang names (no Parchment, it crashed on 26.1 and stopped at 1.21.11).
 Resource ids are `Identifier`. JEI is compileOnly, gated by `VoluminousEnergy.JEI_LOADED`.
 
 - Code, comment, and commit style: `AGENTS.md` at the repo root. It is authoritative; memories do not repeat it.
