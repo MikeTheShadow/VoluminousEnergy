@@ -2,7 +2,6 @@ package com.veteam.voluminousenergy.client.renderers.fluid;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.FluidModel;
 import net.minecraft.client.renderer.block.FluidRenderer;
@@ -293,7 +292,7 @@ public class GaseousFluidRenderer implements CustomFluidRenderer {
     }
 
     private static int getLightCoords(BlockAndTintGetter level, BlockPos pos) {
-        return LightCoordsUtil.max(LevelRenderer.getLightCoords(level, pos), LevelRenderer.getLightCoords(level, pos.above()));
+        return LightCoordsUtil.max(LightCoordsUtil.getLightCoords(level, pos), LightCoordsUtil.getLightCoords(level, pos.above()));
     }
 
     private static void vertex(VertexConsumer buffer, float x, float y, float z, int color, float u, float v, int light) {
