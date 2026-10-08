@@ -2,11 +2,11 @@ package com.veteam.voluminousenergy.items.batteries;
 
 import com.veteam.voluminousenergy.items.VEItem;
 import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.tools.energy.VEEnergyItemStorage;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.util.NumberUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
 import com.veteam.voluminousenergy.util.VEDataComponents;
+import com.veteam.voluminousenergy.util.VEItemCapabilities;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -16,14 +16,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
 public class VEEnergyItem extends VEItem {
@@ -37,14 +33,8 @@ public class VEEnergyItem extends VEItem {
         this.maxTransfer = maxTransfer;
     }
 
-    @Nullable
-    private static IEnergyStorage getEnergyStorage(ItemStack itemStack) {
-        EnergyHandler handler = ItemAccess.forStack(itemStack).getCapability(Capabilities.Energy.ITEM);
-        return handler == null ? null : IEnergyStorage.of(handler);
-    }
-
     public static float getChargeRatio(ItemStack stack) {
-        IEnergyStorage storage = getEnergyStorage(stack);
+        IEnergyStorage storage = VEItemCapabilities.getEnergyStorage(stack);
         if (storage != null) {
             return (float) storage.getEnergyStored() / storage.getMaxEnergyStored();
         }
@@ -54,7 +44,7 @@ public class VEEnergyItem extends VEItem {
     @Override
     public void appendHoverText(ItemStack itemStack, @NotNull TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltip, @NotNull TooltipFlag flag) {
 
-        IEnergyStorage storage = getEnergyStorage(itemStack);
+        IEnergyStorage storage = VEItemCapabilities.getEnergyStorage(itemStack);
         if (storage == null) return;
         Component textComponent;
         if (Config.SHORTEN_ITEM_TOOLTIP_VALUES.get()) {

@@ -10,9 +10,7 @@ import com.veteam.voluminousenergy.util.VERelationalTank;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.neoforged.neoforge.energy.IEnergyStorage;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
@@ -71,7 +69,7 @@ public class CapabilityMap {
     }
 
     @Nullable
-    public IItemHandler getItemStackHandler(@Nullable Direction side, BlockEntity tileEntity) {
+    public IItemHandlerModifiable getItemStackHandler(@Nullable Direction side, BlockEntity tileEntity) {
         if (side == null) return this.inventory;
 
         Direction normalizedSide = normalizeDirection(side, tileEntity);
@@ -79,12 +77,12 @@ public class CapabilityMap {
     }
 
     @Nullable
-    public IEnergyStorage getEnergyStorage() {
+    public VEEnergyStorage getEnergyStorage() {
         return this.energyStorage;
     }
 
     @Nullable
-    public IFluidHandler getFluidHandler(@Nullable Direction side, BlockEntity tileEntity) {
+    public MultiFluidSlotWrapper getFluidHandler(@Nullable Direction side, BlockEntity tileEntity) {
         if(side == null) return null;
         Direction normalizedSide = normalizeDirection(side, tileEntity);
         return this.fluidMap.get(normalizedSide);

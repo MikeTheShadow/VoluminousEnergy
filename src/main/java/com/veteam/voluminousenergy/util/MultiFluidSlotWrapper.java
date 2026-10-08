@@ -65,41 +65,84 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
 
     @Override
     public int fill(@NotNull FluidStack resource, @NotNull FluidAction action) {
-        for (VERelationalTank tank : tanks) {
-            if (tank.getTankType() == TankType.OUTPUT)
-                continue;
-
-            if (isFluidValid(tank.getSlotNum(), resource) && (tank.getTank().isEmpty() || resource.is(tank.getTank().getFluid().getFluid()))) {
-                if (tileEntity.getRecipeProcessor() instanceof BasicProcessor basicProcessor) {
-                    basicProcessor.markRecipeDirty();
-                }
-                return tank.getTank().fill(resource.copy(), action);
+        for (int tank = 0; tank < tanks.size(); tank++) {
+            if (canFill(tank, resource)) {
+                return fill(tank, resource, action);
             }
         }
         return 0;
     }
 
+    /**
+     * Fills only the given tank, following the same rules as {@link #fill(FluidStack, FluidAction)}.
+     */
+    public int fill(int tank, FluidStack resource, FluidAction action) {
+        if (!canFill(tank, resource)) {
+            return 0;
+        }
+        markRecipeDirty();
+        return tanks.get(tank).getTank().fill(resource.copy(), action);
+    }
+
     @Nonnull
     @Override
     public FluidStack drain(FluidStack resource, FluidAction action) {
-        if (resource.isEmpty()) {
-            return FluidStack.EMPTY;
-        }
-        for (VERelationalTank tank : tanks) {
-            if (!tank.getSideStatus() && !tank.isIgnoreDirection())
-                continue;
-            if (!Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get()) {
-                if (tank.getTankType() != TankType.OUTPUT && tank.getTankType() != TankType.BOTH)
-                    continue;
-            }
-            if (resource.is(tank.getTank().getFluid().getFluid())) {
-                if (tileEntity.getRecipeProcessor() instanceof BasicProcessor basicProcessor) {
-                    basicProcessor.markRecipeDirty();
-                }
-                return tank.getTank().drain(resource.copy(), action);
+        for (int tank = 0; tank < tanks.size(); tank++) {
+            if (canDrain(tank, resource)) {
+                return drain(tank, resource, action);
             }
         }
         return FluidStack.EMPTY;
+    }
+
+    /**
+     * Drains only the given tank, following the same rules as {@link #drain(FluidStack, FluidAction)}.
+     */
+    public FluidStack drain(int tank, FluidStack resource, FluidAction action) {
+        if (!canDrain(tank, resource)) {
+            return FluidStack.EMPTY;
+        }
+        markRecipeDirty();
+        return tanks.get(tank).getTank().drain(resource.copy(), action);
+    }
+
+    /**
+     * Replaces the contents of the given tank without any checks, for restoring a snapshot.
+     */
+    public void setFluidInTank(int tank, FluidStack stack) {
+        tanks.get(tank).getTank().setFluid(stack);
+    }
+
+    private boolean canFill(int tank, FluidStack resource) {
+        if (tank < 0 || tank >= tanks.size()) {
+            return false;
+        }
+        VERelationalTank relationalTank = tanks.get(tank);
+        if (relationalTank.getTankType() == TankType.OUTPUT || !isFluidValid(tank, resource)) {
+            return false;
+        }
+        return relationalTank.getTank().isEmpty() || resource.is(relationalTank.getTank().getFluid().getFluid());
+    }
+
+    private boolean canDrain(int tank, FluidStack resource) {
+        if (resource.isEmpty() || tank < 0 || tank >= tanks.size()) {
+            return false;
+        }
+        VERelationalTank relationalTank = tanks.get(tank);
+        if (!relationalTank.getSideStatus() && !relationalTank.isIgnoreDirection()) {
+            return false;
+        }
+        if (!Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get()
+                && relationalTank.getTankType() != TankType.OUTPUT && relationalTank.getTankType() != TankType.BOTH) {
+            return false;
+        }
+        return resource.is(relationalTank.getTank().getFluid().getFluid());
+    }
+
+    private void markRecipeDirty() {
+        if (tileEntity.getRecipeProcessor() instanceof BasicProcessor basicProcessor) {
+            basicProcessor.markRecipeDirty();
+        }
     }
 
     @Nonnull

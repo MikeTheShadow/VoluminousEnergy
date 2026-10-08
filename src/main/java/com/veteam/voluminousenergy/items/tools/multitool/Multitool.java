@@ -10,6 +10,7 @@ import com.veteam.voluminousenergy.items.tools.multitool.bits.VEMultitoolBitData
 import com.veteam.voluminousenergy.util.NumberUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
 import com.veteam.voluminousenergy.util.VEDataComponents;
+import com.veteam.voluminousenergy.util.VEItemCapabilities;
 import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -28,13 +29,9 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,12 +50,6 @@ public class Multitool extends VEItem {
         setRegistryName("multitool");
     }
 
-    @Nullable
-    private static IFluidHandler getFluidHandler(ItemStack itemStack) {
-        ResourceHandler<FluidResource> handler = ItemAccess.forStack(itemStack).getCapability(Capabilities.Fluid.ITEM);
-        return handler == null ? null : IFluidHandler.of(handler);
-    }
-
     @Override
     public boolean isBarVisible(ItemStack itemStack) {
         return true;
@@ -75,14 +66,14 @@ public class Multitool extends VEItem {
     }
 
     private float getFillRatio(ItemStack itemStack) {
-        IFluidHandler fluidHandler = getFluidHandler(itemStack);
+        IFluidHandler fluidHandler = VEItemCapabilities.getFluidHandler(itemStack);
         return fluidHandler.getFluidInTank(0).getAmount() / (float) TEMP_TANK_CAPACITY;
     }
 
     @Override
     public void appendHoverText(ItemStack itemStack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flag) {
 
-        IFluidHandler fluidHandler = getFluidHandler(itemStack);
+        IFluidHandler fluidHandler = VEItemCapabilities.getFluidHandler(itemStack);
         FluidStack fluidStack = fluidHandler.getFluidInTank(0).copy();
 
         if(fluidStack.isEmpty()) {
@@ -177,7 +168,7 @@ public class Multitool extends VEItem {
     public float getDestroySpeed(@NotNull ItemStack itemStack, @NotNull BlockState blockStateToMine) {
         int energy = itemStack.getOrDefault(VEDataComponents.MULTI_TOOL_ENERGY,0);
         if(energy < 1) {
-            IFluidHandler capability = getFluidHandler(itemStack);
+            IFluidHandler capability = VEItemCapabilities.getFluidHandler(itemStack);
             FluidStack drainedFluid = capability.drain(50, IFluidHandler.FluidAction.EXECUTE);
             if(drainedFluid.isEmpty()) {
                 return 0f;
