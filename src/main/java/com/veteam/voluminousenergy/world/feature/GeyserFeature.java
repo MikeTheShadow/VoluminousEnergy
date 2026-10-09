@@ -1,8 +1,8 @@
 package com.veteam.voluminousenergy.world.feature;
 
 import com.mojang.serialization.Codec;
-import com.veteam.voluminousenergy.util.WorldUtil;
 import net.minecraft.core.BlockPos;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
@@ -23,17 +23,13 @@ public class GeyserFeature extends Feature<GeyserFeature.Configuration> {
         super(geyserConfiguration);
     }
 
+    // Blocks the geyser carves that #minecraft:overworld_carver_replaceables does not cover.
     public final ArrayList<Block> allowList = new ArrayList<>(Arrays.asList(
-            Blocks.SNOW, Blocks.ICE, Blocks.PACKED_ICE, Blocks.SANDSTONE, Blocks.SAND, Blocks.RED_SAND, Blocks.GRAVEL,
-            Blocks.WATER, Blocks.LAVA, Blocks.CLAY, Blocks.MOSS_BLOCK, Blocks.MOSS_CARPET, Blocks.FLOWERING_AZALEA,
-            Blocks.AZALEA, Blocks.GRASS_BLOCK, Blocks.SHORT_GRASS, Blocks.TALL_GRASS, Blocks.BIG_DRIPLEAF, Blocks.BIG_DRIPLEAF_STEM,
-            Blocks.SMALL_DRIPLEAF, Blocks.CAVE_VINES, Blocks.CAVE_VINES_PLANT, Blocks.SCULK, Blocks.SCULK_VEIN,
-            Blocks.SCULK_CATALYST, Blocks.TERRACOTTA
+            Blocks.ICE, Blocks.LAVA, Blocks.CLAY, Blocks.MOSS_CARPET, Blocks.FLOWERING_AZALEA, Blocks.AZALEA,
+            Blocks.SHORT_GRASS, Blocks.TALL_GRASS, Blocks.BIG_DRIPLEAF, Blocks.BIG_DRIPLEAF_STEM, Blocks.SMALL_DRIPLEAF,
+            Blocks.CAVE_VINES, Blocks.CAVE_VINES_PLANT, Blocks.SCULK, Blocks.SCULK_VEIN, Blocks.SCULK_CATALYST,
+            Blocks.SULFUR_SPIKE
     ));
-
-    {
-        allowList.addAll(Blocks.DYED_TERRACOTTA.asList());
-    }
 
     @Override
     public boolean place(FeaturePlaceContext<GeyserFeature.Configuration> context) {
@@ -82,17 +78,13 @@ public class GeyserFeature extends Feature<GeyserFeature.Configuration> {
                 for (int j1 = -l; j1 <= l; ++j1) {
                     float f2 = (float) Mth.abs(j1) - 0.25F;
                     if ((i1 == 0 && j1 == 0 || !(f1 * f1 + f2 * f2 > f * f)) && (i1 != -l && i1 != l && j1 != -l && j1 != l || !(rand.nextFloat() > 0.75F))) {
-                        BlockState blockstate = worldIn.getBlockState(pos.offset(i1, k, j1));
-                        Block block = blockstate.getBlock();
-                        if (blockstate.isAir() || WorldUtil.isDirt(blockstate) || WorldUtil.isStone(blockstate) || allowList.contains(block)) {
+                        if (canReplace(worldIn.getBlockState(pos.offset(i1, k, j1)))) {
                             this.setBlock(worldIn, pos.offset(i1, k, j1), fluidState.createLegacyBlock());
                             worldIn.scheduleTick(pos.offset(i1, k, j1), fluidState.getType(), 0);
                         }
 
                         if (k != 0 && l > 1) {
-                            blockstate = worldIn.getBlockState(pos.offset(i1, -k, j1));
-                            block = blockstate.getBlock();
-                            if (blockstate.isAir() || WorldUtil.isDirt(blockstate) || WorldUtil.isStone(blockstate) || allowList.contains(block)) {
+                            if (canReplace(worldIn.getBlockState(pos.offset(i1, -k, j1)))) {
                                 this.setBlock(worldIn, pos.offset(i1, -k, j1), fluidState.createLegacyBlock());
                                 worldIn.scheduleTick(pos.offset(i1, -k, j1), fluidState.getType(), 0);
                             }
@@ -122,17 +114,13 @@ public class GeyserFeature extends Feature<GeyserFeature.Configuration> {
                 for (int z = -l; z <= l; ++z) {
                     float fz = (float) Mth.abs(z) - 0.25F;
                     if ((x == 0 && z == 0 || !(fx * fx + fz * fz > fy * fy)) && (x != -l && x != l && z != -l && z != l || !(rand.nextFloat() > 0.75F))) {
-                        BlockState blockstate = worldIn.getBlockState(pos.offset(x, y, z));
-                        Block block = blockstate.getBlock();
-                        if (blockstate.isAir() || WorldUtil.isDirt(blockstate) || WorldUtil.isStone(blockstate) || allowList.contains(block)) {
+                        if (canReplace(worldIn.getBlockState(pos.offset(x, y, z)))) {
                             this.setBlock(worldIn, pos.offset(x, y, z), fluidState.createLegacyBlock());
                             worldIn.scheduleTick(pos.offset(x, y, z), fluidState.getType(), 0);
                         }
 
                         if (y != 0 && l > 1) {
-                            blockstate = worldIn.getBlockState(pos.offset(x, -y, z));
-                            block = blockstate.getBlock();
-                            if (blockstate.isAir() || WorldUtil.isDirt(blockstate) || WorldUtil.isStone(blockstate) || allowList.contains(block)) {
+                            if (canReplace(worldIn.getBlockState(pos.offset(x, -y, z)))) {
                                 this.setBlock(worldIn, pos.offset(x, -y, z), fluidState.createLegacyBlock());
                                 worldIn.scheduleTick(pos.offset(x, -y, z), fluidState.getType(), 0);
                             }
@@ -159,6 +147,10 @@ public class GeyserFeature extends Feature<GeyserFeature.Configuration> {
 
         //VoluminousEnergy.LOGGER.info("Total buckets: " + totalBuckets);
         return true;
+    }
+
+    private boolean canReplace(BlockState state) {
+        return state.isAir() || state.is(BlockTags.OVERWORLD_CARVER_REPLACEABLES) || allowList.contains(state.getBlock());
     }
 
     // TODO: I'm pretty sure unused
