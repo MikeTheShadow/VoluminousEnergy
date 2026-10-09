@@ -24,6 +24,14 @@
     "minecraft:kelp",
     "minecraft:nether_sprouts",
     "minecraft:nether_wart",
-    "minecraft:hanging_roots"
+    "minecraft:hanging_roots",
+    "minecraft:tall_dry_grass",
+    "minecraft:short_dry_grass",
+    "minecraft:bush",
+    "minecraft:large_fern",
+    "minecraft:pale_hanging_moss",
+    "minecraft:small_dripleaf",
+    "minecraft:firefly_bush",
+    "minecraft:leaf_litter"
   ]
 }
