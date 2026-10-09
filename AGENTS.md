@@ -60,6 +60,9 @@ NeoForge 21.1, Java 21, with Parchment mappings. Resource ids are `ResourceLocat
 Other long-lived version branches receive independent work (see the README). If a change belongs on
 another branch, say so instead of writing it here, and note any follow-up port in the proposal.
 
+Work branches are cut from `1.21.1-dev` and named `<mc-version>-<short-kebab-description>`, prefixed
+with the Minecraft version they target: `1.21.1-oil-feature-rework`, never `oil-feature-rework`.
+
 ## Architecture you must respect
 
 ### Naming and registration
@@ -73,6 +76,10 @@ another branch, say so instead of writing it here, and note any follow-up port i
 - New registries are registered in the `VoluminousEnergy` constructor with `.register(modEventBus)`,
   under the existing comment banners (`// Register Blocks, Tiles, and Containers` and so on). Add a
   new banner in the same style if no group fits.
+- New entries go at the bottom of the group they belong to: a comment-banner group in a registry
+  holder (`// Misc` in `VEItems`, `// Ores` in `VEBlocks`), a `_comment` section of `en_us.json`, or
+  a tag's `values` list. Do not slot an entry into the middle of a group beside a related one, even
+  when that neighbour is the block it drops from or the item it is made of.
 - Block entities are called tiles throughout (`VETileEntity`, `VE_TILE_REGISTRY`, `tile()`). Keep
   that vocabulary.
 
