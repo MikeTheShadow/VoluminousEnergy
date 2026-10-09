@@ -1,0 +1,20 @@
+{
+  "type": "voluminousenergy:crushing",
+  "ingredients": [
+    {
+      "item": "minecraft:leaf_litter",
+      "count": 1
+    }
+  ],
+  "process_time": 200,
+  "item_results": [
+    {
+      "item": "voluminousenergy:shredded_biomass",
+      "count": 1
+    }
+  ],
+  "experience": {
+    "minimum": 0,
+    "maximum": 0
+  }
+}

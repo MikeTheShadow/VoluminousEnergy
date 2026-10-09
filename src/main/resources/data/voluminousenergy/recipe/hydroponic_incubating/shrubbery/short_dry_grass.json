@@ -1,0 +1,37 @@
+{
+  "type": "voluminousenergy:hydroponic_incubating",
+  "process_time": 200,
+  "ingredients": [
+    {
+      "item": "minecraft:short_dry_grass",
+      "count": 1
+    }
+  ],
+  "fluid_ingredients": [
+    {
+      "fluid": "voluminousenergy:ammonium_nitrate_solution",
+      "amount": 250
+    }
+  ],
+  "item_results": [
+    {
+      "item": "minecraft:short_dry_grass",
+      "count": 9
+    },
+    {
+      "item": "minecraft:tall_dry_grass",
+      "count": 4,
+      "chance": 0.33
+    },
+    {
+      "item": "minecraft:dead_bush",
+      "count": 3,
+      "chance": 0.15
+    },
+    {
+      "item": "minecraft:cactus_flower",
+      "count": 2,
+      "chance": 0.05
+    }
+  ]
+}

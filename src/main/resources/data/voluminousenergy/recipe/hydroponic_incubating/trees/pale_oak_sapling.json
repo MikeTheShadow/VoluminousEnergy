@@ -1,0 +1,37 @@
+{
+  "type": "voluminousenergy:hydroponic_incubating",
+  "process_time": 200,
+  "ingredients": [
+    {
+      "item": "minecraft:pale_oak_sapling",
+      "count": 1
+    }
+  ],
+  "fluid_ingredients": [
+    {
+      "fluid": "voluminousenergy:ammonium_nitrate_solution",
+      "amount": 250
+    }
+  ],
+  "item_results": [
+    {
+      "item": "minecraft:pale_oak_log",
+      "count": 9
+    },
+    {
+      "item": "minecraft:pale_oak_sapling",
+      "count": 1,
+      "chance": 0.75
+    },
+    {
+      "item": "minecraft:stick",
+      "count": 4,
+      "chance": 0.25
+    },
+    {
+      "item": "minecraft:pale_hanging_moss",
+      "count": 1,
+      "chance": 0.05
+    }
+  ]
+}

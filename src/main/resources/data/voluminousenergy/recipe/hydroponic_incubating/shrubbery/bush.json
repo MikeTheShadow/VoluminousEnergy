@@ -1,0 +1,32 @@
+{
+  "type": "voluminousenergy:hydroponic_incubating",
+  "process_time": 200,
+  "ingredients": [
+    {
+      "item": "minecraft:bush",
+      "count": 1
+    }
+  ],
+  "fluid_ingredients": [
+    {
+      "fluid": "voluminousenergy:ammonium_nitrate_solution",
+      "amount": 250
+    }
+  ],
+  "item_results": [
+    {
+      "item": "minecraft:bush",
+      "count": 9
+    },
+    {
+      "item": "minecraft:bush",
+      "count": 4,
+      "chance": 0.66
+    },
+    {
+      "item": "minecraft:firefly_bush",
+      "count": 1,
+      "chance": 0.05
+    }
+  ]
+}
