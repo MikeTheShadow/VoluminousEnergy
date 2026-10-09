@@ -1,5 +1,7 @@
 package com.veteam.voluminousenergy.compat.jei.category;
 
+import com.veteam.voluminousenergy.util.recipe.IngredientUtil;
+
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
@@ -17,7 +19,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
@@ -56,8 +58,13 @@ public class PrimitiveBlastingCategory implements IRecipeCategory<PrimitiveBlast
     }
 
     @Override
-    public IDrawable getBackground() {
-        return background;
+    public int getWidth() {
+        return background.getWidth();
+    }
+
+    @Override
+    public int getHeight() {
+        return background.getHeight();
     }
 
     @Override
@@ -66,7 +73,7 @@ public class PrimitiveBlastingCategory implements IRecipeCategory<PrimitiveBlast
     }
 
     @Override
-    public void draw(PrimitiveBlastFurnaceRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics matrixStack, double mouseX, double mouseY) {
+    public void draw(PrimitiveBlastFurnaceRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor matrixStack, double mouseX, double mouseY) {
         arrow.draw(matrixStack, 24, 12);
         emptyArrow.draw(matrixStack, 24, 12);
         slotDrawable.draw(matrixStack, 2, 10);
@@ -78,7 +85,7 @@ public class PrimitiveBlastingCategory implements IRecipeCategory<PrimitiveBlast
                                   IIngredientAcceptor itemOutputAcceptor) {
 
         // Input
-        ArrayList<ItemStack> inputStacks = new ArrayList<>(Arrays.asList(recipe.getIngredient(0).getItems()));
+        ArrayList<ItemStack> inputStacks = new ArrayList<>(Arrays.asList(IngredientUtil.getItems(recipe.getIngredient(0))));
 
         itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, inputStacks);
 

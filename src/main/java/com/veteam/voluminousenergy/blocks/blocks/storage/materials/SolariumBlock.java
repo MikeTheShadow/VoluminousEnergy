@@ -2,12 +2,13 @@ package com.veteam.voluminousenergy.blocks.blocks.storage.materials;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlock;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 
 public class SolariumBlock extends VEBlock {
     public SolariumBlock() {
-        super(Block.Properties.of()
+        super(Block.Properties.of().setId(VERegistryHelper.currentBlockId())
                 .sound(SoundType.METAL)
                 .strength(25.0F, 1200.0F)
                 .requiresCorrectToolForDrops()

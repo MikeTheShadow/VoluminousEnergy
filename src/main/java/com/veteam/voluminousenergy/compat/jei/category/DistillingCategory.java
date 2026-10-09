@@ -20,7 +20,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
@@ -57,8 +57,13 @@ public class DistillingCategory implements IRecipeCategory<DistillationRecipe> {
     }
 
     @Override
-    public @NotNull IDrawable getBackground() {
-        return background;
+    public int getWidth() {
+        return background.getWidth();
+    }
+
+    @Override
+    public int getHeight() {
+        return background.getHeight();
     }
 
     @Override
@@ -67,7 +72,8 @@ public class DistillingCategory implements IRecipeCategory<DistillationRecipe> {
     }
 
     @Override
-    public void draw(DistillationRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphics matrixStack, double mouseX, double mouseY) {
+    public void draw(DistillationRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphicsExtractor matrixStack, double mouseX, double mouseY) {
+        background.draw(matrixStack, 0, 0);
         arrow.draw(matrixStack, 24, 12);
         emptyArrow.draw(matrixStack, 24, 12);
         slotDrawable.draw(matrixStack, 2, 10);

@@ -6,9 +6,7 @@
     "###"
   ],
   "key": {
-    "#": {
-      "item": "voluminousenergy:raw_eighzo"
-    }
+    "#": "voluminousenergy:raw_eighzo"
   },
   "result": {
     "id": "voluminousenergy:raw_eighzo_block"

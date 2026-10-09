@@ -4,9 +4,7 @@
     "#"
   ],
   "key": {
-    "#": {
-      "tag": "c:blocks/solarium"
-    }
+    "#": "#c:blocks/solarium"
   },
   "result": {
     "id": "voluminousenergy:solarium_ingot",

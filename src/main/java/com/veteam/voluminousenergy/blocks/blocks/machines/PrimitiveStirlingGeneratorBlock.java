@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.blocks.blocks.machines;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntities;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -24,7 +25,7 @@ public class PrimitiveStirlingGeneratorBlock extends VEFaceableMachineBlock {
 
     public PrimitiveStirlingGeneratorBlock() {
 
-        super(Properties.of()
+        super(Properties.of().setId(VERegistryHelper.currentBlockId())
                 .sound(SoundType.STONE)
                 .strength(2.0f)
                 .lightLevel(l -> l.getValue(LIT) ? 13 : 0)

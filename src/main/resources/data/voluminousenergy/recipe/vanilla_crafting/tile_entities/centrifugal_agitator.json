@@ -6,21 +6,11 @@
     "bcb"
   ],
   "key": {
-    "#": {
-      "tag": "c:ingots/aluminum"
-    },
-    "*": {
-      "item": "voluminousenergy:carbon_shielded_aluminum_machine_frame"
-    },
-    "a": {
-      "tag": "c:gears/aluminum"
-    },
-    "b": {
-      "tag": "c:microchips"
-    },
-    "c": {
-      "tag": "c:gears/carbon"
-    }
+    "#": "#c:ingots/aluminum",
+    "*": "voluminousenergy:carbon_shielded_aluminum_machine_frame",
+    "a": "#c:gears/aluminum",
+    "b": "#c:microchips",
+    "c": "#c:gears/carbon"
   },
   "result": {
     "id": "voluminousenergy:centrifugal_agitator"

@@ -1,5 +1,7 @@
 package com.veteam.voluminousenergy.compat.jei.category;
 
+import com.veteam.voluminousenergy.util.recipe.IngredientUtil;
+
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
@@ -20,7 +22,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
@@ -58,8 +60,13 @@ public class HydroponicIncubatorCategory implements IRecipeCategory<HydroponicIn
     }
 
     @Override
-    public @NotNull IDrawable getBackground() {
-        return background;
+    public int getWidth() {
+        return background.getWidth();
+    }
+
+    @Override
+    public int getHeight() {
+        return background.getHeight();
     }
 
     @Override
@@ -68,7 +75,7 @@ public class HydroponicIncubatorCategory implements IRecipeCategory<HydroponicIn
     }
 
     @Override
-    public void draw(HydroponicIncubatorRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics matrixStack, double mouseX, double mouseY) {
+    public void draw(HydroponicIncubatorRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor matrixStack, double mouseX, double mouseY) {
         arrow.draw(matrixStack, 48, 12);
         emptyArrow.draw(matrixStack, 48, 12);
         slotDrawable.draw(matrixStack, 2, 10);
@@ -122,7 +129,7 @@ public class HydroponicIncubatorCategory implements IRecipeCategory<HydroponicIn
                                   IIngredientAcceptor rng2OutputAccepter) {
 
         // INPUT
-        itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, List.of(recipe.getIngredient(0).getItems()));
+        itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, List.of(IngredientUtil.getItems(recipe.getIngredient(0))));
         fluidInputAcceptor.addIngredients(NeoForgeTypes.FLUID_STACK, List.of(recipe.getFluidIngredient(0).getFluids()));
 
         // OUTPUT

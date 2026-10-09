@@ -2,28 +2,33 @@ package com.veteam.voluminousenergy.items.upgrades;
 
 import com.veteam.voluminousenergy.util.TextUtil;
 import com.veteam.voluminousenergy.util.VEDataComponents;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class MysteriousMultiplier extends Item {
     public MysteriousMultiplier() {
-        super(new Item.Properties()
+        super(new Item.Properties().setId(VERegistryHelper.currentItemId())
                 .stacksTo(1)
         );
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @NotNull TooltipContext pContext,@NotNull List<Component> tooltip,@NotNull TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @NotNull TooltipContext pContext, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltip, @NotNull TooltipFlag flag) {
         Component componentToAdd = TextUtil.translateString("text.voluminousenergy.quality").copy().append(": ");
 
         float multiplier = stack.getOrDefault(VEDataComponents.MULTIPLIER_DATA,0.0f);
@@ -59,8 +64,8 @@ public class MysteriousMultiplier extends Item {
 //            tooltip.add(Component.nullToEmpty("DEBUG_MULTIPLIER: " + multiplier));
         }
 
-        tooltip.add(componentToAdd);
-        tooltip.add(appendInfoForJEI(Component.nullToEmpty(""), stack));
+        tooltip.accept(componentToAdd);
+        tooltip.accept(appendInfoForJEI(Component.nullToEmpty(""), stack));
     }
 
     public Component appendInfoForJEI(Component tooltip, ItemStack stack) {
@@ -89,8 +94,8 @@ public class MysteriousMultiplier extends Item {
     }
 
     @Override
-    public void inventoryTick(@NotNull ItemStack stack, Level level, @NotNull Entity entity, int num, boolean bool) {
-        if(level.isClientSide || stack.has(VEDataComponents.MULTIPLIER_DATA)) return;
+    public void inventoryTick(@NotNull ItemStack stack, ServerLevel level, @NotNull Entity entity, EquipmentSlot slot) {
+        if(stack.has(VEDataComponents.MULTIPLIER_DATA)) return;
         float multiplier = level.getRandom().nextFloat() * (0.75F - 0.005F) + 0.005F;
         stack.set(VEDataComponents.MULTIPLIER_DATA,multiplier);
     }

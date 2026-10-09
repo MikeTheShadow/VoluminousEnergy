@@ -13,6 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -28,47 +29,36 @@ public class FluidElectrolyzerRecipe extends VERecipe {
     public FluidElectrolyzerRecipe() {
     }
 
-    public FluidElectrolyzerRecipe(List<VERecipeCodecs.RegistryFluidIngredient> fi, List<FluidStack> of,
+    public FluidElectrolyzerRecipe(List<VERecipeCodecs.RegistryFluidIngredient> fi, List<FluidStackTemplate> of,
             int processTime) {
         super(List.of(), fi, of, List.of(), processTime);
     }
 
-    public static final RecipeSerializer<FluidElectrolyzerRecipe> SERIALIZER = new RecipeSerializer<>() {
+    public static final MapCodec<FluidElectrolyzerRecipe> VE_RECIPE_CODEC = RecordCodecBuilder
+            .mapCodec((instance) -> instance.group(
+                    VERecipeCodecs.VE_FLUID_INGREDIENT_CODEC.listOf().fieldOf("fluid_ingredients")
+                            .forGetter((getter) -> getter.registryFluidIngredients),
+                    VERecipeCodecs.VE_OUTPUT_FLUID_CODEC.listOf().fieldOf("fluid_results")
+                            .forGetter((getter) -> getter.fluidOutputTemplates),
+                    Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime))
+                    .apply(instance, FluidElectrolyzerRecipe::new));
 
-        public static final MapCodec<FluidElectrolyzerRecipe> VE_RECIPE_CODEC = RecordCodecBuilder
-                .mapCodec((instance) -> instance.group(
-                        VERecipeCodecs.VE_FLUID_INGREDIENT_CODEC.listOf().fieldOf("fluid_ingredients")
-                                .forGetter((getter) -> getter.registryFluidIngredients),
-                        VERecipeCodecs.VE_OUTPUT_FLUID_CODEC.listOf().fieldOf("fluid_results")
-                                .forGetter((getter) -> getter.fluidOutputList),
-                        Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime))
-                        .apply(instance, FluidElectrolyzerRecipe::new));
+    private static final FluidSerializerHelper<FluidElectrolyzerRecipe> helper = new FluidSerializerHelper<>();
 
-        private static final FluidSerializerHelper<FluidElectrolyzerRecipe> helper = new FluidSerializerHelper<>();
-
+    public static final StreamCodec<RegistryFriendlyByteBuf, FluidElectrolyzerRecipe> VE_RECIPE_STREAM_CODEC = new StreamCodec<>() {
         @Override
-        public @NotNull MapCodec<FluidElectrolyzerRecipe> codec() {
-            return VE_RECIPE_CODEC;
+        public void encode(@NotNull RegistryFriendlyByteBuf buf, @NotNull FluidElectrolyzerRecipe recipe) {
+            helper.toNetwork(buf, recipe);
         }
 
         @Override
         @NotNull
-        public StreamCodec<RegistryFriendlyByteBuf, FluidElectrolyzerRecipe> streamCodec() {
-            return new StreamCodec<>() {
-                @Override
-                public void encode(@NotNull RegistryFriendlyByteBuf buf, @NotNull FluidElectrolyzerRecipe recipe) {
-                    helper.toNetwork(buf, recipe);
-                }
-
-                @Override
-                @NotNull
-                public FluidElectrolyzerRecipe decode(@NotNull RegistryFriendlyByteBuf buffer) {
-                    return helper.fromNetwork(new FluidElectrolyzerRecipe(), buffer);
-                }
-            };
+        public FluidElectrolyzerRecipe decode(@NotNull RegistryFriendlyByteBuf buffer) {
+            return helper.fromNetwork(new FluidElectrolyzerRecipe(), buffer);
         }
-
     };
+
+    public static final RecipeSerializer<FluidElectrolyzerRecipe> SERIALIZER = new RecipeSerializer<>(VE_RECIPE_CODEC, VE_RECIPE_STREAM_CODEC);
 
     @Override
     public @NotNull RecipeSerializer<? extends VERecipe> getSerializer() {

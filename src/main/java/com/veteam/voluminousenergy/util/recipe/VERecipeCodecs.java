@@ -7,24 +7,25 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import oshi.util.tuples.Pair;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class VERecipeCodecs {
     public static final Codec<Holder<Item>> ITEM_NONAIR_CODEC = BuiltInRegistries.ITEM
@@ -47,18 +48,16 @@ public class VERecipeCodecs {
             if (!tag.isBlank()) {
                 Identifier res = Identifier.bySeparator(tag, ':');
                 TagKey<Item> tag = TagKey.create(Registries.ITEM, res);
-                HolderSet<Item> holderSet = BuiltInRegistries.ITEM.getOrCreateTag(tag);
+                ArrayList<Item> itemSet = new ArrayList<>();
+                BuiltInRegistries.ITEM.getTagOrEmpty(tag).forEach(itemHolder ->
+                        itemSet.add(itemHolder.value()));
 
-                AtomicReference<ArrayList<ItemStack>> itemSet = new AtomicReference<>(new ArrayList<>());
-                holderSet.stream().forEach(itemHolder ->
-                        itemSet.get().add(new ItemStack(itemHolder.value(), this.count)));
-
-                if (holderSet.size() == 0) {
+                if (itemSet.isEmpty()) {
                     throw new IllegalStateException("Holder size is zero for tag "
-                            + tag.identifier() + "! This likely means that there are no items in the registry with that tag!");
+                            + tag.location() + "! This likely means that there are no items in the registry with that tag!");
                 }
 
-                return Ingredient.of(itemSet.get().stream());
+                return Ingredient.of(itemSet.stream());
             } else if (!item.isBlank()) {
                 Identifier res = Identifier.bySeparator(item, ':');
 
@@ -68,19 +67,20 @@ public class VERecipeCodecs {
                     throw new IllegalStateException("Invalid recipe ingredient object: " + item + " | " + tag + " does not exist!");
                 }
 
-                Item single = BuiltInRegistries.ITEM.get(res);
-                ItemStack stack = new ItemStack(single, this.count);
-                return Ingredient.of(stack);
+                Item single = BuiltInRegistries.ITEM.getValue(res);
+                return Ingredient.of(single);
             } else {
                 throw new IllegalStateException("Recipe missing item/tag JSON syntax!");
             }
         }
     }
 
-    public static final Codec<ItemStack> VE_OUTPUT_ITEM_CODEC = RecordCodecBuilder.create((instance) ->
-            instance.group(ITEM_NONAIR_CODEC.fieldOf("item").forGetter(ItemStack::getItemHolder),
+    // Decodes to a template because item data components are unbound while recipes decode.
+    public static final Codec<ItemStackTemplate> VE_OUTPUT_ITEM_CODEC = RecordCodecBuilder.create((instance) ->
+            instance.group(ITEM_NONAIR_CODEC.fieldOf("item").forGetter(ItemStackTemplate::item),
                     Codec.INT.optionalFieldOf("count",1)
-                            .forGetter(ItemStack::getCount)).apply(instance, ItemStack::new));
+                            .forGetter(ItemStackTemplate::count))
+                    .apply(instance, (item, count) -> new ItemStackTemplate(item, count, DataComponentPatch.EMPTY)));
 
     public static final Codec<VEChancedItemWithCount> VE_CHANCED_OUTPUT_ITEM_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
             ITEM_NONAIR_CODEC.fieldOf("item").forGetter(VEChancedItemWithCount::item),
@@ -154,24 +154,22 @@ public class VERecipeCodecs {
             if (!tag.isBlank()) {
                 Identifier res = Identifier.bySeparator(tag, ':');
                 TagKey<Fluid> tag = TagKey.create(Registries.FLUID, res);
-                HolderSet<Fluid> holderSet = BuiltInRegistries.FLUID.getOrCreateTag(tag);
-                AtomicReference<ArrayList<FluidStack>> fluidSet = new AtomicReference<>(new ArrayList<>());
+                ArrayList<FluidStack> fluidSet = new ArrayList<>();
+                BuiltInRegistries.FLUID.getTagOrEmpty(tag).forEach(itemHolder ->
+                        fluidSet.add(new FluidStack(itemHolder.value(), amount)));
 
-                if (holderSet.size() == 0) {
+                if (fluidSet.isEmpty()) {
                     throw new IllegalStateException("No values found for tag "
                             + tag + ". Make sure that there are fluids with that tag in the registry.");
                 }
 
-                holderSet.stream().forEach(itemHolder -> {
-                    fluidSet.get().add(new FluidStack(itemHolder.value(), amount));
-                });
-                return FluidIngredient.of(fluidSet.get().stream());
+                return FluidIngredient.of(fluidSet.stream());
             } else if (!fluid.isBlank()) {
                 Identifier res = Identifier.bySeparator(fluid, ':');
                 if (!BuiltInRegistries.FLUID.containsKey(res)) {
                     throw new IllegalStateException("Unable to get fluid ingredient: " + fluid);
                 }
-                Fluid single = BuiltInRegistries.FLUID.get(res);
+                Fluid single = BuiltInRegistries.FLUID.getValue(res);
                 FluidStack stack = new FluidStack(single, amount);
                 return FluidIngredient.of(stack);
             } else {
@@ -186,23 +184,22 @@ public class VERecipeCodecs {
             if (!tag.isBlank()) {
                 Identifier res = Identifier.bySeparator(tag, ':');
                 TagKey<Fluid> tag = TagKey.create(Registries.FLUID, res);
-                HolderSet<Fluid> holderSet = BuiltInRegistries.FLUID.getOrCreateTag(tag);
-                AtomicReference<HashSet<Fluid>> fluidSet = new AtomicReference<>(new HashSet<>());
-                holderSet.stream().forEach(itemHolder -> fluidSet.get().add(itemHolder.value()));
+                HashSet<Fluid> fluidSet = new HashSet<>();
+                BuiltInRegistries.FLUID.getTagOrEmpty(tag).forEach(itemHolder -> fluidSet.add(itemHolder.value()));
 
-                if (holderSet.size() == 0) {
+                if (fluidSet.isEmpty()) {
                     throw new IllegalStateException("No values found for tag "
                             + tag + ". Make sure that there are fluids with that tag in the registry.");
                 }
 
-                return new FluidSetWithValue(fluidSet.get(), value);
+                return new FluidSetWithValue(fluidSet, value);
             } else if (!fluid.isBlank()) {
                 Identifier res = Identifier.bySeparator(fluid, ':');
 
                 if (!BuiltInRegistries.FLUID.containsKey(res)) {
                     throw new IllegalStateException("Unable to get fluid ingredient: " + fluid + ". Please validate it exists!");
                 }
-                Fluid single = BuiltInRegistries.FLUID.get(res);
+                Fluid single = BuiltInRegistries.FLUID.getValue(res);
                 return new FluidSetWithValue(Set.of(single), value);
             } else {
                 throw new IllegalStateException("Recipe missing fluid/tag JSON syntax!");
@@ -221,10 +218,12 @@ public class VERecipeCodecs {
 
     }
 
-    public static final Codec<FluidStack> VE_OUTPUT_FLUID_CODEC = RecordCodecBuilder.create((instance) ->
-            instance.group(FLUID_NONAIR_CODEC.fieldOf("fluid").forGetter(FluidStack::getFluid),
+    // Decodes to a template for the same reason as VE_OUTPUT_ITEM_CODEC.
+    public static final Codec<FluidStackTemplate> VE_OUTPUT_FLUID_CODEC = RecordCodecBuilder.create((instance) ->
+            instance.group(FLUID_NONAIR_CODEC.fieldOf("fluid").forGetter(t -> t.fluid().value()),
                     Codec.INT.fieldOf("amount")
-                            .forGetter(FluidStack::getAmount)).apply(instance, FluidStack::new));
+                            .forGetter(FluidStackTemplate::amount))
+                    .apply(instance, FluidStackTemplate::new));
 
     public static final Codec<VERecipeExperience> VE_EXPERIENCE_RANGE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
             Codec.INT.fieldOf("minimum").forGetter(VERecipeExperience::minimum),
@@ -244,6 +243,11 @@ public class VERecipeCodecs {
 
         public Pair<ItemStack, Float> getItemStackWithChance() {
             return new Pair<>(new ItemStack(item, count), chance);
+        }
+
+        // Unlike getAsItemStack, safe to call while recipes decode.
+        public ItemStackTemplate toTemplate() {
+            return new ItemStackTemplate(item, count, DataComponentPatch.EMPTY);
         }
     }
 

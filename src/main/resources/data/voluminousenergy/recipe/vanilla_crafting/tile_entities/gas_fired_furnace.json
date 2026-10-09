@@ -6,15 +6,9 @@
     "###"
   ],
   "key": {
-    "#": {
-      "item": "minecraft:iron_ingot"
-    },
-    "a": {
-      "tag": "c:gears/stone"
-    },
-    "b": {
-      "tag": "c:glass_panes"
-    }
+    "#": "minecraft:iron_ingot",
+    "a": "#c:gears/stone",
+    "b": "#c:glass_panes"
   },
   "result": {
     "id": "voluminousenergy:gas_fired_furnace"

@@ -4,9 +4,7 @@
     "#"
   ],
   "key": {
-    "#": {
-      "item": "voluminousenergy:primitivestirlinggenerator"
-    }
+    "#": "voluminousenergy:primitivestirlinggenerator"
   },
   "result": {
     "id": "voluminousenergy:primitivestirlinggenerator"

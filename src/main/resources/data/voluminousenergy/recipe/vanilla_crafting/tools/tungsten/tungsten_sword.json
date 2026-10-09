@@ -6,12 +6,8 @@
     " # "
   ],
   "key": {
-    "#": {
-      "item": "minecraft:stick"
-    },
-    "X": {
-      "tag": "c:ingots/tungsten"
-    }
+    "#": "minecraft:stick",
+    "X": "#c:ingots/tungsten"
   },
   "result": {
     "id": "voluminousenergy:tungsten_sword"

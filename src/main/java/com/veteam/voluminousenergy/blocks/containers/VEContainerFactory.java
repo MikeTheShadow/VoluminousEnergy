@@ -15,8 +15,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,7 +42,7 @@ public class VEContainerFactory {
     public VEContainer create(int id, Level world, BlockPos pos, Inventory inventory, Player player) {
         return new VEContainer(menuTypeRegistryObject.get(), id, world, pos, inventory, player, block.get()) {
             @Override
-            protected void addSlotsToGUI(ResourceHandler<ItemResource> h) {
+            protected void addSlotsToGUI(IItemHandler h) {
                 List<Slot> slots = VEContainerFactory.this.slots;
 
                 int energySlotId = -1;
@@ -119,13 +117,13 @@ public class VEContainerFactory {
 
     }
 
-    public static class VESlot extends ResourceHandler<ItemResource> {
+    public static class VESlot extends SlotItemHandler {
 
         private final boolean allowInsertion;
         private final @Nullable SlotWithIOListener listener;
         private final boolean isClientSide;
 
-        public VESlot(ResourceHandler<ItemResource> itemHandler, int index, int xPos, int yPos, boolean allowInsertion, @Nullable SlotWithIOListener listener, boolean isClientSide) {
+        public VESlot(IItemHandler itemHandler, int index, int xPos, int yPos, boolean allowInsertion, @Nullable SlotWithIOListener listener, boolean isClientSide) {
             super(itemHandler, index, xPos, yPos);
             this.allowInsertion = allowInsertion;
             this.listener = listener;

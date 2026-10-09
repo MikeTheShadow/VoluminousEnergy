@@ -6,12 +6,8 @@
     "# *"
   ],
   "key": {
-    "#": {
-      "item": "minecraft:diamond"
-    },
-    "*": {
-      "tag": "c:gears/aluminum"
-    }
+    "#": "minecraft:diamond",
+    "*": "#c:gears/aluminum"
   },
   "result": {
     "id": "voluminousenergy:diamond_drill_bit",

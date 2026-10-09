@@ -11,6 +11,7 @@ import com.veteam.voluminousenergy.util.VEAttachments;
 import com.veteam.voluminousenergy.util.VEDataComponents;
 import com.veteam.voluminousenergy.util.records.CounterLength;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
@@ -95,7 +96,7 @@ public class GasFiredFurnaceProcessor extends BasicProcessor {
     public boolean validateRecipe(VETileEntity tile) {
         Level level = tile.getLevel();
         ItemStack furnaceInput = tile.getInventory().getStackInSlot(2);
-        var blastingRecipeNew = level.getRecipeManager()
+        var blastingRecipeNew = ((ServerLevel) level).recipeAccess()
                 .getRecipeFor(RecipeType.BLASTING, new SingleRecipeInput(furnaceInput.copy()), level).orElse(null);
         if (blastingRecipeNew != null) {
             blastingRecipe = blastingRecipeNew;
@@ -103,7 +104,7 @@ public class GasFiredFurnaceProcessor extends BasicProcessor {
             return true;
         } else
             blastingRecipe = null;
-        var furnaceRecipeNew = level.getRecipeManager()
+        var furnaceRecipeNew = ((ServerLevel) level).recipeAccess()
                 .getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(furnaceInput.copy()), level).orElse(null);
         if (furnaceRecipeNew != null) {
             furnaceRecipe = furnaceRecipeNew;
@@ -130,19 +131,20 @@ public class GasFiredFurnaceProcessor extends BasicProcessor {
         throw new IllegalStateException("Unable to complete a recipe as none were selected");
     }
 
-    private boolean createOutput(VETileEntity tile, RecipeHolder<? extends Recipe<?>> recipeHolder) {
-        Recipe<?> recipe = recipeHolder.value();
-        if (!canInsertIntoResult(recipe, tile.getLevel().registryAccess(), tile.getInventory().getStackInSlot(3))) {
+    private boolean createOutput(VETileEntity tile, RecipeHolder<? extends Recipe<SingleRecipeInput>> recipeHolder) {
+        Recipe<SingleRecipeInput> recipe = recipeHolder.value();
+        SingleRecipeInput input = new SingleRecipeInput(tile.getInventory().getStackInSlot(2).copy());
+        if (!canInsertIntoResult(recipe, input, tile.getInventory().getStackInSlot(3))) {
             return false;
         }
         tile.getInventory().extractItem(2, 1, false);
-        ItemStack output = recipe.getResultItem(tile.getLevel().registryAccess()).copy();
+        ItemStack output = recipe.assemble(input).copy();
         tile.getInventory().insertItem(3, output, false);
         return true;
     }
 
-    boolean canInsertIntoResult(Recipe<?> recipe, RegistryAccess access, ItemStack currentStack) {
-        ItemStack result = recipe.getResultItem(access);
+    boolean canInsertIntoResult(Recipe<SingleRecipeInput> recipe, SingleRecipeInput input, ItemStack currentStack) {
+        ItemStack result = recipe.assemble(input);
         if (!result.is(currentStack.getItem()) && !currentStack.isEmpty())
             return false;
         return result.getCount() + currentStack.getCount() <= result.getMaxStackSize();

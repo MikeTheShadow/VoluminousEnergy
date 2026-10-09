@@ -2,7 +2,7 @@
   "parent": "voluminousenergy:machine/obtain_electrolyzer",
   "display": {
     "icon": {
-      "item": "voluminousenergy:titanium_ingot"
+      "id": "voluminousenergy:titanium_ingot"
     },
     "title": {
       "translate": "advancements.voluminousenergy.item.obtain.titanium_ingot.title"

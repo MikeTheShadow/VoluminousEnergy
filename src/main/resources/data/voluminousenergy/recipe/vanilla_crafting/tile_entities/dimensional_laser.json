@@ -6,24 +6,12 @@
     "#*#"
   ],
   "key": {
-    "#": {
-      "tag": "c:ingots/solarium"
-    },
-    "0": {
-      "item": "minecraft:beacon"
-    },
-    "*": {
-      "item": "voluminousenergy:solarium_machine_casing"
-    },
-    "1": {
-      "tag": "c:glass_panes"
-    },
-    "2": {
-      "tag": "c:gears/solarium"
-    },
-    "3": {
-      "tag": "c:microchips"
-    }
+    "#": "#c:ingots/solarium",
+    "0": "minecraft:beacon",
+    "*": "voluminousenergy:solarium_machine_casing",
+    "1": "#c:glass_panes",
+    "2": "#c:gears/solarium",
+    "3": "#c:microchips"
   },
   "result": {
     "id": "voluminousenergy:dimensional_laser"

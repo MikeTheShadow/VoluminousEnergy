@@ -12,6 +12,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.NotNull;
@@ -39,39 +41,28 @@ public class ElectrolyzerRecipe extends VERNGRecipe {
         super(ingredients, new ArrayList<>(), new ArrayList<>(), results, processTime);
     }
 
-    public static final RecipeSerializer<ElectrolyzerRecipe> SERIALIZER = new RecipeSerializer<>() {
+    public static final MapCodec<ElectrolyzerRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
+            VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
+            VERecipeCodecs.VE_CHANCED_OUTPUT_ITEM_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.itemResultsWithChance),
+            Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime)
+    ).apply(instance, ElectrolyzerRecipe::new));
 
-        public static final MapCodec<ElectrolyzerRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
-                VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
-                VERecipeCodecs.VE_CHANCED_OUTPUT_ITEM_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.itemResultsWithChance),
-                Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime)
-        ).apply(instance, ElectrolyzerRecipe::new));
+    private static final IngredientSerializerHelper<ElectrolyzerRecipe> helper = new IngredientSerializerHelper<>();
 
-        private static final IngredientSerializerHelper<ElectrolyzerRecipe> helper = new IngredientSerializerHelper<>();
-
+    public static final StreamCodec<RegistryFriendlyByteBuf, ElectrolyzerRecipe> VE_RECIPE_STREAM_CODEC = new StreamCodec<>() {
         @Override
-        public @NotNull MapCodec<ElectrolyzerRecipe> codec() {
-            return VE_RECIPE_CODEC;
+        public void encode(@NotNull RegistryFriendlyByteBuf buf, @NotNull ElectrolyzerRecipe recipe) {
+            helper.toNetwork(buf, recipe);
         }
 
         @Override
         @NotNull
-        public StreamCodec<RegistryFriendlyByteBuf, ElectrolyzerRecipe> streamCodec() {
-            return new StreamCodec<>() {
-                @Override
-                public void encode(@NotNull RegistryFriendlyByteBuf buf, @NotNull ElectrolyzerRecipe recipe) {
-                    helper.toNetwork(buf, recipe);
-                }
-
-                @Override
-                @NotNull
-                public ElectrolyzerRecipe decode(@NotNull RegistryFriendlyByteBuf buffer) {
-                    return helper.fromNetwork(new ElectrolyzerRecipe(), buffer);
-                }
-            };
+        public ElectrolyzerRecipe decode(@NotNull RegistryFriendlyByteBuf buffer) {
+            return helper.fromNetwork(new ElectrolyzerRecipe(), buffer);
         }
-
     };
+
+    public static final RecipeSerializer<ElectrolyzerRecipe> SERIALIZER = new RecipeSerializer<>(VE_RECIPE_CODEC, VE_RECIPE_STREAM_CODEC);
 
 
     @Override
@@ -85,7 +76,7 @@ public class ElectrolyzerRecipe extends VERNGRecipe {
     }
 
     @Override
-    public @NotNull RecipeType<?> getType() {
+    public @NotNull RecipeType<? extends Recipe<RecipeInput>> getType() {
         return RECIPE_TYPE;
     }
 

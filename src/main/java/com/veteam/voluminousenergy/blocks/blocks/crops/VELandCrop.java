@@ -16,7 +16,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BonemealableBlock;
-import net.minecraft.world.level.block.BushBlock;
+import net.minecraft.world.level.block.VegetationBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -25,7 +25,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
-public class VELandCrop extends BushBlock implements BonemealableBlock {
+public class VELandCrop extends VegetationBlock implements BonemealableBlock {
 
     public static final MapCodec<VELandCrop> CODEC = simpleCodec(VELandCrop::new);
 
@@ -38,7 +38,7 @@ public class VELandCrop extends BushBlock implements BonemealableBlock {
     }
 
     @Override
-    protected MapCodec<? extends BushBlock> codec() {
+    protected MapCodec<? extends VELandCrop> codec() {
         return CODEC;
     }
 
@@ -104,9 +104,9 @@ public class VELandCrop extends BushBlock implements BonemealableBlock {
             return InteractionResult.PASS;
         } else if (age > 1) {
             popResource(world, pos, new ItemStack(Items.WHEAT_SEEDS, 1));
-            world.playSound(null, pos, SoundEvents.CROP_BREAK, SoundSource.BLOCKS, 1.0F, 0.8F + world.random.nextFloat() * 0.4F);  // to tweak
+            world.playSound(null, pos, SoundEvents.CROP_BREAK, SoundSource.BLOCKS, 1.0F, 0.8F + world.getRandom().nextFloat() * 0.4F);  // to tweak
             world.setBlockAndUpdate(pos, state.setValue(BlockStateProperties.AGE_2, 0)); // may not work
-            return InteractionResult.sidedSuccess(world.isClientSide);
+            return (world.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER);
         }
         return super.useWithoutItem(state, world, pos, player, hit);
     }

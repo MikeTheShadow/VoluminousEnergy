@@ -6,12 +6,8 @@
     " # "
   ],
   "key": {
-    "#": {
-      "item": "minecraft:stick"
-    },
-    "X": {
-      "tag": "c:ingots/tungsten_steel"
-    }
+    "#": "minecraft:stick",
+    "X": "#c:ingots/tungsten_steel"
   },
   "result": {
     "id": "voluminousenergy:tungsten_steel_shovel"

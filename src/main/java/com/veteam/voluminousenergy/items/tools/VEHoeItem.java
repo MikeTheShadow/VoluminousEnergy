@@ -3,30 +3,29 @@ package com.veteam.voluminousenergy.items.tools;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.ToolUtil;
 import com.veteam.voluminousenergy.util.VEDataComponents;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.item.component.TooltipDisplay;
 
-import javax.annotation.Nullable;
-import java.util.List;
+import java.util.function.Consumer;
 
 import static net.minecraft.util.Mth.abs;
 
-public class VEHoeItem extends HoeItem {
+public class VEHoeItem extends Item {
 
-    public VEHoeItem(Tier tier, Properties properties) {
-        super(tier, properties);
+    public VEHoeItem(Properties properties) {
+        super(properties);
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flag) {
         ToolUtil.SolariumTooltipAppend(stack, tooltip);
-        super.appendHoverText(stack, context, tooltip, flag);
+        super.appendHoverText(stack, context, tooltipDisplay, tooltip, flag);
     }
 
 
@@ -53,7 +52,7 @@ public class VEHoeItem extends HoeItem {
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, Level level, Entity entity, int num, boolean bool) {
+    public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity, EquipmentSlot slot) {
         if (level.isClientSide() || !stack.has(VEDataComponents.SOLARIUM_DURABILITY_BONUS) ) return;
 
         int bonus = stack.get(VEDataComponents.SOLARIUM_DURABILITY_BONUS);

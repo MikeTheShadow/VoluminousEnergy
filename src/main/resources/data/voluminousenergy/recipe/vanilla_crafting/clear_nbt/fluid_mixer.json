@@ -4,9 +4,7 @@
     "#"
   ],
   "key": {
-    "#": {
-      "item": "voluminousenergy:fluid_mixer"
-    }
+    "#": "voluminousenergy:fluid_mixer"
   },
   "result": {
     "id": "voluminousenergy:fluid_mixer"

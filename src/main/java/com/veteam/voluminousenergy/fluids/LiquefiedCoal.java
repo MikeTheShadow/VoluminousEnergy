@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.fluids;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.VEFlowingFluidBlock;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.BucketItem;
@@ -20,7 +21,7 @@ public class LiquefiedCoal {
     public static final Identifier LIQUEFIED_COAL_STILL_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/liquefied_coal_still");
     public static final Identifier LIQUEFIED_COAL_FLOWING_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/liquefied_coal_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
+    public static Block.Properties stdProp = Block.Properties.of().setId(VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
 
     public static FlowingFluid LIQUEFIED_COAL;
     public static FlowingFluid FLOWING_LIQUEFIED_COAL;
@@ -38,12 +39,12 @@ public class LiquefiedCoal {
     }
 
     public static VEFlowingFluidBlock FlowingLiquefiedCoalBlock() {
-        LIQUEFIED_COAL_BLOCK = new VEFlowingFluidBlock(LIQUEFIED_COAL, stdProp);
+        LIQUEFIED_COAL_BLOCK = new VEFlowingFluidBlock(LIQUEFIED_COAL, stdProp.setId(VERegistryHelper.currentBlockId()));
         return LIQUEFIED_COAL_BLOCK;
     }
 
     public static Item LiquefiedCoalBucket() {
-        LIQUEFIED_COAL_BUCKET = new BucketItem(LIQUEFIED_COAL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
+        LIQUEFIED_COAL_BUCKET = new BucketItem(LIQUEFIED_COAL, new Item.Properties().setId(VERegistryHelper.currentItemId()).craftRemainder(Items.BUCKET).stacksTo(1));
         return LIQUEFIED_COAL_BUCKET;
     }
 

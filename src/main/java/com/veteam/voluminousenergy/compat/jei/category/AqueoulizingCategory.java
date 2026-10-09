@@ -1,5 +1,7 @@
 package com.veteam.voluminousenergy.compat.jei.category;
 
+import com.veteam.voluminousenergy.util.recipe.IngredientUtil;
+
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
@@ -20,7 +22,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
@@ -59,8 +61,13 @@ public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> 
     }
 
     @Override
-    public @NotNull IDrawable getBackground() {
-        return background;
+    public int getWidth() {
+        return background.getWidth();
+    }
+
+    @Override
+    public int getHeight() {
+        return background.getHeight();
     }
 
     @Override
@@ -69,7 +76,7 @@ public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> 
     }
 
     @Override
-    public void draw(AqueoulizerRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphics matrixStack, double mouseX, double mouseY) {
+    public void draw(AqueoulizerRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphicsExtractor matrixStack, double mouseX, double mouseY) {
         arrow.draw(matrixStack, 48, 12);
         emptyArrow.draw(matrixStack, 48, 12);
         slotDrawable.draw(matrixStack, 2, 10);
@@ -89,7 +96,7 @@ public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> 
                                   IIngredientAcceptor fluidOutputAcceptor) {
 
         // INPUT
-        itemInputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, List.of(recipe.getIngredient(0).getItems()).get(0));
+        itemInputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, List.of(IngredientUtil.getItems(recipe.getIngredient(0))).get(0));
 
         fluidInputAcceptor.addIngredient(NeoForgeTypes.FLUID_STACK, List.of(recipe.getFluidIngredient(0).getFluids()).get(0));
 

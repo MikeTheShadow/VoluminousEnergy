@@ -19,12 +19,10 @@ public class VEFluidClientExtension implements IClientFluidTypeExtensions {
         this.colourTint = colourTint;
     }
 
-    @Override
     public Identifier getStillTexture() {
         return stillTexture;
     }
 
-    @Override
     public Identifier getFlowingTexture() {
         return flowingTexture;
     }
@@ -35,8 +33,12 @@ public class VEFluidClientExtension implements IClientFluidTypeExtensions {
         return overlayTexture;
     }
 
-    @Override
+    @Nullable
+    public Identifier getOverlayTexture() {
+        return overlayTexture;
+    }
+
     public int getTintColor() {
-        return colourTint > 0 ? colourTint : IClientFluidTypeExtensions.super.getTintColor();
+        return colourTint > 0 ? colourTint : 0xFFFFFFFF;
     }
 }

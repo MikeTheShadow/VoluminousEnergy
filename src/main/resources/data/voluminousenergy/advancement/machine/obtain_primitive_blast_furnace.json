@@ -2,7 +2,7 @@
   "parent": "voluminousenergy:root",
   "display": {
     "icon": {
-      "item": "voluminousenergy:primitiveblastfurnace"
+      "id": "voluminousenergy:primitiveblastfurnace"
     },
     "title": {
       "translate": "advancements.voluminousenergy.machine.obtain.primitive_blast_furnace.title"

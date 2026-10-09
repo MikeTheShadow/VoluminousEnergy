@@ -4,9 +4,7 @@
     "#"
   ],
   "key": {
-    "#": {
-      "item": "voluminousenergy:hydroponic_incubator"
-    }
+    "#": "voluminousenergy:hydroponic_incubator"
   },
   "result": {
     "id": "voluminousenergy:hydroponic_incubator"

@@ -6,15 +6,9 @@
     "#*#"
   ],
   "key": {
-    "#": {
-      "tag": "c:plates/aluminum"
-    },
-    "*": {
-      "tag": "c:gears/aluminum"
-    },
-    "0": {
-      "item": "voluminousenergy:aluminum_machine_casing"
-    }
+    "#": "#c:plates/aluminum",
+    "*": "#c:gears/aluminum",
+    "0": "voluminousenergy:aluminum_machine_casing"
   },
   "result": {
     "id": "voluminousenergy:standard_tank_frame"

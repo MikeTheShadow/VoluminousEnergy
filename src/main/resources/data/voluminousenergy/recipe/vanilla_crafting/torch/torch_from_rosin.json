@@ -5,12 +5,8 @@
     "*"
   ],
   "key": {
-    "#": {
-      "tag": "c:rosin"
-    },
-    "*": {
-      "item": "minecraft:stick"
-    }
+    "#": "#c:rosin",
+    "*": "minecraft:stick"
   },
   "result": {
     "id": "minecraft:torch",

@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.fluids;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.VEFlowingFluidBlock;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.BucketItem;
@@ -20,7 +21,7 @@ public class Biofuel {
     public static final Identifier BIOFUEL_STILL_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/biofuel_still");
     public static final Identifier BIOFUEL_FLOWING_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/biofuel_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
+    public static Block.Properties stdProp = Block.Properties.of().setId(VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
 
     public static FlowingFluid BIOFUEL;
     public static FlowingFluid FLOWING_BIOFUEL;
@@ -38,12 +39,12 @@ public class Biofuel {
     }
 
     public static VEFlowingFluidBlock FlowingBiofuelBlock() {
-        BIOFUEL_BLOCK = new VEFlowingFluidBlock(BIOFUEL, stdProp);
+        BIOFUEL_BLOCK = new VEFlowingFluidBlock(BIOFUEL, stdProp.setId(VERegistryHelper.currentBlockId()));
         return BIOFUEL_BLOCK;
     }
 
     public static Item BiofuelBucket() {
-        BIOFUEL_BUCKET = new BucketItem(BIOFUEL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
+        BIOFUEL_BUCKET = new BucketItem(BIOFUEL, new Item.Properties().setId(VERegistryHelper.currentItemId()).craftRemainder(Items.BUCKET).stacksTo(1));
         return BIOFUEL_BUCKET;
     }
 

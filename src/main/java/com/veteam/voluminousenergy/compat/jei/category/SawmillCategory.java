@@ -1,5 +1,7 @@
 package com.veteam.voluminousenergy.compat.jei.category;
 
+import com.veteam.voluminousenergy.util.recipe.IngredientUtil;
+
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
@@ -20,7 +22,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -66,8 +68,13 @@ public class SawmillCategory implements IRecipeCategory<SawmillRecipe> {
     }
 
     @Override
-    public IDrawable getBackground() {
-        return background;
+    public int getWidth() {
+        return background.getWidth();
+    }
+
+    @Override
+    public int getHeight() {
+        return background.getHeight();
     }
 
     @Override
@@ -76,7 +83,7 @@ public class SawmillCategory implements IRecipeCategory<SawmillRecipe> {
     }
 
     @Override
-    public void draw(SawmillRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics matrixStack, double mouseX, double mouseY) {
+    public void draw(SawmillRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor matrixStack, double mouseX, double mouseY) {
         slotDrawable.draw(matrixStack, 2, 10);
         slotDrawable.draw(matrixStack, 48, 1);
         slotDrawable.draw(matrixStack, 48, 19);
@@ -111,7 +118,7 @@ public class SawmillCategory implements IRecipeCategory<SawmillRecipe> {
             Identifier secondOutputItemIdentifier = Identifier.parse(Config.SAWMILL_SECOND_OUTPUT_RESOURCE_LOCATION.get());
 
             if (BuiltInRegistries.ITEM.containsKey(secondOutputItemIdentifier)) {
-                Item secondOutput = BuiltInRegistries.ITEM.get(secondOutputItemIdentifier);
+                Item secondOutput = BuiltInRegistries.ITEM.getValue(secondOutputItemIdentifier);
                 secondaryItemOutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, new ItemStack(secondOutput, Config.SAWMILL_SECOND_OUTPUT_COUNT.get()));
             }
 
@@ -119,12 +126,12 @@ public class SawmillCategory implements IRecipeCategory<SawmillRecipe> {
             Identifier fluidLocation = Identifier.parse(Config.SAWMILL_FLUID_LOCATION.get());
 
             if (BuiltInRegistries.FLUID.containsKey(fluidLocation)) {
-                Fluid outputFluid = BuiltInRegistries.FLUID.get(fluidLocation);
+                Fluid outputFluid = BuiltInRegistries.FLUID.getValue(fluidLocation);
                 fluidOutputAcceptor.addIngredient(NeoForgeTypes.FLUID_STACK, new FluidStack(outputFluid, Config.SAWMILL_FLUID_AMOUNT.get()));
             }
         } else if (!recipe.isLogRecipe()) {
             // Primary Input (Typically logs)
-            ArrayList<ItemStack> inputStacks = new ArrayList<>(Arrays.asList(recipe.getIngredient(0).getItems()));
+            ArrayList<ItemStack> inputStacks = new ArrayList<>(Arrays.asList(IngredientUtil.getItems(recipe.getIngredient(0))));
             inputItemAcceptor.addIngredients(VanillaTypes.ITEM_STACK, inputStacks);
 
             // First Item Output (Typically Planks)

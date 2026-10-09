@@ -6,9 +6,7 @@
     "###"
   ],
   "key": {
-    "#": {
-      "item": "voluminousenergy:raw_bauxite"
-    }
+    "#": "voluminousenergy:raw_bauxite"
   },
   "result": {
     "id": "voluminousenergy:raw_bauxite_block"

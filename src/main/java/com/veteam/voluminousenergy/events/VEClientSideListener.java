@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.events;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.client.renderers.fluid.GaseousFluidRenderer;
 import com.veteam.voluminousenergy.fluids.*;
 import com.veteam.voluminousenergy.items.data.CombustibleFluidsData;
 import com.veteam.voluminousenergy.items.data.OxidizerFluidsData;
@@ -9,6 +10,8 @@ import com.veteam.voluminousenergy.persistence.ChunkFluids;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.util.extensions.VEFluidClientExtension;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.FluidModel;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
@@ -22,16 +25,21 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.TargetBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.RecipesUpdatedEvent;
-import net.neoforged.neoforge.client.event.RenderHighlightEvent;
+import net.neoforged.neoforge.client.event.ExtractBlockOutlineRenderStateEvent;
+import net.neoforged.neoforge.client.event.RecipesReceivedEvent;
+import net.neoforged.neoforge.client.event.RegisterFluidModelsEvent;
+import net.neoforged.neoforge.client.fluid.CustomFluidRenderer;
+import net.neoforged.neoforge.client.fluid.FluidTintSource;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 @EventBusSubscriber(modid = VoluminousEnergy.MODID, value = Dist.CLIENT)
 public class VEClientSideListener {
@@ -44,8 +52,8 @@ public class VEClientSideListener {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public static void onDataPackSync(RecipesUpdatedEvent event) {
-        VERecipe.updateCache(event.getRecipeManager());
+    public static void onDataPackSync(RecipesReceivedEvent event) {
+        VERecipe.updateCache(event.getRecipeMap().values());
         IntegratedServer server = Minecraft.getInstance().getSingleplayerServer();
         if (server != null) {
             doDataProcess(server);
@@ -72,8 +80,8 @@ public class VEClientSideListener {
     private static Block lastBlockCache = null;
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public static void onPlayerHighlightBlock(RenderHighlightEvent.Block renderEvent) {
-        BlockHitResult result = renderEvent.getTarget();
+    public static void onPlayerHighlightBlock(ExtractBlockOutlineRenderStateEvent renderEvent) {
+        BlockHitResult result = renderEvent.getHitResult();
         if (result.getType() == HitResult.Type.MISS) {
             Player player = Minecraft.getInstance().player;
 
@@ -85,15 +93,13 @@ public class VEClientSideListener {
             return;
         }
 
-        BlockPos pos = result.getBlockPos();
-
         Player player = Minecraft.getInstance().player;
 
         ItemStack mainHand = player.getItemInHand(InteractionHand.MAIN_HAND);
 
         if(mainHand.getItem() instanceof Multitool multitool) {
 
-            BlockState block = Minecraft.getInstance().level.getBlockState(pos);
+            BlockState block = renderEvent.getBlockState();
 
             if (block.getBlock() == lastBlockCache) return;
             lastBlockCache = block.getBlock();
@@ -125,5 +131,23 @@ public class VEClientSideListener {
         event.registerFluidType(Ammonia.AMMONIA_FLUID_TYPE.getFluidClientExtension(), VEFluids.AMMONIA_FLUID_TYPE_REG.get());
         event.registerFluidType(AmmoniumNitrateSolution.AMMONIUM_NITRATE_SOLUTION_FLUID_TYPE.getFluidClientExtension(), VEFluids.AMMONIUM_NITRATE_SOLUTION_FLUID_TYPE_REG.get());
         event.registerFluidType(Hydrogen.HYDROGEN_FLUID_TYPE.getFluidClientExtension(), VEFluids.HYDROGEN_FLUID_TYPE_REG.get());
+    }
+
+    @SubscribeEvent
+    public static void onRegisterFluidModels(RegisterFluidModelsEvent event) {
+        CustomFluidRenderer gaseousFluidRenderer = new GaseousFluidRenderer();
+        for (DeferredHolder<Fluid, ? extends Fluid> holder : VEFluids.VE_FLUIDS.getEntries()) {
+            Fluid fluid = holder.get();
+            if (fluid.getFluidType() instanceof VEFluidType veFluidType) {
+                VEFluidClientExtension ext = veFluidType.getFluidClientExtension();
+                Material stillMaterial = new Material(ext.getStillTexture());
+                Material flowingMaterial = new Material(ext.getFlowingTexture());
+                Identifier overlay = ext.getOverlayTexture();
+                Material overlayMaterial = overlay != null ? new Material(overlay) : null;
+                FluidTintSource tintSource = fluidState -> ext.getTintColor();
+                CustomFluidRenderer customRenderer = fluid instanceof VEFlowingGasFluid ? gaseousFluidRenderer : null;
+                event.register(new FluidModel.Unbaked(stillMaterial, flowingMaterial, overlayMaterial, tintSource, customRenderer), fluid);
+            }
+        }
     }
 }

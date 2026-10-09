@@ -35,40 +35,29 @@ public class HydroponicIncubatorRecipe extends VERNGRecipe {
         super(i, fi, List.of(), oi, processTime);
     }
 
-    public static final RecipeSerializer<HydroponicIncubatorRecipe> SERIALIZER = new RecipeSerializer<>() {
+    public static final MapCodec<HydroponicIncubatorRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
+        VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
+        VERecipeCodecs.VE_FLUID_INGREDIENT_CODEC.listOf().fieldOf("fluid_ingredients").forGetter((getter) -> getter.registryFluidIngredients),
+        VERecipeCodecs.VE_CHANCED_OUTPUT_ITEM_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.itemResultsWithChance),
+        Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime)
+    ).apply(instance, HydroponicIncubatorRecipe::new));
 
-        public static final MapCodec<HydroponicIncubatorRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
-            VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
-            VERecipeCodecs.VE_FLUID_INGREDIENT_CODEC.listOf().fieldOf("fluid_ingredients").forGetter((getter) -> getter.registryFluidIngredients),
-            VERecipeCodecs.VE_CHANCED_OUTPUT_ITEM_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.itemResultsWithChance),
-            Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime)
-        ).apply(instance, HydroponicIncubatorRecipe::new));
+    private static final FluidSerializerHelper<HydroponicIncubatorRecipe> helper = new FluidSerializerHelper<>();
 
-        private static final FluidSerializerHelper<HydroponicIncubatorRecipe> helper = new FluidSerializerHelper<>();
-
+    public static final StreamCodec<RegistryFriendlyByteBuf, HydroponicIncubatorRecipe> VE_RECIPE_STREAM_CODEC = new StreamCodec<>() {
         @Override
-        public @NotNull MapCodec<HydroponicIncubatorRecipe> codec() {
-            return VE_RECIPE_CODEC;
+        public void encode(@NotNull RegistryFriendlyByteBuf buf, @NotNull HydroponicIncubatorRecipe recipe) {
+            helper.toNetwork(buf, recipe);
         }
 
         @Override
         @NotNull
-        public StreamCodec<RegistryFriendlyByteBuf, HydroponicIncubatorRecipe> streamCodec() {
-            return new StreamCodec<>() {
-                @Override
-                public void encode(@NotNull RegistryFriendlyByteBuf buf, @NotNull HydroponicIncubatorRecipe recipe) {
-                    helper.toNetwork(buf, recipe);
-                }
-
-                @Override
-                @NotNull
-                public HydroponicIncubatorRecipe decode(@NotNull RegistryFriendlyByteBuf buffer) {
-                    return helper.fromNetwork(new HydroponicIncubatorRecipe(), buffer);
-                }
-            };
+        public HydroponicIncubatorRecipe decode(@NotNull RegistryFriendlyByteBuf buffer) {
+            return helper.fromNetwork(new HydroponicIncubatorRecipe(), buffer);
         }
-
     };
+
+    public static final RecipeSerializer<HydroponicIncubatorRecipe> SERIALIZER = new RecipeSerializer<>(VE_RECIPE_CODEC, VE_RECIPE_STREAM_CODEC);
 
 
     @Override

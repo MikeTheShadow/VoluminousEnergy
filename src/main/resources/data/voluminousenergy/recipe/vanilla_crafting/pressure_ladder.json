@@ -5,12 +5,8 @@
     "*"
   ],
   "key": {
-    "#": {
-      "item": "minecraft:ladder"
-    },
-    "*": {
-      "item": "minecraft:stone_pressure_plate"
-    }
+    "#": "minecraft:ladder",
+    "*": "minecraft:stone_pressure_plate"
   },
   "result": {
     "id": "voluminousenergy:pressure_ladder",

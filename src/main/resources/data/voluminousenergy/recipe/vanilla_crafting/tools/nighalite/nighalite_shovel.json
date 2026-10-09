@@ -6,12 +6,8 @@
     " # "
   ],
   "key": {
-    "#": {
-      "item": "minecraft:stick"
-    },
-    "X": {
-      "tag": "c:ingots/nighalite"
-    }
+    "#": "minecraft:stick",
+    "X": "#c:ingots/nighalite"
   },
   "result": {
     "id": "voluminousenergy:nighalite_shovel"

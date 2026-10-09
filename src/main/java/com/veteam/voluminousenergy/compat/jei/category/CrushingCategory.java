@@ -6,6 +6,7 @@ import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.CrusherRecipe;
 import com.veteam.voluminousenergy.util.TextUtil;
+import com.veteam.voluminousenergy.util.recipe.IngredientUtil;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IIngredientAcceptor;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -19,7 +20,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -55,8 +56,13 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
     }
 
     @Override
-    public @NotNull IDrawable getBackground() {
-        return background;
+    public int getWidth() {
+        return background.getWidth();
+    }
+
+    @Override
+    public int getHeight() {
+        return background.getHeight();
     }
 
     @Override
@@ -65,7 +71,8 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
     }
 
     @Override
-    public void draw(CrusherRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphics matrixStack, double mouseX, double mouseY) {
+    public void draw(CrusherRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphicsExtractor matrixStack, double mouseX, double mouseY) {
+        background.draw(matrixStack, 0, 0);
         arrow.draw(matrixStack, 10, 19);
 
 
@@ -88,7 +95,7 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
                                   IIngredientAcceptor itemRNGOutputAcceptor) {
         // Input
         ArrayList<ItemStack> inputStacks = new ArrayList<>();
-        for (ItemStack itemStack : recipe.getIngredient(0).getItems()) {
+        for (ItemStack itemStack : IngredientUtil.getItems(recipe.getIngredient(0))) {
             itemStack.setCount(recipe.getIngredientCount(0));
             inputStacks.add(itemStack);
         }

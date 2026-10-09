@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.fluids;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.VEFlowingFluidBlock;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.BucketItem;
@@ -20,7 +21,7 @@ public class CompressedAir {
     public static final Identifier COMPRESSED_AIR_STILL_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/compressed_air_still");
     public static final Identifier COMPRESSED_AIR_FLOWING_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/compressed_air_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
+    public static Block.Properties stdProp = Block.Properties.of().setId(VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
 
     public static FlowingFluid COMPRESSED_AIR;
     public static FlowingFluid FLOWING_COMPRESSED_AIR;
@@ -38,12 +39,12 @@ public class CompressedAir {
     }
 
     public static VEFlowingFluidBlock FlowingCompressedAirBlock() {
-        COMPRESSED_AIR_BLOCK = new VEFlowingFluidBlock(COMPRESSED_AIR, stdProp);
+        COMPRESSED_AIR_BLOCK = new VEFlowingFluidBlock(COMPRESSED_AIR, stdProp.setId(VERegistryHelper.currentBlockId()));
         return COMPRESSED_AIR_BLOCK;
     }
 
     public static Item CompressedAirBucket() {
-        COMPRESSED_AIR_BUCKET = new BucketItem(COMPRESSED_AIR, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
+        COMPRESSED_AIR_BUCKET = new BucketItem(COMPRESSED_AIR, new Item.Properties().setId(VERegistryHelper.currentItemId()).craftRemainder(Items.BUCKET).stacksTo(1));
         return COMPRESSED_AIR_BUCKET;
     }
 

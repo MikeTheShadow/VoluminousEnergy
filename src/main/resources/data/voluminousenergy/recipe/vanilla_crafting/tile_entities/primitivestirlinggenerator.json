@@ -6,15 +6,9 @@
     "###"
   ],
   "key": {
-    "#": {
-      "item": "minecraft:iron_ingot"
-    },
-    "*": {
-      "item": "minecraft:furnace"
-    },
-    "1": {
-      "tag": "c:gears/iron"
-    }
+    "#": "minecraft:iron_ingot",
+    "*": "minecraft:furnace",
+    "1": "#c:gears/iron"
   },
   "result": {
     "id": "voluminousenergy:primitivestirlinggenerator"

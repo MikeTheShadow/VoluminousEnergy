@@ -18,6 +18,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -33,7 +34,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
-public class VEWaterCrop extends BushBlock implements BonemealableBlock, SimpleWaterloggedBlock {
+public class VEWaterCrop extends VegetationBlock implements BonemealableBlock, SimpleWaterloggedBlock {
     public static final MapCodec<VEWaterCrop> CODEC = simpleCodec(VEWaterCrop::new);
 
     private String registryName;
@@ -45,7 +46,7 @@ public class VEWaterCrop extends BushBlock implements BonemealableBlock, SimpleW
     }
 
     @Override
-    protected MapCodec<? extends BushBlock> codec() {
+    protected MapCodec<? extends VEWaterCrop> codec() {
         return CODEC;
     }
 
@@ -62,7 +63,7 @@ public class VEWaterCrop extends BushBlock implements BonemealableBlock, SimpleW
     // Voxel shape
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
-        Vec3 vector3d = state.getOffset(worldIn, pos);
+        Vec3 vector3d = state.getOffset(pos);
         VoxelShape voxelShape = Block.box(2.0D, 0.0D, 2.0D, 14.0D, 16.0D, 14.0D);
         return voxelShape.move(vector3d.x, vector3d.y, vector3d.z);
         /*
@@ -75,10 +76,10 @@ public class VEWaterCrop extends BushBlock implements BonemealableBlock, SimpleW
 
     //Placement
     @Override
-    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {
+    protected BlockState updateShape(BlockState state, LevelReader worldIn, ScheduledTickAccess ticks, BlockPos currentPos, Direction facing, BlockPos facingPos, BlockState facingState, RandomSource random) {
         if (state.getValue(BlockStateProperties.WATERLOGGED)) {
             //worldIn.getFluidState().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(worldIn));
-            worldIn.getFluidTicks().hasScheduledTick(currentPos, Fluids.WATER);
+            ticks.getFluidTicks().hasScheduledTick(currentPos, Fluids.WATER);
         }
 
         DoubleBlockHalf doubleBlockHalf = state.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF);
@@ -87,7 +88,7 @@ public class VEWaterCrop extends BushBlock implements BonemealableBlock, SimpleW
             if (doubleBlockHalf == DoubleBlockHalf.LOWER && facing == Direction.DOWN && !state.canSurvive(worldIn, currentPos)) {
                 return Blocks.AIR.defaultBlockState();
             }
-            return super.updateShape(state, facing, facingState, worldIn, currentPos, facingPos); // Excluding this super will cause neighbours to break
+            return super.updateShape(state, worldIn, ticks, currentPos, facing, facingPos, facingState, random); // Excluding this super will cause neighbours to break
         }
         return Blocks.AIR.defaultBlockState();
     }
@@ -192,10 +193,10 @@ public class VEWaterCrop extends BushBlock implements BonemealableBlock, SimpleW
             return InteractionResult.PASS;
         } else if (age > 1 && world.getBlockState(pos.above()).getBlock() != this.defaultBlockState().getBlock()) { // Make sure the player isn't targetting the bottom
             popResource(world, pos, new ItemStack(cropItem(), 1));
-            world.playSound(null, pos, SoundEvents.CROP_BREAK, SoundSource.BLOCKS, 1.0F, 0.8F + world.random.nextFloat() * 0.4F);  // to tweak
+            world.playSound(null, pos, SoundEvents.CROP_BREAK, SoundSource.BLOCKS, 1.0F, 0.8F + world.getRandom().nextFloat() * 0.4F);  // to tweak
 
             place(world, pos, 18); // Place the crop in it's initial state
-            return InteractionResult.sidedSuccess(world.isClientSide);
+            return (world.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER);
         }
         return super.useWithoutItem(state, world, pos, player, hit);
     }

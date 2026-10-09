@@ -4,9 +4,7 @@
     "#"
   ],
   "key": {
-    "#": {
-      "item": "voluminousenergy:crusher"
-    }
+    "#": "voluminousenergy:crusher"
   },
   "result": {
     "id": "voluminousenergy:crusher"

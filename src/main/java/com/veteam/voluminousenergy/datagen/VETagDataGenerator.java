@@ -9,7 +9,6 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
@@ -45,8 +44,8 @@ public class VETagDataGenerator extends BlockTagsProvider {
     private static ArrayList<Block> incorrectForEighzo = new ArrayList<>();
     private static ArrayList<Block> incorrectForSolarium = new ArrayList<>();
 
-    public VETagDataGenerator(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper existingFileHelper) {
-        super(packOutput, lookupProvider, VoluminousEnergy.MODID, existingFileHelper);
+    public VETagDataGenerator(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+        super(packOutput, lookupProvider, VoluminousEnergy.MODID);
     }
 
     @Override

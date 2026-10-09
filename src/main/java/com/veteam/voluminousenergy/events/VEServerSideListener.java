@@ -33,7 +33,7 @@ public class VEServerSideListener {
             return;
         }
         server = event.getPlayerList().getServer();
-        VERecipe.updateCache(server.getRecipeManager());
+        VERecipe.updateCache(server.getRecipeManager().getRecipes());
         doDataProcess(server);
         updateAllPlayers();
     }
@@ -42,7 +42,7 @@ public class VEServerSideListener {
     public static void onServerStart(ServerStartedEvent event) {
         ServerLevel level = event.getServer().getLevel(Level.OVERWORLD);
         ChunkFluids.loadInstance(level);
-        VERecipe.updateCache(event.getServer().getRecipeManager());
+        VERecipe.updateCache(event.getServer().getRecipeManager().getRecipes());
         doDataProcess(event.getServer());
     }
 

@@ -6,15 +6,9 @@
     "#*#"
   ],
   "key": {
-    "#": {
-      "item": "minecraft:iron_ingot"
-    },
-    "*": {
-      "item": "minecraft:iron_block"
-    },
-    "a": {
-      "tag": "c:microchips"
-    }
+    "#": "minecraft:iron_ingot",
+    "*": "minecraft:iron_block",
+    "a": "#c:microchips"
   },
   "result": {
     "id": "voluminousenergy:compressor"

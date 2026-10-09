@@ -4,9 +4,7 @@
     "*"
   ],
   "key": {
-    "*": {
-      "item": "minecraft:charcoal"
-    }
+    "*": "minecraft:charcoal"
   },
   "result": {
     "id": "voluminousenergy:tiny_charcoal",

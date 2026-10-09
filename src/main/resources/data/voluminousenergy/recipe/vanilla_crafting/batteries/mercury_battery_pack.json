@@ -6,12 +6,8 @@
     "###"
   ],
   "key": {
-    "#": {
-      "tag": "c:ingots/copper"
-    },
-    "*": {
-      "item": "voluminousenergy:mercury_battery"
-    }
+    "#": "#c:ingots/copper",
+    "*": "voluminousenergy:mercury_battery"
   },
   "result": {
     "id": "voluminousenergy:mercury_battery_pack",

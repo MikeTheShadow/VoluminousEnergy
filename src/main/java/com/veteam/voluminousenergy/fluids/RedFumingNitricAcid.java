@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.fluids;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.FumingAcidFlowingFluidBlock;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.BucketItem;
@@ -20,7 +21,7 @@ public class RedFumingNitricAcid {
     public static final Identifier RFNA_STILL_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/rfna_still");
     public static final Identifier RFNA_FLOWING_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/rfna_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
+    public static Block.Properties stdProp = Block.Properties.of().setId(VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
 
     public static FlowingFluid RED_FUMING_NITRIC_ACID;
     public static FlowingFluid FLOWING_RED_FUMING_NITRIC_ACID;
@@ -38,18 +39,18 @@ public class RedFumingNitricAcid {
     }
 
     public static FumingAcidFlowingFluidBlock FlowingRedFumingNitricAcidBlock() {
-        RED_FUMING_NITRIC_ACID_BLOCK = new FumingAcidFlowingFluidBlock(RED_FUMING_NITRIC_ACID, stdProp);
+        RED_FUMING_NITRIC_ACID_BLOCK = new FumingAcidFlowingFluidBlock(RED_FUMING_NITRIC_ACID, stdProp.setId(VERegistryHelper.currentBlockId()));
         return RED_FUMING_NITRIC_ACID_BLOCK;
     }
 
     public static Item RedFumingNitricAcidBucket() {
-        RED_FUMING_NITRIC_ACID_BUCKET = new BucketItem(RED_FUMING_NITRIC_ACID, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
+        RED_FUMING_NITRIC_ACID_BUCKET = new BucketItem(RED_FUMING_NITRIC_ACID, new Item.Properties().setId(VERegistryHelper.currentItemId()).craftRemainder(Items.BUCKET).stacksTo(1));
         return RED_FUMING_NITRIC_ACID_BUCKET;
     }
 
 
     public static final VEFluidType RFNA_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
-            .adjacentPathType(PathType.DAMAGE_FIRE)
+            .adjacentPathType(PathType.FIRE)
             .canConvertToSource(false)
             .canDrown(true)
             .canExtinguish(false)

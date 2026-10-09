@@ -1,5 +1,7 @@
 package com.veteam.voluminousenergy.compat.jei.category;
 
+import com.veteam.voluminousenergy.util.recipe.IngredientUtil;
+
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
@@ -18,7 +20,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
@@ -52,8 +54,13 @@ public class StirlingCategory implements IRecipeCategory<StirlingGeneratorRecipe
     }
 
     @Override
-    public @NotNull IDrawable getBackground() {
-        return background;
+    public int getWidth() {
+        return background.getWidth();
+    }
+
+    @Override
+    public int getHeight() {
+        return background.getHeight();
     }
 
     @Override
@@ -62,7 +69,7 @@ public class StirlingCategory implements IRecipeCategory<StirlingGeneratorRecipe
     }
 
     @Override
-    public void draw(StirlingGeneratorRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphics matrixStack, double mouseX, double mouseY) {
+    public void draw(StirlingGeneratorRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphicsExtractor matrixStack, double mouseX, double mouseY) {
         slotDrawable.draw(matrixStack, 11, 0);
         TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getEnergyPerTick() + " FE/t", -1, 20, VEContainerScreen.GREY_TEXT_STYLE);
         TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getProcessTime() + " t", -1, 28, VEContainerScreen.GREY_TEXT_STYLE);
@@ -70,7 +77,7 @@ public class StirlingCategory implements IRecipeCategory<StirlingGeneratorRecipe
     }
 
     public void ingredientHandler(StirlingGeneratorRecipe recipe, IIngredientAcceptor itemInputAcceptor) {
-        itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, Arrays.stream(recipe.getIngredient(0).getItems()).toList());
+        itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, Arrays.stream(IngredientUtil.getItems(recipe.getIngredient(0))).toList());
     }
 
     @Override

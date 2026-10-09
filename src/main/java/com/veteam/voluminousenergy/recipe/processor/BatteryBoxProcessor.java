@@ -6,8 +6,8 @@ import com.veteam.voluminousenergy.blocks.tiles.inventory.VEItemStackHandler;
 import com.veteam.voluminousenergy.items.batteries.VEEnergyItem;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
+import com.veteam.voluminousenergy.util.VEItemCapabilities;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
 public class BatteryBoxProcessor implements AbstractRecipeProcessor {
@@ -19,7 +19,7 @@ public class BatteryBoxProcessor implements AbstractRecipeProcessor {
     public void tick(VETileEntity tile) {
         ItemStack stack = tile.getInventory().getStackInSlot(0);
 
-        IEnergyStorage itemEnergy = stack.getCapability(Capabilities.EnergyStorage.ITEM);
+        IEnergyStorage itemEnergy = VEItemCapabilities.getEnergyStorage(stack);
 
         if (itemEnergy == null)
             return;

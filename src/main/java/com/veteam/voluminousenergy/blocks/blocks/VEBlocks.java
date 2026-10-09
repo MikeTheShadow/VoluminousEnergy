@@ -20,6 +20,7 @@ import com.veteam.voluminousenergy.blocks.tiles.VETileEntities;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntityFactory;
 import com.veteam.voluminousenergy.util.VEClientSide;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;
@@ -319,7 +320,7 @@ public class VEBlocks {
     // Dimensional Laser Stuff
 
     public static Supplier<Block> DIMENSIONAL_LASER_PYLON = registerWithBlockItemSupport("laser_pylon", () -> new FaceableBlock(
-                    BlockBehaviour.Properties.of()
+                    BlockBehaviour.Properties.of().setId(VERegistryHelper.currentBlockId())
                             .sound(SoundType.METAL)
                             .strength(2.0f)
                             .lightLevel(l -> 0)
@@ -404,7 +405,7 @@ public class VEBlocks {
         public BlockTileMenuRegistry(String name, Supplier<Block> blockSupplier, Supplier<VETileEntityFactory> tileEntityFactory, Supplier<VEContainerFactory> containerFactory,boolean hasEnergy, boolean hasFluids, boolean hasInventory) {
             block = registerWithBlockItemSupport(name, blockSupplier,hasEnergy,hasFluids,hasInventory);
             tile = VE_TILE_REGISTRY.register(name,
-                    () -> BlockEntityType.Builder.of(tileEntityFactory.get()::create, block.get()).build(null));
+                    () -> new BlockEntityType<>(tileEntityFactory.get()::create, block.get()));
             container = VE_CONTAINER_REGISTRY.register(name, () ->
                     IMenuTypeExtension.create((id, inv, data) -> {
                         BlockPos pos = data.readBlockPos();
@@ -433,19 +434,19 @@ public class VEBlocks {
     }
 
     public static Supplier<Block> registerWithBlockItemSupport(String name, Supplier<Block> blockSupplier) {
-        Supplier<Block> registryObject = VE_BLOCKS_REGISTRY.register(name, blockSupplier);
+        Supplier<Block> registryObject = VERegistryHelper.registerBlock(VE_BLOCKS_REGISTRY, name, blockSupplier);
         REGISTERED_BLOCKS.add(new RegistryWithName(name, registryObject));
         return registryObject;
     }
 
     public static Supplier<Block> registerWithBlockItemSupport(String name, Supplier<Block> blockSupplier,boolean hasEnergy, boolean hasFluids, boolean hasInventory) {
-        Supplier<Block> registryObject = VE_BLOCKS_REGISTRY.register(name, blockSupplier);
+        Supplier<Block> registryObject = VERegistryHelper.registerBlock(VE_BLOCKS_REGISTRY, name, blockSupplier);
         REGISTERED_BLOCKS.add(new RegistryWithName(name, registryObject,hasEnergy, hasFluids, hasInventory));
         return registryObject;
     }
 
     public static Supplier<Block> registerWithNoBlockItemSupport(String name, Supplier<Block> blockSupplier) {
-        Supplier<Block> registryObject = VE_BLOCKS_REGISTRY.register(name, blockSupplier);
+        Supplier<Block> registryObject = VERegistryHelper.registerBlock(VE_BLOCKS_REGISTRY, name, blockSupplier);
         return registryObject;
     }
 }

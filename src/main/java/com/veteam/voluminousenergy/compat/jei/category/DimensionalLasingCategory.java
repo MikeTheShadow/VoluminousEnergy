@@ -20,7 +20,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
@@ -57,8 +57,13 @@ public class DimensionalLasingCategory implements IRecipeCategory<DimensionalLas
     }
 
     @Override
-    public @NotNull IDrawable getBackground() {
-        return background;
+    public int getWidth() {
+        return background.getWidth();
+    }
+
+    @Override
+    public int getHeight() {
+        return background.getHeight();
     }
 
     @Override
@@ -67,7 +72,8 @@ public class DimensionalLasingCategory implements IRecipeCategory<DimensionalLas
     }
 
     @Override
-    public void draw(DimensionalLaserRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphics matrixStack, double mouseX, double mouseY) {
+    public void draw(DimensionalLaserRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphicsExtractor matrixStack, double mouseX, double mouseY) {
+        background.draw(matrixStack, 0, 0);
         arrow.draw(matrixStack, 9, 4);
         emptyArrow.draw(matrixStack, 9, 4);
         slotDrawable.draw(matrixStack, 8, 22);

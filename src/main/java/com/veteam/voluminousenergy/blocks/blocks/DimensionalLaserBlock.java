@@ -4,6 +4,7 @@ import com.veteam.voluminousenergy.blocks.blocks.machines.VEFaceableMachineBlock
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntities;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import com.veteam.voluminousenergy.sounds.VESounds;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.core.BlockPos;
@@ -24,7 +25,7 @@ import javax.annotation.Nullable;
 public class DimensionalLaserBlock extends VEFaceableMachineBlock {
 
     public DimensionalLaserBlock() {
-        super(BlockBehaviour.Properties.of()
+        super(BlockBehaviour.Properties.of().setId(VERegistryHelper.currentBlockId())
                 .sound(SoundType.METAL)
                 .strength(3.0f)
                 .requiresCorrectToolForDrops()
@@ -50,8 +51,8 @@ public class DimensionalLaserBlock extends VEFaceableMachineBlock {
     public void destroy(@NotNull LevelAccessor levelAccessor, @NotNull BlockPos blockPos, @NotNull BlockState blockState) {
         if (levelAccessor.isClientSide()) {
             SoundManager manager = Minecraft.getInstance().getSoundManager();
-            manager.stop(VESounds.ENERGY_BEAM_ACTIVATE.getIdentifier(), SoundSource.BLOCKS);
-            manager.stop(VESounds.ENERGY_BEAM_FIRED.getIdentifier(), SoundSource.BLOCKS);
+            manager.stop(VESounds.ENERGY_BEAM_ACTIVATE.location(), SoundSource.BLOCKS);
+            manager.stop(VESounds.ENERGY_BEAM_FIRED.location(), SoundSource.BLOCKS);
             return;
         }
         super.destroy(levelAccessor, blockPos, blockState);

@@ -1,0 +1,265 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:component",
+    "component": "voluminousenergy:tool_tier",
+    "cases": [
+      {
+        "when": 1,
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:component",
+          "component": "voluminousenergy:tool_type",
+          "cases": [
+            {
+              "when": 1,
+              "model": {
+                "type": "minecraft:model",
+                "model": "voluminousenergy:item/iron_drill_multitool"
+              }
+            },
+            {
+              "when": 2,
+              "model": {
+                "type": "minecraft:model",
+                "model": "voluminousenergy:item/iron_chain_multitool"
+              }
+            },
+            {
+              "when": 3,
+              "model": {
+                "type": "minecraft:model",
+                "model": "voluminousenergy:item/iron_scooper_multitool"
+              }
+            },
+            {
+              "when": 4,
+              "model": {
+                "type": "minecraft:model",
+                "model": "voluminousenergy:item/iron_trimmer_multitool"
+              }
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "voluminousenergy:item/multitool"
+          }
+        }
+      },
+      {
+        "when": 2,
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:component",
+          "component": "voluminousenergy:tool_type",
+          "cases": [
+            {
+              "when": 1,
+              "model": {
+                "type": "minecraft:model",
+                "model": "voluminousenergy:item/diamond_drill_multitool"
+              }
+            },
+            {
+              "when": 2,
+              "model": {
+                "type": "minecraft:model",
+                "model": "voluminousenergy:item/diamond_chain_multitool"
+              }
+            },
+            {
+              "when": 3,
+              "model": {
+                "type": "minecraft:model",
+                "model": "voluminousenergy:item/diamond_scooper_multitool"
+              }
+            },
+            {
+              "when": 4,
+              "model": {
+                "type": "minecraft:model",
+                "model": "voluminousenergy:item/diamond_trimmer_multitool"
+              }
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "voluminousenergy:item/multitool"
+          }
+        }
+      },
+      {
+        "when": 3,
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:component",
+          "component": "voluminousenergy:tool_type",
+          "cases": [
+            {
+              "when": 1,
+              "model": {
+                "type": "minecraft:model",
+                "model": "voluminousenergy:item/titanium_drill_multitool"
+              }
+            },
+            {
+              "when": 2,
+              "model": {
+                "type": "minecraft:model",
+                "model": "voluminousenergy:item/titanium_chain_multitool"
+              }
+            },
+            {
+              "when": 3,
+              "model": {
+                "type": "minecraft:model",
+                "model": "voluminousenergy:item/titanium_scooper_multitool"
+              }
+            },
+            {
+              "when": 4,
+              "model": {
+                "type": "minecraft:model",
+                "model": "voluminousenergy:item/titanium_trimmer_multitool"
+              }
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "voluminousenergy:item/multitool"
+          }
+        }
+      },
+      {
+        "when": 4,
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:component",
+          "component": "voluminousenergy:tool_type",
+          "cases": [
+            {
+              "when": 1,
+              "model": {
+                "type": "minecraft:model",
+                "model": "voluminousenergy:item/nighalite_drill_multitool"
+              }
+            },
+            {
+              "when": 2,
+              "model": {
+                "type": "minecraft:model",
+                "model": "voluminousenergy:item/nighalite_chain_multitool"
+              }
+            },
+            {
+              "when": 3,
+              "model": {
+                "type": "minecraft:model",
+                "model": "voluminousenergy:item/nighalite_scooper_multitool"
+              }
+            },
+            {
+              "when": 4,
+              "model": {
+                "type": "minecraft:model",
+                "model": "voluminousenergy:item/nighalite_trimmer_multitool"
+              }
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "voluminousenergy:item/multitool"
+          }
+        }
+      },
+      {
+        "when": 5,
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:component",
+          "component": "voluminousenergy:tool_type",
+          "cases": [
+            {
+              "when": 1,
+              "model": {
+                "type": "minecraft:model",
+                "model": "voluminousenergy:item/eighzo_drill_multitool"
+              }
+            },
+            {
+              "when": 2,
+              "model": {
+                "type": "minecraft:model",
+                "model": "voluminousenergy:item/eighzo_chain_multitool"
+              }
+            },
+            {
+              "when": 3,
+              "model": {
+                "type": "minecraft:model",
+                "model": "voluminousenergy:item/eighzo_scooper_multitool"
+              }
+            },
+            {
+              "when": 4,
+              "model": {
+                "type": "minecraft:model",
+                "model": "voluminousenergy:item/eighzo_trimmer_multitool"
+              }
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "voluminousenergy:item/multitool"
+          }
+        }
+      },
+      {
+        "when": 6,
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:component",
+          "component": "voluminousenergy:tool_type",
+          "cases": [
+            {
+              "when": 1,
+              "model": {
+                "type": "minecraft:model",
+                "model": "voluminousenergy:item/solarium_drill_multitool"
+              }
+            },
+            {
+              "when": 2,
+              "model": {
+                "type": "minecraft:model",
+                "model": "voluminousenergy:item/solarium_chain_multitool"
+              }
+            },
+            {
+              "when": 3,
+              "model": {
+                "type": "minecraft:model",
+                "model": "voluminousenergy:item/solarium_scooper_multitool"
+              }
+            },
+            {
+              "when": 4,
+              "model": {
+                "type": "minecraft:model",
+                "model": "voluminousenergy:item/solarium_trimmer_multitool"
+              }
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "voluminousenergy:item/multitool"
+          }
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "voluminousenergy:item/multitool"
+    }
+  }
+}

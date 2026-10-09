@@ -220,7 +220,7 @@ public class FluidIngredient {
 
         public boolean equals(Object p_298268_) {
             if (p_298268_ instanceof FluidIngredient.TagValue ingredient$tagvalue) {
-                return ingredient$tagvalue.tag.identifier().equals(this.tag.identifier());
+                return ingredient$tagvalue.tag.location().equals(this.tag.location());
             } else {
                 return false;
             }

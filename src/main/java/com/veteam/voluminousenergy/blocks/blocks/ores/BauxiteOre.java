@@ -2,12 +2,13 @@ package com.veteam.voluminousenergy.blocks.blocks.ores;
 
 import com.veteam.voluminousenergy.datagen.MaterialConstants;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.SoundType;
 
 public class BauxiteOre extends VEOreBlock {
     public BauxiteOre() {
-        super(Properties.of()
+        super(Properties.of().setId(VERegistryHelper.currentBlockId())
                 .sound(SoundType.STONE)
                 .strength(2.0f)
                 .requiresCorrectToolForDrops()

@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.blocks.blocks.machines;
 
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -38,6 +39,7 @@ public class PressureLadder extends LadderBlock {
 
     public PressureLadder() {
         super(BlockBehaviour.Properties.ofFullCopy(Blocks.LADDER)
+                .setId(VERegistryHelper.currentBlockId())
                 .requiresCorrectToolForDrops()
                 .randomTicks()
                 .pushReaction(PushReaction.DESTROY)
@@ -122,7 +124,7 @@ public class PressureLadder extends LadderBlock {
     }
 
     public void entityInside(@NotNull BlockState blockState, Level level, @NotNull BlockPos blockPos, @NotNull Entity entity) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             int i = this.getSignalForState(blockState);
             if (i == 0) {
                 this.checkPressed(entity, level, blockPos, blockState, i);
@@ -156,12 +158,10 @@ public class PressureLadder extends LadderBlock {
 
     }
 
-    public void onRemove(@NotNull BlockState blockState, @NotNull Level level, @NotNull BlockPos blockPos, @NotNull BlockState state, boolean b) {
-        if (!b && !blockState.is(state.getBlock())) {
-            if (this.getSignalForState(blockState) > 0) {
-                this.updateNeighbours(level, blockPos);
-            }
-            super.onRemove(blockState, level, blockPos, state, b);
+    @Override
+    protected void affectNeighborsAfterRemoval(@NotNull BlockState state, net.minecraft.server.level.@NotNull ServerLevel level, @NotNull BlockPos pos, boolean movedByPiston) {
+        if (!movedByPiston && this.getSignalForState(state) > 0) {
+            this.updateNeighbours(level, pos);
         }
     }
 

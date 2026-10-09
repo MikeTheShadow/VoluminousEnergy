@@ -5,15 +5,9 @@
     "##"
   ],
   "key": {
-    "#": {
-      "tag": "c:dusts/niter"
-    },
-    "x": {
-      "tag": "c:dusts/coal"
-    },
-    "*": {
-      "tag": "c:dusts/sulfur"
-    }
+    "#": "#c:dusts/niter",
+    "x": "#c:dusts/coal",
+    "*": "#c:dusts/sulfur"
   },
   "result": {
     "id": "minecraft:gunpowder",

@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.fluids;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.VEFlowingFluidBlock;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.BucketItem;
@@ -21,7 +22,7 @@ public class Nitrogen {
     public static final Identifier NITROGEN_FLOWING_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/nitrogen_flowing");
     public static final int NITROGEN_FLUID_WIDTH = 4;
 
-    public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
+    public static Block.Properties stdProp = Block.Properties.of().setId(VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).air();
 
     public static FlowingFluid NITROGEN;
     public static FlowingFluid FLOWING_NITROGEN;
@@ -39,12 +40,12 @@ public class Nitrogen {
     }
 
     public static VEFlowingFluidBlock FlowingNitrogenBlock() {
-        NITROGEN_BLOCK = new VEFlowingFluidBlock(NITROGEN, stdProp);
+        NITROGEN_BLOCK = new VEFlowingFluidBlock(NITROGEN, stdProp.setId(VERegistryHelper.currentBlockId()));
         return NITROGEN_BLOCK;
     }
 
     public static Item NitrogenBucket() {
-        NITROGEN_BUCKET = new BucketItem(NITROGEN, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
+        NITROGEN_BUCKET = new BucketItem(NITROGEN, new Item.Properties().setId(VERegistryHelper.currentItemId()).craftRemainder(Items.BUCKET).stacksTo(1));
         return NITROGEN_BUCKET;
     }
 

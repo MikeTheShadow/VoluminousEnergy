@@ -6,21 +6,11 @@
     "bcb"
   ],
   "key": {
-    "#": {
-      "tag": "c:ingots/aluminum"
-    },
-    "*": {
-      "item": "voluminousenergy:carbon_shielded_aluminum_machine_frame"
-    },
-    "a": {
-      "item": "voluminousenergy:compressor"
-    },
-    "b": {
-      "tag": "c:plates/titanium"
-    },
-    "c": {
-      "tag": "c:microchips"
-    }
+    "#": "#c:ingots/aluminum",
+    "*": "voluminousenergy:carbon_shielded_aluminum_machine_frame",
+    "a": "voluminousenergy:compressor",
+    "b": "#c:plates/titanium",
+    "c": "#c:microchips"
   },
   "result": {
     "id": "voluminousenergy:implosion_compressor"

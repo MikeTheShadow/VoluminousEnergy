@@ -6,21 +6,11 @@
     "cbc"
   ],
   "key": {
-    "#": {
-      "item": "minecraft:flint"
-    },
-    "*": {
-      "item": "minecraft:iron_block"
-    },
-    "a": {
-      "tag": "c:gears/stone"
-    },
-    "b": {
-      "tag": "c:gears/iron"
-    },
-    "c": {
-      "item": "minecraft:iron_ingot"
-    }
+    "#": "minecraft:flint",
+    "*": "minecraft:iron_block",
+    "a": "#c:gears/stone",
+    "b": "#c:gears/iron",
+    "c": "minecraft:iron_ingot"
   },
   "result": {
     "id": "voluminousenergy:crusher"

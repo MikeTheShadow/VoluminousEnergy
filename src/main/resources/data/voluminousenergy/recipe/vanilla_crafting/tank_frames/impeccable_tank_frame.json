@@ -6,15 +6,9 @@
     "#*#"
   ],
   "key": {
-    "#": {
-      "tag": "c:plates/solarium"
-    },
-    "*": {
-      "tag": "c:gears/solarium"
-    },
-    "0": {
-      "tag": "c:storage_blocks/solarium"
-    }
+    "#": "#c:plates/solarium",
+    "*": "#c:gears/solarium",
+    "0": "#c:storage_blocks/solarium"
   },
   "result": {
     "id": "voluminousenergy:impeccable_tank_frame"

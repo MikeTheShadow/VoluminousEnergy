@@ -30,12 +30,12 @@ public class VEOreBlock extends VEBlock {
     protected void tryDropExperience(ServerLevel level, BlockPos pos, ItemStack heldItem, IntProvider amount) {
         RegistryAccess registries = level.registryAccess();
 
-        Holder<Enchantment> silkTouch = registries.registryOrThrow(Registries.ENCHANTMENT).getHolderOrThrow(Enchantments.SILK_TOUCH);
+        Holder<Enchantment> silkTouch = registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.SILK_TOUCH);
         if (EnchantmentHelper.getItemEnchantmentLevel(silkTouch, heldItem) > 0) {
             return;
         }
-        int xpOnDrop = Mth.nextInt(level.random, 1, 5);
-        Holder<Enchantment> fortune = registries.registryOrThrow(Registries.ENCHANTMENT).getHolderOrThrow(Enchantments.FORTUNE);
+        int xpOnDrop = Mth.nextInt(level.getRandom(), 1, 5);
+        Holder<Enchantment> fortune = registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE);
         int fortuneLevel = EnchantmentHelper.getItemEnchantmentLevel(fortune, heldItem);
 
         if (fortuneLevel > 0) {

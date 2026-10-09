@@ -6,21 +6,11 @@
     "aba"
   ],
   "key": {
-    "#": {
-      "item": "minecraft:iron_ingot"
-    },
-    "a": {
-      "tag": "c:microchips"
-    },
-    "b": {
-      "item": "minecraft:iron_block"
-    },
-    "c": {
-      "tag": "c:dusts/lapis"
-    },
-    "d": {
-      "tag": "c:glass_panes"
-    }
+    "#": "minecraft:iron_ingot",
+    "a": "#c:microchips",
+    "b": "minecraft:iron_block",
+    "c": "#c:dusts/lapis",
+    "d": "#c:glass_panes"
   },
   "result": {
     "id": "voluminousenergy:primitive_solar_panel"

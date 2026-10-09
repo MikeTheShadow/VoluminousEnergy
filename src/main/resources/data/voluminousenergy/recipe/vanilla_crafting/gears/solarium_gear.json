@@ -6,9 +6,7 @@
     " # "
   ],
   "key": {
-    "#": {
-      "tag": "c:ingots/solarium"
-    }
+    "#": "#c:ingots/solarium"
   },
   "result": {
     "id": "voluminousenergy:solarium_gear"

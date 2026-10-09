@@ -4,9 +4,7 @@
     "*"
   ],
   "key": {
-    "*": {
-      "tag": "c:petcoke"
-    }
+    "*": "#c:petcoke"
   },
   "result": {
     "id": "voluminousenergy:tiny_petcoke",

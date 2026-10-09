@@ -6,15 +6,9 @@
     "###"
   ],
   "key": {
-    "#": {
-      "tag": "c:plates/titanium"
-    },
-    "*": {
-      "tag": "c:microchips"
-    },
-    "0": {
-      "item": "voluminousenergy:aluminum_machine_casing"
-    }
+    "#": "#c:plates/titanium",
+    "*": "#c:microchips",
+    "0": "voluminousenergy:aluminum_machine_casing"
   },
   "result": {
     "id": "voluminousenergy:titanium_machine_casing"

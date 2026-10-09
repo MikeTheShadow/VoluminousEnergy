@@ -4,6 +4,7 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntities;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SoundType;
@@ -17,7 +18,7 @@ import javax.annotation.Nullable;
 public class ToolingStationBlock extends VEFaceableMachineBlock {
 
     public ToolingStationBlock() {
-        super(Properties.of()
+        super(Properties.of().setId(VERegistryHelper.currentBlockId())
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .lightLevel(l -> 0)
@@ -37,7 +38,7 @@ public class ToolingStationBlock extends VEFaceableMachineBlock {
     // NEW TICK SYSTEM
     @Nullable
     protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> passedBlockEntity, BlockEntityType<? extends VETileEntity> tile) {
-        return level.isClientSide ? null : createTickerHelper(passedBlockEntity, tile, VETileEntity::serverTick);
+        return level.isClientSide() ? null : createTickerHelper(passedBlockEntity, tile, VETileEntity::serverTick);
     }
 
     public static <T extends BlockEntity, E extends BlockEntity> BlockEntityTicker<T> createTickerHelper(BlockEntityType<T> blockEntityType, BlockEntityType<? extends VETileEntity> tile, BlockEntityTicker<E> serverTick) {

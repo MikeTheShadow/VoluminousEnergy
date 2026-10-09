@@ -5,12 +5,8 @@
     "*"
   ],
   "key": {
-    "#": {
-      "tag": "c:tiny"
-    },
-    "*": {
-      "item": "minecraft:stick"
-    }
+    "#": "#c:tiny",
+    "*": "minecraft:stick"
   },
   "result": {
     "id": "minecraft:torch",

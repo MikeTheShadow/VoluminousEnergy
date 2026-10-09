@@ -1,8 +1,6 @@
 {
   "type": "minecraft:smelting",
-  "ingredient": {
-    "tag": "c:dough"
-  },
+  "ingredient": "#c:dough",
   "result": {
     "id": "minecraft:bread"
   },

@@ -1,8 +1,6 @@
 {
   "type": "minecraft:smelting",
-  "ingredient": {
-    "tag": "c:dusts/eighzo"
-  },
+  "ingredient": "#c:dusts/eighzo",
   "result": {
     "id": "voluminousenergy:eighzo_ingot"
   },

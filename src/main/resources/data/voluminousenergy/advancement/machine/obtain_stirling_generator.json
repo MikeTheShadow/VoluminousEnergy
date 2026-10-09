@@ -2,7 +2,7 @@
   "parent": "voluminousenergy:machine/obtain_primitive_stirling_generator",
   "display": {
     "icon": {
-      "item": "voluminousenergy:stirling_generator"
+      "id": "voluminousenergy:stirling_generator"
     },
     "title": {
       "translate": "advancements.voluminousenergy.machine.obtain.stirling_generator.title"

@@ -6,9 +6,7 @@
     "###"
   ],
   "key": {
-    "#": {
-      "item": "voluminousenergy:raw_rutile"
-    }
+    "#": "voluminousenergy:raw_rutile"
   },
   "result": {
     "id": "voluminousenergy:raw_rutile_block"

@@ -2,11 +2,12 @@ package com.veteam.voluminousenergy.blocks.blocks.machines;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlock;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.world.level.block.SoundType;
 
 public class CarbonShieldedAluminumMachineFrame extends VEBlock {
     public CarbonShieldedAluminumMachineFrame() {
-        super(Properties.of()
+        super(Properties.of().setId(VERegistryHelper.currentBlockId())
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .requiresCorrectToolForDrops()

@@ -4,9 +4,7 @@
     "#"
   ],
   "key": {
-    "#": {
-      "item": "voluminousenergy:battery_box"
-    }
+    "#": "voluminousenergy:battery_box"
   },
   "result": {
     "id": "voluminousenergy:battery_box"

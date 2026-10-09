@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.blocks.blocks.machines;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntities;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SoundType;
@@ -17,7 +18,7 @@ import javax.annotation.Nullable;
 public class FluidMixerBlock extends VEFaceableMachineBlock {
 
     public FluidMixerBlock() {
-        super(Properties.of()
+        super(Properties.of().setId(VERegistryHelper.currentBlockId())
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .lightLevel(l -> 0)

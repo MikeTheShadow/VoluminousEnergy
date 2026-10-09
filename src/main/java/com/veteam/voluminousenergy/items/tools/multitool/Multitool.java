@@ -10,8 +10,11 @@ import com.veteam.voluminousenergy.items.tools.multitool.bits.VEMultitoolBitData
 import com.veteam.voluminousenergy.util.NumberUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
 import com.veteam.voluminousenergy.util.VEDataComponents;
+import com.veteam.voluminousenergy.util.VEItemCapabilities;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
@@ -22,18 +25,19 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.Tool;
+import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class Multitool extends VEItem {
 
@@ -41,7 +45,7 @@ public class Multitool extends VEItem {
     private static final int TEMP_TANK_CAPACITY = VETileEntity.DEFAULT_TANK_CAPACITY;
 
     public Multitool() {
-        super(new Item.Properties()
+        super(new Item.Properties().setId(VERegistryHelper.currentItemId())
                 .stacksTo(1));
         setRegistryName("multitool");
     }
@@ -53,26 +57,29 @@ public class Multitool extends VEItem {
 
     @Override
     public int getBarWidth(ItemStack itemStack) {
-        IFluidHandler fluidHandler = itemStack.getCapability(Capabilities.FluidHandler.ITEM);
-        return (int) Math.round(13 * (fluidHandler.getFluidInTank(0).getAmount() / (double) TEMP_TANK_CAPACITY));
+        return Math.round(13 * getFillRatio(itemStack));
     }
 
     @Override
     public int getBarColor(ItemStack itemStack) {
-        IFluidHandler fluidHandler = itemStack.getCapability(Capabilities.FluidHandler.ITEM);
-        return Mth.hsvToRgb(fluidHandler.getFluidInTank(0).getAmount() / 3.0F, 1.0F, 1.0F);
+        return Mth.hsvToRgb(getFillRatio(itemStack) / 3.0F, 1.0F, 1.0F);
+    }
+
+    private float getFillRatio(ItemStack itemStack) {
+        IFluidHandler fluidHandler = VEItemCapabilities.getFluidHandler(itemStack);
+        return fluidHandler.getFluidInTank(0).getAmount() / (float) TEMP_TANK_CAPACITY;
     }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack itemStack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flag) {
 
-        IFluidHandler fluidHandler = itemStack.getCapability(Capabilities.FluidHandler.ITEM);
+        IFluidHandler fluidHandler = VEItemCapabilities.getFluidHandler(itemStack);
         FluidStack fluidStack = fluidHandler.getFluidInTank(0).copy();
 
         if(fluidStack.isEmpty()) {
-            tooltip.add(TextUtil.translateString("tank.voluminousenergy.tank_empty").copy());
+            tooltip.accept(TextUtil.translateString("tank.voluminousenergy.tank_empty").copy());
         } else {
-            tooltip.add(
+            tooltip.accept(
                     TextUtil.translateString(fluidStack.getHoverName().getString()).copy()
                             .append(": "
                                     + NumberUtil.formatNumber(fluidStack.getAmount())
@@ -85,7 +92,7 @@ public class Multitool extends VEItem {
 
         Integer energy = itemStack.getOrDefault(VEDataComponents.MULTI_TOOL_ENERGY,0);
 
-        tooltip.add(TextUtil.translateString("text.voluminousenergy.energy").copy()
+        tooltip.accept(TextUtil.translateString("text.voluminousenergy.energy").copy()
                 .append(": " + NumberUtil.formatNumber(energy)));
     }
 
@@ -161,7 +168,7 @@ public class Multitool extends VEItem {
     public float getDestroySpeed(@NotNull ItemStack itemStack, @NotNull BlockState blockStateToMine) {
         int energy = itemStack.getOrDefault(VEDataComponents.MULTI_TOOL_ENERGY,0);
         if(energy < 1) {
-            IFluidHandlerItem capability = itemStack.getCapability(Capabilities.FluidHandler.ITEM);
+            IFluidHandler capability = VEItemCapabilities.getFluidHandler(itemStack);
             FluidStack drainedFluid = capability.drain(50, IFluidHandler.FluidAction.EXECUTE);
             if(drainedFluid.isEmpty()) {
                 return 0f;
@@ -181,13 +188,12 @@ public class Multitool extends VEItem {
             return blockStateToMine.requiresCorrectToolForDrops() ? 0.0F : 1;
         }
 
-        return bit.getBitItemData().getTier().getSpeed();
+        return bit.getBitItemData().getTier().speed();
     }
 
     @Override
-    public boolean hurtEnemy(ItemStack stack, @NotNull LivingEntity attackee, @NotNull LivingEntity attacker) {
+    public void hurtEnemy(ItemStack stack, @NotNull LivingEntity attackee, @NotNull LivingEntity attacker) {
         stack.hurtAndBreak(0, attacker, EquipmentSlot.MAINHAND);
-        return true;
     }
 
     @Override
@@ -225,7 +231,7 @@ public class Multitool extends VEItem {
     }
 
     @Override
-    public boolean canPerformAction(ItemStack stack, @NotNull ItemAbility itemAbility) {
+    public boolean canPerformAction(ItemInstance stack, @NotNull ItemAbility itemAbility) {
 
         List<ItemStack> inventory = stack.getOrDefault(VEDataComponents.ITEM_STACK_LIST_COMPONENT,new ArrayList<>());
 
@@ -259,7 +265,7 @@ public class Multitool extends VEItem {
         }
 
         if (bit != null && bit.getBitItemData().getToolType() == ToolType.TRIMMER.value() && entity instanceof net.neoforged.neoforge.common.IShearable target) {
-            if (entity.level().isClientSide) return net.minecraft.world.InteractionResult.SUCCESS;
+            if (entity.level().isClientSide()) return net.minecraft.world.InteractionResult.SUCCESS;
             BlockPos pos = new BlockPos(Mth.floor(entity.getX()), Mth.floor(entity.getY()), Mth.floor(entity.getZ()));
             if (target.isShearable(playerIn, multitool, entity.level(), pos)) {
 
@@ -270,7 +276,7 @@ public class Multitool extends VEItem {
                 java.util.Random rand = new java.util.Random();
 
                 drops.forEach(d -> {
-                    net.minecraft.world.entity.item.ItemEntity ent = entity.spawnAtLocation(d, 1.0F);
+                    net.minecraft.world.entity.item.ItemEntity ent = entity.spawnAtLocation((ServerLevel) entity.level(), d, 1.0F);
                     ent.setDeltaMovement(ent.getDeltaMovement().add((double) ((rand.nextFloat() - rand.nextFloat()) * 0.1F), (double) (rand.nextFloat() * 0.05F), (double) ((rand.nextFloat() - rand.nextFloat()) * 0.1F)));
                 });
 

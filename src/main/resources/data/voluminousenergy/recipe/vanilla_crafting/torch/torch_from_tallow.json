@@ -5,12 +5,8 @@
     "*"
   ],
   "key": {
-    "#": {
-      "tag": "c:tallow"
-    },
-    "*": {
-      "item": "minecraft:stick"
-    }
+    "#": "#c:tallow",
+    "*": "minecraft:stick"
   },
   "result": {
     "id": "minecraft:torch",

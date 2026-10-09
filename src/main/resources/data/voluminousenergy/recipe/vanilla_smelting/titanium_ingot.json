@@ -1,8 +1,6 @@
 {
   "type": "minecraft:smelting",
-  "ingredient": {
-    "tag": "c:dusts/titanium"
-  },
+  "ingredient": "#c:dusts/titanium",
   "result": {
     "id": "voluminousenergy:titanium_ingot"
   },

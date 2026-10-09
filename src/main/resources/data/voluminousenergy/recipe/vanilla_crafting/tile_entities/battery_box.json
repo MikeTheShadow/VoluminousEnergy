@@ -6,21 +6,11 @@
     "bcb"
   ],
   "key": {
-    "#": {
-      "tag": "c:ingots/aluminum"
-    },
-    "*": {
-      "item": "voluminousenergy:carbon_shielded_aluminum_machine_frame"
-    },
-    "a": {
-      "tag": "c:microchips"
-    },
-    "b": {
-      "tag": "c:ingots/lead"
-    },
-    "c": {
-      "tag": "c:ingots/silver"
-    }
+    "#": "#c:ingots/aluminum",
+    "*": "voluminousenergy:carbon_shielded_aluminum_machine_frame",
+    "a": "#c:microchips",
+    "b": "#c:ingots/lead",
+    "c": "#c:ingots/silver"
   },
   "result": {
     "id": "voluminousenergy:battery_box"

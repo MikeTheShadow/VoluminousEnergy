@@ -6,18 +6,10 @@
     "111"
   ],
   "key": {
-    "#": {
-      "tag": "c:ingots/tungsten_steel"
-    },
-    "*": {
-      "tag": "c:microchips"
-    },
-    "0": {
-      "item": "voluminousenergy:titanium_machine_casing"
-    },
-    "1": {
-      "tag": "c:ingots/solarium"
-    }
+    "#": "#c:ingots/tungsten_steel",
+    "*": "#c:microchips",
+    "0": "voluminousenergy:titanium_machine_casing",
+    "1": "#c:ingots/solarium"
   },
   "result": {
     "id": "voluminousenergy:solarium_machine_casing"

@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.items;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -9,11 +10,12 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class VEBlockItems {
     public static final DeferredRegister<Item> VE_BLOCK_ITEM_REGISTRY = DeferredRegister.create(BuiltInRegistries.ITEM, VoluminousEnergy.MODID);
-    protected static final Item.Properties PROPERTIES = new Item.Properties();
+    protected static final Item.Properties PROPERTIES = new Item.Properties().useBlockDescriptionPrefix();
 
     static {
         for(VEBlocks.RegistryWithName registryWithName : VEBlocks.REGISTERED_BLOCKS) {
-            VE_BLOCK_ITEM_REGISTRY.register(registryWithName.name(),() -> new BlockItem(registryWithName.block().get(), PROPERTIES));
+            VERegistryHelper.registerItem(VE_BLOCK_ITEM_REGISTRY, registryWithName.name(),
+                    () -> new BlockItem(registryWithName.block().get(), PROPERTIES.setId(VERegistryHelper.currentItemId())));
         }
     }
 

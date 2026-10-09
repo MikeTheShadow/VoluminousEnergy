@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.fluids.flowingFluidBlocks;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.Level;
@@ -18,7 +19,7 @@ public class VEFlowingFluidBlock extends LiquidBlock {
     }
 
     @Override
-    public void entityInside(BlockState state, Level worldIn, BlockPos pos, Entity entityIn) {
+    protected void entityInside(BlockState state, Level worldIn, BlockPos pos, Entity entityIn, InsideBlockEffectApplier insideBlockEffectApplier, boolean movingBlock) {
         if (entityIn instanceof LivingEntity) {
             if ((entityIn.getY() - entityIn.yOld) > 0 && !entityIn.isCrouching()) {
                 entityIn.makeStuckInBlock(state, new Vec3(0.9F, -0.9F, 0.9F));

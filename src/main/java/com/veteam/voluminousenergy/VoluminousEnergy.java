@@ -17,9 +17,6 @@ import com.veteam.voluminousenergy.util.VEAttachments;
 import com.veteam.voluminousenergy.util.VEDataComponents;
 import com.veteam.voluminousenergy.world.feature.VEFeatures;
 import com.veteam.voluminousenergy.world.modifiers.VEModifiers;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -33,7 +30,6 @@ import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
@@ -141,19 +137,6 @@ public class VoluminousEnergy {
     public static class ClientRegister {
 
         @SubscribeEvent
-        public static void RegisterClientOnSetupEvent(FMLClientSetupEvent event) {
-            event.enqueueWork(() -> ItemBlockRenderTypes.setRenderLayer(VEBlocks.RICE_CROP.get(), RenderType.cutout()));
-            event.enqueueWork(() -> ItemBlockRenderTypes.setRenderLayer(VEBlocks.SAWMILL.block().get(), RenderType.cutout()));
-            event.enqueueWork(() -> ItemBlockRenderTypes.setRenderLayer(VEBlocks.PRESSURE_LADDER.get(), RenderType.cutout()));
-
-            ItemProperties.register(VEMultitoolItems.MULTI_TOOL.get(), Identifier.fromNamespaceAndPath(MODID, "tool_type"), (stack, level, entity, seed)
-                    -> stack.getOrDefault(VEDataComponents.TOOL_TYPE, 0));
-
-            ItemProperties.register(VEMultitoolItems.MULTI_TOOL.get(), Identifier.fromNamespaceAndPath(MODID, "tool_tier"), (stack, level, entity, seed)
-                    -> stack.getOrDefault(VEDataComponents.TOOL_TIER, 0));
-        }
-
-        @SubscribeEvent
         public static void RegisterMenuScreens(RegisterMenuScreensEvent event) {
             VESetup.registerMenuScreens(event);
         }
@@ -164,15 +147,13 @@ public class VoluminousEnergy {
     public static class OnDatagenEvent {
 
         @SubscribeEvent
-        public static void onGatherData(GatherDataEvent event) {
+        public static void onGatherData(GatherDataEvent.Client event) {
             DataGenerator dataGenerator = event.getGenerator();
             PackOutput packOutput = dataGenerator.getPackOutput();
             CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
 
-            if (event.includeServer()) {
-                dataGenerator.addProvider(true, new VETagDataGenerator(dataGenerator.getPackOutput(), lookupProvider, event.getExistingFileHelper()));
-                dataGenerator.addProvider(true, new VEGlobalLootModifierData(dataGenerator.getPackOutput(), lookupProvider));
-            }
+            event.addProvider(new VETagDataGenerator(packOutput, lookupProvider));
+            event.addProvider(new VEGlobalLootModifierData(packOutput, lookupProvider));
         }
     }
 }

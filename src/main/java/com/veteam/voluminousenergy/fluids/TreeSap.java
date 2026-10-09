@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.fluids;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.CrudeOilFlowingFluidBlock;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.BucketItem;
@@ -20,7 +21,7 @@ public class TreeSap {
     public static final Identifier TREE_SAP_STILL_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/tree_sap_still");
     public static final Identifier TREE_SAP_FLOWING_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/tree_sap_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
+    public static Block.Properties stdProp = Block.Properties.of().setId(VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
 
     public static FlowingFluid TREE_SAP;
     public static FlowingFluid FLOWING_TREE_SAP;
@@ -38,12 +39,12 @@ public class TreeSap {
     }
 
     public static CrudeOilFlowingFluidBlock FlowingTreeSapBlock() {
-        TREE_SAP_BLOCK = new CrudeOilFlowingFluidBlock(TREE_SAP, stdProp);
+        TREE_SAP_BLOCK = new CrudeOilFlowingFluidBlock(TREE_SAP, stdProp.setId(VERegistryHelper.currentBlockId()));
         return TREE_SAP_BLOCK;
     }
 
     public static Item TreeSapBucket() {
-        TREE_SAP_BUCKET = new BucketItem(TREE_SAP, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
+        TREE_SAP_BUCKET = new BucketItem(TREE_SAP, new Item.Properties().setId(VERegistryHelper.currentItemId()).craftRemainder(Items.BUCKET).stacksTo(1));
         return TREE_SAP_BUCKET;
     }
 

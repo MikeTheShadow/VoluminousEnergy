@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.world.feature;
 
 import com.mojang.serialization.Codec;
+import com.veteam.voluminousenergy.util.WorldUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.util.RandomSource;
@@ -98,7 +99,7 @@ public class VELakesFeature extends Feature<VELakesFeature.Configuration> {
                     for (int j4 = 4; j4 < 8; ++j4) {
                         if (aboolean[(i2 * 16 + j3) * 8 + j4]) {
                             BlockPos blockpos = pos.offset(i2, j4 - 1, j3);
-                            if (isDirt(worldIn.getBlockState(blockpos)) && worldIn.getBrightness(LightLayer.SKY, pos.offset(i2, j4, j3)) > 0) {
+                            if (WorldUtil.isDirt(worldIn.getBlockState(blockpos)) && worldIn.getBrightness(LightLayer.SKY, pos.offset(i2, j4, j3)) > 0) {
                                 Holder<Biome> biome = worldIn.getBiome(blockpos);
                                 if (biome.is(Biomes.MUSHROOM_FIELDS)) {
                                     worldIn.setBlock(blockpos, Blocks.MYCELIUM.defaultBlockState(), 2);

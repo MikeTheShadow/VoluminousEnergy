@@ -34,32 +34,32 @@ public class AmmoniumNitrateBucket extends BucketItem {
         BlockPos blockpos = context.getClickedPos();
         BlockPos blockpos1 = blockpos.relative(context.getClickedFace());
         if (applyFert(context.getItemInHand(), level, blockpos, context.getPlayer())) {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 level.levelEvent(1505, blockpos, 0);
             }
 
             applyFert(context.getItemInHand(), level, blockpos, context.getPlayer());
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 level.levelEvent(1505, blockpos, 0);
             }
 
-            if (context.getPlayer() != null && !level.isClientSide) {
+            if (context.getPlayer() != null && !level.isClientSide()) {
                 if (context.getPlayer().isCreative()) {
                     context.getPlayer().getInventory().placeItemBackInInventory(new ItemStack(VEFluids.AMMONIUM_NITRATE_SOLUTION_BUCKET_REG.get()));
                 } else {
                     context.getPlayer().getInventory().placeItemBackInInventory(new ItemStack(Items.BUCKET));
                 }
             }
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return (level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER);
         } else {
             BlockState blockstate = level.getBlockState(blockpos);
             boolean flag = blockstate.isFaceSturdy(level, blockpos, context.getClickedFace());
             if (flag && growWaterPlant(context.getItemInHand(), level, blockpos1, context.getClickedFace())) {
-                if (!level.isClientSide) {
+                if (!level.isClientSide()) {
                     level.levelEvent(1505, blockpos1, 0);
                 }
 
-                return InteractionResult.sidedSuccess(level.isClientSide);
+                return (level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER);
             } else {
                 return super.useOn(context);
             }
@@ -89,8 +89,8 @@ public class AmmoniumNitrateBucket extends BucketItem {
 
                         itemStack.shrink(1);
                     } else {
-                        if (bonemealableblock.isBonemealSuccess(level, level.random, pos, blockstate)) {
-                            bonemealableblock.performBonemeal((ServerLevel) level, level.random, pos, blockstate);
+                        if (bonemealableblock.isBonemealSuccess(level, level.getRandom(), pos, blockstate)) {
+                            bonemealableblock.performBonemeal((ServerLevel) level, level.getRandom(), pos, blockstate);
                         }
 
                         itemStack.shrink(1);
@@ -127,20 +127,18 @@ public class AmmoniumNitrateBucket extends BucketItem {
                     Holder<Biome> holder = level.getBiome(blockpos);
                     if (holder.is(Biomes.WARM_OCEAN)) {
                         if (i == 0 && direction != null && direction.getAxis().isHorizontal()) {
-                            blockstate = BuiltInRegistries.BLOCK.getTag(BlockTags.WALL_CORALS).flatMap((p_204098_) -> { // TODO: Switch to Forge
-                                return p_204098_.getRandomElement(level.random);
-                            }).map((p_204100_) -> {
-                                return p_204100_.value().defaultBlockState();
-                            }).orElse(blockstate);
+                            blockstate = BuiltInRegistries.BLOCK
+                                    .getRandomElementOf(BlockTags.WALL_CORALS, level.getRandom())
+                                    .map((p_204100_) -> p_204100_.value().defaultBlockState())
+                                    .orElse(blockstate);
                             if (blockstate.hasProperty(BaseCoralWallFanBlock.FACING)) {
                                 blockstate = blockstate.setValue(BaseCoralWallFanBlock.FACING, direction);
                             }
                         } else if (random.nextInt(4) == 0) {
-                            blockstate = BuiltInRegistries.BLOCK.getTag(BlockTags.UNDERWATER_BONEMEALS).flatMap((p_204091_) -> { // TODO: Switch to Forge
-                                return p_204091_.getRandomElement(level.random);
-                            }).map((p_204095_) -> {
-                                return p_204095_.value().defaultBlockState();
-                            }).orElse(blockstate);
+                            blockstate = BuiltInRegistries.BLOCK
+                                    .getRandomElementOf(BlockTags.UNDERWATER_BONEMEALS, level.getRandom())
+                                    .map((p_204095_) -> p_204095_.value().defaultBlockState())
+                                    .orElse(blockstate);
                         }
                     }
 

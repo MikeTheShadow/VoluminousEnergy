@@ -4,9 +4,7 @@
     "#"
   ],
   "key": {
-    "#": {
-      "item": "voluminousenergy:combustion_generator"
-    }
+    "#": "voluminousenergy:combustion_generator"
   },
   "result": {
     "id": "voluminousenergy:combustion_generator"

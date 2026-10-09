@@ -5,12 +5,8 @@
     " * "
   ],
   "key": {
-    "#": {
-      "item": "minecraft:iron_ingot"
-    },
-    "*": {
-      "tag": "c:gears/iron"
-    }
+    "#": "minecraft:iron_ingot",
+    "*": "#c:gears/iron"
   },
   "result": {
     "id": "voluminousenergy:iron_trimmer_bit",

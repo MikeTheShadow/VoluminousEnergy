@@ -4,9 +4,7 @@
     "#"
   ],
   "key": {
-    "#": {
-      "item": "voluminousenergy:blast_furnace"
-    }
+    "#": "voluminousenergy:blast_furnace"
   },
   "result": {
     "id": "voluminousenergy:blast_furnace"

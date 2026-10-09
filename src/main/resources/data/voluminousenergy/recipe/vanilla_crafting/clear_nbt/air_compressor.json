@@ -4,9 +4,7 @@
     "#"
   ],
   "key": {
-    "#": {
-      "item": "voluminousenergy:air_compressor"
-    }
+    "#": "voluminousenergy:air_compressor"
   },
   "result": {
     "id": "voluminousenergy:air_compressor"

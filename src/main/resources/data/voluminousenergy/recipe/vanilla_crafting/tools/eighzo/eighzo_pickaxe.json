@@ -6,12 +6,8 @@
     " # "
   ],
   "key": {
-    "#": {
-      "item": "minecraft:stick"
-    },
-    "X": {
-      "tag": "c:ingots/eighzo"
-    }
+    "#": "minecraft:stick",
+    "X": "#c:ingots/eighzo"
   },
   "result": {
     "id": "voluminousenergy:eighzo_pickaxe"

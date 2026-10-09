@@ -8,8 +8,10 @@ import com.veteam.voluminousenergy.util.climate.FluidClimateSpawn;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.NoiseRouter;
@@ -18,7 +20,7 @@ import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.levelgen.synth.PerlinSimplexNoise;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.storage.DimensionDataStorage;
+import net.minecraft.world.level.storage.SavedDataStorage;
 import oshi.util.tuples.Pair;
 
 import java.util.ArrayList;
@@ -47,7 +49,9 @@ public class WorldUtil {
     }
 
     public static HashMap<ClimateParameters, Double> sampleClimate(Level level, BlockPos pos) {
-        if (level.isClientSide) new HashMap<>();
+        if (level.isClientSide()) {
+            return new HashMap<>();
+        }
 
         ServerLevel serverLevel = level.getServer().getLevel(level.dimension());
         ServerChunkCache serverchunkcache = serverLevel.getChunkSource();
@@ -84,9 +88,9 @@ public class WorldUtil {
         if (!chunkFluids.hasChunkFluid(chunkFluid)) {
             chunkFluids.add(chunkFluid);
             chunkFluids.setDirty();
-            DimensionDataStorage storage = serverLevel.getDataStorage();
-            storage.set("chunk_fluids", chunkFluids);
-            storage.save();
+            SavedDataStorage storage = serverLevel.getDataStorage();
+            storage.set(ChunkFluids.TYPE, chunkFluids);
+            storage.scheduleSave();
         }
         return chunkFluid;
     }
@@ -151,6 +155,14 @@ public class WorldUtil {
         }
 
         return 250;
+    }
+
+    public static boolean isDirt(BlockState state) {
+        return state.is(BlockTags.DIRT);
+    }
+
+    public static boolean isStone(BlockState state) {
+        return state.is(BlockTags.BASE_STONE_OVERWORLD);
     }
 
 }

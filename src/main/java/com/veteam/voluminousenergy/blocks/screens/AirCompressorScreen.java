@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
@@ -8,7 +7,7 @@ import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VERender;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
@@ -23,13 +22,6 @@ public class AirCompressorScreen extends VEContainerScreen<VEContainer> {
     public AirCompressorScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
         tileEntity = screenContainer.getTileEntity();
-    }
-
-    @Override
-    public void render(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(matrixStack, mouseX, mouseY, partialTicks);
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
-        this.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
     @Override
@@ -61,27 +53,23 @@ public class AirCompressorScreen extends VEContainerScreen<VEContainer> {
     @Override
     protected void extractTooltip(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
-            matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(tileEntity.getEnergy(), Config.AIR_COMPRESSOR_MAX_POWER.get()), mouseX, mouseY);
+            matrixStack.setTooltipForNextFrame(this.font, TextUtil.powerBarTooltip(tileEntity.getEnergy(), Config.AIR_COMPRESSOR_MAX_POWER.get()), mouseX, mouseY);
         }
 
         if (isHovering(93, 18, 12, 50, mouseX, mouseY)) { // Oxidizer Tank
             String name = tileEntity.getFluidStackFromTank(0).getHoverName().getString();
             int amount = tileEntity.getFluidStackFromTank(0).getAmount();
-            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity(0)), mouseX, mouseY);
+            matrixStack.setTooltipForNextFrame(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity(0)), mouseX, mouseY);
         }
 
-        super.renderTooltip(matrixStack, mouseX, mouseY);
+        super.extractTooltip(matrixStack, mouseX, mouseY);
     }
 
     @Override
-    protected void renderBg(GuiGraphics matrixStack, float partialTicks, int mouseX, int mouseY) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        RenderSystem.setShaderTexture(0, this.GUI);
-
+    public void extractBackground(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY, float partialTicks) {
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
-        matrixStack.blit(this.GUI, i, j, 0, 0, this.imageWidth, this.imageHeight);
+        matrixStack.blit(RenderPipelines.GUI_TEXTURED, this.GUI, i, j, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
         if (tileEntity != null) {
             int power = menu.powerScreen(49);
 
@@ -93,12 +81,10 @@ public class AirCompressorScreen extends VEContainerScreen<VEContainer> {
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            matrixStack.blit(this.GUI, i + 11, j + (16 + (49 - power)), 176, 24 + (49 - power), 12, power);
+            matrixStack.blit(RenderPipelines.GUI_TEXTURED, this.GUI, i + 11, j + (16 + (49 - power)), 176, 24 + (49 - power), 12, power, 256, 256);
             VERender.renderGuiTank(matrixStack, tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(0), tileEntity.getTankCapacity(0), i + 93, j + 18, 0, 12, 50);
             // Upgrade slot
-            RenderSystem.setShaderTexture(0, GUI_TOOLS);
-
-            matrixStack.blit(GUI_TOOLS, i + 153, j - 16, 0, 0, 18, 18);
+            matrixStack.blit(RenderPipelines.GUI_TEXTURED, GUI_TOOLS, i + 153, j - 16, 0, 0, 18, 18, 256, 256);
             drawIOSideHelper();
         }
     }

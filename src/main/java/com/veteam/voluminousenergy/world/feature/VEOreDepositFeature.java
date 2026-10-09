@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.world.feature;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.tools.Config;
+import com.veteam.voluminousenergy.util.WorldUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.util.RandomSource;
@@ -34,8 +35,8 @@ public class VEOreDepositFeature extends Feature<VEOreDepositFeature.Configurati
         if (worldIn.canSeeSky(pos) && Config.PREVENT_SURFACE_ORE_DEPOSITS.get()) return false;
 
         // Get states from the configuration codec
-        BlockState rawState = conf.raw_block_state().getState(rand, pos);
-        BlockState oreState = conf.ore_block_state.getState(rand, pos);
+        BlockState rawState = conf.raw_block_state().getState(worldIn, rand, pos);
+        BlockState oreState = conf.ore_block_state.getState(worldIn, rand, pos);
 
         pos = pos.below(4);
 
@@ -98,7 +99,7 @@ public class VEOreDepositFeature extends Feature<VEOreDepositFeature.Configurati
                 for (int j4 = 4; j4 < 8; ++j4) {
                     if (aboolean[(i2 * 16 + j3) * 8 + j4]) {
                         BlockPos blockpos = pos.offset(i2, j4 - 1, j3);
-                        if (isDirt(worldIn.getBlockState(blockpos)) && worldIn.getBrightness(LightLayer.SKY, pos.offset(i2, j4, j3)) > 0) {
+                        if (WorldUtil.isDirt(worldIn.getBlockState(blockpos)) && worldIn.getBrightness(LightLayer.SKY, pos.offset(i2, j4, j3)) > 0) {
                             Holder<Biome> biome = worldIn.getBiome(blockpos);
                             if (biome.is(Biomes.MUSHROOM_FIELDS)) {
                                 worldIn.setBlock(blockpos, Blocks.MYCELIUM.defaultBlockState(), 2);

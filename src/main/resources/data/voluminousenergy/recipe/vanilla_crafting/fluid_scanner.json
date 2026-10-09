@@ -5,15 +5,9 @@
     " *#"
   ],
   "key": {
-    "#": {
-      "tag": "c:ingots/tungsten_steel"
-    },
-    "*": {
-      "tag": "c:microchips"
-    },
-    "0": {
-      "item": "minecraft:amethyst_shard"
-    }
+    "#": "#c:ingots/tungsten_steel",
+    "*": "#c:microchips",
+    "0": "minecraft:amethyst_shard"
   },
   "result": {
     "id": "voluminousenergy:fluid_scanner"

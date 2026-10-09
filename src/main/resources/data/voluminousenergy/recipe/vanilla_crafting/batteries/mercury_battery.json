@@ -6,15 +6,9 @@
     "#*#"
   ],
   "key": {
-    "#": {
-      "tag": "c:ingots/aluminum"
-    },
-    "x": {
-      "item": "voluminousenergy:mercury_bucket"
-    },
-    "*": {
-      "tag": "c:ingots/silver"
-    }
+    "#": "#c:ingots/aluminum",
+    "x": "voluminousenergy:mercury_bucket",
+    "*": "#c:ingots/silver"
   },
   "result": {
     "id": "voluminousenergy:mercury_battery",

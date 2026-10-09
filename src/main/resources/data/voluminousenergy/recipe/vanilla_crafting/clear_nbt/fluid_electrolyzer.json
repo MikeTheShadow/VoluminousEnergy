@@ -4,9 +4,7 @@
     "#"
   ],
   "key": {
-    "#": {
-      "item": "voluminousenergy:fluid_electrolyzer"
-    }
+    "#": "voluminousenergy:fluid_electrolyzer"
   },
   "result": {
     "id": "voluminousenergy:fluid_electrolyzer"

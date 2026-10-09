@@ -6,18 +6,10 @@
     "#b#"
   ],
   "key": {
-    "#": {
-      "tag": "c:plates/aluminum"
-    },
-    "*": {
-      "item": "voluminousenergy:carbon_shielded_aluminum_machine_frame"
-    },
-    "a": {
-      "tag": "c:ingots/aluminum"
-    },
-    "b": {
-      "tag": "c:microchips"
-    }
+    "#": "#c:plates/aluminum",
+    "*": "voluminousenergy:carbon_shielded_aluminum_machine_frame",
+    "a": "#c:ingots/aluminum",
+    "b": "#c:microchips"
   },
   "result": {
     "id": "voluminousenergy:centrifugal_separator"

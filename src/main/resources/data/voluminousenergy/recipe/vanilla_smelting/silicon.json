@@ -1,8 +1,6 @@
 {
   "type": "minecraft:smelting",
-  "ingredient": {
-    "tag": "c:dusts/sand"
-  },
+  "ingredient": "#c:dusts/sand",
   "result": {
     "id": "voluminousenergy:silicon"
   },

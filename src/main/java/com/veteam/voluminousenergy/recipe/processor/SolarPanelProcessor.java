@@ -4,6 +4,7 @@ import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.level.Level;
 
 public class SolarPanelProcessor implements AbstractRecipeProcessor {
@@ -41,7 +42,7 @@ public class SolarPanelProcessor implements AbstractRecipeProcessor {
         if (!level.canSeeSky(pos.above()))
             return 0.0f;
 
-        float celestialAngle = level.getSunAngle(1.0f); // Zenith = 0rad
+        float celestialAngle = (float) Math.toRadians(level.environmentAttributes().getValue(EnvironmentAttributes.SUN_ANGLE, pos)); // Zenith = 0rad
 
         if (celestialAngle > Math.PI)
             celestialAngle = (2 * ((float) Math.PI) - celestialAngle);

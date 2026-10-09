@@ -6,18 +6,10 @@
     "121"
   ],
   "key": {
-    "#": {
-      "tag": "c:tank_frames/titanium"
-    },
-    "*": {
-      "tag": "c:ingots/titanium"
-    },
-    "1": {
-      "tag": "c:plates/carbon"
-    },
-    "2": {
-      "tag": "c:glass_panes"
-    }
+    "#": "#c:tank_frames/titanium",
+    "*": "#c:ingots/titanium",
+    "1": "#c:plates/carbon",
+    "2": "#c:glass_panes"
   },
   "result": {
     "id": "voluminousenergy:titanium_tank"

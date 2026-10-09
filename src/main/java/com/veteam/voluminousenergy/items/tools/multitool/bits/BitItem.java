@@ -1,17 +1,30 @@
 package com.veteam.voluminousenergy.items.tools.multitool.bits;
 
 import com.veteam.voluminousenergy.items.VEItem;
+import com.veteam.voluminousenergy.util.VERegistryHelper;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.component.Tool;
+import net.minecraft.world.level.block.Block;
+
+import java.util.List;
 
 public class BitItem extends VEItem {
     private final BitItemData bitItemData;
     private final Tool tool;
 
     public BitItem(BitItemData bit, String registryName, Item.Properties itemProperties) {
-        super(itemProperties);
+        super(itemProperties.setId(VERegistryHelper.currentItemId()));
         this.bitItemData = bit;
-        this.tool = bit.getTier().createToolProperties(bit.getMineableBlocks());
+        // Matches the Tool component ToolMaterial.applyToolProperties sets on item properties.
+        HolderGetter<Block> registrationLookup = BuiltInRegistries.acquireBootstrapRegistrationLookup(BuiltInRegistries.BLOCK);
+        this.tool = new Tool(
+                List.of(Tool.Rule.minesAndDrops(registrationLookup.getOrThrow(bit.getMineableBlocks()), bit.getTier().speed())),
+                1.0F,
+                1,
+                true
+        );
         setRegistryName(registryName);
     }
 

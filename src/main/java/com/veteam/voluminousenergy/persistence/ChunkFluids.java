@@ -1,33 +1,48 @@
 package com.veteam.voluminousenergy.persistence;
 
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.saveddata.SavedData;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.world.level.saveddata.SavedDataType;
 
 import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 public class ChunkFluids extends SavedData {
     private static ChunkFluids CHUNK_FLUIDS;
 
+    public static final Codec<ChunkFluids> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.INT.fieldOf("NextAvailableID").forGetter(cf -> cf.nextAvailableID),
+            Codec.INT.fieldOf("Tick").forGetter(cf -> cf.tick),
+            ChunkFluid.CODEC.listOf().fieldOf("ChunkFluids").forGetter(cf -> List.copyOf(cf.chunkFluidSet))
+    ).apply(instance, ChunkFluids::new));
+
+    public static final SavedDataType<ChunkFluids> TYPE = new SavedDataType<>(
+            Identifier.fromNamespaceAndPath("voluminousenergy", "chunk_fluids"),
+            ChunkFluids::new,
+            CODEC,
+            DataFixTypes.SAVED_DATA_RAIDS);
+
     private final Set<ChunkFluid> chunkFluidSet = new HashSet<>();
-    private final ServerLevel level;
     private int nextAvailableID;
     private int tick;
 
-    public ChunkFluids(ServerLevel serverLevel) {
-        this.level = serverLevel;
+    public ChunkFluids() {
         this.nextAvailableID = 1;
         this.setDirty();
+    }
+
+    private ChunkFluids(int nextAvailableID, int tick, List<ChunkFluid> chunkFluids) {
+        this.nextAvailableID = nextAvailableID;
+        this.tick = tick;
+        this.chunkFluidSet.addAll(chunkFluids);
     }
 
     public void tick() {
@@ -39,43 +54,6 @@ public class ChunkFluids extends SavedData {
         if (this.tick % 20 == 0) {
             this.setDirty();
         }
-    }
-
-    public static ChunkFluids load(ServerLevel serverLevel, CompoundTag compoundTag) {
-        ChunkFluids chunkFluid = new ChunkFluids(serverLevel);
-        chunkFluid.nextAvailableID = compoundTag.getInt("NextAvailableID");
-        chunkFluid.tick = compoundTag.getInt("Tick");
-        ListTag listtag = compoundTag.getList("ChunkFluids", 10);
-        for (int i = 0; i < listtag.size(); ++i) {
-            CompoundTag compoundtag = listtag.getCompound(i);
-            ChunkFluid cf = new ChunkFluid(compoundtag);
-            chunkFluid.chunkFluidSet.add(cf);
-        }
-        return chunkFluid;
-    }
-
-    @Override
-    public @NotNull CompoundTag save(CompoundTag tag,@NotNull HolderLookup.Provider registries) {
-        tag.putInt("NextAvailableID", this.nextAvailableID);
-        tag.putInt("Tick", this.tick);
-        ListTag listtag = new ListTag();
-
-        for (ChunkFluid chunkFluid : this.chunkFluidSet.stream().toList()) {
-            CompoundTag compoundtag = new CompoundTag();
-            chunkFluid.save(compoundtag);
-            listtag.add(compoundtag);
-        }
-
-        tag.put("ChunkFluids", listtag);
-        return tag;
-    }
-
-    /*
-    This will allow us to technically do this on a per-dimension basis
-     */
-    public static String getFileId(Holder<DimensionType> dimensionTypeHolder) {
-        //return dimensionTypeHolder.is(DimensionType.END_LOCATION) ? "raids_end" : "raids";
-        return "chunk_fluids";
     }
 
     private int getUniqueId() {
@@ -99,18 +77,8 @@ public class ChunkFluids extends SavedData {
 
     public static void loadInstance(ServerLevel serverLevel) {
         if (CHUNK_FLUIDS == null) {
-            CHUNK_FLUIDS = factory(serverLevel).constructor().get();
-            CHUNK_FLUIDS = serverLevel.getDataStorage()
-                    .computeIfAbsent(ChunkFluids.factory(serverLevel), ChunkFluids.getFileId(serverLevel.dimensionTypeRegistration()));
+            CHUNK_FLUIDS = serverLevel.getDataStorage().computeIfAbsent(TYPE);
         }
-    }
-
-    public static SavedData.Factory<ChunkFluids> factory(ServerLevel serverLevel) {
-        return new SavedData.Factory<>(() -> {
-            return new ChunkFluids(serverLevel);
-        }, (tag,registry) -> {
-            return load(serverLevel, tag);
-        }, DataFixTypes.SAVED_DATA_RAIDS);
     }
 
     public static ChunkFluids getInstance() {
