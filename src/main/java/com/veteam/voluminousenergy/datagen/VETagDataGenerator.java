@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 
 import java.util.ArrayList;
@@ -51,6 +52,9 @@ public class VETagDataGenerator extends BlockTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider lookupProvider) {
+        // Vanilla Cinnabar is the raw cinnabar storage block, so it shares the ore's tier
+        MaterialConstants.setCinnabarTier(Blocks.CINNABAR);
+
         // Setup Needs Tags
         final TagKey<Block> NEEDS_WOOD_TOOL = TagKey.create(Registries.BLOCK, Identifier.withDefaultNamespace("needs_wood_tool"));
         final TagKey<Block> NEEDS_NETHERITE_TOOL = TagKey.create(Registries.BLOCK, Identifier.withDefaultNamespace("needs_netherite_tool"));

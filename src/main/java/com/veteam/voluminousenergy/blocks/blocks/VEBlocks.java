@@ -383,8 +383,6 @@ public class VEBlocks {
     // Raw Material Storage Blocks
     public static Supplier<Block> RAW_BAUXITE_BLOCK = registerWithBlockItemSupport("raw_bauxite_block", RawBauxiteBlock::new);
 
-    public static Supplier<Block> RAW_CINNABAR_BLOCK = registerWithBlockItemSupport("raw_cinnabar_block", RawCinnabarBlock::new);
-
     public static Supplier<Block> RAW_EIGHZO_BLOCK = registerWithBlockItemSupport("raw_eighzo_block", RawEighzoBlock::new);
 
     public static Supplier<Block> RAW_GALENA_BLOCK = registerWithBlockItemSupport("raw_galena_block", RawGalenaBlock::new);

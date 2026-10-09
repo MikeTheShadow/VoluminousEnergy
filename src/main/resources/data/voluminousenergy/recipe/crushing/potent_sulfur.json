@@ -1,0 +1,25 @@
+{
+  "type": "voluminousenergy:crushing",
+  "ingredients": [
+    {
+      "item": "minecraft:potent_sulfur",
+      "count": 1
+    }
+  ],
+  "process_time": 200,
+  "item_results": [
+    {
+      "item": "voluminousenergy:sulfurdust",
+      "count": 41
+    },
+    {
+      "item": "voluminousenergy:sulfurdust",
+      "count": 40,
+      "chance": 1.0
+    }
+  ],
+  "experience": {
+    "minimum": 0,
+    "maximum": 0
+  }
+}

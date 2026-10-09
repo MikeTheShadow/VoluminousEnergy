@@ -6,9 +6,9 @@
     "###"
   ],
   "key": {
-    "#": "voluminousenergy:raw_cinnabar"
+    "#": "voluminousenergy:raw_sulfur"
   },
   "result": {
-    "id": "voluminousenergy:raw_cinnabar_block"
+    "id": "minecraft:sulfur"
   }
 }

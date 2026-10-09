@@ -10,7 +10,7 @@
     "raw_block_state": {
       "type": "minecraft:simple_state_provider",
       "state": {
-        "Name": "voluminousenergy:raw_cinnabar_block"
+        "Name": "minecraft:cinnabar"
       }
     }
   }

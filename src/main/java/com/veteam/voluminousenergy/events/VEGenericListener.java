@@ -13,9 +13,20 @@ import com.veteam.voluminousenergy.tools.networking.packets.*;
 import com.veteam.voluminousenergy.util.CapabilityAdapters;
 import com.veteam.voluminousenergy.util.MultiFluidSlotWrapper;
 import com.veteam.voluminousenergy.util.VEDataComponents;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.monster.cubemob.SulfurCube;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.gamerules.GameRules;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -23,6 +34,7 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
@@ -32,6 +44,7 @@ import net.neoforged.neoforge.transfer.energy.ItemAccessEnergyHandler;
 import net.neoforged.neoforge.transfer.fluid.ItemAccessFluidHandler;
 
 import java.util.List;
+import java.util.Optional;
 
 @EventBusSubscriber(modid = VoluminousEnergy.MODID)
 public class VEGenericListener {
@@ -111,6 +124,41 @@ public class VEGenericListener {
     @SubscribeEvent
     private static void setup(final FMLCommonSetupEvent event) {
         VoluminousEnergy.setup.init();
+    }
+
+    // Vanilla skips the loot table for babies, and every size 1 Sulfur Cube is a baby, so the roll is
+    // repeated here to let the raw sulfur loot modifier reach them.
+    @SubscribeEvent
+    public static void onLivingDrops(LivingDropsEvent event) {
+        if (!(event.getEntity() instanceof SulfurCube sulfurCube) || !sulfurCube.isBaby()) {
+            return;
+        }
+        if (!(sulfurCube.level() instanceof ServerLevel level) || !level.getGameRules().get(GameRules.MOB_DROPS)) {
+            return;
+        }
+        Optional<ResourceKey<LootTable>> lootTableKey = sulfurCube.getLootTable();
+        if (lootTableKey.isEmpty()) {
+            return;
+        }
+
+        DamageSource source = event.getSource();
+        LootParams.Builder params = new LootParams.Builder(level)
+                .withParameter(LootContextParams.THIS_ENTITY, sulfurCube)
+                .withParameter(LootContextParams.ORIGIN, sulfurCube.position())
+                .withParameter(LootContextParams.DAMAGE_SOURCE, source)
+                .withOptionalParameter(LootContextParams.ATTACKING_ENTITY, source.getEntity())
+                .withOptionalParameter(LootContextParams.DIRECT_ATTACKING_ENTITY, source.getDirectEntity());
+        Player player = sulfurCube.getLastHurtByPlayer();
+        if (event.isRecentlyHit() && player != null) {
+            params = params.withParameter(LootContextParams.LAST_DAMAGE_PLAYER, player).withLuck(player.getLuck());
+        }
+
+        LootTable lootTable = level.getServer().reloadableRegistries().getLootTable(lootTableKey.get());
+        lootTable.getRandomItems(params.create(LootContextParamSets.ENTITY), sulfurCube.getLootTableSeed(), stack -> {
+            ItemEntity drop = new ItemEntity(level, sulfurCube.getX(), sulfurCube.getY(), sulfurCube.getZ(), stack);
+            drop.setDefaultPickUpDelay();
+            event.getDrops().add(drop);
+        });
     }
 
     @SubscribeEvent

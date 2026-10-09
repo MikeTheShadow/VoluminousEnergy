@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:sulfur"
+  ],
+  "result": {
+    "id": "voluminousenergy:raw_sulfur",
+    "count": 9
+  }
+}

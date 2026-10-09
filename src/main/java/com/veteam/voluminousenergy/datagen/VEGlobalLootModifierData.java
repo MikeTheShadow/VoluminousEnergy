@@ -4,12 +4,17 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.loot.modifiers.AnimalFatLootModifier;
 import com.veteam.voluminousenergy.loot.modifiers.MysteriousMultiplierModifier;
+import net.minecraft.advancements.predicates.MinMaxBounds;
+import net.minecraft.advancements.predicates.entity.CubeMobPredicate;
+import net.minecraft.advancements.predicates.entity.EntityPredicate;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceWithEnchantedBonusCondition;
 import net.neoforged.neoforge.common.data.GlobalLootModifierProvider;
@@ -31,6 +36,21 @@ public class VEGlobalLootModifierData extends GlobalLootModifierProvider {
         HolderLookup.Provider provider = this.provider.join();
         animalFatModifierProvider(provider);
         mysteriousMultiplierModifierProvider();
+        sulfurCubeModifierProvider();
+    }
+
+    private void sulfurCubeModifierProvider() {
+        LootItemCondition smallestCube = LootItemEntityPropertyCondition.hasProperties(
+                LootContext.EntityTarget.THIS,
+                EntityPredicate.Builder.entity().put(CubeMobPredicate.CODEC, CubeMobPredicate.sized(MinMaxBounds.Ints.exactly(1)))
+        ).build();
+
+        add("raw_sulfur/entities/sulfur_cube",
+            new AnimalFatLootModifier(new LootItemCondition[]{
+                LootTableIdCondition.builder(Identifier.withDefaultNamespace("entities/sulfur_cube")).build(),
+                smallestCube
+            }, VEItems.RAW_SULFUR.get(), 1, 5)
+        );
     }
 
     private void mysteriousMultiplierModifierProvider() {

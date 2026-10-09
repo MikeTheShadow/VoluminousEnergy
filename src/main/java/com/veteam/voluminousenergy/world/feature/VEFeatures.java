@@ -38,7 +38,6 @@ public class VEFeatures { // TODO: Investigate `BlockTags.FEATURES_CANNOT_REPLAC
 //    public static RegistryObject<PlacedFeature> VE_IRON_DEPOSIT_PLACED = VE_PLACED_FEATURES.register("iron_deposit", () -> createIronDeposit().get());
 //    public static RegistryObject<PlacedFeature> VE_GOLD_DEPOSIT_PLACED = VE_PLACED_FEATURES.register("gold_deposit", () -> createGoldDeposit().get());
 //    public static RegistryObject<PlacedFeature> VE_BAUXITE_DEPOSIT_PLACED = VE_PLACED_FEATURES.register("bauxite_deposit", () -> createBauxiteDeposit().get());
-//    public static RegistryObject<PlacedFeature> VE_CINNABAR_DEPOSIT_PLACED = VE_PLACED_FEATURES.register("cinnabar_deposit", () -> createCinnabarDeposit().get());
 //    public static RegistryObject<PlacedFeature> VE_RUTILE_DEPOSIT_PLACED = VE_PLACED_FEATURES.register("rutile_deposit", () -> createRutileDeposit().get());
 //    public static RegistryObject<PlacedFeature> VE_GALENA_DEPOSIT_PLACED = VE_PLACED_FEATURES.register("galena_deposit", () -> createGalenaDeposit().get());
 //    public static RegistryObject<PlacedFeature> VE_EIGHZO_DEPOSIT_PLACED = VE_PLACED_FEATURES.register("eighzo_deposit", () -> createEighzoDeposit().get());
@@ -112,15 +111,6 @@ public class VEFeatures { // TODO: Investigate `BlockTags.FEATURES_CANNOT_REPLAC
 //                        BlockStateProvider.simple(VEBlocks.RAW_BAUXITE_BLOCK.get().defaultBlockState())
 //                ));
 //        return registerPlacedFeature("bauxite_deposit", configuredFeature, noPlacement);
-//    }
-//
-//    public static Holder<PlacedFeature> createCinnabarDeposit(){
-//        ConfiguredFeature<?,?> configuredFeature = new ConfiguredFeature<>(VE_ORE_DEPOSIT_FEATURE.get(),
-//                new VEOreDepositFeature.Configuration(
-//                        BlockStateProvider.simple(VEBlocks.CINNABAR_ORE.get().defaultBlockState()),
-//                        BlockStateProvider.simple(VEBlocks.RAW_CINNABAR_BLOCK.get().defaultBlockState())
-//                ));
-//        return registerPlacedFeature("cinnabar_deposit", configuredFeature, noPlacement);
 //    }
 //
 //    public static Holder<PlacedFeature> createRutileDeposit(){

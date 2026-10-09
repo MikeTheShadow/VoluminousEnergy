@@ -18,7 +18,7 @@
     "voluminousenergy:galena_ore",
     "voluminousenergy:deepslate_cinnabar_ore",
     "voluminousenergy:deepslate_galena_ore",
-    "voluminousenergy:raw_cinnabar_block",
-    "voluminousenergy:raw_galena_block"
+    "voluminousenergy:raw_galena_block",
+    "minecraft:cinnabar"
   ]
 }

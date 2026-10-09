@@ -87,7 +87,6 @@ public class VEBlockItems {
 //
 //    // Raw Material Storage Blocks
 //    public static RegistryObject<BlockItem> RAW_BAUXITE_BLOCKITEM = VE_BLOCK_ITEM_REGISTRY.register("raw_bauxite_block", () -> new BlockItem(VEBlocks.RAW_BAUXITE_BLOCK.get(), PROPERTIES));
-//    public static RegistryObject<BlockItem> RAW_CINNABAR_BLOCKITEM = VE_BLOCK_ITEM_REGISTRY.register("raw_cinnabar_block", () -> new BlockItem(VEBlocks.RAW_CINNABAR_BLOCK.get(), PROPERTIES));
 //    public static RegistryObject<BlockItem> RAW_EIGHZO_BLOCKITEM = VE_BLOCK_ITEM_REGISTRY.register("raw_eighzo_block", () -> new BlockItem(VEBlocks.RAW_EIGHZO_BLOCK.get(), PROPERTIES));
 //    public static RegistryObject<BlockItem> RAW_GALENA_BLOCKITEM = VE_BLOCK_ITEM_REGISTRY.register("raw_galena_block", () -> new BlockItem(VEBlocks.RAW_GALENA_BLOCK.get(), PROPERTIES));
 //    public static RegistryObject<BlockItem> RAW_RUTILE_BLOCKITEM = VE_BLOCK_ITEM_REGISTRY.register("raw_rutile_block", () -> new BlockItem(VEBlocks.RAW_RUTILE_BLOCK.get(), PROPERTIES));
