@@ -1,0 +1,27 @@
+{
+  "type": "voluminousenergy:hydroponic_incubating",
+  "process_time": 200,
+  "ingredients": [
+    {
+      "item": "minecraft:closed_eyeblossom",
+      "count": 1
+    }
+  ],
+  "fluid_ingredients": [
+    {
+      "fluid": "voluminousenergy:ammonium_nitrate_solution",
+      "amount": 250
+    }
+  ],
+  "item_results": [
+    {
+      "item": "minecraft:closed_eyeblossom",
+      "count": 9
+    },
+    {
+      "item": "minecraft:closed_eyeblossom",
+      "count": 9,
+      "chance": 0.33
+    }
+  ]
+}
