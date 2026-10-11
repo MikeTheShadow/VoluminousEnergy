@@ -1,0 +1,62 @@
+{
+  "type": "voluminousenergy:ve_fluid_cave_carver",
+  "config": {
+    "probability": 0.02,
+    "y": {
+      "type": "minecraft:uniform",
+      "min_inclusive": {
+        "absolute": -40
+      },
+      "max_inclusive": {
+        "absolute": 30
+      }
+    },
+    "yScale": 0.5,
+    "lava_level": {
+      "above_bottom": 8
+    },
+    "replaceable": "#minecraft:overworld_carver_replaceables",
+    "horizontal_radius_multiplier": {
+      "type": "minecraft:uniform",
+      "min_inclusive": 0.5,
+      "max_exclusive": 0.9
+    },
+    "vertical_radius_multiplier": {
+      "type": "minecraft:uniform",
+      "min_inclusive": 0.5,
+      "max_exclusive": 0.9
+    },
+    "floor_level": -0.7,
+    "fluidstate": {
+      "Name": "voluminousenergy:crude_oil"
+    },
+    "perimeter_targets": [
+      {
+        "state": {
+          "Name": "voluminousenergy:bituminous_sand"
+        },
+        "target": {
+          "predicate_type": "minecraft:tag_match",
+          "tag": "c:ore_bearing_ground/sand/colorless_sand"
+        }
+      },
+      {
+        "state": {
+          "Name": "voluminousenergy:bituminous_red_sand"
+        },
+        "target": {
+          "predicate_type": "minecraft:tag_match",
+          "tag": "c:ore_bearing_ground/sand/red_sand"
+        }
+      },
+      {
+        "state": {
+          "Name": "voluminousenergy:bituminous_gravel"
+        },
+        "target": {
+          "predicate_type": "minecraft:always_true"
+        }
+      }
+    ]
+  }
+}

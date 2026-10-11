@@ -1,0 +1,9 @@
+{
+  "type": "neoforge:add_carvers",
+  "biomes": "#minecraft:is_overworld",
+  "carvers": [
+    "voluminousenergy:crude_oil_cave",
+    "voluminousenergy:natural_gas_cave"
+  ],
+  "step": "air"
+}
