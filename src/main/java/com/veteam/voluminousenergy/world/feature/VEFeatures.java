@@ -24,6 +24,7 @@ public class VEFeatures { // TODO: Investigate `BlockTags.FEATURES_CANNOT_REPLAC
     public static Supplier<VEOreDepositFeature> VE_ORE_DEPOSIT_FEATURE = VE_FEATURE_REGISTRY.register("ve_ore_deposit_feature", () -> new VEOreDepositFeature(VEOreDepositFeature.Configuration.CODEC));
     public static Supplier<SurfaceMattersLakesFeature> VE_BSC_LAKE_SURFACE_FEATURE = VE_FEATURE_REGISTRY.register("ve_bsc_surface_lake_feature", () -> new SurfaceMattersLakesFeature(VELakesFeature.Configuration.CODEC));
     public static Supplier<VEFluidDepositFeature> VE_FLUID_DEPOSIT_FEATURE = VE_FEATURE_REGISTRY.register("ve_fluid_deposit_feature", () -> new VEFluidDepositFeature(VELakesFeature.Configuration.CODEC));
+    public static Supplier<VEFluidReservoirFeature> VE_FLUID_RESERVOIR_FEATURE = VE_FEATURE_REGISTRY.register("ve_fluid_reservoir_feature", () -> new VEFluidReservoirFeature(VEFluidReservoirFeature.Configuration.CODEC));
 
     protected static VEOres.NoPlacement noPlacement = new VEOres.NoPlacement();
 
