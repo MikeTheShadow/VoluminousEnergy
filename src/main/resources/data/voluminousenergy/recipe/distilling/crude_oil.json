@@ -10,11 +10,11 @@
   "fluid_results": [
     {
       "fluid": "voluminousenergy:light_fuel",
-      "amount": 200
+      "amount": 125
     },
     {
       "fluid": "voluminousenergy:naphtha",
-      "amount": 50
+      "amount": 125
     }
   ],
   "item_results": [

@@ -125,5 +125,6 @@ public class VEClientSideListener {
         event.registerFluidType(Ammonia.AMMONIA_FLUID_TYPE.getFluidClientExtension(), VEFluids.AMMONIA_FLUID_TYPE_REG.get());
         event.registerFluidType(AmmoniumNitrateSolution.AMMONIUM_NITRATE_SOLUTION_FLUID_TYPE.getFluidClientExtension(), VEFluids.AMMONIUM_NITRATE_SOLUTION_FLUID_TYPE_REG.get());
         event.registerFluidType(Hydrogen.HYDROGEN_FLUID_TYPE.getFluidClientExtension(), VEFluids.HYDROGEN_FLUID_TYPE_REG.get());
+        event.registerFluidType(NaturalGas.NATURAL_GAS_FLUID_TYPE.getFluidClientExtension(), VEFluids.NATURAL_GAS_FLUID_TYPE_REG.get());
     }
 }

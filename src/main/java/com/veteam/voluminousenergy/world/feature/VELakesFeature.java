@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.world.feature;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.util.RandomSource;
@@ -14,7 +15,11 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
+import net.minecraft.world.level.levelgen.structure.templatesystem.AlwaysTrueTest;
 import net.minecraft.world.level.material.FluidState;
+
+import java.util.List;
 
 public class VELakesFeature extends Feature<VELakesFeature.Configuration> {
     public VELakesFeature(Codec<VELakesFeature.Configuration> lakesConfiguration) {
@@ -26,10 +31,10 @@ public class VELakesFeature extends Feature<VELakesFeature.Configuration> {
 
     @Override
     public boolean place(FeaturePlaceContext<VELakesFeature.Configuration> context) {
-        return place(context.level(), context.chunkGenerator(), context.random(), context.origin(), context.config().fluidState());
+        return place(context.level(), context.chunkGenerator(), context.random(), context.origin(), context.config());
     }
 
-    protected boolean place(WorldGenLevel worldIn, ChunkGenerator generator, RandomSource rand, BlockPos pos, FluidState fluidState) {
+    protected boolean place(WorldGenLevel worldIn, ChunkGenerator generator, RandomSource rand, BlockPos pos, Configuration config) {
         while (pos.getY() > 5 && worldIn.isEmptyBlock(pos)) {
             pos = pos.below();
         }
@@ -39,43 +44,19 @@ public class VELakesFeature extends Feature<VELakesFeature.Configuration> {
         } else {
             pos = pos.below(4);
 
-            boolean[] aboolean = new boolean[2048];
-            int i = rand.nextInt(4) + 4;
+            LakeMask mask = LakeMask.generate(rand);
+            BlockState fluidBlock = config.fluidState().createLegacyBlock();
 
-            for (int j = 0; j < i; ++j) {
-                double d0 = rand.nextDouble() * 6.0D + 3.0D;
-                double d1 = rand.nextDouble() * 4.0D + 2.0D;
-                double d2 = rand.nextDouble() * 6.0D + 3.0D;
-                double d3 = rand.nextDouble() * (16.0D - d0 - 2.0D) + 1.0D + d0 / 2.0D;
-                double d4 = rand.nextDouble() * (8.0D - d1 - 4.0D) + 2.0D + d1 / 2.0D;
-                double d5 = rand.nextDouble() * (16.0D - d2 - 2.0D) + 1.0D + d2 / 2.0D;
-
-                for (int l = 1; l < 15; ++l) {
-                    for (int i1 = 1; i1 < 15; ++i1) {
-                        for (int j1 = 1; j1 < 7; ++j1) {
-                            double d6 = ((double) l - d3) / (d0 / 2.0D);
-                            double d7 = ((double) j1 - d4) / (d1 / 2.0D);
-                            double d8 = ((double) i1 - d5) / (d2 / 2.0D);
-                            double d9 = d6 * d6 + d7 * d7 + d8 * d8;
-                            if (d9 < 1.0D) {
-                                aboolean[(l * 16 + i1) * 8 + j1] = true;
-                            }
-                        }
-                    }
-                }
-            }
-
-            for (int k1 = 0; k1 < 16; ++k1) {
-                for (int l2 = 0; l2 < 16; ++l2) {
-                    for (int k = 0; k < 8; ++k) {
-                        boolean flag = !aboolean[(k1 * 16 + l2) * 8 + k] && (k1 < 15 && aboolean[((k1 + 1) * 16 + l2) * 8 + k] || k1 > 0 && aboolean[((k1 - 1) * 16 + l2) * 8 + k] || l2 < 15 && aboolean[(k1 * 16 + l2 + 1) * 8 + k] || l2 > 0 && aboolean[(k1 * 16 + (l2 - 1)) * 8 + k] || k < 7 && aboolean[(k1 * 16 + l2) * 8 + k + 1] || k > 0 && aboolean[(k1 * 16 + l2) * 8 + (k - 1)]);
-                        if (flag) {
-                            BlockState material = worldIn.getBlockState(pos.offset(k1, k, l2));
-                            if (k >= 4 && material.liquid()) {
+            for (int x = 0; x < LakeMask.WIDTH; ++x) {
+                for (int z = 0; z < LakeMask.WIDTH; ++z) {
+                    for (int y = 0; y < LakeMask.HEIGHT; ++y) {
+                        if (mask.isBorder(x, y, z)) {
+                            BlockState material = worldIn.getBlockState(pos.offset(x, y, z));
+                            if (y >= 4 && material.liquid()) {
                                 return false;
                             }
 
-                            if (k < 4 && !material.isSolid() && worldIn.getBlockState(pos.offset(k1, k, l2)) != fluidState.createLegacyBlock()) {
+                            if (y < 4 && !material.isSolid() && material != fluidBlock) {
                                 return false;
                             }
                         }
@@ -83,22 +64,22 @@ public class VELakesFeature extends Feature<VELakesFeature.Configuration> {
                 }
             }
 
-            for (int l1 = 0; l1 < 16; ++l1) {
-                for (int i3 = 0; i3 < 16; ++i3) {
-                    for (int i4 = 0; i4 < 8; ++i4) {
-                        if (aboolean[(l1 * 16 + i3) * 8 + i4]) {
-                            worldIn.setBlock(pos.offset(l1, i4, i3), i4 >= 4 ? AIR : fluidState.createLegacyBlock(), 2);
+            for (int x = 0; x < LakeMask.WIDTH; ++x) {
+                for (int z = 0; z < LakeMask.WIDTH; ++z) {
+                    for (int y = 0; y < LakeMask.HEIGHT; ++y) {
+                        if (mask.isInside(x, y, z)) {
+                            worldIn.setBlock(pos.offset(x, y, z), y >= 4 ? AIR : fluidBlock, 2);
                         }
                     }
                 }
             }
 
-            for (int i2 = 0; i2 < 16; ++i2) {
-                for (int j3 = 0; j3 < 16; ++j3) {
-                    for (int j4 = 4; j4 < 8; ++j4) {
-                        if (aboolean[(i2 * 16 + j3) * 8 + j4]) {
-                            BlockPos blockpos = pos.offset(i2, j4 - 1, j3);
-                            if (isDirt(worldIn.getBlockState(blockpos)) && worldIn.getBrightness(LightLayer.SKY, pos.offset(i2, j4, j3)) > 0) {
+            for (int x = 0; x < LakeMask.WIDTH; ++x) {
+                for (int z = 0; z < LakeMask.WIDTH; ++z) {
+                    for (int y = 4; y < LakeMask.HEIGHT; ++y) {
+                        if (mask.isInside(x, y, z)) {
+                            BlockPos blockpos = pos.offset(x, y - 1, z);
+                            if (isDirt(worldIn.getBlockState(blockpos)) && worldIn.getBrightness(LightLayer.SKY, pos.offset(x, y, z)) > 0) {
                                 Holder<Biome> biome = worldIn.getBiome(blockpos);
                                 if (biome.is(Biomes.MUSHROOM_FIELDS)) {
                                     worldIn.setBlock(blockpos, Blocks.MYCELIUM.defaultBlockState(), 2);
@@ -111,13 +92,15 @@ public class VELakesFeature extends Feature<VELakesFeature.Configuration> {
                 }
             }
 
-            // Adds stone around the perimeter
-            for (int j2 = 0; j2 < 16; ++j2) {
-                for (int k3 = 0; k3 < 16; ++k3) {
-                    for (int k4 = 0; k4 < 8; ++k4) {
-                        boolean flag1 = !aboolean[(j2 * 16 + k3) * 8 + k4] && (j2 < 15 && aboolean[((j2 + 1) * 16 + k3) * 8 + k4] || j2 > 0 && aboolean[((j2 - 1) * 16 + k3) * 8 + k4] || k3 < 15 && aboolean[(j2 * 16 + k3 + 1) * 8 + k4] || k3 > 0 && aboolean[(j2 * 16 + (k3 - 1)) * 8 + k4] || k4 < 7 && aboolean[(j2 * 16 + k3) * 8 + k4 + 1] || k4 > 0 && aboolean[(j2 * 16 + k3) * 8 + (k4 - 1)]);
-                        if (flag1 && (k4 < 4 || rand.nextInt(2) != 0) && worldIn.getBlockState(pos.offset(j2, k4, k3)).isSolid()) {
-                            worldIn.setBlock(pos.offset(j2, k4, k3), Blocks.STONE.defaultBlockState(), 2);
+            for (int x = 0; x < LakeMask.WIDTH; ++x) {
+                for (int z = 0; z < LakeMask.WIDTH; ++z) {
+                    for (int y = 0; y < LakeMask.HEIGHT; ++y) {
+                        BlockPos rimPos = pos.offset(x, y, z);
+                        if (mask.isBorder(x, y, z) && (y < 4 || rand.nextInt(2) != 0) && worldIn.getBlockState(rimPos).isSolid()) {
+                            BlockState rimState = LakeMask.perimeterState(config.perimeterTargets(), worldIn.getBlockState(rimPos), rand);
+                            if (rimState != null) {
+                                worldIn.setBlock(rimPos, rimState, 2);
+                            }
                         }
                     }
                 }
@@ -127,9 +110,17 @@ public class VELakesFeature extends Feature<VELakesFeature.Configuration> {
         }
     }
 
-    public static record Configuration(FluidState fluidState) implements FeatureConfiguration {
-        public static final Codec<VELakesFeature.Configuration> CODEC =
-                FluidState.CODEC.fieldOf("fluidstate")
-                        .xmap(VELakesFeature.Configuration::new, (fluidState) -> fluidState.fluidState).codec();
+    /**
+     * Configures the lake's fluid and the blocks its rim is replaced with. Without
+     * {@code perimeter_targets} the rim is stone, as vanilla lakes had.
+     */
+    public record Configuration(FluidState fluidState, List<OreConfiguration.TargetBlockState> perimeterTargets) implements FeatureConfiguration {
+        private static final List<OreConfiguration.TargetBlockState> STONE_PERIMETER =
+                List.of(OreConfiguration.target(AlwaysTrueTest.INSTANCE, Blocks.STONE.defaultBlockState()));
+
+        public static final Codec<VELakesFeature.Configuration> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                FluidState.CODEC.fieldOf("fluidstate").forGetter(Configuration::fluidState),
+                OreConfiguration.TargetBlockState.CODEC.listOf().optionalFieldOf("perimeter_targets", STONE_PERIMETER).forGetter(Configuration::perimeterTargets)
+        ).apply(instance, VELakesFeature.Configuration::new));
     }
 }

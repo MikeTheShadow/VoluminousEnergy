@@ -5,6 +5,7 @@
     "voluminousenergy:oxygen",
     "voluminousenergy:nitrogen",
     "voluminousenergy:hydrogen",
-    "voluminousenergy:ammonia"
+    "voluminousenergy:ammonia",
+    "voluminousenergy:natural_gas"
   ]
 }

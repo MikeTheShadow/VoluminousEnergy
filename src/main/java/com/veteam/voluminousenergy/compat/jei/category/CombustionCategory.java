@@ -7,6 +7,7 @@ import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.items.data.CombustibleFluidsData;
 import com.veteam.voluminousenergy.items.data.OxidizerFluidsData;
 import com.veteam.voluminousenergy.recipe.CombustionGeneratorRecipe;
+import com.veteam.voluminousenergy.recipe.processor.CombustionGeneratorProcessor;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.NumberUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
@@ -84,7 +85,11 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorRe
         );
 
         FluidStack input = recipe.getFluidIngredient(0).getFluids()[0];
-        int energy = CombustibleFluidsData.getEnergyPerTick(input) * 1600;
+        Optional<FluidStack> oxiStack = slotsView.getSlotViews(RecipeIngredientRole.CATALYST).get(0).getDisplayedIngredient(NeoForgeTypes.FLUID_STACK);
+        float multiplier = oxiStack.map(OxidizerFluidsData::getOxidizerMultiplier).orElse(1.0F);
+        int fePerTick = (int) (CombustibleFluidsData.getEnergyPerTick(input) * multiplier);
+        int burnsPerBucket = 1000 / CombustionGeneratorProcessor.COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT;
+        int energy = fePerTick * Config.COMBUSTION_GENERATOR_FIXED_TICK_TIME.get() * burnsPerBucket;
 
         // Actual Volumetric Energy value + FE/B units added on the end
         TextUtil.renderUnshadowedText(
@@ -99,11 +104,12 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorRe
         slotDrawable.draw(matrixStack, 17, 35); // Fuel fluid
         slotDrawable.draw(matrixStack, 85, 35); // Oxidizer fluid
 
-        Optional<FluidStack> oxiStack = slotsView.getSlotViews(RecipeIngredientRole.CATALYST).get(0).getDisplayedIngredient(NeoForgeTypes.FLUID_STACK);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, "mB:", -1, 57, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getFluidIngredientAmount(0) + "", 17, 57, VEContainerScreen.GREY_TEXT_STYLE);
+        oxiStack.ifPresent(oxidizer -> TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, oxidizer.getAmount() + "", 85, 57, VEContainerScreen.GREY_TEXT_STYLE));
 
         if (oxiStack.isPresent()) {
 
-            int fePerTick = energy / Config.COMBUSTION_GENERATOR_FIXED_TICK_TIME.get();
             Component fePerTickComponent = Component.nullToEmpty(fePerTick+"");
             int x = 50;
             if (fePerTick < 100){
@@ -148,7 +154,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorRe
         List<FluidStack> inputList = new ArrayList<>(Arrays.asList(recipe.getFluidIngredient(0).getFluids()));
         fuelAcceptor.addIngredients(NeoForgeTypes.FLUID_STACK, inputList);
         oxidizerAcceptor.addIngredients(NeoForgeTypes.FLUID_STACK,
-                OxidizerFluidsData.getAllOxidizerFluids().stream().map(f -> new FluidStack(f,250)).toList());
+                OxidizerFluidsData.getAllOxidizerFluids().stream().map(f -> new FluidStack(f, OxidizerFluidsData.getOxidizerAmount(f))).toList());
     }
 
     @Override

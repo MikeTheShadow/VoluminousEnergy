@@ -4,17 +4,17 @@
   "fluid_ingredients": [
     {
       "tag": "c:red_fuming_nitric_acid",
-      "amount": 250
+      "amount": 500
     }
   ],
   "fluid_results": [
     {
       "fluid": "voluminousenergy:dinitrogen_tetroxide",
-      "amount": 25
+      "amount": 125
     },
     {
       "fluid": "voluminousenergy:white_fuming_nitric_acid",
-      "amount": 225
+      "amount": 375
     }
   ]
 }
