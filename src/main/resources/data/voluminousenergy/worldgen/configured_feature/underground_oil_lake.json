@@ -1,8 +1,36 @@
 {
-  "type": "voluminousenergy:ve_bsc_underground_lakes_feature",
+  "type": "voluminousenergy:ve_fluid_deposit_feature",
   "config": {
     "fluidstate": {
       "Name": "voluminousenergy:crude_oil"
-    }
+    },
+    "perimeter_targets": [
+      {
+        "state": {
+          "Name": "voluminousenergy:bituminous_sand"
+        },
+        "target": {
+          "predicate_type": "minecraft:tag_match",
+          "tag": "c:ore_bearing_ground/sand/colorless_sand"
+        }
+      },
+      {
+        "state": {
+          "Name": "voluminousenergy:bituminous_red_sand"
+        },
+        "target": {
+          "predicate_type": "minecraft:tag_match",
+          "tag": "c:ore_bearing_ground/sand/red_sand"
+        }
+      },
+      {
+        "state": {
+          "Name": "voluminousenergy:bituminous_gravel"
+        },
+        "target": {
+          "predicate_type": "minecraft:always_true"
+        }
+      }
+    ]
   }
 }
