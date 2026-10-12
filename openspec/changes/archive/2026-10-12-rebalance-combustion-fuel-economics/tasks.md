@@ -8,6 +8,7 @@
 - [x] 2.2 Set `recipe/distilling/crude_oil.json` results to 125 mB light fuel and 125 mB naphtha, keeping the 5% raw sulfur; verify the JSON diff shows only those amounts
 - [x] 2.3 Set `recipe/centrifugal_agitating/rfna.json` to 500 mB red fuming nitric acid in, 125 mB dinitrogen tetroxide and 375 mB white fuming nitric acid out; verify the JSON diff shows only those amounts
 - [x] 2.4 Lower the `voluminousenergy:oxidizer` ingredient to 25 mB in all ten `recipe/fuel_combustion/*.json`, leaving the fuel at 250 mB; verify `grep -c '"amount":25'` finds one per file
+- [x] 2.5 Lower the `voluminousenergy:oxidizer` ingredient in `recipe/fuel_combustion/natural_gas.json` from 250 to 25 mB, leaving the fuel at 250 mB; verify all eleven fuel recipes now ask for 25 mB of oxidizer
 
 ## 3. Oxidizer data with a per-burn amount
 
@@ -37,3 +38,4 @@
 - [x] 6.7 In-game with JEI: on the diesel Combustion page the oxidizer slot cycles 250 mB compressed air, 125 mB oxygen, 25 mB dinitrogen tetroxide, and the numbers follow it: 160 / 320 / 640 FE/t and 1024000 / 2048000 / 4096000 FE/B
 - [x] 6.8 Dedicated server check (`./gradlew runServer` plus a client): the client's JEI oxidizer amounts match the server's data and the server log shows no oxidizer data errors
 - [x] 6.9 In-game with JEI: Combustion shows mB 250 under the fuel tank and the cycling oxidizer amount under the oxidizer tank; Blast Furnace shows 50 under the heat fluid tank; Sawmill shows 250 on the log page and 25 on bamboo; no text overlaps a slot
+- [x] 6.10 In-game: a Combustion Generator with 250 mB Natural Gas and 100 mB dinitrogen tetroxide starts a burn at 96 FE/t and leaves 75 mB; with JEI, the Natural Gas Combustion page cycles 250 / 125 / 25 mB oxidizer at 24 / 48 / 96 FE/t

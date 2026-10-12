@@ -68,11 +68,16 @@ natural gas.
 Natural Gas SHALL be listed in the `voluminousenergy:combustible` fluid tag and SHALL burn in the
 Combustion Generator with any oxidizer at a base output of 24 FE per tick, scaled by the oxidizer's
 multiplier like every other fuel. The fuel recipe SHALL be keyed on `c:natural_gas` with 250 mB of fuel
-and 250 mB of oxidizer per operation, matching the crude oil fuel recipe's amounts.
+and the same 25 mB oxidizer ingredient as the other built-in fuel recipes, so each burn consumes 250 mB of
+Natural Gas and the oxidizer's own per-burn amount.
 
 #### Scenario: Burning with oxygen
-- **WHEN** a Combustion Generator has Natural Gas in its fuel tank and Oxygen in its oxidizer tank
-- **THEN** it generates 24 FE per tick multiplied by Oxygen's oxidizer multiplier, consuming 250 mB of each fluid per operation
+- **WHEN** a Combustion Generator has 1000 mB Natural Gas in its fuel tank and 1000 mB Oxygen in its oxidizer tank
+- **THEN** it generates 24 FE per tick multiplied by Oxygen's oxidizer multiplier, consuming 250 mB of Natural Gas and 125 mB of Oxygen per burn
+
+#### Scenario: N₂O₄ below 250 mB starts a burn
+- **WHEN** a Combustion Generator holds 250 mB Natural Gas and 100 mB dinitrogen tetroxide
+- **THEN** a burn starts at 96 FE per tick and leaves 75 mB dinitrogen tetroxide
 
 #### Scenario: Shown in JEI
 - **WHEN** JEI is installed and a player looks up uses of the Natural Gas Bucket

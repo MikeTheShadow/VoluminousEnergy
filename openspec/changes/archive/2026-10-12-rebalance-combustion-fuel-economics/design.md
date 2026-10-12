@@ -64,7 +64,7 @@ is acceptable because both sides must run the same 0.5 build anyway.
 
 ### Recipe gate lowered to 25 mB; the processor enforces each oxidizer's amount
 
-The ten built-in `fuel_combustion` recipes lower their `voluminousenergy:oxidizer` ingredient to 25 mB,
+The eleven built-in `fuel_combustion` recipes, Natural Gas's included, lower their `voluminousenergy:oxidizer` ingredient to 25 mB,
 the smallest built-in amount. The tag ingredient stays, because it is also what lets only oxidizers into
 the oxidizer tank and what JEI lays out. The processor then checks the oxidizer tank against
 `OxidizerFluidsData`'s amount for the fluid in it and drains exactly that; the fuel side keeps the 250 mB

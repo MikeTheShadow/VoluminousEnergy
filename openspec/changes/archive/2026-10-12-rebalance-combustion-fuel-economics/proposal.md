@@ -57,7 +57,8 @@ distilling split, and any new tanks or machine layout changes.
 
 ### Modified Capabilities
 
-None.
+- `fluids/natural-gas`: Natural Gas burns with each oxidizer's own per-burn amount instead of 250 mB of
+  any oxidizer, like every other fuel.
 
 ## Impact
 
@@ -65,8 +66,8 @@ None.
   `util/recipe/VERecipeCodecs.java` (oxidizer codec), `tools/networking/packets/ClientBoundFluidDataPacket.java`,
   `events/VEServerSideListener.java` (packet construction), `compat/jei/category/{Combustion,IndustrialBlasting,Sawmill}Category.java`,
   and the "Fixed Process Time" comment in `tools/Config.java`.
-- **Data:** `fluid_data/oxidizers/{compressed_air,oxygen,dinitrogen_tetroxide}.json`, all ten
-  `recipe/fuel_combustion/*.json`, `recipe/aqueoulizing/{liquefied_coal,liquefied_coke}.json`,
+- **Data:** `fluid_data/oxidizers/{compressed_air,oxygen,dinitrogen_tetroxide}.json`, all eleven
+  `recipe/fuel_combustion/*.json` (including `natural_gas.json`), `recipe/aqueoulizing/{liquefied_coal,liquefied_coke}.json`,
   `recipe/distilling/crude_oil.json`, `recipe/centrifugal_agitating/rfna.json`. All are hand-written under
   `src/main/resources`; no datagen output changes.
 - **Save compatibility:** no NBT, data component, attachment, or registry id changes. No migration or
