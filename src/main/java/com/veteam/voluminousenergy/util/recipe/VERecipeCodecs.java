@@ -129,11 +129,12 @@ public class VERecipeCodecs {
             Codec.FLOAT.fieldOf("energy_per_tick").forGetter((ingredient) -> 1f)
     ).apply(instance, RegistryFluidValue::new));
 
-    public static final Codec<RegistryFluidValue> REGISTRY_OXIDIZER_FLUID_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
-            Codec.STRING.optionalFieldOf("tag", "").forGetter(RegistryFluidValue::tag),
-            Codec.STRING.optionalFieldOf("fluid", "").forGetter(RegistryFluidValue::fluid),
-            Codec.FLOAT.fieldOf("multiplier").forGetter((ingredient) -> 1f)
-    ).apply(instance, RegistryFluidValue::new));
+    public static final Codec<RegistryOxidizerValue> REGISTRY_OXIDIZER_FLUID_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
+            Codec.STRING.optionalFieldOf("tag", "").forGetter(RegistryOxidizerValue::tag),
+            Codec.STRING.optionalFieldOf("fluid", "").forGetter(RegistryOxidizerValue::fluid),
+            Codec.FLOAT.fieldOf("multiplier").forGetter(RegistryOxidizerValue::multiplier),
+            Codec.INT.fieldOf("amount").forGetter(RegistryOxidizerValue::amount)
+    ).apply(instance, RegistryOxidizerValue::new));
 
     public record FloatPair(float min, float max) {
     }
@@ -180,31 +181,45 @@ public class VERecipeCodecs {
 
     public record RegistryFluidValue(String tag, String fluid, float value) {
         public FluidSetWithValue getAsValuePair() {
-
-            if (!tag.isBlank()) {
-                Identifier res = Identifier.bySeparator(tag, ':');
-                TagKey<Fluid> tag = TagKey.create(Registries.FLUID, res);
-                HashSet<Fluid> fluidSet = new HashSet<>();
-                BuiltInRegistries.FLUID.getTagOrEmpty(tag).forEach(itemHolder -> fluidSet.add(itemHolder.value()));
-
-                if (fluidSet.isEmpty()) {
-                    throw new IllegalStateException("No values found for tag "
-                            + tag + ". Make sure that there are fluids with that tag in the registry.");
-                }
-
-                return new FluidSetWithValue(fluidSet, value);
-            } else if (!fluid.isBlank()) {
-                Identifier res = Identifier.bySeparator(fluid, ':');
-
-                if (!BuiltInRegistries.FLUID.containsKey(res)) {
-                    throw new IllegalStateException("Unable to get fluid ingredient: " + fluid + ". Please validate it exists!");
-                }
-                Fluid single = BuiltInRegistries.FLUID.getValue(res);
-                return new FluidSetWithValue(Set.of(single), value);
-            } else {
-                throw new IllegalStateException("Recipe missing fluid/tag JSON syntax!");
-            }
+            return new FluidSetWithValue(resolveFluids(tag, fluid), value);
         }
+    }
+
+    /**
+     * An oxidizer's fluid data entry: the fluids it covers, its energy multiplier, and the mB one Combustion
+     * Generator burn consumes.
+     */
+    public record RegistryOxidizerValue(String tag, String fluid, float multiplier, int amount) {
+        public Set<Fluid> getFluids() {
+            return resolveFluids(tag, fluid);
+        }
+    }
+
+    private static Set<Fluid> resolveFluids(String tag, String fluid) {
+        if (!tag.isBlank()) {
+            Identifier res = Identifier.bySeparator(tag, ':');
+            TagKey<Fluid> tagKey = TagKey.create(Registries.FLUID, res);
+            Set<Fluid> fluids = new HashSet<>();
+            BuiltInRegistries.FLUID.getTagOrEmpty(tagKey).forEach(fluidHolder -> fluids.add(fluidHolder.value()));
+
+            if (fluids.isEmpty()) {
+                throw new IllegalStateException("No values found for tag "
+                        + tagKey + ". Make sure that there are fluids with that tag in the registry.");
+            }
+
+            return fluids;
+        }
+
+        if (!fluid.isBlank()) {
+            Identifier res = Identifier.bySeparator(fluid, ':');
+
+            if (!BuiltInRegistries.FLUID.containsKey(res)) {
+                throw new IllegalStateException("Unable to get fluid ingredient: " + fluid + ". Please validate it exists!");
+            }
+            return Set.of(BuiltInRegistries.FLUID.getValue(res));
+        }
+
+        throw new IllegalStateException("Recipe missing fluid/tag JSON syntax!");
     }
 
     public static class FluidSetWithValue {

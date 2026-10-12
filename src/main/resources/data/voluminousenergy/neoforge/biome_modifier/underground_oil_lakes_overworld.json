@@ -5,8 +5,8 @@
   "feature": "voluminousenergy:underground_oil_lake",
   "triangular_placement": false,
   "count": 1,
-  "bottom_anchor": -64,
-  "top_anchor": 320,
+  "bottom_anchor": -32,
+  "top_anchor": 47,
   "rarity": 5,
   "generation_step": "lakes"
 }

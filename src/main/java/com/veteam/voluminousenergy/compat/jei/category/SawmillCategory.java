@@ -4,6 +4,7 @@ import com.veteam.voluminousenergy.util.recipe.IngredientUtil;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.SawmillRecipe;
 import com.veteam.voluminousenergy.tools.Config;
@@ -22,6 +23,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -90,6 +92,10 @@ public class SawmillCategory implements IRecipeCategory<SawmillRecipe> {
         slotDrawable.draw(matrixStack, 66, 9);
         arrow.draw(matrixStack, 24, 11);
         emptyArrow.draw(matrixStack, 24, 11);
+
+        int fluidAmount = recipe.isLogRecipe() ? Config.SAWMILL_FLUID_AMOUNT.get() : recipe.getOutputFluid(0).getAmount();
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, "mB:", 2, 31, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, fluidAmount + "", 67, 31, VEContainerScreen.GREY_TEXT_STYLE);
     }
 
     public void ingredientHandler(SawmillRecipe recipe,

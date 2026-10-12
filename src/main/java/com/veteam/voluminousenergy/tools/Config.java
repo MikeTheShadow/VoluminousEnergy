@@ -49,6 +49,8 @@ public class Config {
 
     // World Feature Settings
     public static ModConfigSpec.BooleanValue WORLD_GEN_LOGGING;
+    public static ModConfigSpec.BooleanValue CACHE_PETROLEUM_RESERVOIR_CELLS;
+    public static ModConfigSpec.BooleanValue FAST_PETROLEUM_RESERVOIR_SURFACE_SAMPLING;
 
     // Climate Spawn Settings
     public static ModConfigSpec.BooleanValue PUNCH_HOLES_IN_CLIMATE_SPAWNS;
@@ -404,6 +406,12 @@ public class Config {
             WORLD_GEN_LOGGING = VE_STARTUP_CONFIG_BUILDER.comment("Enable/Disable Logging of Word Generation information for " +
                     "Voluminous Energy features and Ores")
                     .define("Enable Logging", false);
+            CACHE_PETROLEUM_RESERVOIR_CELLS = VE_STARTUP_CONFIG_BUILDER.comment("Share petroleum reservoir results between chunks so terrain heights are " +
+                    "sampled once per reservoir instead of in every chunk. Reservoirs generate the same either way; disable only as a fallback")
+                    .define("Cache Petroleum Reservoir Cells", true);
+            FAST_PETROLEUM_RESERVOIR_SURFACE_SAMPLING = VE_STARTUP_CONFIG_BUILDER.comment("Estimate the terrain height above petroleum reservoirs the way vanilla " +
+                    "aquifers do instead of sampling it exactly. Faster, but changes where some reservoirs reach their level for the same seed")
+                    .define("Fast Petroleum Reservoir Surface Sampling", false);
         VE_STARTUP_CONFIG_BUILDER.pop(); // End of Feature Generation
 
         VE_STARTUP_CONFIG_BUILDER.comment("Climate Spawns").push(SUBCATEGORY_CLIMATE_SPAWNS);
@@ -492,7 +500,7 @@ public class Config {
                 .defineInRange("Maximum Transfer", 512000, 0, Integer.MAX_VALUE);
         COMBUSTION_GENERATOR_BALANCED_MODE = VE_STARTUP_CONFIG_BUILDER.comment("If true, the Combustion Generator will use the process time from the oxidizer's recipe rather than the static process time")
                 .define("Balanced Mode", false);
-        COMBUSTION_GENERATOR_FIXED_TICK_TIME = VE_STARTUP_CONFIG_BUILDER.comment("The fixed process time for the Combustion Generator is Balanced Mode is not used.")
+        COMBUSTION_GENERATOR_FIXED_TICK_TIME = VE_STARTUP_CONFIG_BUILDER.comment("Ticks one Combustion Generator burn (250 mB of fuel) lasts when Balanced Mode is not used.")
                 .defineInRange("Fixed Process Time", 1600, 0, Integer.MAX_VALUE);
     }
 

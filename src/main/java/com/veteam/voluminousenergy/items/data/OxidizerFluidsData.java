@@ -11,6 +11,7 @@ import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,8 +24,14 @@ import static com.veteam.voluminousenergy.util.recipe.VERecipeCodecs.REGISTRY_OX
 
 public class OxidizerFluidsData {
 
-    static final List<VERecipeCodecs.RegistryFluidValue> rawData = new ArrayList<>();
-    static HashMap<Fluid, Float> oxidizerFluidData = new HashMap<>();
+    static final List<VERecipeCodecs.RegistryOxidizerValue> rawData = new ArrayList<>();
+    static HashMap<Fluid, OxidizerProperties> oxidizerFluidData = new HashMap<>();
+
+    /**
+     * How strongly an oxidizer boosts a burn and how many mB of it one Combustion Generator burn consumes.
+     */
+    public record OxidizerProperties(float multiplier, int amount) {
+    }
 
     public static void loadData(ResourceManager manager) {
         resetCache();
@@ -35,7 +42,7 @@ public class OxidizerFluidsData {
             try (BufferedReader reader = resource.openAsReader()) {
                 JsonElement jsonElement = JsonParser.parseReader(reader);
                 if (jsonElement != null) {
-                    DataResult<VERecipeCodecs.RegistryFluidValue> result = REGISTRY_OXIDIZER_FLUID_CODEC.parse(JsonOps.INSTANCE, jsonElement);
+                    DataResult<VERecipeCodecs.RegistryOxidizerValue> result = REGISTRY_OXIDIZER_FLUID_CODEC.parse(JsonOps.INSTANCE, jsonElement);
                     result.resultOrPartial(VoluminousEnergy.LOGGER::error)
                             .ifPresent(rawData::add);
                 }
@@ -53,10 +60,23 @@ public class OxidizerFluidsData {
 
 
     public static float getOxidizerMultiplier(FluidStack stack) {
-        for(var data : oxidizerFluidData.entrySet()) {
-            if(data.getKey().isSame(stack.getFluid())) return data.getValue();
+        OxidizerProperties properties = getProperties(stack.getFluid());
+        return properties == null ? 0 : properties.multiplier();
+    }
+
+    public static int getOxidizerAmount(Fluid fluid) {
+        OxidizerProperties properties = getProperties(fluid);
+        return properties == null ? 0 : properties.amount();
+    }
+
+    @Nullable
+    private static OxidizerProperties getProperties(Fluid fluid) {
+        for (var data : oxidizerFluidData.entrySet()) {
+            if (data.getKey().isSame(fluid)) {
+                return data.getValue();
+            }
         }
-        return 0;
+        return null;
     }
 
     public static List<Fluid> getAllOxidizerFluids() {
@@ -68,20 +88,20 @@ public class OxidizerFluidsData {
         if (!oxidizerFluidData.isEmpty()) {
             return;
         }
-        for (VERecipeCodecs.RegistryFluidValue rawItem : rawData) {
-
-            for (Fluid fluid : rawItem.getAsValuePair().fluids) {
-                oxidizerFluidData.put(fluid, rawItem.value());
+        for (VERecipeCodecs.RegistryOxidizerValue rawItem : rawData) {
+            OxidizerProperties properties = new OxidizerProperties(rawItem.multiplier(), rawItem.amount());
+            for (Fluid fluid : rawItem.getFluids()) {
+                oxidizerFluidData.put(fluid, properties);
             }
         }
     }
 
-    public static HashMap<Fluid, Float> getDataForNetworkTransfer() {
+    public static HashMap<Fluid, OxidizerProperties> getDataForNetworkTransfer() {
         buildCache();
         return oxidizerFluidData;
     }
 
-    public static void updateFromPacket(HashMap<Fluid, Float> data) {
+    public static void updateFromPacket(HashMap<Fluid, OxidizerProperties> data) {
         oxidizerFluidData = data;
     }
 

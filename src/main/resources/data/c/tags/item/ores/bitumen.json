@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "voluminousenergy:bituminous_gravel",
+    "voluminousenergy:bituminous_sand",
+    "voluminousenergy:bituminous_red_sand"
+  ]
+}
