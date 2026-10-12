@@ -10,13 +10,13 @@
   "fluid_ingredients": [
     {
       "fluid": "minecraft:water",
-      "amount": 250
+      "amount": 500
     }
   ],
   "fluid_results": [
     {
       "fluid": "voluminousenergy:liquefied_coke",
-      "amount": 250
+      "amount": 500
     }
   ]
 }

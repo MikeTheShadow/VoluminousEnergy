@@ -1,0 +1,9 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": [
+    "voluminousenergy:crude_oil_reservoir",
+    "voluminousenergy:natural_gas_reservoir"
+  ],
+  "step": "lakes"
+}

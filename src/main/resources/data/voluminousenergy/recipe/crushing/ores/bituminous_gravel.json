@@ -1,0 +1,25 @@
+{
+  "type": "voluminousenergy:crushing",
+  "ingredients": [
+    {
+      "item": "voluminousenergy:bituminous_gravel",
+      "count": 1
+    }
+  ],
+  "process_time": 200,
+  "item_results": [
+    {
+      "item": "voluminousenergy:bitumen",
+      "count": 5
+    },
+    {
+      "item": "minecraft:gravel",
+      "count": 1,
+      "chance": 0.25
+    }
+  ],
+  "experience": {
+    "minimum": 0,
+    "maximum": 0
+  }
+}

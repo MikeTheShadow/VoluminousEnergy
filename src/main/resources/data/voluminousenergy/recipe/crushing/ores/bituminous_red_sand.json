@@ -1,0 +1,25 @@
+{
+  "type": "voluminousenergy:crushing",
+  "ingredients": [
+    {
+      "item": "voluminousenergy:bituminous_red_sand",
+      "count": 1
+    }
+  ],
+  "process_time": 200,
+  "item_results": [
+    {
+      "item": "voluminousenergy:bitumen",
+      "count": 5
+    },
+    {
+      "item": "voluminousenergy:sand_dust",
+      "count": 3,
+      "chance": 1
+    }
+  ],
+  "experience": {
+    "minimum": 0,
+    "maximum": 0
+  }
+}

@@ -4,11 +4,13 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootTable;
 
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public class LootSpawns {
-    public static final Map<ResourceKey<LootTable>, Float> SPAWN_MYSTERIOUS_MULTIPLIERS_IN = Map.ofEntries(
+    public static final Map<ResourceKey<LootTable>, Float> SPAWN_MYSTERIOUS_MULTIPLIERS_IN = inDeclarationOrder(
         Map.entry(BuiltInLootTables.BASTION_BRIDGE, 0.25F),
         Map.entry(BuiltInLootTables.END_CITY_TREASURE, 0.50F),
         Map.entry(BuiltInLootTables.SIMPLE_DUNGEON, 0.15F),
@@ -37,5 +39,15 @@ public class LootSpawns {
 
 
     public static final List<ResourceKey<LootTable>> SHEEP_THAT_DROP_ANIMAL_FAT = BuiltInLootTables.SHEEP.asList();
+
+    // Map.ofEntries iterates in a per-JVM random order, which would reorder the generated loot modifiers on every run.
+    @SafeVarargs
+    private static <K, V> Map<K, V> inDeclarationOrder(Map.Entry<K, V>... entries) {
+        Map<K, V> map = new LinkedHashMap<>();
+        for (Map.Entry<K, V> entry : entries) {
+            map.put(entry.getKey(), entry.getValue());
+        }
+        return Collections.unmodifiableMap(map);
+    }
 
 }
