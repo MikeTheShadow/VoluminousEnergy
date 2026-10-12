@@ -1,0 +1,30 @@
+{
+  "type": "voluminousenergy:centrifugal_separation",
+  "ingredients": [
+    {
+      "tag": "c:bitumen",
+      "count": 4
+    },
+    {
+      "item": "minecraft:bucket",
+      "count": 1
+    }
+  ],
+  "process_time": 200,
+  "item_results": [
+    {
+      "item": "voluminousenergy:crude_oil_bucket",
+      "count": 1
+    },
+    {
+      "item": "voluminousenergy:sand_dust",
+      "count": 2,
+      "chance": 1
+    },
+    {
+      "item": "voluminousenergy:carbondust",
+      "count": 1,
+      "chance": 0.25
+    }
+  ]
+}
