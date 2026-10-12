@@ -57,9 +57,9 @@ public class CombustionGeneratorProcessor extends BasicProcessor {
 
             int counter;
             if (Config.COMBUSTION_GENERATOR_BALANCED_MODE.get()) {
-                counter = COMBUSTION_GENERATOR_PROCESS_TIME / 4;
+                counter = COMBUSTION_GENERATOR_PROCESS_TIME;
             } else {
-                counter = Config.COMBUSTION_GENERATOR_FIXED_TICK_TIME.get() / 4;
+                counter = Config.COMBUSTION_GENERATOR_FIXED_TICK_TIME.get();
             }
 
             int production = (int) (powerGeneration * multiplier);
