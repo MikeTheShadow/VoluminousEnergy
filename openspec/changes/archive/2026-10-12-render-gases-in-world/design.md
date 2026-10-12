@@ -80,9 +80,10 @@ conflict on a gas `stdProp` line by keeping the 26.x version without `.air()`.
   the `fluids/gases` spec requires; accepted for dungeons.
 - [Taller gas columns in open air mean more gas blocks to tick and draw] → Accepted; the column ends at
   y 320 and dissipates once its source is gone, as before.
-- [Grass under settled gas turns to dirt on 26.1 (8 of 441 blocks in a test) but not on 1.21.1] → Not
-  caused by this change: 26.1 gives the same result with `.air()`. Out of scope; it needs its own change
-  to the gas fluid states.
+- [Grass turns to dirt under the gas beside each source] → Not caused by this change, and kept. The
+  rising gas there is stored as a full falling state, and vanilla kills grass under any full fluid, as
+  with water. 1.21.1 does the same; a test that seemed to show otherwise ran in force-loaded chunks that
+  1.21.1 does not random-tick.
 - [The `WORLD_SURFACE` heightmap rises over a gas column that reaches the sky] → Accepted. Rain and
   snow already stop at gas through `MOTION_BLOCKING`, which counts any non-empty fluid.
 
