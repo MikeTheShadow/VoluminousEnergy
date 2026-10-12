@@ -1,4 +1,5 @@
 {
   "tag": "c:compressed_air",
-  "multiplier": 1
+  "multiplier": 1,
+  "amount": 250
 }

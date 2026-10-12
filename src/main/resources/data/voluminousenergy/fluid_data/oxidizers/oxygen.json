@@ -1,4 +1,5 @@
 {
   "tag": "c:oxygen",
-  "multiplier": 2
+  "multiplier": 2,
+  "amount": 125
 }
