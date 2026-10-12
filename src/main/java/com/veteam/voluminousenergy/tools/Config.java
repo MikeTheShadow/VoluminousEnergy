@@ -500,7 +500,7 @@ public class Config {
                 .defineInRange("Maximum Transfer", 512000, 0, Integer.MAX_VALUE);
         COMBUSTION_GENERATOR_BALANCED_MODE = VE_STARTUP_CONFIG_BUILDER.comment("If true, the Combustion Generator will use the process time from the oxidizer's recipe rather than the static process time")
                 .define("Balanced Mode", false);
-        COMBUSTION_GENERATOR_FIXED_TICK_TIME = VE_STARTUP_CONFIG_BUILDER.comment("The fixed process time for the Combustion Generator is Balanced Mode is not used.")
+        COMBUSTION_GENERATOR_FIXED_TICK_TIME = VE_STARTUP_CONFIG_BUILDER.comment("Ticks one Combustion Generator burn (250 mB of fuel) lasts when Balanced Mode is not used.")
                 .defineInRange("Fixed Process Time", 1600, 0, Integer.MAX_VALUE);
     }
 

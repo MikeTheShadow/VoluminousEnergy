@@ -45,20 +45,21 @@ public class CombustionGeneratorProcessor extends BasicProcessor {
 
             int powerGeneration = CombustibleFluidsData.getEnergyPerTick(fuel);
             float multiplier = OxidizerFluidsData.getOxidizerMultiplier(oxi);
+            int oxidizerAmount = OxidizerFluidsData.getOxidizerAmount(oxi.getFluid());
 
             if (fuelTank.getTank().getFluidAmount() < COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT
-                    || oxiTank.getTank().getFluidAmount() < COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT) {
+                    || oxiTank.getTank().getFluidAmount() < oxidizerAmount) {
                 return false;
             }
 
-            fuelTank.getTank().drain(250, IFluidHandler.FluidAction.EXECUTE);
-            oxiTank.getTank().drain(250, IFluidHandler.FluidAction.EXECUTE);
+            fuelTank.getTank().drain(COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT, IFluidHandler.FluidAction.EXECUTE);
+            oxiTank.getTank().drain(oxidizerAmount, IFluidHandler.FluidAction.EXECUTE);
 
             int counter;
             if (Config.COMBUSTION_GENERATOR_BALANCED_MODE.get()) {
-                counter = COMBUSTION_GENERATOR_PROCESS_TIME / 4;
+                counter = COMBUSTION_GENERATOR_PROCESS_TIME;
             } else {
-                counter = Config.COMBUSTION_GENERATOR_FIXED_TICK_TIME.get() / 4;
+                counter = Config.COMBUSTION_GENERATOR_FIXED_TICK_TIME.get();
             }
 
             int production = (int) (powerGeneration * multiplier);
