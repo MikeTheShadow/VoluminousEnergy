@@ -150,10 +150,6 @@ public class VEFluidReservoirFeature extends Feature<VEFluidReservoirFeature.Con
         return !neighbourStatus.isOrAfter(ChunkStatus.FEATURES);
     }
 
-    /**
-     * Air is tested by block rather than {@code isAir()}, because natural gas counts as air and must not
-     * be overwritten.
-     */
     private static boolean canFill(BlockState existing) {
         return existing.is(Blocks.AIR) || existing.is(Blocks.CAVE_AIR) || existing.is(Blocks.WATER);
     }
