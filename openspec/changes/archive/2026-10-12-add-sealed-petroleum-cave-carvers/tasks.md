@@ -22,7 +22,7 @@
 
 - [x] 5.1 Run `./gradlew compileJava` and confirm it succeeds
 - [x] 5.2 Run `./gradlew runData` and confirm `src/generated/resources` has no unexpected diff (this change adds no datagen output)
-- [ ] 5.3 In-game check via `./gradlew runClient` on a new world (maintainer). `/locate` cannot find carvers, so search in spectator mode below y 30. Check that:
+- [x] 5.3 In-game check via `./gradlew runClient` on a new world (maintainer). `/locate` cannot find carvers, so search in spectator mode below y 30. Check that:
   - petroleum tunnels (oil and gas) exist, are rarer than vanilla caves, and are fully filled with no air pockets;
   - every face is sealed by Bituminous Gravel, or Bituminous Sand under desert sand;
   - a vanilla cave crossing a tunnel is plugged on both sides, and a vanilla cave reaching a shell stops there;
