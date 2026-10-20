@@ -5,4 +5,4 @@
 ## 2. Verification
 
 - [x] 2.1 Run `./gradlew compileJava` and verify it succeeds (no datagen run needed; the recipes are hand-written)
-- [ ] 2.2 In-game check via `./gradlew runClient` (needs a human): no recipe parse errors in `logs/latest.log`; JEI lists the three recipes; a Crusher turns a Brown Mushroom into Shredded Biomass; an Incubator grows a Red Mushroom without consuming it
+- [x] 2.2 In-game check via `./gradlew runClient` (needs a human): no recipe parse errors in `logs/latest.log`; JEI lists the three recipes; a Crusher turns a Brown Mushroom into Shredded Biomass; an Incubator grows a Red Mushroom without consuming it
