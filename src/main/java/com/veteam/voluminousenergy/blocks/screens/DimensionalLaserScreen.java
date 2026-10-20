@@ -12,6 +12,7 @@ import com.veteam.voluminousenergy.tools.buttons.tanks.TankBoolButton;
 import com.veteam.voluminousenergy.tools.buttons.tanks.TankDirectionButton;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.TextUtil;
+import com.veteam.voluminousenergy.util.VEFluidTank;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -19,7 +20,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -111,7 +111,7 @@ public class DimensionalLaserScreen extends VEContainerScreen<VEContainer> {
     @Override
     protected void extractTooltip(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
-            matrixStack.setTooltipForNextFrame(this.font, TextUtil.powerBarTooltip(tileEntity.getEnergy(), tileEntity.getEnergy().getMaxEnergyStored()), mouseX, mouseY);
+            matrixStack.setTooltipForNextFrame(this.font, TextUtil.powerBarTooltip(tileEntity.getEnergy(), tileEntity.getEnergy().getCapacity()), mouseX, mouseY);
         } else if (!VoluminousEnergy.JEI_LOADED && isHovering(getTooltipArea(), mouseX, mouseY)) {
             matrixStack.setComponentTooltipForNextFrame(this.font, this.getTooltips(), mouseX, mouseY);
         }
@@ -170,7 +170,7 @@ public class DimensionalLaserScreen extends VEContainerScreen<VEContainer> {
 
     }
 
-    private FluidTank getTank() {
+    private VEFluidTank getTank() {
         return this.tileEntity.getRelationalTanks().get(0).getTank();
     }
 

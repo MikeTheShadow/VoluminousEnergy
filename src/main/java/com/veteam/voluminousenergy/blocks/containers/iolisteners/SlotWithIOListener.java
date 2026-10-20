@@ -1,14 +1,14 @@
 package com.veteam.voluminousenergy.blocks.containers.iolisteners;
 
+import com.veteam.voluminousenergy.blocks.tiles.inventory.VEItemStackHandler;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandler;
 
 public interface SlotWithIOListener {
 
-    void onRemoved(IItemHandler handler, int slot, int amount, boolean isClientSide);
+    void onRemoved(VEItemStackHandler handler, int slot, int amount, boolean isClientSide);
 
-    void onTake(IItemHandler handler, ItemStack stack, boolean isClientSide, Player player);
+    void onTake(VEItemStackHandler handler, ItemStack stack, boolean isClientSide, Player player);
 
     /**
      *
@@ -18,7 +18,7 @@ public interface SlotWithIOListener {
      * @param handler The inventory of the screen
      * @param isClientSide If we're on the client
      */
-    void onSet(ItemStack stack, int slot, IItemHandler handler, boolean isClientSide);
+    void onSet(ItemStack stack, int slot, VEItemStackHandler handler, boolean isClientSide);
 
-    void preQuickMoveStack(IItemHandler h, ItemStack multitool, boolean isClientSide);
+    void preQuickMoveStack(VEItemStackHandler h, ItemStack multitool, boolean isClientSide);
 }

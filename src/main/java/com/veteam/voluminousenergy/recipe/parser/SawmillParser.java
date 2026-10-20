@@ -25,7 +25,7 @@ public class SawmillParser extends BasicParser {
     @Override
     public boolean isPartialRecipe(VETileEntity tile) {
         if (recipe.isLogRecipe()) {
-            ItemStack stack = tile.getInventory().getStackInSlot(0);
+            ItemStack stack = tile.getInventory().getStack(0);
             if (stack.isEmpty()) return true;
             return getPlankFromLog(tile) != null;
         }
@@ -42,7 +42,7 @@ public class SawmillParser extends BasicParser {
 
     @Nullable
     ItemStack getPlankFromLog(VETileEntity tile) {
-        ItemStack stack = tile.getInventory().getStackInSlot(0);
+        ItemStack stack = tile.getInventory().getStack(0);
         String path = RegistryLookups.lookupItem(stack).getPath();
         if (path.endsWith("_log")) {
             String id = path.replace("_log", "");
@@ -58,8 +58,8 @@ public class SawmillParser extends BasicParser {
     public boolean canCompleteRecipe(VETileEntity tile) {
         if (recipe.isLogRecipe()) {
             ItemStack plank = getPlankFromLog(tile);
-            ItemStack plankOutput = tile.getInventory().getStackInSlot(1);
-            ItemStack dustOutput = tile.getInventory().getStackInSlot(2);
+            ItemStack plankOutput = tile.getInventory().getStack(1);
+            ItemStack dustOutput = tile.getInventory().getStack(2);
             boolean plankValid = plankOutput.isEmpty() ||
                     (plank.is(plankOutput.getItem()) && plankOutput.getCount() + plank.getCount() <= plankOutput.getMaxStackSize());
             boolean dustValid = dustOutput.isEmpty() ||
@@ -76,9 +76,9 @@ public class SawmillParser extends BasicParser {
             ItemStack plank = getPlankFromLog(tile);
             ItemStack dust = recipe.getResult(0);
             FluidStack stack = recipe.getOutputFluid(0);
-            tile.getInventory().extractItem(0,1,false);
-            tile.getInventory().insertItem(1,plank.copy(), false);
-            tile.getInventory().insertItem(2,dust.copy(), false);
+            tile.getInventory().take(0, 1);
+            tile.getInventory().add(1, plank.copy());
+            tile.getInventory().add(2, dust.copy());
             tile.getRelationalTank(0).fillTank(stack.copy());
             return;
         }

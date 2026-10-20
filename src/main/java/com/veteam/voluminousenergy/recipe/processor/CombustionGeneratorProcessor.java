@@ -12,7 +12,6 @@ import com.veteam.voluminousenergy.util.VERelationalTank;
 import com.veteam.voluminousenergy.util.records.CounterLength;
 import net.minecraft.sounds.SoundSource;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 public class CombustionGeneratorProcessor extends BasicProcessor {
     public static final int COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT = 250;
@@ -52,8 +51,8 @@ public class CombustionGeneratorProcessor extends BasicProcessor {
                 return false;
             }
 
-            fuelTank.getTank().drain(COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT, IFluidHandler.FluidAction.EXECUTE);
-            oxiTank.getTank().drain(oxidizerAmount, IFluidHandler.FluidAction.EXECUTE);
+            fuelTank.getTank().drain(COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT);
+            oxiTank.getTank().drain(oxidizerAmount);
 
             int counter;
             if (Config.COMBUSTION_GENERATOR_BALANCED_MODE.get()) {
@@ -75,7 +74,7 @@ public class CombustionGeneratorProcessor extends BasicProcessor {
     @Override
     public boolean processRecipe(VETileEntity tile) {
         VEEnergyStorage storage = tile.getEnergy();
-        if (storage.getEnergyStored() + storage.getProduction() > Config.COMBUSTION_GENERATOR_MAX_POWER.get())
+        if (storage.getAmountAsInt() + storage.getProduction() > Config.COMBUSTION_GENERATOR_MAX_POWER.get())
             return false;
 
         storage.addEnergy(storage.getProduction());

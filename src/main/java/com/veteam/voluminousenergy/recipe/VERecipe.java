@@ -30,7 +30,6 @@ public abstract class VERecipe implements Recipe<RecipeInput> {
     // Built into fluidOutputList on first access, for the same reason as resultTemplates.
     public List<FluidStackTemplate> fluidOutputTemplates = null;
     private static final HashMap<RecipeType<?>, List<VERecipe>> recipeCache = new HashMap<>();
-    private static final HashMap<RecipeType<?>, List<VERecipe>> newCache = new HashMap<>();
 
     private NonNullList<Ingredient> ingredients = null;
 
@@ -53,12 +52,6 @@ public abstract class VERecipe implements Recipe<RecipeInput> {
 
     }
 
-    /*
-     * In single player worlds both the constructor and packet are fired. This bool
-     * prevents the method from being called if the constructor is called
-     */
-    private static boolean isServerSide = false;
-
     public VERecipe(List<VERecipeCodecs.RegistryIngredient> ingredients,
             List<VERecipeCodecs.RegistryFluidIngredient> fluidIngredients, List<FluidStackTemplate> fluidResultTemplates,
             List<ItemStackTemplate> resultTemplates, int processTime) {
@@ -68,17 +61,6 @@ public abstract class VERecipe implements Recipe<RecipeInput> {
         this.processTime = processTime;
         this.registryIngredients = NonNullList.create();
         this.registryIngredients.addAll(ingredients);
-        isServerSide = true;
-        VERecipe recipe = this;
-        if (newCache.containsKey(this.getType())) {
-            newCache.get(this.getType()).add(this);
-        } else {
-            newCache.put(this.getType(), new ArrayList<>() {
-                {
-                    add(recipe);
-                }
-            });
-        }
     }
 
     public boolean hasIngredient(int id) {
@@ -257,21 +239,6 @@ public abstract class VERecipe implements Recipe<RecipeInput> {
                 veRecipe.setId(holder.id().identifier());
                 recipeCache.computeIfAbsent(veRecipe.getType(), k -> new ArrayList<>()).add(veRecipe);
             }
-        }
-        newCache.clear();
-    }
-
-    public static void addRecipeToCacheClient(VERecipe recipe) {
-        if (isServerSide)
-            return;
-        if (newCache.containsKey(recipe.getType())) {
-            newCache.get(recipe.getType()).add(recipe);
-        } else {
-            newCache.put(recipe.getType(), new ArrayList<>() {
-                {
-                    add(recipe);
-                }
-            });
         }
     }
 

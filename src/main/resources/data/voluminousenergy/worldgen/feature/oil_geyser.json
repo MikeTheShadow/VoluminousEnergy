@@ -1,0 +1,6 @@
+{
+  "type": "voluminousenergy:ve_geyser_feature",
+  "fluidstate": {
+    "id": "voluminousenergy:crude_oil"
+  }
+}

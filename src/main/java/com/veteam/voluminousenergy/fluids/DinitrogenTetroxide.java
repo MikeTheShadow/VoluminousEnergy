@@ -21,7 +21,7 @@ public class DinitrogenTetroxide {
     public static final Identifier DINITROGEN_TETROXIDE_STILL_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/dinitrogen_tetroxide_still");
     public static final Identifier DINITROGEN_TETROXIDE_FLOWING_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/dinitrogen_tetroxide_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of().setId(VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
+    public static Block.Properties stdProp = Block.Properties.of().setId(VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.POPPED).liquid();
 
     public static FlowingFluid DINITROGEN_TETROXIDE;
     public static FlowingFluid FLOWING_DINITROGEN_TETROXIDE;

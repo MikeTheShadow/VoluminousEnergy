@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.util.tiles;
 
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
+import com.veteam.voluminousenergy.blocks.tiles.inventory.VEItemStackHandler;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.IntToDirection;
@@ -10,8 +11,8 @@ import com.veteam.voluminousenergy.util.VERelationalTank;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -23,11 +24,11 @@ public class CapabilityMap {
     private final HashMap<Direction, MultiSlotWrapper> itemMap = new HashMap<>();
     private final HashMap<Direction, MultiFluidSlotWrapper> fluidMap = new HashMap<>();
     @Nullable
-    private final ItemStackHandler inventory;
+    private final VEItemStackHandler inventory;
     @Nullable
     private final VEEnergyStorage energyStorage;
 
-    public CapabilityMap(@Nullable ItemStackHandler inventory, List<VESlotManager> managerList, List<VERelationalTank> tanks,@Nullable VEEnergyStorage energy, @Nullable VETileEntity tileEntity) {
+    public CapabilityMap(@Nullable VEItemStackHandler inventory, List<VESlotManager> managerList, List<VERelationalTank> tanks,@Nullable VEEnergyStorage energy, @Nullable VETileEntity tileEntity) {
         this.inventory = inventory;
         this.energyStorage = energy;
         for (Direction direction : Direction.values()) {
@@ -69,7 +70,7 @@ public class CapabilityMap {
     }
 
     @Nullable
-    public IItemHandlerModifiable getItemStackHandler(@Nullable Direction side, BlockEntity tileEntity) {
+    public ResourceHandler<ItemResource> getItemStackHandler(@Nullable Direction side, BlockEntity tileEntity) {
         if (side == null) return this.inventory;
 
         Direction normalizedSide = normalizeDirection(side, tileEntity);

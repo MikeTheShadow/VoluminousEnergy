@@ -12,3 +12,7 @@ Machines are factory-assembled. Generic `VETileEntity` and `VEContainer`; no per
 - `blocks/tiles/inventory/<Name>InventoryValidator`: slot insertion rules.
 
 A machine change usually touches several of these; check all of them by machine name.
+
+Storage: `VEItemStackHandler`, `VEFluidTank` (in `VERelationalTank`), `VEEnergyStorage` extend NeoForge transfer
+classes. Machine code uses owner operations (`take`/`add`/`fits`/`setStack`, `fill`/`drain`, `addEnergy`/`consumeEnergy`);
+reads return copies. Capabilities: `MultiSlotWrapper`/`MultiFluidSlotWrapper` side views.

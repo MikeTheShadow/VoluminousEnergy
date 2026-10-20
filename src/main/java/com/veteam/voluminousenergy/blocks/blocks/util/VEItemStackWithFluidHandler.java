@@ -4,15 +4,13 @@ import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.TagUtil;
 import com.veteam.voluminousenergy.util.VERelationalTank;
-import net.minecraft.core.NonNullList;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.items.ItemStackHandler;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 
 import java.util.List;
 
-public class VEItemStackWithFluidHandler extends ItemStackHandler {
+public class VEItemStackWithFluidHandler extends ItemStacksResourceHandler {
 
     private final VESlotManager[] managers;
     private final VERelationalTank[] relationalTanks;
@@ -22,7 +20,7 @@ public class VEItemStackWithFluidHandler extends ItemStackHandler {
     private final int upgradeSlot;
 
     public VEItemStackWithFluidHandler(int size, int upgradeSlot, Class<?> recipeType, List<VERelationalTank> tankList, Level level, VESlotManager... managers) {
-        stacks = NonNullList.withSize(size, ItemStack.EMPTY);
+        super(size);
         this.managers = managers;
         this.recipeType = recipeType;
         this.relationalTanks = tankList.toArray(VERelationalTank[]::new);
@@ -35,14 +33,9 @@ public class VEItemStackWithFluidHandler extends ItemStackHandler {
     }
 
     @Override
-    public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-        return super.insertItem(slot, stack, simulate);
-    }
+    public boolean isValid(int slot, ItemResource resource) {
 
-    @Override
-    public boolean isItemValid(int slot, @NotNull ItemStack stack) {
-
-        if (slot == upgradeSlot) return TagUtil.isTaggedMachineUpgradeItem(stack);
+        if (slot == upgradeSlot) return TagUtil.isTaggedMachineUpgradeItem(resource.toStack());
 
 
         return false;

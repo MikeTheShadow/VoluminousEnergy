@@ -3,18 +3,21 @@
   "pools": [
     {
       "bonus_rolls": 0.0,
-      "conditions": [
-        {
-          "block": "voluminousenergy:rice_crop",
-          "condition": "minecraft:block_state_property",
-          "properties": {
-            "half": "upper"
+      "condition": {
+        "type": "minecraft:all_of",
+        "terms": [
+          {
+            "type": "minecraft:match_block",
+            "blocks": "voluminousenergy:rice_crop",
+            "state": {
+              "half": "upper"
+            }
+          },
+          {
+            "type": "minecraft:survives_explosion"
           }
-        },
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ],
+        ]
+      },
       "entries": [
         {
           "type": "minecraft:item",

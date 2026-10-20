@@ -15,7 +15,6 @@ import com.veteam.voluminousenergy.setup.VESetup;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.VEAttachments;
 import com.veteam.voluminousenergy.util.VEDataComponents;
-import com.veteam.voluminousenergy.world.carver.VECarvers;
 import com.veteam.voluminousenergy.world.feature.VEFeatures;
 import com.veteam.voluminousenergy.world.modifiers.VEModifiers;
 import net.minecraft.core.HolderLookup;
@@ -83,11 +82,7 @@ public class VoluminousEnergy {
         VEFeatures.VE_FEATURE_REGISTRY.register(modEventBus);
 //        VEFeatures.VE_PLACED_FEATURES.register(modEventBus);
 
-        // Register carvers
-        VECarvers.VE_CARVER_REGISTRY.register(modEventBus);
-
         // Register modifiers
-//        VEOres.VE_PLACED_ORE_BLOBS_REGISTRY.register(modEventBus);
         VEModifiers.VE_BIOME_MODIFIER_REGISTRY.register(modEventBus);
 
         // Register Creative Mode Tabs
@@ -153,7 +148,7 @@ public class VoluminousEnergy {
         public static void onGatherData(GatherDataEvent.Client event) {
             DataGenerator dataGenerator = event.getGenerator();
             PackOutput packOutput = dataGenerator.getPackOutput();
-            CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
+            CompletableFuture<HolderLookup.Provider> lookupProvider = event.getReloadableLookupProvider();
 
             event.addProvider(new VETagDataGenerator(packOutput, lookupProvider));
             event.addProvider(new VEGlobalLootModifierData(packOutput, lookupProvider));

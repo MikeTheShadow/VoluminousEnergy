@@ -1,8 +1,0 @@
-{
-  "type": "voluminousenergy:ve_geyser_feature",
-  "config": {
-    "fluidstate": {
-      "Name": "voluminousenergy:crude_oil"
-    }
-  }
-}

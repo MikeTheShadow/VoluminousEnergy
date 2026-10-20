@@ -3,13 +3,13 @@ package com.veteam.voluminousenergy.achievements.triggers;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import net.minecraft.advancements.predicates.ContextAwarePredicate;
 import net.minecraft.advancements.predicates.MinMaxBounds;
-import net.minecraft.advancements.predicates.entity.EntityPredicate;
 import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.advancements.triggers.SimpleCriterionTrigger;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -34,14 +34,14 @@ public class ConstructDimensionalLaserTrigger extends SimpleCriterionTrigger<Con
         });
     }
 
-    public record TriggerInstance(Optional<ContextAwarePredicate> player, MinMaxBounds.Ints level) implements SimpleCriterionTrigger.SimpleInstance {
+    public record TriggerInstance(Optional<Holder<LootItemCondition>> player, MinMaxBounds.Ints level) implements SimpleCriterionTrigger.SimpleInstance {
         public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create((p_312562_) ->
-                p_312562_.group(EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player")
+                p_312562_.group(LootItemCondition.CODEC.optionalFieldOf("player")
                         .forGetter(TriggerInstance::player),
                 MinMaxBounds.Ints.CODEC.optionalFieldOf("level", MinMaxBounds.Ints.ANY)
                         .forGetter(TriggerInstance::level)).apply(p_312562_, TriggerInstance::new));
 
-        public TriggerInstance(Optional<ContextAwarePredicate> player, MinMaxBounds.Ints level) {
+        public TriggerInstance(Optional<Holder<LootItemCondition>> player, MinMaxBounds.Ints level) {
             this.player = player;
             this.level = level;
         }
@@ -58,7 +58,7 @@ public class ConstructDimensionalLaserTrigger extends SimpleCriterionTrigger<Con
             return this.level.matches(p_148033_);
         }
 
-        public @NotNull Optional<ContextAwarePredicate> player() {
+        public @NotNull Optional<Holder<LootItemCondition>> player() {
             return this.player;
         }
 

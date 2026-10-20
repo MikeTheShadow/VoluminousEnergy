@@ -15,7 +15,6 @@ import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 public class GasFiredFurnaceProcessor extends BasicProcessor {
 
@@ -58,10 +57,10 @@ public class GasFiredFurnaceProcessor extends BasicProcessor {
         // Gas processing
         if (fuelCounter <= 0) {
             if (!fuel.is(Fluids.EMPTY)) {
-                tile.getRelationalTank(0).getTank().drain(250, IFluidHandler.FluidAction.EXECUTE);
+                tile.getRelationalTank(0).getTank().drain(250);
                 fuelCounter = 400 * CombustibleFluidsData.getEnergyPerTick(fuel) / 4;
                 VEItemStackHandler inventory = tile.getInventory();
-                ItemStack upgradeItem = inventory.getStackInSlot(4);
+                ItemStack upgradeItem = inventory.getStack(4);
                 if (upgradeItem.getCount() > 0 && upgradeItem.getItem() == VEItems.QUARTZ_MULTIPLIER.get()) {
                     fuelCounter = fuelCounter / (upgradeItem.getCount() * upgradeItem.getCount());
                 } else if (!upgradeItem.isEmpty() && upgradeItem.has(VEDataComponents.MULTIPLIER_DATA)) {
@@ -91,7 +90,7 @@ public class GasFiredFurnaceProcessor extends BasicProcessor {
     @Override
     public boolean validateRecipe(VETileEntity tile) {
         Level level = tile.getLevel();
-        ItemStack furnaceInput = tile.getInventory().getStackInSlot(2);
+        ItemStack furnaceInput = tile.getInventory().getStack(2);
         RecipeHolder<BlastingRecipe> blastingRecipeNew = ((ServerLevel) level).recipeAccess()
                 .getRecipeFor(RecipeType.BLASTING, new SingleRecipeInput(furnaceInput.copy()), level).orElse(null);
         if (blastingRecipeNew != null) {
@@ -129,13 +128,13 @@ public class GasFiredFurnaceProcessor extends BasicProcessor {
 
     private boolean createOutput(VETileEntity tile, RecipeHolder<? extends Recipe<SingleRecipeInput>> recipeHolder) {
         Recipe<SingleRecipeInput> recipe = recipeHolder.value();
-        SingleRecipeInput input = new SingleRecipeInput(tile.getInventory().getStackInSlot(2).copy());
-        if (!canInsertIntoResult(recipe, input, tile.getInventory().getStackInSlot(3))) {
+        SingleRecipeInput input = new SingleRecipeInput(tile.getInventory().getStack(2));
+        if (!canInsertIntoResult(recipe, input, tile.getInventory().getStack(3))) {
             return false;
         }
-        tile.getInventory().extractItem(2, 1, false);
+        tile.getInventory().take(2, 1);
         ItemStack output = recipe.assemble(input).copy();
-        tile.getInventory().insertItem(3, output, false);
+        tile.getInventory().add(3, output);
         return true;
     }
 

@@ -36,41 +36,41 @@ public class VEMultitoolBitData {
              ToolTier.SOLARIUM, ToolType.PICKAXE);
 
     // Chain bits
-    public static final BitItemData IRON_CHAIN_BIT_DATA = new BitItemData(ItemAbilities.DEFAULT_AXE_ACTIONS, ToolMaterial.IRON, BlockTags.MINEABLE_WITH_AXE,
+    public static final BitItemData IRON_CHAIN_BIT_DATA = new BitItemData(Set.of(), ToolMaterial.IRON, BlockTags.MINEABLE_WITH_AXE,
              ToolTier.IRON, ToolType.AXE);
 
-    public static final BitItemData DIAMOND_CHAIN_BIT_DATA = new BitItemData(ItemAbilities.DEFAULT_AXE_ACTIONS, ToolMaterial.DIAMOND, BlockTags.MINEABLE_WITH_AXE,
+    public static final BitItemData DIAMOND_CHAIN_BIT_DATA = new BitItemData(Set.of(), ToolMaterial.DIAMOND, BlockTags.MINEABLE_WITH_AXE,
              ToolTier.DIAMOND, ToolType.AXE);
 
-    public static final BitItemData TITANIUM_CHAIN_BIT_DATA = new BitItemData(ItemAbilities.DEFAULT_AXE_ACTIONS, VETools.TITANIUM, BlockTags.MINEABLE_WITH_AXE,
+    public static final BitItemData TITANIUM_CHAIN_BIT_DATA = new BitItemData(Set.of(), VETools.TITANIUM, BlockTags.MINEABLE_WITH_AXE,
              ToolTier.TITANIUM, ToolType.AXE);
 
-    public static final BitItemData NIGHALITE_CHAIN_BIT_DATA = new BitItemData(ItemAbilities.DEFAULT_AXE_ACTIONS, VETools.NIGHALITE, BlockTags.MINEABLE_WITH_AXE,
+    public static final BitItemData NIGHALITE_CHAIN_BIT_DATA = new BitItemData(Set.of(), VETools.NIGHALITE, BlockTags.MINEABLE_WITH_AXE,
              ToolTier.NIGHALITE, ToolType.AXE);
 
-    public static final BitItemData EIGHZO_CHAIN_BIT_DATA = new BitItemData(ItemAbilities.DEFAULT_AXE_ACTIONS, VETools.EIGHZO, BlockTags.MINEABLE_WITH_AXE,
+    public static final BitItemData EIGHZO_CHAIN_BIT_DATA = new BitItemData(Set.of(), VETools.EIGHZO, BlockTags.MINEABLE_WITH_AXE,
              ToolTier.EIGHZO, ToolType.AXE);
 
-    public static final BitItemData SOLARIUM_CHAIN_BIT_DATA = new BitItemData(ItemAbilities.DEFAULT_AXE_ACTIONS, VETools.SOLARIUM, BlockTags.MINEABLE_WITH_AXE,
+    public static final BitItemData SOLARIUM_CHAIN_BIT_DATA = new BitItemData(Set.of(), VETools.SOLARIUM, BlockTags.MINEABLE_WITH_AXE,
              ToolTier.SOLARIUM, ToolType.AXE);
 
     // Scooper Bit
-    public static final BitItemData IRON_SCOOPER_BIT_DATA = new BitItemData(ItemAbilities.DEFAULT_SHOVEL_ACTIONS, ToolMaterial.IRON, BlockTags.MINEABLE_WITH_SHOVEL,
+    public static final BitItemData IRON_SCOOPER_BIT_DATA = new BitItemData(Set.of(ItemAbilities.SHOVEL_DOUSE), ToolMaterial.IRON, BlockTags.MINEABLE_WITH_SHOVEL,
              ToolTier.IRON, ToolType.SHOVEL);
 
-    public static final BitItemData DIAMOND_SCOOPER_BIT_DATA = new BitItemData(ItemAbilities.DEFAULT_SHOVEL_ACTIONS, ToolMaterial.DIAMOND, BlockTags.MINEABLE_WITH_SHOVEL,
+    public static final BitItemData DIAMOND_SCOOPER_BIT_DATA = new BitItemData(Set.of(ItemAbilities.SHOVEL_DOUSE), ToolMaterial.DIAMOND, BlockTags.MINEABLE_WITH_SHOVEL,
              ToolTier.DIAMOND, ToolType.SHOVEL);
 
-    public static final BitItemData TITANIUM_SCOOPER_BIT_DATA = new BitItemData(ItemAbilities.DEFAULT_SHOVEL_ACTIONS, VETools.TITANIUM, BlockTags.MINEABLE_WITH_SHOVEL,
+    public static final BitItemData TITANIUM_SCOOPER_BIT_DATA = new BitItemData(Set.of(ItemAbilities.SHOVEL_DOUSE), VETools.TITANIUM, BlockTags.MINEABLE_WITH_SHOVEL,
              ToolTier.TITANIUM, ToolType.SHOVEL);
 
-    public static final BitItemData NIGHALITE_SCOOPER_BIT_DATA = new BitItemData(ItemAbilities.DEFAULT_SHOVEL_ACTIONS, VETools.NIGHALITE, BlockTags.MINEABLE_WITH_SHOVEL,
+    public static final BitItemData NIGHALITE_SCOOPER_BIT_DATA = new BitItemData(Set.of(ItemAbilities.SHOVEL_DOUSE), VETools.NIGHALITE, BlockTags.MINEABLE_WITH_SHOVEL,
              ToolTier.NIGHALITE, ToolType.SHOVEL);
 
-    public static final BitItemData EIGHZO_SCOOPER_BIT_DATA = new BitItemData(ItemAbilities.DEFAULT_SHOVEL_ACTIONS, VETools.EIGHZO, BlockTags.MINEABLE_WITH_SHOVEL,
+    public static final BitItemData EIGHZO_SCOOPER_BIT_DATA = new BitItemData(Set.of(ItemAbilities.SHOVEL_DOUSE), VETools.EIGHZO, BlockTags.MINEABLE_WITH_SHOVEL,
              ToolTier.EIGHZO, ToolType.SHOVEL);
 
-    public static final BitItemData SOLARIUM_SCOOPER_BIT_DATA = new BitItemData(ItemAbilities.DEFAULT_SHOVEL_ACTIONS, VETools.SOLARIUM, BlockTags.MINEABLE_WITH_SHOVEL,
+    public static final BitItemData SOLARIUM_SCOOPER_BIT_DATA = new BitItemData(Set.of(ItemAbilities.SHOVEL_DOUSE), VETools.SOLARIUM, BlockTags.MINEABLE_WITH_SHOVEL,
              ToolTier.SOLARIUM, ToolType.SHOVEL);
 
     // Trimmer bit

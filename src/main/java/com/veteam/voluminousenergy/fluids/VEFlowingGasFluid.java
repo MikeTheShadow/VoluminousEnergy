@@ -86,7 +86,7 @@ public class VEFlowingGasFluid extends BaseFlowingFluid {
                 float f = fluidstate.getOwnHeight();
                 float f1 = 0.0F;
                 if (f == 0.0F) {
-                    if (!getter.getBlockState(blockpos$mutableblockpos).blocksMotion()) {
+                    if (!getter.getBlockState(blockpos$mutableblockpos).is(BlockTags.BLOCKS_FLUID_FLOW)) {
                         BlockPos blockpos = blockpos$mutableblockpos.above(); // flipped
                         FluidState fluidstate1 = getter.getFluidState(blockpos);
                         if (this.affectsFlow(fluidstate1)) {
@@ -328,18 +328,10 @@ public class VEFlowingGasFluid extends BaseFlowingFluid {
 
 
     private boolean canHoldFluid(Player player, BlockGetter getter, BlockPos pos, BlockState blockState, Fluid fluid) {
-        Block block = blockState.getBlock();
-        if (block instanceof LiquidBlockContainer) {
-            return ((LiquidBlockContainer) block).canPlaceLiquid(player, getter, pos, blockState, fluid);
-        } else if (!(block instanceof DoorBlock) && !blockState.is(BlockTags.SIGNS) && !blockState.is(Blocks.LADDER) && !blockState.is(Blocks.SUGAR_CANE) && !blockState.is(Blocks.BUBBLE_COLUMN)) {
-            if (!blockState.is(Blocks.NETHER_PORTAL) && !blockState.is(Blocks.END_PORTAL) && !blockState.is(Blocks.END_GATEWAY) && !blockState.is(Blocks.STRUCTURE_VOID)) {
-                return !blockState.blocksMotion();
-            } else {
-                return false;
-            }
-        } else {
-            return false;
+        if (blockState.getBlock() instanceof LiquidBlockContainer container) {
+            return container.canPlaceLiquid(player, getter, pos, blockState, fluid);
         }
+        return blockState.is(BlockTags.WASHED_AWAY_BY_FLUIDS);
     }
 
 

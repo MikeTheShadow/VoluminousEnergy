@@ -1,6 +1,6 @@
 package com.veteam.voluminousenergy.world.feature;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.WorldUtil;
@@ -15,28 +15,27 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 
-public class VEOreDepositFeature extends Feature<VEOreDepositFeature.Configuration> {
-
-    public VEOreDepositFeature(Codec<VEOreDepositFeature.Configuration> codec) {
-        super(codec);
-    }
+public record VEOreDepositFeature(Holder<BlockStateProvider> ore_block_state, Holder<BlockStateProvider> raw_block_state) implements Feature {
+    public static final MapCodec<VEOreDepositFeature> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            BlockStateProvider.CODEC.fieldOf("ore_block_state").forGetter(VEOreDepositFeature::ore_block_state),
+            BlockStateProvider.CODEC.fieldOf("raw_block_state").forGetter(VEOreDepositFeature::raw_block_state)
+    ).apply(instance, VEOreDepositFeature::new));
 
     @Override
-    public boolean place(FeaturePlaceContext<Configuration> context) {
-        return this.place(context.level(), context.chunkGenerator(), context.random(), context.origin(), context.config());
+    public MapCodec<VEOreDepositFeature> codec() {
+        return CODEC;
     }
 
     // Derived from VELakes feature
-    protected boolean place(WorldGenLevel worldIn, ChunkGenerator generator, RandomSource rand, BlockPos pos, Configuration conf) { // Classic layout of inputs
+    @Override
+    public boolean place(WorldGenLevel worldIn, ChunkGenerator generator, RandomSource rand, BlockPos pos) { // Classic layout of inputs
         if (worldIn.canSeeSky(pos) && Config.PREVENT_SURFACE_ORE_DEPOSITS.get()) return false;
 
         // Get states from the configuration codec
-        BlockState rawState = conf.raw_block_state().getState(worldIn, rand, pos);
-        BlockState oreState = conf.ore_block_state.getState(worldIn, rand, pos);
+        BlockState rawState = raw_block_state.value().getState(worldIn, rand, pos);
+        BlockState oreState = ore_block_state.value().getState(worldIn, rand, pos);
 
         pos = pos.below(4);
 
@@ -125,12 +124,5 @@ public class VEOreDepositFeature extends Feature<VEOreDepositFeature.Configurati
         }
 
         return true;
-    }
-
-    public static record Configuration(BlockStateProvider ore_block_state,
-                                       BlockStateProvider raw_block_state) implements FeatureConfiguration {
-        public static final Codec<VEOreDepositFeature.Configuration> CODEC = RecordCodecBuilder.create((configurationInstance) -> {
-            return configurationInstance.group(BlockStateProvider.CODEC.fieldOf("ore_block_state").forGetter(VEOreDepositFeature.Configuration::ore_block_state), BlockStateProvider.CODEC.fieldOf("raw_block_state").forGetter(VEOreDepositFeature.Configuration::raw_block_state)).apply(configurationInstance, VEOreDepositFeature.Configuration::new);
-        });
     }
 }

@@ -21,7 +21,7 @@ public class TreeSap {
     public static final Identifier TREE_SAP_STILL_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/tree_sap_still");
     public static final Identifier TREE_SAP_FLOWING_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/tree_sap_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of().setId(VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
+    public static Block.Properties stdProp = Block.Properties.of().setId(VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.POPPED).liquid();
 
     public static FlowingFluid TREE_SAP;
     public static FlowingFluid FLOWING_TREE_SAP;

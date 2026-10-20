@@ -1,13 +1,16 @@
 {
   "type": "voluminousenergy:mysterious_multiplier",
-  "conditions": [
-    {
-      "chance": 0.25,
-      "condition": "minecraft:random_chance"
-    },
-    {
-      "condition": "neoforge:loot_table_id",
-      "loot_table_id": "minecraft:chests/bastion_bridge"
-    }
-  ]
+  "condition": {
+    "type": "minecraft:all_of",
+    "terms": [
+      {
+        "type": "minecraft:random_chance",
+        "chance": 0.25
+      },
+      {
+        "type": "neoforge:loot_table_id",
+        "loot_table_id": "minecraft:chests/bastion_bridge"
+      }
+    ]
+  }
 }

@@ -22,7 +22,7 @@ public class CrudeOil {
     public static final Identifier CRUDE_OIL_STILL_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/crude_oil_still");
     public static final Identifier CRUDE_OIL_FLOWING_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/crude_oil_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of().setId(VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
+    public static Block.Properties stdProp = Block.Properties.of().setId(VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.POPPED).liquid();
 
     public static FlowingFluid CRUDE_OIL;
     public static FlowingFluid FLOWING_CRUDE_OIL;

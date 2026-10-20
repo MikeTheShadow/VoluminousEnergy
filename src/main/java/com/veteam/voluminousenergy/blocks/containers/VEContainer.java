@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
+import com.veteam.voluminousenergy.blocks.tiles.inventory.VEItemStackHandler;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.util.RegistryLookups;
 import com.veteam.voluminousenergy.util.TagUtil;
@@ -12,9 +13,6 @@ import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.SlotItemHandler;
-import net.neoforged.neoforge.items.wrapper.InvWrapper;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -25,7 +23,7 @@ public abstract class VEContainer extends AbstractContainerMenu {
     VETileEntity tileEntity;
 
     Player playerEntity;
-    IItemHandler playerInventory;
+    Inventory playerInventory;
 
     Block block;
 
@@ -37,7 +35,7 @@ public abstract class VEContainer extends AbstractContainerMenu {
         super(menuType, id);
         this.tileEntity = (VETileEntity) world.getBlockEntity(pos);
         this.playerEntity = player;
-        this.playerInventory = new InvWrapper(inventory);
+        this.playerInventory = inventory;
         this.block = block;
         this.access = ContainerLevelAccess.create(this.tileEntity.getLevel(), this.tileEntity.getBlockPos());
         this.world = world;
@@ -91,7 +89,7 @@ public abstract class VEContainer extends AbstractContainerMenu {
         }
     }
 
-    protected abstract void addSlotsToGUI(IItemHandler h);
+    protected abstract void addSlotsToGUI(VEItemStackHandler h);
 
     /**
      * Override this if you wish to move where the inventory is displayed or disable
@@ -115,19 +113,19 @@ public abstract class VEContainer extends AbstractContainerMenu {
         return tileEntity;
     }
 
-    protected int addSlotRange(IItemHandler handler, int index, int x, int y, int amount, int dx) {
+    protected int addSlotRange(Inventory inventory, int index, int x, int y, int amount, int dx) {
         for (int i = 0; i < amount; i++) {
-            addSlot(new SlotItemHandler(handler, index, x, y));
+            addSlot(new Slot(inventory, index, x, y));
             x += dx;
             index++;
         }
         return index;
     }
 
-    protected int addSlotBox(IItemHandler handler, int index, int x, int y, int horAmount, int dx, int verAmount,
+    protected int addSlotBox(Inventory inventory, int index, int x, int y, int horAmount, int dx, int verAmount,
             int dy) {
         for (int j = 0; j < verAmount; j++) {
-            index = addSlotRange(handler, index, x, y, horAmount, dx);
+            index = addSlotRange(inventory, index, x, y, horAmount, dx);
             y += dy;
         }
         return index;
@@ -135,12 +133,12 @@ public abstract class VEContainer extends AbstractContainerMenu {
 
     public int getEnergy() {
         VEEnergyStorage storage = tileEntity.getEnergy();
-        return storage == null ? 0 : tileEntity.getEnergy().getEnergyStored();
+        return storage == null ? 0 : tileEntity.getEnergy().getAmountAsInt();
     }
 
     public int powerScreen(int px) {
-        int stored = tileEntity.getEnergy().getEnergyStored();
-        int max = tileEntity.getEnergy().getMaxEnergyStored();
+        int stored = tileEntity.getEnergy().getAmountAsInt();
+        int max = tileEntity.getEnergy().getCapacity();
         return (((stored * 100 / max * 100) / 100) * px) / 100;
     }
 

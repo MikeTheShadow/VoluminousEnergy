@@ -1,0 +1,34 @@
+{
+  "type": "voluminousenergy:ve_fluid_deposit_feature",
+  "fluidstate": {
+    "id": "voluminousenergy:crude_oil"
+  },
+  "perimeter_targets": [
+    {
+      "state": {
+        "id": "voluminousenergy:bituminous_sand"
+      },
+      "target": {
+        "predicate_type": "minecraft:tag_match",
+        "tag": "c:ore_bearing_ground/sand/colorless_sand"
+      }
+    },
+    {
+      "state": {
+        "id": "voluminousenergy:bituminous_red_sand"
+      },
+      "target": {
+        "predicate_type": "minecraft:tag_match",
+        "tag": "c:ore_bearing_ground/sand/red_sand"
+      }
+    },
+    {
+      "state": {
+        "id": "voluminousenergy:bituminous_gravel"
+      },
+      "target": {
+        "predicate_type": "minecraft:always_true"
+      }
+    }
+  ]
+}

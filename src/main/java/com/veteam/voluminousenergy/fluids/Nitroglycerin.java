@@ -21,7 +21,7 @@ public class Nitroglycerin {
     public static final Identifier NITROGLYCERIN_STILL_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/nitroglycerin_still");
     public static final Identifier NITROGLYCERIN_FLOWING_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/nitroglycerin_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of().setId(VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
+    public static Block.Properties stdProp = Block.Properties.of().setId(VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.POPPED).liquid();
 
     public static FlowingFluid NITROGLYCERIN;
     public static FlowingFluid FLOWING_NITROGLYCERIN;

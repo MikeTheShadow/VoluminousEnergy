@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.blocks.blocks.crops;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -14,6 +13,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.BonemealSource;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.VegetationBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -26,19 +26,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class VELandCrop extends VegetationBlock implements BonemealableBlock {
 
-    public static final MapCodec<VELandCrop> CODEC = simpleCodec(VELandCrop::new);
-
     private String registryName;
 
     public VELandCrop(Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(BlockStateProperties.AGE_2, 0)); // set the age of the crop to 0 by default
         setRegistryName("land_crop");
-    }
-
-    @Override
-    protected MapCodec<? extends VELandCrop> codec() {
-        return CODEC;
     }
 
     // Voxel shape
@@ -77,17 +70,17 @@ public class VELandCrop extends VegetationBlock implements BonemealableBlock {
 
     // Handle bonemeal
     @Override
-    public boolean isValidBonemealTarget(LevelReader levelReader, BlockPos pos, BlockState state) {
+    public boolean isValidBonemealTarget(LevelReader levelReader, BlockPos pos, BlockState state, BonemealSource source) {
         return state.getValue(BlockStateProperties.AGE_2) < 2; // valid if age is less than 2
     }
 
     @Override
-    public boolean isBonemealSuccess(Level world, RandomSource random, BlockPos pos, BlockState state) {
+    public boolean isBonemealSuccess(Level world, RandomSource random, BlockPos pos, BlockState state, BonemealSource source) {
         return true;
     }
 
     @Override
-    public void performBonemeal(ServerLevel serverWorld, RandomSource random, BlockPos pos, BlockState state) {
+    public void performBonemeal(ServerLevel serverWorld, RandomSource random, BlockPos pos, BlockState state, BonemealSource source) {
         int age = state.getValue(BlockStateProperties.AGE_2);
         if (age < 2) {
             age++;

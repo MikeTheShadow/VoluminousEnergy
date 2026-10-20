@@ -21,7 +21,7 @@ public class LiquefiedCoke {
     public static final Identifier LIQUEFIED_COKE_STILL_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/liquefied_coke_still");
     public static final Identifier LIQUEFIED_COKE_FLOWING_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/liquefied_coke_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of().setId(VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
+    public static Block.Properties stdProp = Block.Properties.of().setId(VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.POPPED).liquid();
 
     public static FlowingFluid LIQUEFIED_COKE;
     public static FlowingFluid FLOWING_LIQUEFIED_COKE;

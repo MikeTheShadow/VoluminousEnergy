@@ -22,7 +22,7 @@ public class LightFuel {
     public static final Identifier LIGHT_FUEL_STILL_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/light_fuel_still");
     public static final Identifier LIGHT_FUEL_FLOWING_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/light_fuel_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of().setId(VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid().sound(SoundType.EMPTY);
+    public static Block.Properties stdProp = Block.Properties.of().setId(VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.POPPED).liquid().sound(SoundType.EMPTY);
 
     public static FlowingFluid LIGHT_FUEL;
     public static FlowingFluid FLOWING_LIGHT_FUEL;

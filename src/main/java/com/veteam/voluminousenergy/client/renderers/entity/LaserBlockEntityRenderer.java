@@ -97,7 +97,7 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
         float beaconColorB = (float) (beaconColor & 0xFF) / 255.0F;
 
         poseStack.pushPose();
-        poseStack.mulPose(Axis.YP.rotationDegrees(45.0F));
+        poseStack.rotate(Axis.YP.rotationDegrees(45.0F));
         float f9 = -static02F;
         float f12 = -static02F;
         float f15 = staticRotationNumber + downwardMovement;
@@ -115,8 +115,8 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
         if (staticBuildTick > 50) {
             poseStack.pushPose();
             poseStack.translate(xzPos, yHeight, 0);
-            poseStack.mulPose(Axis.ZP.rotationDegrees(45.0F));
-            poseStack.mulPose(Axis.YP.rotationDegrees(45.0F));
+            poseStack.rotate(Axis.ZP.rotationDegrees(45.0F));
+            poseStack.rotate(Axis.YP.rotationDegrees(45.0F));
             collector.submitCustomGeometry(poseStack, RenderTypes.energySwirl(BEAM_RESOURCE_LOCATION, 0, 0), (quadPose, vertexConsumer) ->
                     renderPart(quadPose, vertexConsumer, 5, 5, 5, 1.0F, totalHeight, pylonBeamHeight, 0.0F, static02F, static02F, 0.0F, f9, 0.0F, 0.0F, f12, f16, f15));
             poseStack.popPose();
@@ -124,8 +124,8 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
         if(staticBuildTick > 150) {
             poseStack.pushPose();
             poseStack.translate(0, yHeight, -xzPos);
-            poseStack.mulPose(Axis.XP.rotationDegrees(45.0F));
-            poseStack.mulPose(Axis.YP.rotationDegrees(45.0F));
+            poseStack.rotate(Axis.XP.rotationDegrees(45.0F));
+            poseStack.rotate(Axis.YP.rotationDegrees(45.0F));
             collector.submitCustomGeometry(poseStack, RenderTypes.energySwirl(BEAM_RESOURCE_LOCATION, 0, 0), (quadPose, vertexConsumer) ->
                     renderPart(quadPose, vertexConsumer, 5, 5, 5, 1.0F, totalHeight, pylonBeamHeight, 0.0F, static02F, static02F, 0.0F, f9, 0.0F, 0.0F, f12, f16, f15));
             poseStack.popPose();
@@ -133,8 +133,8 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
         if(staticBuildTick > 250) {
             poseStack.pushPose();
             poseStack.translate(-xzPos, yHeight, 0);
-            poseStack.mulPose(Axis.ZP.rotationDegrees(135.0F));
-            poseStack.mulPose(Axis.YP.rotationDegrees(45.0F));
+            poseStack.rotate(Axis.ZP.rotationDegrees(135.0F));
+            poseStack.rotate(Axis.YP.rotationDegrees(45.0F));
             collector.submitCustomGeometry(poseStack, RenderTypes.energySwirl(BEAM_RESOURCE_LOCATION, 0, 0), (quadPose, vertexConsumer) ->
                     renderPart(quadPose, vertexConsumer, 5, 5, 5, 1.0F, totalHeight, -pylonBeamHeight, 0.0F, static02F, static02F, 0.0F, f9, 0.0F, 0.0F, f12, f16, f15));
             poseStack.popPose();
@@ -142,8 +142,8 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
         if(staticBuildTick > 350) {
             poseStack.pushPose();
             poseStack.translate(0, yHeight, xzPos);
-            poseStack.mulPose(Axis.XP.rotationDegrees(135.0F));
-            poseStack.mulPose(Axis.YP.rotationDegrees(45.0F));
+            poseStack.rotate(Axis.XP.rotationDegrees(135.0F));
+            poseStack.rotate(Axis.YP.rotationDegrees(45.0F));
             collector.submitCustomGeometry(poseStack, RenderTypes.energySwirl(BEAM_RESOURCE_LOCATION, 0, 0), (quadPose, vertexConsumer) ->
                     renderPart(quadPose, vertexConsumer, 5, 5, 5, 1.0F, totalHeight, -pylonBeamHeight, 0.0F, static02F, static02F, 0.0F, f9, 0.0F, 0.0F, f12, f16, f15));
             poseStack.popPose();

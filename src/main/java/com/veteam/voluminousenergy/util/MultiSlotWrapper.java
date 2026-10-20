@@ -1,84 +1,74 @@
 package com.veteam.voluminousenergy.util;
 
+import com.veteam.voluminousenergy.blocks.tiles.inventory.VEItemStackHandler;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
-import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.List;
 
-public class MultiSlotWrapper implements IItemHandlerModifiable {
+/**
+ * The view of a machine's inventory from one side. Only the slots assigned to that side are visible,
+ * output slots refuse insertion, input slots refuse extraction, and disabled slots refuse both.
+ */
+public class MultiSlotWrapper implements ResourceHandler<ItemResource> {
 
-    private final IItemHandlerModifiable inventory;
+    private final VEItemStackHandler inventory;
     HashMap<Integer, VESlotManager> managerHashMap = new HashMap<>();
 
-    public MultiSlotWrapper(IItemHandlerModifiable inventory, List<VESlotManager> slotManager) {
+    public MultiSlotWrapper(VEItemStackHandler inventory, List<VESlotManager> slotManager) {
         this.inventory = inventory;
         slotManager.forEach(m -> managerHashMap.put(m.getSlotNum(), m));
     }
 
     @Override
-    public int getSlots() {
-        return inventory.getSlots();
+    public int size() {
+        return inventory.size();
     }
 
     @Override
-    @Nonnull
-    public ItemStack getStackInSlot(int slot) {
+    public ItemResource getResource(int slot) {
         if (managerHashMap.containsKey(slot)) {
-            return inventory.getStackInSlot(slot);
+            return inventory.getResource(slot);
         }
-        return ItemStack.EMPTY;
+        return ItemResource.EMPTY;
     }
 
     @Override
-    @Nonnull
-    public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+    public long getAmountAsLong(int slot) {
         if (managerHashMap.containsKey(slot)) {
-            VESlotManager manager = managerHashMap.get(slot);
-            if (manager.getSlotType() == SlotType.OUTPUT || !manager.getStatus()) return stack;
-            return inventory.insertItem(manager.getSlotNum(), stack, simulate);
-        }
-        return stack;
-    }
-
-    @Override
-    @Nonnull
-    public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        if (managerHashMap.containsKey(slot)) {
-            VESlotManager manager = managerHashMap.get(slot);
-            if (manager.getSlotType() == SlotType.INPUT || !manager.getStatus()) return ItemStack.EMPTY;
-            return inventory.extractItem(managerHashMap.get(slot).getSlotNum(), amount, simulate);
-        }
-        return ItemStack.EMPTY;
-    }
-
-    @Override
-    public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
-        if (checkSlot(slot)) {
-            inventory.setStackInSlot(slot, stack);
-        }
-    }
-
-    @Override
-    public int getSlotLimit(int slot) {
-        if (checkSlot(slot)) {
-            return inventory.getSlotLimit(slot);
+            return inventory.getAmountAsLong(slot);
         }
         return 0;
     }
 
     @Override
-    public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-        if (checkSlot(slot)) {
-            return inventory.isItemValid(slot, stack);
-        }
-        return false;
+    public long getCapacityAsLong(int slot, ItemResource resource) {
+        return inventory.getCapacityAsLong(slot, resource);
     }
 
-    private boolean checkSlot(int localSlot) {
-        return localSlot < getSlots();
+    @Override
+    public boolean isValid(int slot, ItemResource resource) {
+        return inventory.isValid(slot, resource);
+    }
+
+    @Override
+    public int insert(int slot, ItemResource resource, int amount, TransactionContext transaction) {
+        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+        VESlotManager manager = managerHashMap.get(slot);
+        if (manager == null || manager.getSlotType() == SlotType.OUTPUT || !manager.getStatus()) return 0;
+        return inventory.insert(slot, resource, amount, transaction);
+    }
+
+    @Override
+    public int extract(int slot, ItemResource resource, int amount, TransactionContext transaction) {
+        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+        VESlotManager manager = managerHashMap.get(slot);
+        if (manager == null || manager.getSlotType() == SlotType.INPUT || !manager.getStatus()) return 0;
+        return inventory.extract(slot, resource, amount, transaction);
     }
 
     public void addSlotManager(VESlotManager manager) {

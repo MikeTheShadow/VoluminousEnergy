@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.blocks.containers;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.iolisteners.SlotWithIOListener;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntityFactory.*;
+import com.veteam.voluminousenergy.blocks.tiles.inventory.VEItemStackHandler;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.SlotType;
 import net.minecraft.core.BlockPos;
@@ -12,8 +13,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.SlotItemHandler;
+import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,7 +41,7 @@ public class VEContainerFactory {
     public VEContainer create(int id, Level world, BlockPos pos, Inventory inventory, Player player) {
         return new VEContainer(menuTypeRegistryObject.get(), id, world, pos, inventory, player, block.get()) {
             @Override
-            protected void addSlotsToGUI(IItemHandler h) {
+            protected void addSlotsToGUI(VEItemStackHandler h) {
                 List<Slot> slots = VEContainerFactory.this.slots;
 
                 int energySlotId = -1;
@@ -116,14 +116,21 @@ public class VEContainerFactory {
 
     }
 
-    public static class VESlot extends SlotItemHandler {
+    /**
+     * A machine slot. It shows a copy of the machine's stack and writes changes back through
+     * {@link VEItemStackHandler#set}, so the listener hooks see the stack being written rather than a live
+     * reference into the machine.
+     */
+    public static class VESlot extends ResourceHandlerSlot {
 
+        private final VEItemStackHandler itemHandler;
         private final boolean allowInsertion;
         private final @Nullable SlotWithIOListener listener;
         private final boolean isClientSide;
 
-        public VESlot(IItemHandler itemHandler, int index, int xPos, int yPos, boolean allowInsertion, @Nullable SlotWithIOListener listener, boolean isClientSide) {
-            super(itemHandler, index, xPos, yPos);
+        public VESlot(VEItemStackHandler itemHandler, int index, int xPos, int yPos, boolean allowInsertion, @Nullable SlotWithIOListener listener, boolean isClientSide) {
+            super(itemHandler, itemHandler::set, index, xPos, yPos);
+            this.itemHandler = itemHandler;
             this.allowInsertion = allowInsertion;
             this.listener = listener;
             this.isClientSide = isClientSide;
@@ -135,26 +142,26 @@ public class VEContainerFactory {
 
         @Override
         public @NotNull ItemStack remove(int amount) {
-            if (listener != null) listener.onRemoved(getItemHandler(), amount, getSlotIndex(), isClientSide);
+            if (listener != null) listener.onRemoved(itemHandler, amount, getSlotIndex(), isClientSide);
             return super.remove(amount);
         }
 
         @Override
         public void onTake(@NotNull Player pPlayer, @NotNull ItemStack stack) {
             if (listener != null) {
-                listener.onTake(getItemHandler(), stack, isClientSide, pPlayer);
+                listener.onTake(itemHandler, stack, isClientSide, pPlayer);
             }
             super.onTake(pPlayer, stack);
         }
 
         @Override
-        public void set(@NotNull ItemStack stack) {
-            if (listener != null) listener.onSet(stack, getSlotIndex(), getItemHandler(), isClientSide);
-            super.set(stack);
+        protected void setStackCopy(ItemStack stack) {
+            if (listener != null) listener.onSet(stack, getSlotIndex(), itemHandler, isClientSide);
+            super.setStackCopy(stack);
         }
 
         public void preQuickMoveStack(ItemStack stack) {
-            if (listener != null) listener.preQuickMoveStack(getItemHandler(), stack, isClientSide);
+            if (listener != null) listener.preQuickMoveStack(itemHandler, stack, isClientSide);
         }
     }
 }

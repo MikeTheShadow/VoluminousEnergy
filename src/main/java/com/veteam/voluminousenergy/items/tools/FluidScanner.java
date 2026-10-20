@@ -22,7 +22,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.items.wrapper.PlayerInvWrapper;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.PlayerInventoryWrapper;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -70,25 +72,28 @@ public class FluidScanner extends Item {
                 return InteractionResult.SUCCESS_SERVER;
             }
 
-            PlayerInvWrapper inventory = new PlayerInvWrapper(player.getInventory());
+            PlayerInventoryWrapper inventory = PlayerInventoryWrapper.of(player);
             int freeSlot = player.getInventory().getFreeSlot();
 
             if (freeSlot == -1) {
                 player.sendSystemMessage(TextUtil.translateString(ChatFormatting.RED, "text.voluminousenergy.rfid.inventory_full"));
             } else {
-                for (int slot = 0; slot < inventory.getSlots(); slot++) {
-                    ItemStack itemStack = inventory.getStackInSlot(slot);
-                    if (itemStack.getItem() instanceof RFIDChip) {
+                for (int slot = 0; slot < inventory.size(); slot++) {
+                    ItemResource chip = inventory.getResource(slot);
+                    if (chip.getItem() instanceof RFIDChip) {
 
-                        ChunkFluidData data = itemStack.get(VEDataComponents.CHUNK_FLUID_DATA);
+                        ChunkFluidData data = chip.toStack().get(VEDataComponents.CHUNK_FLUID_DATA);
 
                         if (data == null) {
-                            itemStack.setCount(itemStack.getCount() - 1);
                             ItemStack dataStack = new ItemStack(VEItems.RFID_CHIP.get(), 1);
                             data = new ChunkFluidData(chunkAccess.getPos().x(),
                                     chunkAccess.getPos().z(), new ArrayList<>());
                             dataStack.set(VEDataComponents.CHUNK_FLUID_DATA, data);
-                            inventory.insertItem(freeSlot, dataStack, false);
+                            try (Transaction transaction = Transaction.openRoot()) {
+                                inventory.extract(slot, chip, 1, transaction);
+                                inventory.insert(freeSlot, ItemResource.of(dataStack), 1, transaction);
+                                transaction.commit();
+                            }
                             player.sendSystemMessage(TextUtil.translateString(ChatFormatting.GREEN, "text.voluminousenergy.rfid.write_success"));
                         } else {
                             continue;

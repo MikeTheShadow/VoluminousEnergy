@@ -6,12 +6,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 public class VERelationalTank {
 
-    FluidTank tank;
+    VEFluidTank tank;
     int slotNum;
     ItemStack input;
     ItemStack output;
@@ -32,7 +30,7 @@ public class VERelationalTank {
 
     }
 
-    public VERelationalTank(FluidTank tank, int slotNum, int recipePos, TankType tankType, String nbt) {
+    public VERelationalTank(VEFluidTank tank, int slotNum, int recipePos, TankType tankType, String nbt) {
         this.tank = tank;
         this.slotNum = slotNum;
         this.tankType = tankType;
@@ -40,7 +38,7 @@ public class VERelationalTank {
         this.nbt = nbt;
     }
 
-    public VERelationalTank(FluidTank tank, int slotNum, int recipePos, TankType tankType, String nbt, AbstractFluidValidator validator) {
+    public VERelationalTank(VEFluidTank tank, int slotNum, int recipePos, TankType tankType, String nbt, AbstractFluidValidator validator) {
         this.tank = tank;
         this.slotNum = slotNum;
         this.tankType = tankType;
@@ -49,7 +47,7 @@ public class VERelationalTank {
         this.validator = validator;
     }
 
-    public VERelationalTank(FluidTank tank, int slotNum, TankType tankType, String nbt) {
+    public VERelationalTank(VEFluidTank tank, int slotNum, TankType tankType, String nbt) {
         this.tank = tank;
         this.slotNum = slotNum;
         this.tankType = tankType;
@@ -67,11 +65,11 @@ public class VERelationalTank {
     }
 
     public void fillTank(FluidStack stack) {
-        this.getTank().fill(stack, IFluidHandler.FluidAction.EXECUTE);
+        this.getTank().fill(stack);
     }
 
     public int testFillTank(FluidStack stack) {
-        return this.getTank().fill(stack, IFluidHandler.FluidAction.SIMULATE);
+        return this.getTank().fillableAmount(stack);
     }
 
 
@@ -95,11 +93,11 @@ public class VERelationalTank {
         return tankType;
     }
 
-    public FluidTank getTank() {
+    public VEFluidTank getTank() {
         return tank;
     }
 
-    public void setTank(FluidTank tank) {
+    public void setTank(VEFluidTank tank) {
         this.tank = tank;
     }
 

@@ -1,0 +1,9 @@
+{
+  "type": "voluminousenergy:ve_ore_deposit_feature",
+  "ore_block_state": {
+    "id": "minecraft:iron_ore"
+  },
+  "raw_block_state": {
+    "id": "minecraft:raw_iron_block"
+  }
+}

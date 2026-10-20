@@ -8,7 +8,6 @@ import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +47,7 @@ public class BasicParser {
 
     public boolean isPartialRecipe(VETileEntity tile) {
         for (SlotAndRecipePos pos : ingredientPositions) {
-            ItemStack stackInSlot = tile.getInventory().getStackInSlot(pos.tilePos());
+            ItemStack stackInSlot = tile.getInventory().getStack(pos.tilePos());
             Ingredient ingredient = recipe.getIngredient(pos.recipePos());
             if (stackInSlot.isEmpty()) continue;
             if (ingredient != null && ingredient.test(stackInSlot)) continue;
@@ -67,7 +66,7 @@ public class BasicParser {
 
     public boolean isCompleteRecipe(VETileEntity tile) {
         for (SlotAndRecipePos pos : ingredientPositions) {
-            ItemStack stackInSlot = tile.getInventory().getStackInSlot(pos.tilePos());
+            ItemStack stackInSlot = tile.getInventory().getStack(pos.tilePos());
             Ingredient ingredient = recipe.getIngredient(pos.recipePos());
             int amountNeeded = recipe.getIngredientCount(pos.recipePos());
             if (ingredient == null || ingredient.isEmpty()) continue;
@@ -90,7 +89,7 @@ public class BasicParser {
     public boolean canCompleteRecipe(VETileEntity tile) {
 
         for (SlotAndRecipePos pos : itemResultPositions) {
-            ItemStack stack = tile.getInventory().getStackInSlot(pos.tilePos());
+            ItemStack stack = tile.getInventory().getStack(pos.tilePos());
             ItemStack result = recipe.getResult(pos.recipePos());
             if (stack.isEmpty()) continue;
             if (!stack.is(result.getItem()) || result.getCount() + stack.getCount() > result.getMaxStackSize())
@@ -112,18 +111,18 @@ public class BasicParser {
 
         // Subtract the amounts
         for (SlotAndRecipePos pos : ingredientPositions) {
-            handler.extractItem(pos.tilePos(), recipe.getIngredientCount(pos.recipePos()), false);
+            handler.take(pos.tilePos(), recipe.getIngredientCount(pos.recipePos()));
         }
 
         for (SlotAndRecipePos pos : fluidIngredientPositions) {
             tile.getRelationalTank(pos.tilePos())
-                    .getTank().drain(recipe.getFluidIngredientAmount(pos.recipePos()), IFluidHandler.FluidAction.EXECUTE);
+                    .getTank().drain(recipe.getFluidIngredientAmount(pos.recipePos()));
         }
 
         // Insert the results
         for (SlotAndRecipePos pos : itemResultPositions) {
             ItemStack result = recipe.getResult(pos.recipePos());
-            handler.insertItem(pos.tilePos(), result.copy(), false);
+            handler.add(pos.tilePos(), result.copy());
         }
 
         for (SlotAndRecipePos pos : fluidResultPositions) {

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:ore",
+  "discard_chance_on_air_exposure": 0.5,
+  "size": 4,
+  "targets": [
+    {
+      "state": {
+        "id": "voluminousenergy:eighzo_ore"
+      },
+      "target": {
+        "predicate_type": "minecraft:tag_match",
+        "tag": "c:ore_bearing_ground/end_stone"
+      }
+    }
+  ]
+}

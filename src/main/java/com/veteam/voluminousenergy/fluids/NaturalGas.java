@@ -22,7 +22,7 @@ public class NaturalGas {
     public static final Identifier NATURAL_GAS_STILL_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/natural_gas_still");
     public static final Identifier NATURAL_GAS_FLOWING_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/natural_gas_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of().setId(VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid().sound(SoundType.EMPTY);
+    public static Block.Properties stdProp = Block.Properties.of().setId(VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.POPPED).liquid().sound(SoundType.EMPTY);
 
     public static FlowingFluid NATURAL_GAS;
     public static FlowingFluid FLOWING_NATURAL_GAS;

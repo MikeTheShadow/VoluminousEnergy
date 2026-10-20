@@ -12,6 +12,7 @@ import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
+import com.veteam.voluminousenergy.util.VEFluidTank;
 import com.veteam.voluminousenergy.util.VERelationalTank;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -21,7 +22,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -184,14 +184,14 @@ public class VETileEntityFactory {
 
         @Override
         public VERelationalTank asTank(int id) {
-            return new VERelationalTank(new FluidTank(capacity), id, recipePos, TankType.INPUT, "input_tank_" + id + ":input_tank_gui",fluidValidator);
+            return new VERelationalTank(new VEFluidTank(capacity), id, recipePos, TankType.INPUT, "input_tank_" + id + ":input_tank_gui",fluidValidator);
         }
     }
 
     public record FluidOutputTank(int recipePos, int capacity) implements TileTank {
         @Override
         public VERelationalTank asTank(int id) {
-            return new VERelationalTank(new FluidTank(capacity), id, recipePos, TankType.OUTPUT, "input_tank_" + id + ":output_tank_gui");
+            return new VERelationalTank(new VEFluidTank(capacity), id, recipePos, TankType.OUTPUT, "input_tank_" + id + ":output_tank_gui");
         }
     }
 
@@ -203,7 +203,7 @@ public class VETileEntityFactory {
 
         @Override
         public VERelationalTank asTank(int id) {
-            VERelationalTank tank = new VERelationalTank(new FluidTank(capacity), id, recipePos, TankType.BOTH, "both_tank_" + id + ":output_tank_gui",fluidValidator);
+            VERelationalTank tank = new VERelationalTank(new VEFluidTank(capacity), id, recipePos, TankType.BOTH, "both_tank_" + id + ":output_tank_gui",fluidValidator);
             tank.setAllowAny((fluidValidator == null));
             tank.setIgnoreDirection(true);
             return tank;

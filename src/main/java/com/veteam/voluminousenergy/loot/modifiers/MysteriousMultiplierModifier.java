@@ -5,6 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.items.VEItems;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.core.Holder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
@@ -12,19 +13,23 @@ import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
 import net.neoforged.neoforge.common.loot.LootModifier;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
 public class MysteriousMultiplierModifier extends LootModifier {
 
     public static final Supplier<MapCodec<MysteriousMultiplierModifier>> CODEC = Suppliers.memoize(() ->
-            RecordCodecBuilder.mapCodec(instance -> instance.group(
-                            LOOT_CONDITIONS_CODEC.fieldOf("conditions").forGetter(MysteriousMultiplierModifier::getLootItemConditions)
-                    ).apply(instance, MysteriousMultiplierModifier::new)
+            RecordCodecBuilder.mapCodec(instance -> codecStart(instance)
+                    .apply(instance, MysteriousMultiplierModifier::new)
             ));
 
-    public MysteriousMultiplierModifier(LootItemCondition[] conditionsIn) {
-        super(conditionsIn, IGlobalLootModifier.DEFAULT_PRIORITY);
+    public MysteriousMultiplierModifier(Optional<Holder<LootItemCondition>> condition, int priority) {
+        super(condition, priority);
+    }
+
+    public MysteriousMultiplierModifier(Optional<Holder<LootItemCondition>> condition) {
+        this(condition, IGlobalLootModifier.DEFAULT_PRIORITY);
     }
 
     @Override
@@ -50,9 +55,5 @@ public class MysteriousMultiplierModifier extends LootModifier {
     @Override
     public MapCodec<? extends IGlobalLootModifier> codec() {
         return CODEC.get();
-    }
-
-    public LootItemCondition[] getLootItemConditions() {
-        return super.conditions;
     }
 }

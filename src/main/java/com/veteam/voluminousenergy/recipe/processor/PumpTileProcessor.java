@@ -15,7 +15,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import java.util.Optional;
 
@@ -129,7 +128,7 @@ public class PumpTileProcessor implements AbstractRecipeProcessor {
     void addFluidToTank(VETileEntity tile, Fluid fluid) {
         tile.getLevel().setBlockAndUpdate(tile.getBlockPos().offset(lX, lY, lZ), Blocks.AIR.defaultBlockState());
         tile.getRelationalTank(0).getTank()
-            .fill(new FluidStack(fluid, 1000), IFluidHandler.FluidAction.EXECUTE);
+            .fill(new FluidStack(fluid, 1000));
         tile.setData(VEAttachments.FLUID_PUMP, new FluidPumpData(lX, lY, lZ, fluid));
         tile.setChanged();
         tile.markFluidInputDirty();

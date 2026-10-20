@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.util;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.BlockStateMatchTest;
@@ -23,7 +24,7 @@ public class MultiBlockStateMatchRuleTest extends BlockStateMatchTest {
     }
 
     @Override
-    public boolean test(BlockState blockState, RandomSource random) {
+    public boolean test(BlockState blockState, BlockPos pos, RandomSource random) {
         for (BlockState state : stateList) {
             if (state.getBlock() == blockState.getBlock()) {
                 return true;

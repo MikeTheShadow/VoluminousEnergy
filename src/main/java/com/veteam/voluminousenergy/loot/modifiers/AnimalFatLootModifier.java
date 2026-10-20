@@ -24,17 +24,17 @@ import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
 import net.neoforged.neoforge.common.loot.LootModifier;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class AnimalFatLootModifier extends LootModifier {
     // Item data components are unbound while loot modifiers decode, so the addition stays a template until doApply.
     public static final Supplier<MapCodec<AnimalFatLootModifier>> CODEC = Suppliers.memoize(() ->
-            RecordCodecBuilder.mapCodec(animalFatLootModifierInstance -> animalFatLootModifierInstance.group(
-                            LOOT_CONDITIONS_CODEC.fieldOf("conditions").forGetter(AnimalFatLootModifier::getLootItemConditions),
+            RecordCodecBuilder.mapCodec(animalFatLootModifierInstance -> codecStart(animalFatLootModifierInstance).and(animalFatLootModifierInstance.group(
                             ItemStackTemplate.CODEC.fieldOf("addition").forGetter(AnimalFatLootModifier::getItemStackAddition),
                             Codec.INT.fieldOf("minimum_count").forGetter(AnimalFatLootModifier::getMinAmount),
                             Codec.INT.fieldOf("maximum_count").forGetter(AnimalFatLootModifier::getMaxAmount)
-                    ).apply(animalFatLootModifierInstance, AnimalFatLootModifier::new)
+                    )).apply(animalFatLootModifierInstance, AnimalFatLootModifier::new)
             ));
 
     private final ItemStackTemplate itemAddition;
@@ -44,17 +44,17 @@ public class AnimalFatLootModifier extends LootModifier {
     /**
      * Constructs a LootModifier.
      *
-     * @param conditionsIn the ILootConditions that need to be matched before the loot is modified.
+     * @param condition the condition that needs to be matched before the loot is modified.
      */
-    public AnimalFatLootModifier(LootItemCondition[] conditionsIn, ItemStackTemplate itemAddition, int minAmount, int maxAmount) {
-        super(conditionsIn, IGlobalLootModifier.DEFAULT_PRIORITY);
+    public AnimalFatLootModifier(Optional<Holder<LootItemCondition>> condition, int priority, ItemStackTemplate itemAddition, int minAmount, int maxAmount) {
+        super(condition, priority);
         this.itemAddition = itemAddition;
         this.minAmount = minAmount;
         this.maxAmount = maxAmount;
     }
 
-    public AnimalFatLootModifier(LootItemCondition[] conditionsIn, Item item, int minAmount, int maxAmount) {
-        this(conditionsIn, new ItemStackTemplate(item, 1), minAmount, maxAmount);
+    public AnimalFatLootModifier(Optional<Holder<LootItemCondition>> condition, Item item, int minAmount, int maxAmount) {
+        this(condition, IGlobalLootModifier.DEFAULT_PRIORITY, new ItemStackTemplate(item, 1), minAmount, maxAmount);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class AnimalFatLootModifier extends LootModifier {
         float luck = context.getLuck() > 0 ? context.getLuck() : 1;
 
         float lootingModif = 1.0f; // Default modifier if no looting is present
-        Entity attacker = context.getOptionalParameter(LootContextParams.ATTACKING_ENTITY);
+        Entity attacker = context.getOptional(LootContextParams.ATTACKING_ENTITY);
 
         if (attacker instanceof LivingEntity livingAttacker) {
             RegistryAccess registries = context.getLevel().registryAccess();
@@ -101,9 +101,5 @@ public class AnimalFatLootModifier extends LootModifier {
 
     public ItemStackTemplate getItemStackAddition() {
         return this.itemAddition;
-    }
-
-    public LootItemCondition[] getLootItemConditions() {
-        return super.conditions;
     }
 }

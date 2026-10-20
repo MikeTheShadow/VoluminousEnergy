@@ -21,7 +21,7 @@ public class AmmoniumNitrateSolution {
     public static final Identifier AMMONIUM_NITRATE_SOLUTION_STILL_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/ammonium_nitrate_solution_still");
     public static final Identifier AMMONIUM_NITRATE_SOLUTION_FLOWING_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/ammonium_nitrate_solution_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of().setId(VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
+    public static Block.Properties stdProp = Block.Properties.of().setId(VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.POPPED).liquid();
 
     public static FlowingFluid AMMONIUM_NITRATE_SOLUTION;
     public static FlowingFluid FLOWING_AMMONIUM_NITRATE_SOLUTION;

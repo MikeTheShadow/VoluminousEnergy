@@ -1,13 +1,16 @@
 {
   "type": "voluminousenergy:mysterious_multiplier",
-  "conditions": [
-    {
-      "chance": 0.1,
-      "condition": "minecraft:random_chance"
-    },
-    {
-      "condition": "neoforge:loot_table_id",
-      "loot_table_id": "minecraft:chests/village/village_armorer"
-    }
-  ]
+  "condition": {
+    "type": "minecraft:all_of",
+    "terms": [
+      {
+        "type": "minecraft:random_chance",
+        "chance": 0.1
+      },
+      {
+        "type": "neoforge:loot_table_id",
+        "loot_table_id": "minecraft:chests/village/village_armorer"
+      }
+    ]
+  }
 }

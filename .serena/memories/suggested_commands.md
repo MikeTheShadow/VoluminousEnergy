@@ -4,7 +4,8 @@ Always `./gradlew`, never a global `gradle`.
 - `compileJava` / `build`: compile check / jar.
 - `runClientData`: regenerates `src/generated/resources` (committed output).
 - `runClient`, `runServer`: dev game.
-- `runGameTestServer`: exists, but no gametests are written yet.
+- `runGameTestServer`: runs the gametests in `src/gametest/` (machines, items, loot, deposits).
+- `python3 -I src/gametest/autotest/autotest.py --dir <scratch> t0..t5|all`: the port test plan in throwaway worlds.
 - `--stop`: run first if `clean` fails with "Unable to delete build".
 
 No unit tests, lint, or formatter. A task is done when:

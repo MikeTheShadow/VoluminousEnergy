@@ -22,7 +22,7 @@ public class Oxygen {
     public static final Identifier OXYGEN_STILL_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/oxygen_still");
     public static final Identifier OXYGEN_FLOWING_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/oxygen_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of().setId(VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid().sound(SoundType.EMPTY);
+    public static Block.Properties stdProp = Block.Properties.of().setId(VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.POPPED).liquid().sound(SoundType.EMPTY);
 
     public static FlowingFluid OXYGEN;
     public static FlowingFluid FLOWING_OXYGEN;

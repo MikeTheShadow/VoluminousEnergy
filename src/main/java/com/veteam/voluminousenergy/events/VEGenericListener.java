@@ -8,10 +8,7 @@ import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.batteries.VEEnergyItem;
 import com.veteam.voluminousenergy.items.tools.multitool.VEMultitoolItems;
 import com.veteam.voluminousenergy.recipe.VERecipes;
-import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.networking.packets.*;
-import com.veteam.voluminousenergy.util.CapabilityAdapters;
-import com.veteam.voluminousenergy.util.MultiFluidSlotWrapper;
 import com.veteam.voluminousenergy.util.VEDataComponents;
 import com.veteam.voluminousenergy.world.feature.VEFluidReservoirFeature;
 import net.minecraft.resources.ResourceKey;
@@ -37,7 +34,6 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -65,30 +61,21 @@ public class VEGenericListener {
             if (b.hasInventory()) {
                 event.registerBlock(
                         Capabilities.Item.BLOCK,
-                        (level, pos, state, be, side) -> {
-                            IItemHandlerModifiable itemHandler = ((VETileEntity) be).getCapabilityMap().getItemStackHandler(side, be);
-                            return itemHandler == null ? null : CapabilityAdapters.toResourceHandler(itemHandler);
-                        },
+                        (level, pos, state, be, side) -> ((VETileEntity) be).getCapabilityMap().getItemStackHandler(side, be),
                         block);
             }
 
             if (b.hasEnergy()) {
                 event.registerBlock(
                         Capabilities.Energy.BLOCK,
-                        (level, pos, state, be, side) -> {
-                            VEEnergyStorage energyStorage = ((VETileEntity) be).getCapabilityMap().getEnergyStorage();
-                            return energyStorage == null ? null : CapabilityAdapters.toEnergyHandler(energyStorage);
-                        },
+                        (level, pos, state, be, side) -> ((VETileEntity) be).getCapabilityMap().getEnergyStorage(),
                         block);
             }
 
             if (b.hasFluids()) {
                 event.registerBlock(
                         Capabilities.Fluid.BLOCK,
-                        (level, pos, state, be, side) -> {
-                            MultiFluidSlotWrapper fluidHandler = ((VETileEntity) be).getCapabilityMap().getFluidHandler(side, be);
-                            return fluidHandler == null ? null : CapabilityAdapters.toResourceHandler(fluidHandler);
-                        },
+                        (level, pos, state, be, side) -> ((VETileEntity) be).getCapabilityMap().getFluidHandler(side, be),
                         block);
             }
         }

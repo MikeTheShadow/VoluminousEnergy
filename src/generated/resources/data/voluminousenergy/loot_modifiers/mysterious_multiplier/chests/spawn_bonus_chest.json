@@ -1,13 +1,16 @@
 {
   "type": "voluminousenergy:mysterious_multiplier",
-  "conditions": [
-    {
-      "chance": 1.0,
-      "condition": "minecraft:random_chance"
-    },
-    {
-      "condition": "neoforge:loot_table_id",
-      "loot_table_id": "minecraft:chests/spawn_bonus_chest"
-    }
-  ]
+  "condition": {
+    "type": "minecraft:all_of",
+    "terms": [
+      {
+        "type": "minecraft:random_chance",
+        "chance": 1.0
+      },
+      {
+        "type": "neoforge:loot_table_id",
+        "loot_table_id": "minecraft:chests/spawn_bonus_chest"
+      }
+    ]
+  }
 }

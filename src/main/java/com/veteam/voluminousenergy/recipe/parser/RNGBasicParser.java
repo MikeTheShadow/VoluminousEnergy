@@ -28,7 +28,7 @@ public class RNGBasicParser extends BasicParser {
     @Override
     public boolean canCompleteRecipe(VETileEntity tile) {
         for (SlotAndRecipePos pos : randomItemResultPositions) {
-            ItemStack stack = tile.getInventory().getStackInSlot(pos.tilePos());
+            ItemStack stack = tile.getInventory().getStack(pos.tilePos());
             ItemStack result = recipe.getResult(pos.recipePos());
             if (stack.isEmpty()) continue;
             if (!stack.is(result.getItem()) || result.getCount() + stack.getCount() > result.getMaxStackSize())
@@ -54,9 +54,9 @@ public class RNGBasicParser extends BasicParser {
             if (randomness != 1) {
                 float random = abs(0 + randomInstance.nextFloat() * (-1));
                 if (random > randomness) continue;
-                handler.insertItem(pos.tilePos(), result.copy(), false);
+                handler.add(pos.tilePos(), result.copy());
             } else {
-                handler.insertItem(pos.tilePos(), result.copy(), false);
+                handler.add(pos.tilePos(), result.copy());
             }
         }
 

@@ -56,7 +56,7 @@ public class GeneratorProcessor extends BasicProcessor {
     public boolean processRecipe(VETileEntity tile) {
         VEEnergyStorage energy = tile.getEnergy();
 
-        if (allowOverflow && energy.getEnergyStored() + energy.getProduction() > energy.getCapacity())
+        if (allowOverflow && energy.getAmountAsInt() + energy.getProduction() > energy.getCapacity())
             return false;
         energy.addEnergy(energy.getProduction());
         int sound_tick = tile.getData(VEAttachments.SOUND_TICK);

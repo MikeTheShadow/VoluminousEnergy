@@ -34,25 +34,23 @@ public class HydroponicParser extends RNGBasicParser {
                 float random = abs(0 + randomInstance.nextFloat() * (-1));
                 if (random > randomness) continue;
                 ItemStack result = rngRecipe.getResult(pos.recipePos());
-                handler.insertItem(pos.tilePos(), result.copy(), false);
+                handler.add(pos.tilePos(), result.copy());
             }
         }
 
         for (SlotAndRecipePos pos : fluidIngredientPositions) {
-            FluidStack fluidStack = tile.getFluidStackFromTank(pos.tilePos());
-            fluidStack.setAmount(fluidStack.getAmount() - recipe.getFluidIngredientAmount(pos.recipePos()));
+            tile.getRelationalTank(pos.tilePos()).getTank().drain(recipe.getFluidIngredientAmount(pos.recipePos()));
         }
 
         // Insert the results
         for (SlotAndRecipePos pos : itemResultPositions) {
             ItemStack result = recipe.getResult(pos.recipePos());
-            handler.insertItem(pos.tilePos(), result.copy(), false);
+            handler.add(pos.tilePos(), result.copy());
         }
 
         for (SlotAndRecipePos pos : fluidResultPositions) {
             FluidStack result = recipe.getOutputFluid(pos.recipePos());
-            FluidStack tileFluid = tile.getFluidStackFromTank(pos.tilePos());
-            tileFluid.setAmount(tileFluid.getAmount() + result.getAmount());
+            tile.getRelationalTank(pos.tilePos()).fillTank(result.copy());
         }
 
         // mark fluid IO as dirty

@@ -1,0 +1,1 @@
+{inv: {Size: 1, Items: [{count: 1, Slot: 0b, id: "minecraft:cobblestone"}]}, components: {}, sends_out_power: 1b, x: 10048, slot_state: {input_0_enabled: 1b, input_0_direction: 4}, y: 150, z: 10000, id: "voluminousenergy:primitivestirlinggenerator", energy: {energy_production: 0, energy_consumption: 0, upgrade_slot: -1, energy: 33333}}

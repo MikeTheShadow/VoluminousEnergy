@@ -1,16 +1,15 @@
 package com.veteam.voluminousenergy.world.feature;
 
+import com.mojang.serialization.MapCodec;
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.world.ores.VEOres;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.configurations.BlockStateConfiguration;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
 
 public class VEFeatures { // TODO: Investigate `BlockTags.FEATURES_CANNOT_REPLACE` as seen in LakeFeature.java
-    public static final DeferredRegister<Feature<?>> VE_FEATURE_REGISTRY = DeferredRegister.create(Registries.FEATURE, VoluminousEnergy.MODID);
+    public static final DeferredRegister<MapCodec<? extends Feature>> VE_FEATURE_REGISTRY = DeferredRegister.create(Registries.FEATURE_TYPE, VoluminousEnergy.MODID);
 //    public static final DeferredRegister<PlacedFeature> VE_PLACED_FEATURES = DeferredRegister.create(Registry.PLACED_FEATURE_REGISTRY, VoluminousEnergy.MODID);
 
     /**
@@ -18,15 +17,14 @@ public class VEFeatures { // TODO: Investigate `BlockTags.FEATURES_CANNOT_REPLAC
      **/
 
     // "High Level" Features
-    public static Supplier<VELakesFeature> VE_BSC_LAKE_FEATURE = VE_FEATURE_REGISTRY.register("ve_bsc_lake_feature", () -> new VELakesFeature(VELakesFeature.Configuration.CODEC)); // Lake using BlockStateConfiguration. AKA How MC used to do lakes
-    public static Supplier<GeyserFeature> VE_GEYSER_FEATURE = VE_FEATURE_REGISTRY.register("ve_geyser_feature", () -> new GeyserFeature(GeyserFeature.Configuration.CODEC)); // Geyser using BlockStateConfiguration
-    public static Supplier<RiceFeature> VE_RICE_FEATURE = VE_FEATURE_REGISTRY.register("ve_rice_feature", () -> new RiceFeature(BlockStateConfiguration.CODEC)); // Rice crop using BlockStateConfiguration
-    public static Supplier<VEOreDepositFeature> VE_ORE_DEPOSIT_FEATURE = VE_FEATURE_REGISTRY.register("ve_ore_deposit_feature", () -> new VEOreDepositFeature(VEOreDepositFeature.Configuration.CODEC));
-    public static Supplier<SurfaceMattersLakesFeature> VE_BSC_LAKE_SURFACE_FEATURE = VE_FEATURE_REGISTRY.register("ve_bsc_surface_lake_feature", () -> new SurfaceMattersLakesFeature(VELakesFeature.Configuration.CODEC));
-    public static Supplier<VEFluidDepositFeature> VE_FLUID_DEPOSIT_FEATURE = VE_FEATURE_REGISTRY.register("ve_fluid_deposit_feature", () -> new VEFluidDepositFeature(VELakesFeature.Configuration.CODEC));
-    public static Supplier<VEFluidReservoirFeature> VE_FLUID_RESERVOIR_FEATURE = VE_FEATURE_REGISTRY.register("ve_fluid_reservoir_feature", () -> new VEFluidReservoirFeature(VEFluidReservoirFeature.Configuration.CODEC));
-
-    protected static VEOres.NoPlacement noPlacement = new VEOres.NoPlacement();
+    public static Supplier<MapCodec<VELakesFeature>> VE_BSC_LAKE_FEATURE = VE_FEATURE_REGISTRY.register("ve_bsc_lake_feature", () -> VELakesFeature.CODEC); // How MC used to do lakes
+    public static Supplier<MapCodec<GeyserFeature>> VE_GEYSER_FEATURE = VE_FEATURE_REGISTRY.register("ve_geyser_feature", () -> GeyserFeature.CODEC);
+    public static Supplier<MapCodec<RiceFeature>> VE_RICE_FEATURE = VE_FEATURE_REGISTRY.register("ve_rice_feature", () -> RiceFeature.CODEC);
+    public static Supplier<MapCodec<VEOreDepositFeature>> VE_ORE_DEPOSIT_FEATURE = VE_FEATURE_REGISTRY.register("ve_ore_deposit_feature", () -> VEOreDepositFeature.CODEC);
+    public static Supplier<MapCodec<SurfaceMattersLakesFeature>> VE_BSC_LAKE_SURFACE_FEATURE = VE_FEATURE_REGISTRY.register("ve_bsc_surface_lake_feature", () -> SurfaceMattersLakesFeature.CODEC);
+    public static Supplier<MapCodec<VEFluidDepositFeature>> VE_FLUID_DEPOSIT_FEATURE = VE_FEATURE_REGISTRY.register("ve_fluid_deposit_feature", () -> VEFluidDepositFeature.CODEC);
+    public static Supplier<MapCodec<VEFluidReservoirFeature>> VE_FLUID_RESERVOIR_FEATURE = VE_FEATURE_REGISTRY.register("ve_fluid_reservoir_feature", () -> VEFluidReservoirFeature.CODEC);
+    public static Supplier<MapCodec<VEFluidCaveFeature>> VE_FLUID_CAVE_FEATURE = VE_FEATURE_REGISTRY.register("ve_fluid_cave_feature", () -> VEFluidCaveFeature.CODEC);
 
     // PlacedFeatures created by methods below
     // Oil stuff

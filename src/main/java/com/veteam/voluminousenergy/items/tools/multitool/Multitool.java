@@ -33,7 +33,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.fluid.FluidUtil;
+import net.neoforged.neoforge.transfer.resource.ResourceStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -68,15 +72,15 @@ public class Multitool extends VEItem {
     }
 
     private float getFillRatio(ItemStack itemStack) {
-        IFluidHandler fluidHandler = VEItemCapabilities.getFluidHandler(itemStack);
-        return fluidHandler.getFluidInTank(0).getAmount() / (float) TEMP_TANK_CAPACITY;
+        ResourceHandler<FluidResource> fluidHandler = VEItemCapabilities.getFluidHandler(itemStack);
+        return fluidHandler.getAmountAsInt(0) / (float) TEMP_TANK_CAPACITY;
     }
 
     @Override
     public void appendHoverText(ItemStack itemStack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flag) {
 
-        IFluidHandler fluidHandler = VEItemCapabilities.getFluidHandler(itemStack);
-        FluidStack fluidStack = fluidHandler.getFluidInTank(0).copy();
+        ResourceHandler<FluidResource> fluidHandler = VEItemCapabilities.getFluidHandler(itemStack);
+        FluidStack fluidStack = FluidUtil.getStack(fluidHandler, 0);
 
         if(fluidStack.isEmpty()) {
             tooltip.accept(TextUtil.translateString("tank.voluminousenergy.tank_empty").copy());
@@ -170,11 +174,11 @@ public class Multitool extends VEItem {
     public float getDestroySpeed(@NotNull ItemStack itemStack, @NotNull BlockState blockStateToMine) {
         int energy = itemStack.getOrDefault(VEDataComponents.MULTI_TOOL_ENERGY,0);
         if(energy < 1) {
-            IFluidHandler capability = VEItemCapabilities.getFluidHandler(itemStack);
-            FluidStack drainedFluid = capability.drain(50, IFluidHandler.FluidAction.EXECUTE);
-            if(drainedFluid.isEmpty()) {
+            ResourceStack<FluidResource> drained = ResourceHandlerUtil.extractFirst(VEItemCapabilities.getFluidHandler(itemStack), fluid -> true, 50, null);
+            if(drained == null) {
                 return 0f;
             }
+            FluidStack drainedFluid = drained.resource().toStack(drained.amount());
 
             int energyPerTick = CombustibleFluidsData.getEnergyPerTick(drainedFluid);
             int multiplier = 20;

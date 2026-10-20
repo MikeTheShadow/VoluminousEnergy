@@ -10,7 +10,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.fluid.FluidUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,9 +25,9 @@ public class VERender {
         throw new IllegalAccessError("Utility class");
     }
 
-    public static void renderGuiTank(GuiGraphicsExtractor guiGraphics, Level level, BlockPos tilePos, IFluidHandler fluidHandler, int tank, double x, double y, double zLevel, double width, double height) {
-        FluidStack stack = fluidHandler.getFluidInTank(tank);
-        int tankCapacity = fluidHandler.getTankCapacity(tank);
+    public static void renderGuiTank(GuiGraphicsExtractor guiGraphics, Level level, BlockPos tilePos, ResourceHandler<FluidResource> fluidHandler, int tank, double x, double y, double zLevel, double width, double height) {
+        FluidStack stack = FluidUtil.getStack(fluidHandler, tank);
+        int tankCapacity = fluidHandler.getCapacityAsInt(tank, FluidResource.EMPTY);
         renderGuiTank(guiGraphics, level, tilePos, stack, tankCapacity, x, y, zLevel, width, height);
     }
 

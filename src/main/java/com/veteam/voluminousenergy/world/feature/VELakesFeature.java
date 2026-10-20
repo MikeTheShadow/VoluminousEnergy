@@ -1,6 +1,6 @@
 package com.veteam.voluminousenergy.world.feature;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.util.WorldUtil;
 import net.minecraft.core.BlockPos;
@@ -13,29 +13,34 @@ import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.feature.BlockReplacement;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
-import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.structure.templatesystem.AlwaysTrueTest;
 import net.minecraft.world.level.material.FluidState;
 
 import java.util.List;
 
-public class VELakesFeature extends Feature<VELakesFeature.Configuration> {
-    public VELakesFeature(Codec<VELakesFeature.Configuration> lakesConfiguration) {
-        super(lakesConfiguration);
-    }
+/**
+ * A lake of the given fluid. Without {@code perimeter_targets} the rim is stone, as vanilla lakes had.
+ */
+public record VELakesFeature(FluidState fluidState, List<BlockReplacement> perimeterTargets) implements Feature {
+    private static final List<BlockReplacement> STONE_PERIMETER =
+            List.of(BlockReplacement.replace(AlwaysTrueTest.INSTANCE, Blocks.STONE.defaultBlockState()));
+
+    public static final MapCodec<VELakesFeature> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            FluidState.CODEC.fieldOf("fluidstate").forGetter(VELakesFeature::fluidState),
+            BlockReplacement.CODEC.listOf().optionalFieldOf("perimeter_targets", STONE_PERIMETER).forGetter(VELakesFeature::perimeterTargets)
+    ).apply(instance, VELakesFeature::new));
 
     private static final BlockState AIR = Blocks.CAVE_AIR.defaultBlockState();
 
-
     @Override
-    public boolean place(FeaturePlaceContext<VELakesFeature.Configuration> context) {
-        return place(context.level(), context.chunkGenerator(), context.random(), context.origin(), context.config());
+    public MapCodec<VELakesFeature> codec() {
+        return CODEC;
     }
 
-    protected boolean place(WorldGenLevel worldIn, ChunkGenerator generator, RandomSource rand, BlockPos pos, Configuration config) {
+    @Override
+    public boolean place(WorldGenLevel worldIn, ChunkGenerator generator, RandomSource rand, BlockPos pos) {
         while (pos.getY() > 5 && worldIn.isEmptyBlock(pos)) {
             pos = pos.below();
         }
@@ -46,7 +51,7 @@ public class VELakesFeature extends Feature<VELakesFeature.Configuration> {
             pos = pos.below(4);
 
             LakeMask mask = LakeMask.generate(rand);
-            BlockState fluidBlock = config.fluidState().createLegacyBlock();
+            BlockState fluidBlock = fluidState.createLegacyBlock();
 
             for (int x = 0; x < LakeMask.WIDTH; ++x) {
                 for (int z = 0; z < LakeMask.WIDTH; ++z) {
@@ -98,7 +103,7 @@ public class VELakesFeature extends Feature<VELakesFeature.Configuration> {
                     for (int y = 0; y < LakeMask.HEIGHT; ++y) {
                         BlockPos rimPos = pos.offset(x, y, z);
                         if (mask.isBorder(x, y, z) && (y < 4 || rand.nextInt(2) != 0) && worldIn.getBlockState(rimPos).isSolid()) {
-                            BlockState rimState = LakeMask.perimeterState(config.perimeterTargets(), worldIn.getBlockState(rimPos), rand);
+                            BlockState rimState = LakeMask.perimeterState(perimeterTargets, worldIn.getBlockState(rimPos), rimPos, rand);
                             if (rimState != null) {
                                 worldIn.setBlock(rimPos, rimState, 2);
                             }
@@ -109,19 +114,5 @@ public class VELakesFeature extends Feature<VELakesFeature.Configuration> {
 
             return true;
         }
-    }
-
-    /**
-     * Configures the lake's fluid and the blocks its rim is replaced with. Without
-     * {@code perimeter_targets} the rim is stone, as vanilla lakes had.
-     */
-    public record Configuration(FluidState fluidState, List<OreConfiguration.TargetBlockState> perimeterTargets) implements FeatureConfiguration {
-        private static final List<OreConfiguration.TargetBlockState> STONE_PERIMETER =
-                List.of(OreConfiguration.target(AlwaysTrueTest.INSTANCE, Blocks.STONE.defaultBlockState()));
-
-        public static final Codec<VELakesFeature.Configuration> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                FluidState.CODEC.fieldOf("fluidstate").forGetter(Configuration::fluidState),
-                OreConfiguration.TargetBlockState.CODEC.listOf().optionalFieldOf("perimeter_targets", STONE_PERIMETER).forGetter(Configuration::perimeterTargets)
-        ).apply(instance, VELakesFeature.Configuration::new));
     }
 }

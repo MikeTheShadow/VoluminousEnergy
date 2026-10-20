@@ -7,12 +7,16 @@ import com.veteam.voluminousenergy.loot.modifiers.MysteriousMultiplierModifier;
 import net.minecraft.advancements.predicates.MinMaxBounds;
 import net.minecraft.advancements.predicates.entity.CubeMobPredicate;
 import net.minecraft.advancements.predicates.entity.EntityPredicate;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.predicates.AllOfCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
@@ -21,6 +25,7 @@ import net.neoforged.neoforge.common.data.GlobalLootModifierProvider;
 import net.neoforged.neoforge.common.loot.LootTableIdCondition;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class VEGlobalLootModifierData extends GlobalLootModifierProvider {
@@ -46,10 +51,10 @@ public class VEGlobalLootModifierData extends GlobalLootModifierProvider {
         ).build();
 
         add("raw_sulfur/entities/sulfur_cube",
-            new AnimalFatLootModifier(new LootItemCondition[]{
+            new AnimalFatLootModifier(allOf(
                 LootTableIdCondition.builder(Identifier.withDefaultNamespace("entities/sulfur_cube")).build(),
                 smallestCube
-            }, VEItems.RAW_SULFUR.get(), 1, 5)
+            ), VEItems.RAW_SULFUR.get(), 1, 5)
         );
     }
 
@@ -60,10 +65,10 @@ public class VEGlobalLootModifierData extends GlobalLootModifierProvider {
             float value = LootSpawns.SPAWN_MYSTERIOUS_MULTIPLIERS_IN.get(lootTable);
             LootItemCondition lootCondition = LootItemRandomChanceCondition.randomChance(value).build();
             add(lootTableString,
-                new MysteriousMultiplierModifier(new LootItemCondition[]{
+                new MysteriousMultiplierModifier(allOf(
                     lootCondition,
                     LootTableIdCondition.builder(lootTable.identifier()).build()
-                })
+                ))
             );
         }
 
@@ -72,7 +77,7 @@ public class VEGlobalLootModifierData extends GlobalLootModifierProvider {
     private void animalFatModifierProvider(HolderLookup.Provider provider) {
         LootItemCondition lootCondition =
             LootItemRandomChanceWithEnchantedBonusCondition
-                .randomChanceAndLootingBoost(provider,0.5F, 0.5F).build();
+                .randomChanceAndLootingBoost(provider.lookupOrThrow(Registries.ENCHANTMENT), 0.5F, 0.5F).build();
 
         String lootTableString = "animal_fat/";
 
@@ -80,68 +85,68 @@ public class VEGlobalLootModifierData extends GlobalLootModifierProvider {
         for (ResourceKey<LootTable> lootTable : LootSpawns.SHEEP_THAT_DROP_ANIMAL_FAT) {
 
             add(lootTableString + lootTable.identifier().getPath(),
-                new AnimalFatLootModifier(new LootItemCondition[]{
+                new AnimalFatLootModifier(allOf(
                     lootCondition,
                     LootTableIdCondition.builder(lootTable.identifier()).build()
-                }, VEItems.ANIMAL_FAT.get(), 0, 2)
+                ), VEItems.ANIMAL_FAT.get(), 0, 2)
             );
         }
         lootTableString += "entities/";
 
         // Pig
         add(lootTableString + "pig",
-            new AnimalFatLootModifier(new LootItemCondition[]{
+            new AnimalFatLootModifier(allOf(
                 lootCondition,
                 LootTableIdCondition.builder(Identifier.fromNamespaceAndPath("minecraft", "entities/pig")).build()
-            }, VEItems.ANIMAL_FAT.get(), 1, 3)
+            ), VEItems.ANIMAL_FAT.get(), 1, 3)
         );
 
         // Cow
         add(lootTableString + "cow",
-            new AnimalFatLootModifier(new LootItemCondition[]{
+            new AnimalFatLootModifier(allOf(
                 lootCondition,
                 LootTableIdCondition.builder(Identifier.fromNamespaceAndPath("minecraft", "entities/cow")).build()
-            }, VEItems.ANIMAL_FAT.get(), 1, 2)
+            ), VEItems.ANIMAL_FAT.get(), 1, 2)
         );
 
         // Mooshroom
         add(lootTableString + "mooshroom",
-            new AnimalFatLootModifier(new LootItemCondition[]{
+            new AnimalFatLootModifier(allOf(
                 lootCondition,
                 LootTableIdCondition.builder(Identifier.fromNamespaceAndPath("minecraft", "entities/mooshroom")).build()
-            }, VEItems.ANIMAL_FAT.get(), 1, 2)
+            ), VEItems.ANIMAL_FAT.get(), 1, 2)
         );
 
         // Llama
         add(lootTableString + "llama",
-            new AnimalFatLootModifier(new LootItemCondition[]{
+            new AnimalFatLootModifier(allOf(
                 lootCondition,
                 LootTableIdCondition.builder(Identifier.fromNamespaceAndPath("minecraft", "entities/llama")).build()
-            }, VEItems.ANIMAL_FAT.get(), 1, 2)
+            ), VEItems.ANIMAL_FAT.get(), 1, 2)
         );
 
         // Polar bear
         add(lootTableString + "polar_bear",
-            new AnimalFatLootModifier(new LootItemCondition[]{
+            new AnimalFatLootModifier(allOf(
                 lootCondition,
                 LootTableIdCondition.builder(Identifier.fromNamespaceAndPath("minecraft", "entities/polar_bear")).build()
-            }, VEItems.ANIMAL_FAT.get(), 3, 6)
+            ), VEItems.ANIMAL_FAT.get(), 3, 6)
         );
 
         // Panda
         add(lootTableString + "panda",
-            new AnimalFatLootModifier(new LootItemCondition[]{
+            new AnimalFatLootModifier(allOf(
                 lootCondition,
                 LootTableIdCondition.builder(Identifier.fromNamespaceAndPath("minecraft", "entities/panda")).build()
-            }, VEItems.ANIMAL_FAT.get(), 0, 2)
+            ), VEItems.ANIMAL_FAT.get(), 0, 2)
         );
 
         // Dolphin
         add(lootTableString + "dolphin",
-            new AnimalFatLootModifier(new LootItemCondition[]{
+            new AnimalFatLootModifier(allOf(
                 lootCondition,
                 LootTableIdCondition.builder(Identifier.fromNamespaceAndPath("minecraft", "entities/dolphin")).build()
-            }, VEItems.ANIMAL_FAT.get(), 2, 5)
+            ), VEItems.ANIMAL_FAT.get(), 2, 5)
         );
 
     }
@@ -150,5 +155,9 @@ public class VEGlobalLootModifierData extends GlobalLootModifierProvider {
     @Override
     public @NotNull String getName() {
         return "Voluminous Energy Loot Injection for Global Loot Modifiers";
+    }
+
+    private static Optional<Holder<LootItemCondition>> allOf(LootItemCondition... conditions) {
+        return Optional.of(Holder.direct(AllOfCondition.allOf(HolderSet.direct(Holder::direct, conditions))));
     }
 }

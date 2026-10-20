@@ -8,18 +8,26 @@ import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TagUtil;
 import com.veteam.voluminousenergy.util.TankType;
 import com.veteam.voluminousenergy.util.VERelationalTank;
+import net.minecraft.world.ItemStackWithSlot;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.items.ItemStackHandler;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VEItemStackHandler extends ItemStackHandler {
+/**
+ * The inventory of a machine. Pipes and players go through the transfer API, which applies the slot
+ * rules in {@link #isValid}; the machine itself changes its slots with the owner operations
+ * ({@link #take}, {@link #add}, {@link #setStack}), which skip those rules. It saves in the
+ * {@code Items}/{@code Size} format of NeoForge's former {@code ItemStackHandler}.
+ */
+public class VEItemStackHandler extends ItemStacksResourceHandler {
 
     private final VETileEntity tileEntity;
 
@@ -46,7 +54,7 @@ public class VEItemStackHandler extends ItemStackHandler {
     }
 
     @Override
-    protected void onContentsChanged(int slot) {
+    protected void onContentsChanged(int slot, ItemStack previousContents) {
         tileEntity.setChanged();
         List<VESlotManager> managers = tileEntity.getSlotManagers();
 
@@ -61,9 +69,10 @@ public class VEItemStackHandler extends ItemStackHandler {
     }
 
     @Override
-    public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+    public boolean isValid(int slot, ItemResource resource) {
+        ItemStack stack = resource.toStack();
         if (validator != null)
-            return validator.allowItemInsertion(slot, stack, false, tileEntity);
+            return validator.allowItemInsertion(slot, stack, tileEntity);
         if (slot == upgradeSlotLocation)
             return TagUtil.isTaggedMachineUpgradeItem(stack);
         VESlotManager manager = tileEntity.getSlotManagers().get(slot);
@@ -95,10 +104,84 @@ public class VEItemStackHandler extends ItemStackHandler {
         return false;
     }
 
-    @Override
-    public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
-        if (validator != null && !validator.allowItemExtraction(slot, amount, simulate, tileEntity))
+    /**
+     * Returns a copy of the stack in the given slot.
+     */
+    public ItemStack getStack(int slot) {
+        return stacks.get(slot).copy();
+    }
+
+    public void setStack(int slot, ItemStack stack) {
+        set(slot, ItemResource.of(stack), stack.getCount());
+    }
+
+    /**
+     * Removes up to {@code amount} items from the given slot.
+     *
+     * @return the items removed
+     */
+    public ItemStack take(int slot, int amount) {
+        ItemStack current = stacks.get(slot);
+        int taken = Math.min(amount, current.getCount());
+        if (taken <= 0) {
             return ItemStack.EMPTY;
-        return super.extractItem(slot, amount, simulate);
+        }
+        ItemStack removed = current.copyWithCount(taken);
+        setStack(slot, current.copyWithCount(current.getCount() - taken));
+        return removed;
+    }
+
+    /**
+     * Adds as much of the stack to the given slot as fits.
+     *
+     * @return the part of the stack that did not fit
+     */
+    public ItemStack add(int slot, ItemStack stack) {
+        int added = Math.min(stack.getCount(), roomFor(slot, stack));
+        if (added <= 0) {
+            return stack.copy();
+        }
+        setStack(slot, stack.copyWithCount(stacks.get(slot).getCount() + added));
+        return stack.copyWithCount(stack.getCount() - added);
+    }
+
+    /**
+     * Returns whether the whole stack fits in the given slot.
+     */
+    public boolean fits(int slot, ItemStack stack) {
+        return roomFor(slot, stack) >= stack.getCount();
+    }
+
+    private int roomFor(int slot, ItemStack stack) {
+        if (stack.isEmpty()) {
+            return 0;
+        }
+        ItemStack current = stacks.get(slot);
+        if (!current.isEmpty() && !ItemStack.isSameItemSameComponents(current, stack)) {
+            return 0;
+        }
+        return getCapacity(slot, ItemResource.of(stack)) - current.getCount();
+    }
+
+    @Override
+    public void serialize(ValueOutput output) {
+        ValueOutput.TypedOutputList<ItemStackWithSlot> items = output.list("Items", ItemStackWithSlot.CODEC);
+        for (int slot = 0; slot < stacks.size(); slot++) {
+            ItemStack stack = stacks.get(slot);
+            if (!stack.isEmpty()) {
+                items.add(new ItemStackWithSlot(slot, stack));
+            }
+        }
+        output.putInt("Size", stacks.size());
+    }
+
+    @Override
+    public void deserialize(ValueInput input) {
+        stacks.replaceAll(stack -> ItemStack.EMPTY);
+        input.listOrEmpty("Items", ItemStackWithSlot.CODEC).forEach(saved -> {
+            if (saved.isValidInContainer(stacks.size())) {
+                stacks.set(saved.slot(), saved.stack());
+            }
+        });
     }
 }

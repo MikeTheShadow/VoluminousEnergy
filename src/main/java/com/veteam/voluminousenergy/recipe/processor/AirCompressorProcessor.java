@@ -12,7 +12,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 public class AirCompressorProcessor implements AbstractRecipeProcessor {
 
@@ -81,8 +80,7 @@ public class AirCompressorProcessor implements AbstractRecipeProcessor {
             return false;
         }
 
-        tank.getTank().fill(new FluidStack(VEFluids.COMPRESSED_AIR_REG.get(), amountToFill),
-                IFluidHandler.FluidAction.EXECUTE);
+        tank.getTank().fill(new FluidStack(VEFluids.COMPRESSED_AIR_REG.get(), amountToFill));
         return true;
     }
 

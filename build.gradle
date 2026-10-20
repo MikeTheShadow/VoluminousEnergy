@@ -26,6 +26,21 @@ base {
 java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
+
+// Gametests and the autotest harness. They run in the gameTestServer and server runs as part of the
+// mod, and are never packaged into the jar.
+sourceSets {
+    gametest {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+}
+
+configurations {
+    gametestImplementation.extendsFrom implementation
+    gametestRuntimeOnly.extendsFrom runtimeOnly
+}
+
 // Default run configurations.
 // These can be tweaked, removed, or duplicated as needed.
 runs {
@@ -54,6 +69,7 @@ runs {
     server {
         systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         argument '--nogui'
+        modSource project.sourceSets.gametest
     }
 
     // This run config launches GameTestServer and runs all registered gametests, then exits.
@@ -61,6 +77,7 @@ runs {
     // The gametest system is also enabled by default for other run configs under the /test command.
     gameTestServer {
         systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        modSource project.sourceSets.gametest
     }
 
     clientData {

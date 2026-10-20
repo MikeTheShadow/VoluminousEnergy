@@ -5,14 +5,20 @@ import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.recipe.processor.BasicProcessor;
 import com.veteam.voluminousenergy.tools.Config;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MultiFluidSlotWrapper implements IFluidHandler {
+/**
+ * The view of a machine's tanks from one side. Output tanks refuse filling, and only enabled tanks
+ * can be drained, input tanks only when {@code Allow Extraction from Input Tanks} is on. A transfer
+ * without a tank index goes to the first tank that accepts it.
+ */
+public class MultiFluidSlotWrapper implements ResourceHandler<FluidResource> {
     List<VERelationalTank> tanks;
     VETileEntity tileEntity;
 
@@ -22,31 +28,39 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
     }
 
     @Override
-    public int getTanks() {
+    public int size() {
         return tanks.size();
     }
 
-    @Nonnull
     @Override
-    public FluidStack getFluidInTank(int tank) {
-
+    public FluidResource getResource(int tank) {
         if (tank < 0 || tank >= tanks.size())
-            return FluidStack.EMPTY;
-        return tanks.get(tank).getTank().getFluid();
+            return FluidResource.EMPTY;
+        return tanks.get(tank).getTank().getResource(0);
     }
 
     @Override
-    public int getTankCapacity(int tank) {
+    public long getAmountAsLong(int tank) {
+        if (tank < 0 || tank >= tanks.size())
+            return 0;
+        return tanks.get(tank).getTank().getFluidAmount();
+    }
+
+    @Override
+    public long getCapacityAsLong(int tank, FluidResource resource) {
         if (tank < 0 || tank >= tanks.size())
             return 0;
         return this.tanks.get(tank).getTank().getCapacity();
     }
 
     @Override
-    public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
+    public boolean isValid(int tank, FluidResource resource) {
+        if (tank < 0 || tank >= tanks.size())
+            return false;
         VERelationalTank relationalTank = tanks.get(tank);
         if (relationalTank.isAllowAny())
             return true;
+        FluidStack stack = resource.toStack(1);
         if (relationalTank.getValidator() != null)
             return relationalTank.getValidator().validateFluid(stack, tileEntity);
 
@@ -60,72 +74,65 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
                 return true;
             }
         }
-        return relationalTank.getTank().isFluidValid(stack);
+        return relationalTank.getTank().isValid(0, resource);
     }
 
     @Override
-    public int fill(@NotNull FluidStack resource, @NotNull FluidAction action) {
+    public int insert(int tank, FluidResource resource, int amount, TransactionContext transaction) {
+        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+        if (!canFill(tank, resource)) {
+            return 0;
+        }
+        markRecipeDirty();
+        return tanks.get(tank).getTank().insert(0, resource, amount, transaction);
+    }
+
+    @Override
+    public int insert(FluidResource resource, int amount, TransactionContext transaction) {
+        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
         for (int tank = 0; tank < tanks.size(); tank++) {
             if (canFill(tank, resource)) {
-                return fill(tank, resource, action);
+                return insert(tank, resource, amount, transaction);
             }
         }
         return 0;
     }
 
-    /**
-     * Fills only the given tank, following the same rules as {@link #fill(FluidStack, FluidAction)}.
-     */
-    public int fill(int tank, FluidStack resource, FluidAction action) {
-        if (!canFill(tank, resource)) {
+    @Override
+    public int extract(int tank, FluidResource resource, int amount, TransactionContext transaction) {
+        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+        if (!canDrain(tank, resource)) {
             return 0;
         }
         markRecipeDirty();
-        return tanks.get(tank).getTank().fill(resource.copy(), action);
+        return tanks.get(tank).getTank().extract(0, resource, amount, transaction);
     }
 
-    @Nonnull
     @Override
-    public FluidStack drain(FluidStack resource, FluidAction action) {
+    public int extract(FluidResource resource, int amount, TransactionContext transaction) {
+        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
         for (int tank = 0; tank < tanks.size(); tank++) {
             if (canDrain(tank, resource)) {
-                return drain(tank, resource, action);
+                return extract(tank, resource, amount, transaction);
             }
         }
-        return FluidStack.EMPTY;
+        return 0;
     }
 
-    /**
-     * Drains only the given tank, following the same rules as {@link #drain(FluidStack, FluidAction)}.
-     */
-    public FluidStack drain(int tank, FluidStack resource, FluidAction action) {
-        if (!canDrain(tank, resource)) {
-            return FluidStack.EMPTY;
-        }
-        markRecipeDirty();
-        return tanks.get(tank).getTank().drain(resource.copy(), action);
-    }
-
-    /**
-     * Replaces the contents of the given tank without any checks, for restoring a snapshot.
-     */
-    public void setFluidInTank(int tank, FluidStack stack) {
-        tanks.get(tank).getTank().setFluid(stack);
-    }
-
-    private boolean canFill(int tank, FluidStack resource) {
+    private boolean canFill(int tank, FluidResource resource) {
         if (tank < 0 || tank >= tanks.size()) {
             return false;
         }
         VERelationalTank relationalTank = tanks.get(tank);
-        if (relationalTank.getTankType() == TankType.OUTPUT || !isFluidValid(tank, resource)) {
+        if (relationalTank.getTankType() == TankType.OUTPUT || !isValid(tank, resource)) {
             return false;
         }
-        return relationalTank.getTank().isEmpty() || resource.is(relationalTank.getTank().getFluid().getFluid());
+        VEFluidTank fluidTank = relationalTank.getTank();
+        return fluidTank.isEmpty() || resource.getFluid() == fluidTank.getResource(0).getFluid();
     }
 
-    private boolean canDrain(int tank, FluidStack resource) {
-        if (resource.isEmpty() || tank < 0 || tank >= tanks.size()) {
+    private boolean canDrain(int tank, FluidResource resource) {
+        if (tank < 0 || tank >= tanks.size()) {
             return false;
         }
         VERelationalTank relationalTank = tanks.get(tank);
@@ -136,32 +143,13 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
                 && relationalTank.getTankType() != TankType.OUTPUT && relationalTank.getTankType() != TankType.BOTH) {
             return false;
         }
-        return resource.is(relationalTank.getTank().getFluid().getFluid());
+        return resource.getFluid() == relationalTank.getTank().getResource(0).getFluid();
     }
 
     private void markRecipeDirty() {
         if (tileEntity.getRecipeProcessor() instanceof BasicProcessor basicProcessor) {
             basicProcessor.markRecipeDirty();
         }
-    }
-
-    @Nonnull
-    @Override
-    public FluidStack drain(int maxDrain, FluidAction action) {
-        for (VERelationalTank tank : tanks) {
-            if (!Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get()) {
-                if (tank.getTankType() != TankType.OUTPUT && tank.getTankType() != TankType.BOTH)
-                    continue;
-            }
-            if (tank.getTank().getFluidAmount() > 0) {
-                if (tank.getTank().getFluid().getAmount() != tank.getTank().getCapacity())
-                    if (tileEntity.getRecipeProcessor() instanceof BasicProcessor basicProcessor) {
-                        basicProcessor.markRecipeDirty();
-                    }
-                return tank.getTank().drain(maxDrain, action);
-            }
-        }
-        return FluidStack.EMPTY;
     }
 
     public void addRelationalTank(VERelationalTank tank) {

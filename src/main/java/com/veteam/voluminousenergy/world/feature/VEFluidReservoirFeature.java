@@ -2,14 +2,15 @@ package com.veteam.voluminousenergy.world.feature;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.core.registries.codec.RegistryCodecs;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
@@ -20,12 +21,11 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
+import net.minecraft.world.level.levelgen.feature.BlockReplacement;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
-import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.structure.templatesystem.AlwaysTrueTest;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import net.minecraft.world.level.material.FluidState;
@@ -39,18 +39,52 @@ import java.util.Optional;
  * a flat level and a cap fills open space above a flat floor. Every opening other than the open face is
  * plugged with the perimeter targets. Each chunk fills only its own blocks and plugs up to one block
  * into its neighbours, which make the same decisions when they generate.
+ * <p>
+ * {@code cellHeight} is unused when the reservoir reaches the surface, since its cells are columns
+ * spanning the band. Without {@code perimeter_targets} plugs are Bituminous Gravel.
  */
-public class VEFluidReservoirFeature extends Feature<VEFluidReservoirFeature.Configuration> {
-    public VEFluidReservoirFeature(Codec<VEFluidReservoirFeature.Configuration> codec) {
-        super(codec);
+public record VEFluidReservoirFeature(FluidState fluidState, Kind kind, boolean reachesSurface, VerticalAnchor minY, VerticalAnchor maxY,
+                                      int cellWidth, int cellHeight, float chance, HolderSet<Biome> biomes, int salt,
+                                      List<BlockReplacement> perimeterTargets, Optional<Boundary> boundary) implements Feature {
+    public static final MapCodec<VEFluidReservoirFeature> CODEC = RecordCodecBuilder.<VEFluidReservoirFeature>mapCodec(instance -> instance.group(
+            FluidState.CODEC.fieldOf("fluidstate").forGetter(VEFluidReservoirFeature::fluidState),
+            Kind.CODEC.fieldOf("kind").forGetter(VEFluidReservoirFeature::kind),
+            Codec.BOOL.optionalFieldOf("reaches_surface", false).forGetter(VEFluidReservoirFeature::reachesSurface),
+            VerticalAnchor.CODEC.fieldOf("min_y").forGetter(VEFluidReservoirFeature::minY),
+            VerticalAnchor.CODEC.fieldOf("max_y").forGetter(VEFluidReservoirFeature::maxY),
+            Codec.intRange(8, 128).fieldOf("cell_width").forGetter(VEFluidReservoirFeature::cellWidth),
+            Codec.intRange(4, 64).optionalFieldOf("cell_height", 16).forGetter(VEFluidReservoirFeature::cellHeight),
+            Codec.floatRange(0.0F, 1.0F).fieldOf("chance").forGetter(VEFluidReservoirFeature::chance),
+            RegistryCodecs.holderSet(Registries.BIOME).fieldOf("biomes").forGetter(VEFluidReservoirFeature::biomes),
+            Codec.INT.fieldOf("salt").forGetter(VEFluidReservoirFeature::salt),
+            BlockReplacement.CODEC.listOf().optionalFieldOf("perimeter_targets").forGetter(reservoir -> Optional.of(reservoir.perimeterTargets())),
+            Boundary.CODEC.optionalFieldOf("boundary").forGetter(VEFluidReservoirFeature::boundary)
+    ).apply(instance, VEFluidReservoirFeature::create)).validate(VEFluidReservoirFeature::validate);
+
+    private static VEFluidReservoirFeature create(FluidState fluidState, Kind kind, boolean reachesSurface, VerticalAnchor minY, VerticalAnchor maxY,
+                                                  int cellWidth, int cellHeight, float chance, HolderSet<Biome> biomes, int salt,
+                                                  Optional<List<BlockReplacement>> perimeterTargets, Optional<Boundary> boundary) {
+        return new VEFluidReservoirFeature(fluidState, kind, reachesSurface, minY, maxY, cellWidth, cellHeight, chance, biomes, salt,
+                perimeterTargets.orElseGet(() -> List.of(BlockReplacement.replace(AlwaysTrueTest.INSTANCE, VEBlocks.BITUMINOUS_GRAVEL.get().defaultBlockState()))),
+                boundary);
+    }
+
+    private static DataResult<VEFluidReservoirFeature> validate(VEFluidReservoirFeature reservoir) {
+        if (reservoir.kind() == Kind.CAP && reservoir.reachesSurface()) {
+            return DataResult.error(() -> "a cap reservoir cannot reach the surface");
+        }
+        return DataResult.success(reservoir);
     }
 
     @Override
-    public boolean place(FeaturePlaceContext<VEFluidReservoirFeature.Configuration> context) {
-        WorldGenLevel level = context.level();
-        Configuration config = context.config();
-        ChunkPos chunkPos = ChunkPos.containing(context.origin());
-        FluidReservoirCells cells = FluidReservoirCells.forPlacement(config, level.getLevel(), context.chunkGenerator());
+    public MapCodec<VEFluidReservoirFeature> codec() {
+        return CODEC;
+    }
+
+    @Override
+    public boolean place(WorldGenLevel level, ChunkGenerator generator, RandomSource random, BlockPos origin) {
+        ChunkPos chunkPos = ChunkPos.containing(origin);
+        FluidReservoirCells cells = FluidReservoirCells.forPlacement(this, level.getLevel(), generator);
 
         List<FluidReservoirCells.Cell> reservoirCells = cells.reservoirCellsNear(chunkPos);
         if (reservoirCells.isEmpty()) {
@@ -67,11 +101,11 @@ public class VEFluidReservoirFeature extends Feature<VEFluidReservoirFeature.Con
             return false;
         }
 
-        FilledMask filled = fill(level, config, cells, chunkPos, fromY, toY);
+        FilledMask filled = fill(level, cells, chunkPos, fromY, toY);
         if (filled.isEmpty()) {
             return false;
         }
-        seal(level, config, cells, context.random(), filled);
+        seal(level, cells, random, filled);
         return true;
     }
 
@@ -82,9 +116,9 @@ public class VEFluidReservoirFeature extends Feature<VEFluidReservoirFeature.Con
         FluidReservoirCells.forgetLevel(level);
     }
 
-    private static FilledMask fill(WorldGenLevel level, Configuration config, FluidReservoirCells cells, ChunkPos chunkPos, int fromY, int toY) {
+    private FilledMask fill(WorldGenLevel level, FluidReservoirCells cells, ChunkPos chunkPos, int fromY, int toY) {
         FilledMask filled = new FilledMask(chunkPos, fromY, toY);
-        BlockState fluidBlock = config.fluidState().createLegacyBlock();
+        BlockState fluidBlock = fluidState.createLegacyBlock();
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 
         for (int x = chunkPos.getMinBlockX(); x <= chunkPos.getMaxBlockX(); ++x) {
@@ -101,8 +135,8 @@ public class VEFluidReservoirFeature extends Feature<VEFluidReservoirFeature.Con
         return filled;
     }
 
-    private static void seal(WorldGenLevel level, Configuration config, FluidReservoirCells cells, RandomSource random, FilledMask filled) {
-        Direction openFace = config.kind() == Kind.POOL ? Direction.UP : Direction.DOWN;
+    private void seal(WorldGenLevel level, FluidReservoirCells cells, RandomSource random, FilledMask filled) {
+        Direction openFace = kind == Kind.POOL ? Direction.UP : Direction.DOWN;
         BlockPos.MutableBlockPos neighbour = new BlockPos.MutableBlockPos();
 
         filled.forEach((x, y, z) -> {
@@ -111,8 +145,8 @@ public class VEFluidReservoirFeature extends Feature<VEFluidReservoirFeature.Con
                     continue;
                 }
                 neighbour.set(x, y, z).move(direction);
-                if (!filled.contains(neighbour) && needsPlug(level, config, cells, filled, neighbour)) {
-                    BlockState plug = LakeMask.perimeterState(config.perimeterTargets(), level.getBlockState(neighbour.below()), random);
+                if (!filled.contains(neighbour) && needsPlug(level, cells, filled, neighbour)) {
+                    BlockState plug = LakeMask.perimeterState(perimeterTargets, level.getBlockState(neighbour.below()), neighbour.below(), random);
                     if (plug != null) {
                         level.setBlock(neighbour, plug, 2);
                     }
@@ -121,7 +155,7 @@ public class VEFluidReservoirFeature extends Feature<VEFluidReservoirFeature.Con
         });
     }
 
-    private static boolean needsPlug(WorldGenLevel level, Configuration config, FluidReservoirCells cells, FilledMask filled, BlockPos pos) {
+    private boolean needsPlug(WorldGenLevel level, FluidReservoirCells cells, FilledMask filled, BlockPos pos) {
         if (level.isOutsideBuildHeight(pos)) {
             return false;
         }
@@ -131,7 +165,7 @@ public class VEFluidReservoirFeature extends Feature<VEFluidReservoirFeature.Con
         if (existing.isSolid() && existingFluid.isEmpty()) {
             return false;
         }
-        if (existingFluid.getType().isSame(config.fluidState().getType()) || existing.is(BlockTags.FEATURES_CANNOT_REPLACE)) {
+        if (existingFluid.getType().isSame(fluidState.getType()) || existing.is(BlockTags.FEATURES_CANNOT_REPLACE)) {
             return false;
         }
         return filled.isInChunk(pos) || !willBeFilled(level, cells, pos, existing);
@@ -150,8 +184,16 @@ public class VEFluidReservoirFeature extends Feature<VEFluidReservoirFeature.Con
         return !neighbourStatus.isOrAfter(ChunkStatus.FEATURES);
     }
 
+    /**
+     * Whether the reservoir's fluid replaces {@code existing}. Water plants count as water, since a
+     * neighbouring chunk's features can grow them into water this reservoir already counted on filling.
+     */
     private static boolean canFill(BlockState existing) {
-        return existing.is(Blocks.AIR) || existing.is(Blocks.CAVE_AIR) || existing.is(Blocks.WATER);
+        return existing.is(Blocks.AIR) || existing.is(Blocks.CAVE_AIR) || existing.is(Blocks.WATER) || isWaterPlant(existing);
+    }
+
+    private static boolean isWaterPlant(BlockState existing) {
+        return existing.is(Blocks.SEAGRASS) || existing.is(Blocks.TALL_SEAGRASS) || existing.is(Blocks.KELP) || existing.is(Blocks.KELP_PLANT);
     }
 
     /**
@@ -233,49 +275,10 @@ public class VEFluidReservoirFeature extends Feature<VEFluidReservoirFeature.Con
      * Bends the boundary between two cells by up to {@code wobble} blocks of distance difference,
      * following {@code noise}. A wobble of 0 leaves flat boundaries.
      */
-    public record Boundary(ResourceKey<NormalNoise.NoiseParameters> noise, float wobble) {
+    public record Boundary(ResourceKey<NormalNoise> noise, float wobble) {
         public static final Codec<Boundary> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 ResourceKey.codec(Registries.NOISE).fieldOf("noise").forGetter(Boundary::noise),
                 Codec.floatRange(0.0F, 16.0F).fieldOf("wobble").forGetter(Boundary::wobble)
         ).apply(instance, Boundary::new));
-    }
-
-    /**
-     * Configures one kind of reservoir. {@code cellHeight} is unused when the reservoir reaches the
-     * surface, since its cells are columns spanning the band. Without {@code perimeter_targets} plugs
-     * are Bituminous Gravel.
-     */
-    public record Configuration(FluidState fluidState, Kind kind, boolean reachesSurface, VerticalAnchor minY, VerticalAnchor maxY,
-                                int cellWidth, int cellHeight, float chance, HolderSet<Biome> biomes, int salt,
-                                List<OreConfiguration.TargetBlockState> perimeterTargets, Optional<Boundary> boundary) implements FeatureConfiguration {
-        public static final Codec<VEFluidReservoirFeature.Configuration> CODEC = RecordCodecBuilder.<Configuration>create(instance -> instance.group(
-                FluidState.CODEC.fieldOf("fluidstate").forGetter(Configuration::fluidState),
-                Kind.CODEC.fieldOf("kind").forGetter(Configuration::kind),
-                Codec.BOOL.optionalFieldOf("reaches_surface", false).forGetter(Configuration::reachesSurface),
-                VerticalAnchor.CODEC.fieldOf("min_y").forGetter(Configuration::minY),
-                VerticalAnchor.CODEC.fieldOf("max_y").forGetter(Configuration::maxY),
-                Codec.intRange(8, 128).fieldOf("cell_width").forGetter(Configuration::cellWidth),
-                Codec.intRange(4, 64).optionalFieldOf("cell_height", 16).forGetter(Configuration::cellHeight),
-                Codec.floatRange(0.0F, 1.0F).fieldOf("chance").forGetter(Configuration::chance),
-                RegistryCodecs.homogeneousList(Registries.BIOME).fieldOf("biomes").forGetter(Configuration::biomes),
-                Codec.INT.fieldOf("salt").forGetter(Configuration::salt),
-                OreConfiguration.TargetBlockState.CODEC.listOf().optionalFieldOf("perimeter_targets").forGetter(config -> Optional.of(config.perimeterTargets())),
-                Boundary.CODEC.optionalFieldOf("boundary").forGetter(Configuration::boundary)
-        ).apply(instance, Configuration::create)).validate(Configuration::validate);
-
-        private static Configuration create(FluidState fluidState, Kind kind, boolean reachesSurface, VerticalAnchor minY, VerticalAnchor maxY,
-                                            int cellWidth, int cellHeight, float chance, HolderSet<Biome> biomes, int salt,
-                                            Optional<List<OreConfiguration.TargetBlockState>> perimeterTargets, Optional<Boundary> boundary) {
-            return new Configuration(fluidState, kind, reachesSurface, minY, maxY, cellWidth, cellHeight, chance, biomes, salt,
-                    perimeterTargets.orElseGet(() -> List.of(OreConfiguration.target(AlwaysTrueTest.INSTANCE, VEBlocks.BITUMINOUS_GRAVEL.get().defaultBlockState()))),
-                    boundary);
-        }
-
-        private static DataResult<Configuration> validate(Configuration config) {
-            if (config.kind() == Kind.CAP && config.reachesSurface()) {
-                return DataResult.error(() -> "a cap reservoir cannot reach the surface");
-            }
-            return DataResult.success(config);
-        }
     }
 }

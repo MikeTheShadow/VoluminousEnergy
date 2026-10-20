@@ -60,7 +60,6 @@ public class FluidSerializerHelper<T extends VERecipe> {
 
             irngRecipe.setRNGOutputs(randomValues);
         }
-        VERecipe.addRecipeToCacheClient(recipe);
         return recipe;
     }
 

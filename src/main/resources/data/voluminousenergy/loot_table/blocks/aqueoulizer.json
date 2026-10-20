@@ -3,24 +3,20 @@
   "pools": [
     {
       "bonus_rolls": 0.0,
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ],
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      },
       "entries": [
         {
           "type": "minecraft:item",
-          "functions": [
-            {
-              "function": "minecraft:copy_components",
-              "include": [
-                "minecraft:custom_name",
-                "minecraft:custom_data"
-              ],
-              "source": "block_entity"
-            }
-          ],
+          "modifier": {
+            "type": "minecraft:copy_components",
+            "include": [
+              "minecraft:custom_name",
+              "minecraft:custom_data"
+            ],
+            "source": "block_entity"
+          },
           "name": "voluminousenergy:aqueoulizer"
         }
       ],

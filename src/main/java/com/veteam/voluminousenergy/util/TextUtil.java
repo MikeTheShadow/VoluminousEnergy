@@ -48,12 +48,12 @@ public class TextUtil {
     public static Component powerBarTooltip(VEEnergyStorage veEnergyStorage, int configuredMaxPower) {
         return Config.SHORTEN_POWER_BAR_VALUES.get() ?
                 Component.nullToEmpty(
-                        NumberUtil.numberToString4FE(veEnergyStorage.getEnergyStored())
+                        NumberUtil.numberToString4FE(veEnergyStorage.getAmountAsInt())
                                 + " / " + NumberUtil.numberToString4FE(configuredMaxPower)
                 )
                 :
                 Component.nullToEmpty(
-                        NumberUtil.formatNumber(veEnergyStorage.getEnergyStored())
+                        NumberUtil.formatNumber(veEnergyStorage.getAmountAsInt())
                                 + " FE / " + NumberUtil.formatNumber(configuredMaxPower)
                                 + " FE"
                 );

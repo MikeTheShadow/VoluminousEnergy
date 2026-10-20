@@ -6,6 +6,7 @@ import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.RegistryLookups;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
@@ -15,7 +16,7 @@ import net.neoforged.neoforge.common.world.ModifiableBiomeInfo;
 @Deprecated
 public record VEOreBiomeModifier(HolderSet<Biome> biomes, Holder<PlacedFeature> feature) implements BiomeModifier {
 
-    public void modify(Holder<Biome> biome, Phase phase, ModifiableBiomeInfo.BiomeInfo.Builder builder) {
+    public void modify(RegistryAccess registries, Holder<Biome> biome, Phase phase, ModifiableBiomeInfo.BiomeInfo.Builder builder) {
         if (phase != Phase.ADD) return;
 
         if (Config.WORLD_GEN_LOGGING.get()) {

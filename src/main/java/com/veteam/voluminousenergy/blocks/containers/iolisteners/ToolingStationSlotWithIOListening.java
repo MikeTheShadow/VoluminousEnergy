@@ -6,7 +6,6 @@ import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItem;
 import com.veteam.voluminousenergy.util.VEDataComponents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,15 +13,17 @@ import java.util.List;
 public class ToolingStationSlotWithIOListening implements SlotWithIOListener {
 
     @Override
-    public void onRemoved(IItemHandler h, int slot, int amount, boolean isClientSide) {
-        ItemStack multitool = h.getStackInSlot(slot);
-        onTake(h, multitool, isClientSide, null);
+    public void onRemoved(VEItemStackHandler handler, int slot, int amount, boolean isClientSide) {
+        ItemStack multitool = handler.getStack(slot);
+        if (!(multitool.getItem() instanceof Multitool)) {
+            return;
+        }
+        onTake(handler, multitool, isClientSide, null);
+        handler.setStack(slot, multitool);
     }
 
     @Override
-    public void onTake(IItemHandler h, ItemStack multitool, boolean isClientSide, Player player) {
-        VEItemStackHandler handler = (VEItemStackHandler) h;
-
+    public void onTake(VEItemStackHandler handler, ItemStack multitool, boolean isClientSide, Player player) {
         if (!(multitool.getItem() instanceof Multitool)) {
             return;
         }
@@ -34,32 +35,29 @@ public class ToolingStationSlotWithIOListening implements SlotWithIOListener {
 
         List<ItemStack> bits = new ArrayList<>();
         for (int i = 3; i < 7; i++) {
-            if (handler.getStackInSlot(i).getItem() instanceof BitItem bitItem) {
+            if (handler.getResource(i).getItem() instanceof BitItem bitItem) {
                 bits.add(new ItemStack(bitItem, 1));
-                handler.setStackInSlot(i, ItemStack.EMPTY);
+                handler.setStack(i, ItemStack.EMPTY);
             }
         }
         multitool.set(VEDataComponents.ITEM_STACK_LIST_COMPONENT, bits);
     }
 
     @Override
-    public void onSet(ItemStack stack, int slot, IItemHandler h, boolean isClientSide) {
+    public void onSet(ItemStack stack, int slot, VEItemStackHandler handler, boolean isClientSide) {
         if (isClientSide)
             return;
         if (slot != 2 || !(stack.getItem() instanceof Multitool))
             return;
-        VEItemStackHandler handler = (VEItemStackHandler) h;
         List<ItemStack> bits = stack.getOrDefault(VEDataComponents.ITEM_STACK_LIST_COMPONENT, new ArrayList<>());
         int bitPosInTile = 3;
         for (ItemStack bit : bits) {
-            handler.setStackInSlot(bitPosInTile++, bit.copy());
+            handler.setStack(bitPosInTile++, bit.copy());
         }
     }
 
     @Override
-    public void preQuickMoveStack(IItemHandler h, ItemStack multitool, boolean isClientSide) {
-        VEItemStackHandler handler = (VEItemStackHandler) h;
-
+    public void preQuickMoveStack(VEItemStackHandler handler, ItemStack multitool, boolean isClientSide) {
         if (!(multitool.getItem() instanceof Multitool)) {
             return;
         }
@@ -71,7 +69,7 @@ public class ToolingStationSlotWithIOListening implements SlotWithIOListener {
 
         List<ItemStack> bits = new ArrayList<>();
         for (int i = 3; i < 7; i++) {
-            if (handler.getStackInSlot(i).getItem() instanceof BitItem bitItem) {
+            if (handler.getResource(i).getItem() instanceof BitItem bitItem) {
                 bits.add(new ItemStack(bitItem, 1));
             }
         }

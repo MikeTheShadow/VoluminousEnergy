@@ -5,7 +5,6 @@ import com.veteam.voluminousenergy.recipe.IndustrialBlastingRecipe;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 public class IndustrialBlastFurnaceParser extends BasicParser {
 
@@ -28,7 +27,7 @@ public class IndustrialBlastFurnaceParser extends BasicParser {
 
     @Override
     public void completeRecipe(VETileEntity tile) {
-        tile.getRelationalTank(0).getTank().drain(250, IFluidHandler.FluidAction.EXECUTE);
+        tile.getRelationalTank(0).getTank().drain(250);
         super.completeRecipe(tile);
     }
 

@@ -19,14 +19,16 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeResolver;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
 import net.minecraft.world.level.levelgen.PositionalRandomFactory;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.WorldGenerationContext;
-import net.minecraft.world.level.levelgen.synth.NormalNoise;
+import net.minecraft.world.level.levelgen.densityfunction.DensitySampler;
+import net.minecraft.world.level.levelgen.densityfunction.SamplerContext;
+import net.minecraft.world.level.levelgen.synth.Noise;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -48,20 +50,21 @@ class FluidReservoirCells {
 
     private static final Map<ServerLevel, SharedLevel> SHARED_LEVELS = new ConcurrentHashMap<>();
 
-    private final VEFluidReservoirFeature.Configuration config;
+    private final VEFluidReservoirFeature config;
     private final ServerLevel level;
     private final ChunkGenerator generator;
     private final RandomState randomState;
+    private final BiomeResolver biomeResolver;
     private final PositionalRandomFactory randomFactory;
     @Nullable
-    private final NormalNoise boundaryNoise;
+    private final Noise boundaryNoise;
     private final float wobble;
     private final int bandMinY;
     private final int bandMaxY;
     private final int jitterWidth;
     private final int jitterHeight;
     @Nullable
-    private final NoiseBasedChunkGenerator fastSurfaceGenerator;
+    private final DensitySampler fastSurfaceSampler;
     @Nullable
     private final Cache<Long, Cell> sharedCells;
     @Nullable
@@ -69,12 +72,13 @@ class FluidReservoirCells {
     private final Long2ObjectMap<Cell> localCells = new Long2ObjectOpenHashMap<>();
     private final Long2IntMap localSurfaces = new Long2IntOpenHashMap();
 
-    private FluidReservoirCells(VEFluidReservoirFeature.Configuration config, ServerLevel level, ChunkGenerator generator,
+    private FluidReservoirCells(VEFluidReservoirFeature config, ServerLevel level, ChunkGenerator generator,
                                 @Nullable Cache<Long, Cell> sharedCells, @Nullable Cache<Long, Integer> sharedSurfaces) {
         this.config = config;
         this.level = level;
         this.generator = generator;
         this.randomState = level.getChunkSource().randomState();
+        this.biomeResolver = generator.getBiomeSource().createUncachedResolver(randomState);
         this.randomFactory = randomState.getOrCreateRandomFactory(
                 Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "petroleum_reservoir_" + config.salt()));
 
@@ -90,7 +94,7 @@ class FluidReservoirCells {
         this.jitterHeight = config.cellHeight() * 3 / 4;
 
         boolean fastSurface = Config.FAST_PETROLEUM_RESERVOIR_SURFACE_SAMPLING.get();
-        this.fastSurfaceGenerator = fastSurface && generator instanceof NoiseBasedChunkGenerator noiseGenerator ? noiseGenerator : null;
+        this.fastSurfaceSampler = fastSurface ? preliminarySurfaceSampler(generator, randomState) : null;
         this.sharedCells = sharedCells;
         this.sharedSurfaces = sharedSurfaces;
     }
@@ -100,7 +104,7 @@ class FluidReservoirCells {
      * front of the level's shared caches, because ownership reads a dozen cells for every open
      * position and the shared caches are slower to read than a plain map.
      */
-    static FluidReservoirCells forPlacement(VEFluidReservoirFeature.Configuration config, ServerLevel level, ChunkGenerator generator) {
+    static FluidReservoirCells forPlacement(VEFluidReservoirFeature config, ServerLevel level, ChunkGenerator generator) {
         if (!Config.CACHE_PETROLEUM_RESERVOIR_CELLS.get()) {
             return new FluidReservoirCells(config, level, generator, null, null);
         }
@@ -184,7 +188,7 @@ class FluidReservoirCells {
         boolean nearestIsLower = nearest.compareGrid(second) < 0;
         double lowerReach = nearestIsLower ? nearestReach : secondReach;
         double higherReach = nearestIsLower ? secondReach : nearestReach;
-        double bend = wobble * Mth.clamp(boundaryNoise.getValue(x, y, z), -1.0D, 1.0D);
+        double bend = wobble * Mth.clamp(boundaryNoise.get(x, y, z), -1.0D, 1.0D);
         boolean lowerOwns = higherReach - lowerReach + bend > 0.0D;
         return lowerOwns == nearestIsLower ? nearest : second;
     }
@@ -224,13 +228,13 @@ class FluidReservoirCells {
             return Cell.dry(gridX, gridY, gridZ, centreX, centreY, centreZ);
         }
 
-        int centreSurface = fastSurfaceGenerator != null ? cornerSurface(gridX, gridZ) : exactSurfaceAt(centreX, centreZ);
+        int centreSurface = fastSurfaceSampler != null ? cornerSurface(gridX, gridZ) : exactSurfaceAt(centreX, centreZ);
         int biomeY = config.reachesSurface() ? centreSurface : centreY;
         if (!config.biomes().contains(biomeAt(centreX, biomeY, centreZ))) {
             return Cell.dry(gridX, gridY, gridZ, centreX, centreY, centreZ);
         }
 
-        int minSurface = fastSurfaceGenerator != null ? centreSurface : exactMinSurface(centreX, centreZ, centreSurface);
+        int minSurface = fastSurfaceSampler != null ? centreSurface : exactMinSurface(centreX, centreZ, centreSurface);
 
         int cellBottom = gridY * cellHeight;
         int lowerY;
@@ -288,16 +292,26 @@ class FluidReservoirCells {
     }
 
     /**
-     * The surface height vanilla's {@code NoiseChunk} uses to keep aquifers below the surface, read
-     * from the noise router without building a {@code NoiseChunk}.
+     * The surface height vanilla's aquifers stay below, sampled from the generator's aquifer settings
+     * without building a {@code NoiseChunk}. Returns null for a generator without aquifers, which then
+     * uses the exact surface.
      */
+    @Nullable
+    private static DensitySampler preliminarySurfaceSampler(ChunkGenerator generator, RandomState randomState) {
+        if (!(generator instanceof NoiseBasedChunkGenerator noiseGenerator)) {
+            return null;
+        }
+        return noiseGenerator.generatorSettings().value().aquifers()
+                .map(aquifers -> randomState.getSampler(aquifers.surfaceLevel()))
+                .orElse(null);
+    }
+
     private int computePreliminarySurface(int x, int z) {
-        DensityFunction surfaceLevel = randomState.router().preliminarySurfaceLevel();
-        return Mth.floor(surfaceLevel.compute(new DensityFunction.SinglePointContext(x, 0, z)));
+        return Mth.floor(fastSurfaceSampler.sampleValue(SamplerContext.EMPTY_UNCACHED, x, 0, z));
     }
 
     private Holder<Biome> biomeAt(int x, int y, int z) {
-        return generator.getBiomeSource().getNoiseBiome(QuartPos.fromBlock(x), QuartPos.fromBlock(y), QuartPos.fromBlock(z), randomState.sampler());
+        return biomeResolver.getNoiseBiome(QuartPos.fromBlock(x), QuartPos.fromBlock(y), QuartPos.fromBlock(z));
     }
 
     /**
@@ -305,7 +319,7 @@ class FluidReservoirCells {
      * preliminary surface heights, which depend only on the level and so serve every configuration.
      */
     private static class SharedLevel {
-        private final Map<VEFluidReservoirFeature.Configuration, Cache<Long, Cell>> cells = new ConcurrentHashMap<>();
+        private final Map<VEFluidReservoirFeature, Cache<Long, Cell>> cells = new ConcurrentHashMap<>();
         private final Cache<Long, Integer> surfaces = CacheBuilder.newBuilder().maximumSize(SHARED_SURFACE_LIMIT).build();
     }
 

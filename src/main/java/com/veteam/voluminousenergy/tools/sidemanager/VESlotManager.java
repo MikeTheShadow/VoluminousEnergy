@@ -1,11 +1,11 @@
 package com.veteam.voluminousenergy.tools.sidemanager;
 
+import com.veteam.voluminousenergy.blocks.tiles.inventory.VEItemStackHandler;
 import com.veteam.voluminousenergy.util.SlotType;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.ItemStackHandler;
 import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.HashSet;
@@ -111,13 +111,12 @@ public class VESlotManager {
         };
     }
 
-    // This gives the raw item to be used in manipulation. If you wish to use it for something else .copy() it
-    public ItemStack getItem(ItemStackHandler handler) {
-        return handler.getStackInSlot(this.slot);
+    public ItemStack getItem(VEItemStackHandler handler) {
+        return handler.getStack(this.slot);
     }
 
-    public void setItem(ItemStack stack, ItemStackHandler handler) {
-        handler.setStackInSlot(this.slot, stack.copy());
+    public void setItem(ItemStack stack, VEItemStackHandler handler) {
+        handler.setStack(this.slot, stack.copy());
     }
 
     public int getOutputSlotId() {

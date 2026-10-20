@@ -5,13 +5,14 @@ import com.mojang.serialization.MapCodec;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.core.Holder;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.placement.*;
 import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.common.world.ModifiableBiomeInfo;
@@ -31,7 +32,7 @@ public class VEAndedMultiBiomeModifier implements BiomeModifier {
 
     private final String whitelistedBiome;
     private final String blacklistedBiome;
-    private final Holder<ConfiguredFeature<?, ?>> feature;
+    private final Holder<Feature> feature;
     private final boolean isTriangualar;
     private final int count;
     private final int bottomAnchor;
@@ -42,7 +43,7 @@ public class VEAndedMultiBiomeModifier implements BiomeModifier {
     public VEAndedMultiBiomeModifier(
             String whitelistedBiome,
             String blacklistedBiome,
-            Holder<ConfiguredFeature<?, ?>> feature,
+            Holder<Feature> feature,
             boolean isTriangualar,
             int count,
             int bottomAnchor,
@@ -61,7 +62,7 @@ public class VEAndedMultiBiomeModifier implements BiomeModifier {
         this.generationStep = generationStep;
     }
 
-    public void modify(@NotNull Holder<Biome> biome, @NotNull Phase phase,@NotNull ModifiableBiomeInfo.BiomeInfo.Builder builder) {
+    public void modify(@NotNull RegistryAccess registries, @NotNull Holder<Biome> biome, @NotNull Phase phase,@NotNull ModifiableBiomeInfo.BiomeInfo.Builder builder) {
         if (phase != Phase.ADD) return;
 
         if (whitelistedBiomeKeycache.get().isEmpty()) whitelistCacheBuilder();
@@ -85,7 +86,7 @@ public class VEAndedMultiBiomeModifier implements BiomeModifier {
         }
 
 //        List<ConfiguredFeature<?, ?>> oreConfiguration = feature.value().getFeatures().toList();
-        ConfiguredFeature<?, ?> oreConfiguration = feature.value();
+        Feature oreConfiguration = feature.value();
         Holder<PlacedFeature> modifiedFeature;
         if (isTriangualar) {
             modifiedFeature = Holder.direct(new PlacedFeature(Holder.direct(oreConfiguration), List.of(
@@ -138,7 +139,7 @@ public class VEAndedMultiBiomeModifier implements BiomeModifier {
         return blacklistedBiome;
     }
 
-    public Holder<ConfiguredFeature<?, ?>> getFeature() {
+    public Holder<Feature> getFeature() {
         return feature;
     }
 

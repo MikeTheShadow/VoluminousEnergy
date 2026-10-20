@@ -11,7 +11,7 @@ import net.minecraft.world.level.material.Fluids;
 public class ToolingStationInventoryValidator implements AbstractItemStackValidator {
 
     @Override
-    public boolean allowItemInsertion(int slot, ItemStack stack, boolean simulate, VETileEntity tile) {
+    public boolean allowItemInsertion(int slot, ItemStack stack, VETileEntity tile) {
         if(slot == 0 || slot == 1) {
             if(!(stack.getItem() instanceof BucketItem bucketItem)) return false;
             if(bucketItem.content == Fluids.EMPTY) return true;
@@ -22,18 +22,13 @@ public class ToolingStationInventoryValidator implements AbstractItemStackValida
             return stack.getItem() instanceof Multitool;
         }
         if(!(stack.getItem() instanceof BitItem insertedBit)) return false;
-        if(!(tile.getInventory().getStackInSlot(2).getItem() instanceof Multitool)) return false;
+        if(!(tile.getInventory().getStack(2).getItem() instanceof Multitool)) return false;
         for(int slotNum = 3; slotNum < 7; slotNum++) {
-            ItemStack bit = tile.getInventory().getStackInSlot(slotNum);
+            ItemStack bit = tile.getInventory().getStack(slotNum);
             if (bit.getItem() instanceof BitItem bitItem && insertedBit.getBitItemData().getToolType() == bitItem.getBitItemData().getToolType()) {
                 return false;
             }
         }
-        return true;
-    }
-
-    @Override
-    public boolean allowItemExtraction(int slot, int amount, boolean simulate, VETileEntity tile) {
         return true;
     }
 }

@@ -6,7 +6,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -31,7 +31,7 @@ public class VEModifiers {
                 return test.group(
                         Codec.STRING.fieldOf("whitelisted_biomes").forGetter(VEAndedMultiBiomeModifier::getWhitelistedBiome),
                         Codec.STRING.fieldOf("blacklisted_biomes").forGetter(VEAndedMultiBiomeModifier::getBlacklistedBiome),
-                        ConfiguredFeature.CODEC.fieldOf("feature").forGetter(VEAndedMultiBiomeModifier::getFeature),
+                        Feature.CODEC.fieldOf("feature").forGetter(VEAndedMultiBiomeModifier::getFeature),
                         Codec.BOOL.fieldOf("triangular_placement").forGetter(VEAndedMultiBiomeModifier::getIsTriangular),
                         Codec.INT.fieldOf("count").forGetter(VEAndedMultiBiomeModifier::getCount),
                         Codec.INT.fieldOf("bottom_anchor").forGetter(VEAndedMultiBiomeModifier::getBottomAnchor),

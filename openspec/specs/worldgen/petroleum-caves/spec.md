@@ -51,7 +51,7 @@ become a bituminous block, chosen from the block it replaces: Bituminous Sand fo
 `c:ore_bearing_ground/sand/red_sand`, and Bituminous Gravel for every other block, including air,
 water, stone, and deepslate. The shell SHALL NOT replace blocks tagged
 `minecraft:features_cannot_replace`, such as bedrock. The variant rule SHALL be data-driven in the
-configured carver JSON.
+tunnel's feature JSON.
 
 #### Scenario: Mining into an oil tunnel
 
@@ -70,27 +70,41 @@ configured carver JSON.
 
 ### Requirement: Vanilla caves do not cut through petroleum tunnels
 
-Vanilla cave and canyon carvers that run after a petroleum tunnel SHALL leave its fluid and its
-bituminous shell in place, so a later cave ends at the shell instead of opening the tunnel.
+Petroleum tunnels SHALL generate after every vanilla cave and canyon in the chunk has been carved,
+so no vanilla carver ever replaces a tunnel's fluid or bituminous shell. A tunnel and its shell MAY
+cut into caves and canyons carved before it. Where a vanilla cave meets a tunnel, the cave SHALL
+end at the tunnel's bituminous shell.
 
 #### Scenario: Vanilla cave meeting a tunnel
 
-- **WHEN** a vanilla cave generated after an oil tunnel reaches the tunnel's shell
+- **WHEN** a vanilla cave in a newly generated chunk reaches an oil tunnel
 - **THEN** the cave stops at the bituminous blocks and the oil stays enclosed
+
+#### Scenario: Canyon crossing a tunnel's path
+
+- **WHEN** a vanilla canyon runs through the space a gas tunnel occupies
+- **THEN** the tunnel's gas and shell fill that part of the canyon, and no part of the shell is missing
 
 ### Requirement: Petroleum tunnels are configurable by datapack
 
-The configured carvers `voluminousenergy:crude_oil_cave` and `voluminousenergy:natural_gas_cave`
-SHALL be defined in data, with their fluid, height range, start probability, tunnel radius, and
-shell variants in JSON. The biome modifier that adds them SHALL be a data file, so a datapack can
-change which biomes get them or remove them.
+The tunnels `voluminousenergy:crude_oil_cave` and `voluminousenergy:natural_gas_cave` SHALL be
+defined in data as features in the `worldgen/feature` registry, with their fluid, height range,
+start probability, tunnel radius, shell variants, the blocks a tunnel may fill, the biomes a tunnel
+may start in, and a salt that keeps different kinds of tunnel apart as top-level JSON fields. The biome modifier that adds them SHALL be a data file, so a datapack can
+remove them. A tunnel that starts in an allowed biome SHALL be complete and sealed even where it
+runs under other biomes.
 
 #### Scenario: Datapack disables gas tunnels
 
 - **WHEN** a datapack overrides the mod's biome modifier to add only `voluminousenergy:crude_oil_cave`
 - **THEN** new chunks contain oil tunnels and no gas tunnels
 
+#### Scenario: Datapack limits oil tunnels to deserts
+
+- **WHEN** a datapack sets the crude oil cave's biomes to `#c:is_desert`
+- **THEN** oil tunnels start only under deserts, and a tunnel that runs under a neighbouring plains biome is still filled and sealed there
+
 #### Scenario: Datapack changes the fluid
 
-- **WHEN** a datapack sets the crude oil cave's fluid to `minecraft:lava`
+- **WHEN** a datapack provides `data/voluminousenergy/worldgen/feature/crude_oil_cave.json` with the fluid set to `minecraft:lava`
 - **THEN** those tunnels generate filled with lava inside the same bituminous shell

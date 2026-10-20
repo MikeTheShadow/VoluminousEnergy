@@ -4,30 +4,20 @@ import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.items.tools.multitool.Multitool;
 import com.veteam.voluminousenergy.util.VEItemCapabilities;
 import com.veteam.voluminousenergy.util.VERelationalTank;
-import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 public class ToolingStationProcessor implements AbstractRecipeProcessor {
 
     @Override
     public void tick(VETileEntity tile) {
-        ItemStack stack = tile.getInventory().getStackInSlot(2);
-
-        if (stack.getItem() instanceof Multitool) {
+        if (tile.getInventory().getResource(2).getItem() instanceof Multitool) {
             VERelationalTank tank = tile.getRelationalTank(0);
-            IFluidHandler fluidHandler = VEItemCapabilities.getFluidHandler(stack);
-
-            int capacity = fluidHandler.getTankCapacity(0);
-            int current = fluidHandler.getFluidInTank(0).getAmount();
-            int remaining = capacity - current;
-            if (remaining <= 0)
+            ResourceHandler<FluidResource> fluidHandler = VEItemCapabilities.getFluidHandler(tile.getInventory(), 2);
+            if (fluidHandler == null)
                 return;
-            FluidStack available = tank.getTank().drain(remaining, IFluidHandler.FluidAction.SIMULATE);
-            if (available.isEmpty())
-                return;
-            int filled = fluidHandler.fill(available, IFluidHandler.FluidAction.EXECUTE);
-            tank.getTank().drain(filled, IFluidHandler.FluidAction.EXECUTE);
+            ResourceHandlerUtil.move(tank.getTank(), fluidHandler, fluid -> true, tank.getTank().getFluidAmount(), null);
         }
     }
 

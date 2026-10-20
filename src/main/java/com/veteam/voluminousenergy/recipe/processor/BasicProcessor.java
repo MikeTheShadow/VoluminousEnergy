@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.recipe.processor;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
+import com.veteam.voluminousenergy.blocks.tiles.inventory.VEItemStackHandler;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.recipe.parser.BasicParser;
@@ -15,7 +16,6 @@ import com.veteam.voluminousenergy.util.records.CounterLength;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.ItemStackHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -121,11 +121,11 @@ public class BasicProcessor implements AbstractRecipeProcessor {
 
     private void updateCounter(VERecipe recipe,VETileEntity tile) {
         int length;
-        ItemStackHandler handler = tile.getInventory();
+        VEItemStackHandler handler = tile.getInventory();
         VEEnergyStorage energy = tile.getEnergy();
         if (energy != null && handler != null && energy.getUpgradeSlotId() != -1) {
             length = calculateCounter(recipe.getProcessTime(),
-                handler.getStackInSlot(energy.getUpgradeSlotId()).copy());
+                handler.getStack(energy.getUpgradeSlotId()));
         } else {
             length = calculateCounter(recipe.getProcessTime(), ItemStack.EMPTY);
         }
@@ -174,11 +174,11 @@ public class BasicProcessor implements AbstractRecipeProcessor {
     public static int updateCounter(int defaultProcessTime,VETileEntity tile) {
         defaultProcessTime++; // Since the last tick isn't counted
         int newLength;
-        ItemStackHandler handler = tile.getInventory();
+        VEItemStackHandler handler = tile.getInventory();
         VEEnergyStorage energy = tile.getEnergy();
         if (energy != null && handler != null && energy.getUpgradeSlotId() != -1) {
             newLength = calculateCounter(defaultProcessTime,
-                handler.getStackInSlot(energy.getUpgradeSlotId()).copy());
+                handler.getStack(energy.getUpgradeSlotId()));
         } else {
             newLength = calculateCounter(defaultProcessTime, ItemStack.EMPTY);
         }

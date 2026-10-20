@@ -10,7 +10,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
@@ -27,9 +27,9 @@ public class VEEnergyItem extends VEItem {
     }
 
     public static float getChargeRatio(ItemStack stack) {
-        IEnergyStorage storage = VEItemCapabilities.getEnergyStorage(stack);
+        EnergyHandler storage = VEItemCapabilities.getEnergyHandler(stack);
         if (storage != null) {
-            return (float) storage.getEnergyStored() / storage.getMaxEnergyStored();
+            return (float) storage.getAmountAsInt() / storage.getCapacityAsInt();
         }
         return 0;
     }
@@ -37,13 +37,13 @@ public class VEEnergyItem extends VEItem {
     @Override
     public void appendHoverText(ItemStack itemStack, @NotNull TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltip, @NotNull TooltipFlag flag) {
 
-        IEnergyStorage storage = VEItemCapabilities.getEnergyStorage(itemStack);
+        EnergyHandler storage = VEItemCapabilities.getEnergyHandler(itemStack);
         if (storage == null) return;
         Component textComponent;
         if (Config.SHORTEN_ITEM_TOOLTIP_VALUES.get()) {
-            textComponent = TextUtil.translateString("text.voluminousenergy.energy").copy().append(": " + NumberUtil.numberToString4FE(storage.getEnergyStored()) + " / " + NumberUtil.numberToString4FE(storage.getMaxEnergyStored()));
+            textComponent = TextUtil.translateString("text.voluminousenergy.energy").copy().append(": " + NumberUtil.numberToString4FE(storage.getAmountAsInt()) + " / " + NumberUtil.numberToString4FE(storage.getCapacityAsInt()));
         } else {
-            textComponent = TextUtil.translateString("text.voluminousenergy.energy").copy().append(": " + NumberUtil.formatNumber(storage.getEnergyStored()) + " FE / " + NumberUtil.formatNumber(storage.getMaxEnergyStored()) + " FE");
+            textComponent = TextUtil.translateString("text.voluminousenergy.energy").copy().append(": " + NumberUtil.formatNumber(storage.getAmountAsInt()) + " FE / " + NumberUtil.formatNumber(storage.getCapacityAsInt()) + " FE");
         }
         tooltip.accept(textComponent);
     }

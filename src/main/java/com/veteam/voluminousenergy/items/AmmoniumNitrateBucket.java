@@ -7,6 +7,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.Prediction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.BucketItem;
@@ -45,9 +46,9 @@ public class AmmoniumNitrateBucket extends BucketItem {
 
             if (context.getPlayer() != null && !level.isClientSide()) {
                 if (context.getPlayer().isCreative()) {
-                    context.getPlayer().getInventory().placeItemBackInInventory(new ItemStack(VEFluids.AMMONIUM_NITRATE_SOLUTION_BUCKET_REG.get()));
+                    context.getPlayer().getInventory().placeItemBackInInventory(new ItemStack(VEFluids.AMMONIUM_NITRATE_SOLUTION_BUCKET_REG.get()), Prediction.SERVER_ONLY);
                 } else {
-                    context.getPlayer().getInventory().placeItemBackInInventory(new ItemStack(Items.BUCKET));
+                    context.getPlayer().getInventory().placeItemBackInInventory(new ItemStack(Items.BUCKET), Prediction.SERVER_ONLY);
                 }
             }
             return (level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER);
@@ -69,12 +70,12 @@ public class AmmoniumNitrateBucket extends BucketItem {
     // Derived from applyBonemeal
     public static boolean applyFert(ItemStack itemStack, Level level, BlockPos pos, net.minecraft.world.entity.player.Player player) {
         BlockState blockstate = level.getBlockState(pos);
-        var event = net.neoforged.neoforge.event.EventHooks.fireBonemealEvent(player, level, pos, blockstate, itemStack);
+        var event = net.neoforged.neoforge.event.EventHooks.fireBonemealEvent(player, level, pos, blockstate, BonemealSource.INTERACTION, itemStack);
         if (event.isCanceled()) return event.isSuccessful();
         if (blockstate.getBlock() instanceof BonemealableBlock) {
             Block block = blockstate.getBlock();
             BonemealableBlock bonemealableblock = (BonemealableBlock) blockstate.getBlock();
-            if (bonemealableblock.isValidBonemealTarget(level, pos, blockstate)) {
+            if (bonemealableblock.isValidBonemealTarget(level, pos, blockstate, BonemealSource.INTERACTION)) {
 
 
                 // TODO: Add more checks to ensure more powerful than bonemeal
@@ -89,8 +90,8 @@ public class AmmoniumNitrateBucket extends BucketItem {
 
                         itemStack.shrink(1);
                     } else {
-                        if (bonemealableblock.isBonemealSuccess(level, level.getRandom(), pos, blockstate)) {
-                            bonemealableblock.performBonemeal((ServerLevel) level, level.getRandom(), pos, blockstate);
+                        if (bonemealableblock.isBonemealSuccess(level, level.getRandom(), pos, blockstate, BonemealSource.INTERACTION)) {
+                            bonemealableblock.performBonemeal((ServerLevel) level, level.getRandom(), pos, blockstate, BonemealSource.INTERACTION);
                         }
 
                         itemStack.shrink(1);
@@ -155,7 +156,7 @@ public class AmmoniumNitrateBucket extends BucketItem {
                         if (blockstate1.is(Blocks.WATER) && level.getFluidState(blockpos).getAmount() == 8) {
                             level.setBlock(blockpos, blockstate, 3);
                         } else if (blockstate1.is(Blocks.SEAGRASS) && random.nextInt(10) == 0) {
-                            ((BonemealableBlock) Blocks.SEAGRASS).performBonemeal((ServerLevel) level, random, blockpos, blockstate1);
+                            ((BonemealableBlock) Blocks.SEAGRASS).performBonemeal((ServerLevel) level, random, blockpos, blockstate1, BonemealSource.INTERACTION);
                         }
                     }
                 }

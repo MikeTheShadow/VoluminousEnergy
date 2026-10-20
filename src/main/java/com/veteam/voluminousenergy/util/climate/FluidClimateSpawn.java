@@ -5,13 +5,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
-import net.minecraft.world.level.levelgen.synth.PerlinSimplexNoise;
 import net.minecraft.world.level.material.Fluid;
 import oshi.util.tuples.Pair;
 
 import java.util.HashMap;
-import java.util.List;
 
 public class FluidClimateSpawn extends ClimateSpawn {
     final Fluid fluid;
@@ -61,12 +58,7 @@ public class FluidClimateSpawn extends ClimateSpawn {
         int amount2Return = 0;
 
         if (level instanceof ServerLevel serverLevel) {
-            PerlinSimplexNoise noise = new PerlinSimplexNoise(
-                    new XoroshiroRandomSource(serverLevel.getSeed()),
-                    List.of(0, -1, -2, -3, -4, -5, -6, -7)
-            );
-
-            double amount = noise.getValue(blockPos.getX(), blockPos.getZ(), true);
+            double amount = DepositNoise.sample(serverLevel.getSeed(), blockPos.getX(), blockPos.getZ());
 
             amount = (this.getMinimumFluidAmount() + (amount * (this.getMaximumFluidAmount() - this.getMinimumFluidAmount())));
 

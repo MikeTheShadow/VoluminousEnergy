@@ -1,0 +1,9 @@
+{
+  "type": "voluminousenergy:ve_ore_deposit_feature",
+  "ore_block_state": {
+    "id": "voluminousenergy:galena_ore"
+  },
+  "raw_block_state": {
+    "id": "voluminousenergy:raw_galena_block"
+  }
+}

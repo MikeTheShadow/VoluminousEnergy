@@ -52,7 +52,7 @@ public class PrimitiveStirlingGeneratorScreen extends VEContainerScreen<VEContai
     @Override
     protected void extractTooltip(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
-            matrixStack.setTooltipForNextFrame(this.font, TextUtil.powerBarTooltip(tileEntity.getEnergy(), tileEntity.getEnergy().getMaxEnergyStored()), mouseX, mouseY);
+            matrixStack.setTooltipForNextFrame(this.font, TextUtil.powerBarTooltip(tileEntity.getEnergy(), tileEntity.getEnergy().getCapacity()), mouseX, mouseY);
         } else if (!VoluminousEnergy.JEI_LOADED && isHovering(getTooltipArea(), mouseX, mouseY)) {
             matrixStack.setComponentTooltipForNextFrame(this.font, getTooltips(), mouseX, mouseY);
         }

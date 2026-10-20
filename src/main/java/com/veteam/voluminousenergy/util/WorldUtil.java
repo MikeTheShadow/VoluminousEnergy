@@ -4,6 +4,7 @@ import com.veteam.voluminousenergy.persistence.ChunkFluid;
 import com.veteam.voluminousenergy.persistence.ChunkFluids;
 import com.veteam.voluminousenergy.recipe.DimensionalLaserRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
+import com.veteam.voluminousenergy.util.climate.DepositNoise;
 import com.veteam.voluminousenergy.util.climate.FluidClimateSpawn;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerChunkCache;
@@ -11,13 +12,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.levelgen.DensityFunction;
-import net.minecraft.world.level.levelgen.NoiseRouter;
 import net.minecraft.world.level.levelgen.RandomState;
-import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
-import net.minecraft.world.level.levelgen.synth.PerlinSimplexNoise;
+import net.minecraft.world.level.levelgen.densityfunction.SamplerContext;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.SavedDataStorage;
@@ -25,7 +24,6 @@ import oshi.util.tuples.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -58,13 +56,12 @@ public class WorldUtil {
 
         RandomState randomState = serverchunkcache.randomState();
 
-        NoiseRouter noiseRouter = randomState.router();
-        DensityFunction.SinglePointContext context = new DensityFunction.SinglePointContext(pos.getX(), pos.getY(), pos.getZ());
+        Climate.Sampler sampler = randomState.createClimateSampler(SamplerContext.EMPTY_UNCACHED);
 
-        double continentalness = noiseRouter.continents().compute(context);
-        double erosion = noiseRouter.erosion().compute(context);
-        double humidity = noiseRouter.vegetation().compute(context);
-        double temperature = noiseRouter.temperature().compute(context);
+        double continentalness = sampler.continentalness().sampleValue(pos.getX(), pos.getY(), pos.getZ());
+        double erosion = sampler.erosion().sampleValue(pos.getX(), pos.getY(), pos.getZ());
+        double humidity = sampler.humidity().sampleValue(pos.getX(), pos.getY(), pos.getZ());
+        double temperature = sampler.temperature().sampleValue(pos.getX(), pos.getY(), pos.getZ());
 
         HashMap<ClimateParameters, Double> climateMap = new HashMap<>();
         climateMap.put(ClimateParameters.CONTINENTALNESS, continentalness);
@@ -143,15 +140,12 @@ public class WorldUtil {
 
     private static int fallbackFluidAmount(ServerLevel serverLevel, Fluid fluid, HashMap<ClimateParameters, Double> sampledClimate, BlockPos pos) {
 
-        PerlinSimplexNoise noise = new PerlinSimplexNoise(
-                new XoroshiroRandomSource(serverLevel.getSeed()),
-                List.of(0, -1, -2, -3, -4, -5, -6, -7)
-        );
+        double noise = DepositNoise.sample(serverLevel.getSeed(), pos.getX(), pos.getZ());
 
         if (fluid.isSame(Fluids.WATER) || fluid.isSame(Fluids.FLOWING_WATER)) {
-            return Mth.abs(Mth.ceil((((float) noise.getValue(pos.getX(), pos.getZ(), true) + 1_000)) * sampledClimate.get(ClimateParameters.HUMIDITY)));
+            return Mth.abs(Mth.ceil((((float) noise + 1_000)) * sampledClimate.get(ClimateParameters.HUMIDITY)));
         } else if (fluid.isSame(Fluids.LAVA) || fluid.isSame(Fluids.FLOWING_LAVA)) {
-            return Mth.abs(Mth.ceil((((float) noise.getValue(pos.getX(), pos.getZ(), true) + 1_000)) * sampledClimate.get(ClimateParameters.TEMPERATURE)));
+            return Mth.abs(Mth.ceil((((float) noise + 1_000)) * sampledClimate.get(ClimateParameters.TEMPERATURE)));
         }
 
         return 250;

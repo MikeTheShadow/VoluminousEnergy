@@ -1,8 +1,9 @@
 package com.veteam.voluminousenergy.world.feature;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
+import net.minecraft.world.level.levelgen.feature.BlockReplacement;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -69,10 +70,10 @@ public class LakeMask {
      * does and the existing block should be kept.
      */
     @Nullable
-    public static BlockState perimeterState(List<OreConfiguration.TargetBlockState> targets, BlockState existing, RandomSource random) {
-        for (OreConfiguration.TargetBlockState target : targets) {
-            if (target.target.test(existing, random)) {
-                return target.state;
+    public static BlockState perimeterState(List<BlockReplacement> targets, BlockState existing, BlockPos pos, RandomSource random) {
+        for (BlockReplacement target : targets) {
+            if (target.target().test(existing, pos, random)) {
+                return target.state();
             }
         }
         return null;

@@ -3,21 +3,24 @@
   "addition": {
     "id": "voluminousenergy:raw_sulfur"
   },
-  "conditions": [
-    {
-      "condition": "neoforge:loot_table_id",
-      "loot_table_id": "minecraft:entities/sulfur_cube"
-    },
-    {
-      "condition": "minecraft:entity_properties",
-      "entity": "this",
-      "predicate": {
-        "minecraft:type_specific/cube_mob": {
-          "size": 1
+  "condition": {
+    "type": "minecraft:all_of",
+    "terms": [
+      {
+        "type": "neoforge:loot_table_id",
+        "loot_table_id": "minecraft:entities/sulfur_cube"
+      },
+      {
+        "type": "minecraft:entity_properties",
+        "entity": "this",
+        "predicate": {
+          "minecraft:type_specific/cube_mob": {
+            "size": 1
+          }
         }
       }
-    }
-  ],
+    ]
+  },
   "maximum_count": 5,
   "minimum_count": 1
 }

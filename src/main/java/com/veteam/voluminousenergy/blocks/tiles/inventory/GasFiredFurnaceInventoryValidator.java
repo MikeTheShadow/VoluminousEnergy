@@ -10,7 +10,7 @@ import net.minecraft.world.level.material.Fluids;
 public class GasFiredFurnaceInventoryValidator extends FurnaceInventoryValidator {
 
     @Override
-    public boolean allowItemInsertion(int slot, ItemStack stack,boolean simulate, VETileEntity tile) {
+    public boolean allowItemInsertion(int slot, ItemStack stack, VETileEntity tile) {
         if (tile.getEnergy() != null && tile.getEnergy().getUpgradeSlotId() == slot)
             return TagUtil.isTaggedMachineUpgradeItem(stack);
 

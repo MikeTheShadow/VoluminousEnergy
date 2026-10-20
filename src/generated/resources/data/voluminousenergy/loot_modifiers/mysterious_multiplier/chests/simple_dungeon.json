@@ -1,13 +1,16 @@
 {
   "type": "voluminousenergy:mysterious_multiplier",
-  "conditions": [
-    {
-      "chance": 0.15,
-      "condition": "minecraft:random_chance"
-    },
-    {
-      "condition": "neoforge:loot_table_id",
-      "loot_table_id": "minecraft:chests/simple_dungeon"
-    }
-  ]
+  "condition": {
+    "type": "minecraft:all_of",
+    "terms": [
+      {
+        "type": "minecraft:random_chance",
+        "chance": 0.15
+      },
+      {
+        "type": "neoforge:loot_table_id",
+        "loot_table_id": "minecraft:chests/simple_dungeon"
+      }
+    ]
+  }
 }

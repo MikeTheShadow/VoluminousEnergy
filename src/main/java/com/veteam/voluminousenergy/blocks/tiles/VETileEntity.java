@@ -47,9 +47,7 @@ import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 
@@ -95,8 +93,8 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     public void inputFluid(VERelationalTank tank, int slot1, int slot2) {
         ItemStack input = tank.getInput().copy();
         ItemStack output = tank.getOutput().copy();
-        FluidTank inputTank = tank.getTank();
-        ItemStackHandler handler = getInventory();
+        VEFluidTank inputTank = tank.getTank();
+        VEItemStackHandler handler = getInventory();
         if (input.getItem() instanceof BucketItem && input.getItem() != Items.BUCKET) {
             if ((output.getItem() == Items.BUCKET && output.getCount() < 16)
                     || checkOutputSlotForEmptyOrBucket(output)) {
@@ -104,14 +102,14 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
                 if (inputTank.isEmpty()
                         || FluidStack.isSameFluidSameComponents(inputTank.getFluid(), new FluidStack(fluid, 1000))
-                                && inputTank.getFluidAmount() + 1000 <= inputTank.getTankCapacity(0)) {
+                                && inputTank.getFluidAmount() + 1000 <= inputTank.getCapacity()) {
 
                     FluidStack fluidStack = new FluidStack(fluid, 1000);
                     if (tank.getValidator() != null && !tank.getValidator().validateFluid(fluidStack, this))
                         return;
-                    inputTank.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
-                    handler.extractItem(slot1, 1, false);
-                    handler.insertItem(slot2, new ItemStack(Items.BUCKET, 1), false);
+                    inputTank.fill(fluidStack);
+                    handler.take(slot1, 1);
+                    handler.add(slot2, new ItemStack(Items.BUCKET, 1));
                     if(this.recipeProcessor instanceof BasicProcessor processor)
                         processor.markRecipeDirty();
                 }
@@ -123,15 +121,15 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     public void outputFluid(VERelationalTank tank, int slot1, int slot2) {
         ItemStack inputSlot = tank.getInput();
         ItemStack outputSlot = tank.getOutput();
-        FluidTank outputTank = tank.getTank();
-        ItemStackHandler handler = getInventory();
+        VEFluidTank outputTank = tank.getTank();
+        VEItemStackHandler handler = getInventory();
         if (inputSlot.getItem() == Items.BUCKET && outputTank.getFluidAmount() >= 1000 && inputSlot.getCount() > 0
                 && outputSlot.copy() == ItemStack.EMPTY) {
 
             ItemStack bucketStack = new ItemStack(outputTank.getFluid().getFluid().getBucket(), 1);
-            outputTank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
-            handler.extractItem(slot1, 1, false);
-            handler.insertItem(slot2, bucketStack, false);
+            outputTank.drain(1000);
+            handler.take(slot1, 1);
+            handler.add(slot2, bucketStack);
             if(this.recipeProcessor instanceof BasicProcessor processor)
                 processor.markRecipeDirty();
         }
@@ -170,12 +168,12 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
             return;
         fluidInputDirty = false;
         for (VESlotManager manager : this.getSlotManagers()) {
-            ItemStackHandler inventory = this.getInventory();
+            VEItemStackHandler inventory = this.getInventory();
             if (manager.getSlotType() == SlotType.FLUID_INPUT) {
 
                 VERelationalTank tank = this.getRelationalTanks().get(manager.getTankId());
-                tank.setInput(inventory.getStackInSlot(manager.getSlotNum()));
-                tank.setOutput(inventory.getStackInSlot(manager.getOutputSlotId()));
+                tank.setInput(inventory.getStack(manager.getSlotNum()));
+                tank.setOutput(inventory.getStack(manager.getOutputSlotId()));
                 if (tank.getTankType() == TankType.INPUT || tank.getTankType() == TankType.BOTH)
                     inputFluid(tank, manager.getSlotNum(), manager.getOutputSlotId());
                 outputFluid(tank, manager.getSlotNum(), manager.getOutputSlotId());
@@ -183,6 +181,9 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         }
     }
 
+    /**
+     * Returns a copy of the fluid in the given tank.
+     */
     public FluidStack getFluidStackFromTank(int num) {
         if (num >= getRelationalTanks().size() || num < 0) {
             return FluidStack.EMPTY;
@@ -230,7 +231,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     }
 
     protected int consumptionMultiplier(int consumption, int slot) {
-        ItemStack upgradeStack = slot == -1 ? ItemStack.EMPTY : getInventory().getStackInSlot(slot);
+        ItemStack upgradeStack = slot == -1 ? ItemStack.EMPTY : getInventory().getStack(slot);
 
         float upgradeMulti = upgradeStack.getOrDefault(VEDataComponents.MULTIPLIER_DATA, 0.0f);
 
@@ -290,7 +291,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
      */
     @Override
     public void loadAdditional(ValueInput in) {
-        ItemStackHandler handler = getInventory();
+        VEItemStackHandler handler = getInventory();
 
         if (handler != null) {
             in.child("inv").ifPresent(handler::deserialize);
@@ -328,7 +329,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
      */
     @Override
     public void saveAdditional(@NotNull ValueOutput out) {
-        ItemStackHandler handler = getInventory();
+        VEItemStackHandler handler = getInventory();
         if (handler != null) {
             handler.serialize(out.child("inv"));
         }
@@ -406,7 +407,11 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
     public static int receiveEnergy(BlockEntity tileEntity, Direction from, int maxReceive) {
         if (tileEntity instanceof VETileEntity tile && tile.energy != null) {
-            return tile.energy.receiveEnergy(maxReceive, false);
+            try (Transaction transaction = Transaction.openRoot()) {
+                int received = tile.energy.insert(maxReceive, transaction);
+                transaction.commit();
+                return received;
+            }
         }
         return 0;
     }
@@ -418,10 +423,10 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
             if (tileEntity != null) {
                 // If less energy stored then max transfer send the all the energy stored rather
                 // than the max transfer amount
-                int smallest = Math.min(Config.PRIMITIVE_STIRLING_GENERATOR_SEND.get(), energy.getEnergyStored());
+                int smallest = Math.min(Config.PRIMITIVE_STIRLING_GENERATOR_SEND.get(), energy.getAmountAsInt());
                 int received = receiveEnergy(tileEntity, opposite, smallest);
                 energy.consumeEnergy(received);
-                if (energy.getEnergyStored() <= 0) {
+                if (energy.getAmountAsInt() <= 0) {
                     break;
                 }
             }
@@ -480,9 +485,9 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
      */
     public boolean canConsumeEnergy() {
         if (energy != null) {
-            if (energy.getMaxEnergyStored() == 0)
+            if (energy.getCapacity() == 0)
                 return true; // For tiles that do not consume power
-            return energy.getEnergyStored() > this.consumptionMultiplier(energy.getConsumption(),
+            return energy.getAmountAsInt() > this.consumptionMultiplier(energy.getConsumption(),
                     energy.getUpgradeSlotId());
         }
         return true;

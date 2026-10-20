@@ -1,42 +1,44 @@
 package com.veteam.voluminousenergy.world.feature;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.core.BlockPos;
-import net.minecraft.tags.BlockTags;
+import net.minecraft.resources.Identifier;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.material.FluidState;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
-public class GeyserFeature extends Feature<GeyserFeature.Configuration> {
+public record GeyserFeature(FluidState fluidState) implements Feature {
+    public static final MapCodec<GeyserFeature> CODEC = FluidState.CODEC.fieldOf("fluidstate").xmap(GeyserFeature::new, GeyserFeature::fluidState);
 
-    public GeyserFeature(Codec<GeyserFeature.Configuration> geyserConfiguration) {
-        super(geyserConfiguration);
-    }
+    // Minecraft 26.3 carvers no longer read a block tag, so the mod keeps 26.2's #minecraft:overworld_carver_replaceables.
+    private static final TagKey<Block> CARVER_REPLACEABLES = TagUtil.getBlockTagKeyFromLocation(Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "overworld_carver_replaceables"));
 
-    // Blocks the geyser carves that #minecraft:overworld_carver_replaceables does not cover.
-    public final ArrayList<Block> allowList = new ArrayList<>(Arrays.asList(
+    // Blocks the geyser carves that the carver replaceables do not cover.
+    private static final List<Block> ALLOW_LIST = List.of(
             Blocks.ICE, Blocks.LAVA, Blocks.CLAY, Blocks.MOSS_CARPET, Blocks.FLOWERING_AZALEA, Blocks.AZALEA,
             Blocks.SHORT_GRASS, Blocks.TALL_GRASS, Blocks.BIG_DRIPLEAF, Blocks.BIG_DRIPLEAF_STEM, Blocks.SMALL_DRIPLEAF,
             Blocks.CAVE_VINES, Blocks.CAVE_VINES_PLANT, Blocks.SCULK, Blocks.SCULK_VEIN, Blocks.SCULK_CATALYST,
             Blocks.SULFUR_SPIKE
-    ));
+    );
 
     @Override
-    public boolean place(FeaturePlaceContext<GeyserFeature.Configuration> context) {
-        BlockPos pos = context.origin();
-        WorldGenLevel worldIn = context.level();
-        RandomSource rand = context.random();
-        FluidState fluidState = context.config().fluidState;
+    public MapCodec<GeyserFeature> codec() {
+        return CODEC;
+    }
+
+    @Override
+    public boolean place(WorldGenLevel worldIn, ChunkGenerator generator, RandomSource rand, BlockPos pos) {
 
         ///int base = worldIn.getChunk(pos).getTopFilledSegment();
         int base = 40;
@@ -150,7 +152,7 @@ public class GeyserFeature extends Feature<GeyserFeature.Configuration> {
     }
 
     private boolean canReplace(BlockState state) {
-        return state.isAir() || state.is(BlockTags.OVERWORLD_CARVER_REPLACEABLES) || allowList.contains(state.getBlock());
+        return state.isAir() || state.is(CARVER_REPLACEABLES) || ALLOW_LIST.contains(state.getBlock());
     }
 
     // TODO: I'm pretty sure unused
@@ -188,11 +190,5 @@ public class GeyserFeature extends Feature<GeyserFeature.Configuration> {
 //            }
 //        }
 //    }
-
-    public static record Configuration(FluidState fluidState) implements FeatureConfiguration {
-        public static final Codec<GeyserFeature.Configuration> CODEC =
-                FluidState.CODEC.fieldOf("fluidstate")
-                        .xmap(GeyserFeature.Configuration::new, (fluidState) -> fluidState.fluidState).codec();
-    }
 
 }

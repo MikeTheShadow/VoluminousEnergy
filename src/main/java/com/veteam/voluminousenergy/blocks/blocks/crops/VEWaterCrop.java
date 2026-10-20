@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.blocks.blocks.crops;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -34,19 +33,12 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 
 public class VEWaterCrop extends VegetationBlock implements BonemealableBlock, SimpleWaterloggedBlock {
-    public static final MapCodec<VEWaterCrop> CODEC = simpleCodec(VEWaterCrop::new);
-
     private String registryName;
 
     public VEWaterCrop(Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(BlockStateProperties.AGE_2, 0)); // set the age of the crop to 0 by default
         //setRegistryName("water_crop");
-    }
-
-    @Override
-    protected MapCodec<? extends VEWaterCrop> codec() {
-        return CODEC;
     }
 
     public Item cropItem() {
@@ -162,17 +154,17 @@ public class VEWaterCrop extends VegetationBlock implements BonemealableBlock, S
     }
 
     @Override
-    public boolean isValidBonemealTarget(LevelReader levelReader, BlockPos blockPos, BlockState state) {
+    public boolean isValidBonemealTarget(LevelReader levelReader, BlockPos blockPos, BlockState state, BonemealSource source) {
         return state.getValue(BlockStateProperties.AGE_2) < 2; // valid if age is less than 2
     }
 
     @Override
-    public boolean isBonemealSuccess(Level world, RandomSource random, BlockPos pos, BlockState state) {
+    public boolean isBonemealSuccess(Level world, RandomSource random, BlockPos pos, BlockState state, BonemealSource source) {
         return true;
     }
 
     @Override
-    public void performBonemeal(ServerLevel serverWorld, RandomSource random, BlockPos pos, BlockState state) {
+    public void performBonemeal(ServerLevel serverWorld, RandomSource random, BlockPos pos, BlockState state, BonemealSource source) {
         int age = state.getValue(BlockStateProperties.AGE_2);
         if (age < 2 && serverWorld.getBlockState(pos.above()).getBlock() != this.defaultBlockState().getBlock()) { // Make sure the player isn't targetting the bottom
             age++;

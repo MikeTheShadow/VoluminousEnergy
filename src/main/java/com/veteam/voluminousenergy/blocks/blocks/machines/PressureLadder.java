@@ -42,7 +42,7 @@ public class PressureLadder extends LadderBlock {
                 .setId(VERegistryHelper.currentBlockId())
                 .requiresCorrectToolForDrops()
                 .randomTicks()
-                .pushReaction(PushReaction.DESTROY)
+                .pushReaction(PushReaction.POPPED)
         );
         this.registerDefaultState(this.stateDefinition.any()
                 .setValue(FACING, Direction.NORTH)
@@ -153,7 +153,7 @@ public class PressureLadder extends LadderBlock {
         }
 
         if (flag1) {
-            level.scheduleTick(new BlockPos(blockPos), this, this.getPressedTime());
+            level.scheduleTick(blockPos.immutable(), this, this.getPressedTime());
         }
 
     }
