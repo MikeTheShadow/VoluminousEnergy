@@ -43,3 +43,6 @@ forge*changelog.txt
 # Local agent tool state
 .claude/settings.local.json
 .claude/scheduled_tasks.lock
+
+# Python bytecode from the autotest harness
+__pycache__/
