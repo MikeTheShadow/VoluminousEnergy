@@ -1,0 +1,37 @@
+{
+  "type": "voluminousenergy:hydroponic_incubating",
+  "process_time": 200,
+  "ingredients": [
+    {
+      "item": "minecraft:poplar_sapling",
+      "count": 1
+    }
+  ],
+  "fluid_ingredients": [
+    {
+      "fluid": "voluminousenergy:ammonium_nitrate_solution",
+      "amount": 250
+    }
+  ],
+  "item_results": [
+    {
+      "item": "minecraft:poplar_log",
+      "count": 9
+    },
+    {
+      "item": "minecraft:poplar_sapling",
+      "count": 1,
+      "chance": 0.75
+    },
+    {
+      "item": "minecraft:stick",
+      "count": 4,
+      "chance": 0.25
+    },
+    {
+      "item": "minecraft:shelf_mushroom",
+      "count": 1,
+      "chance": 0.05
+    }
+  ]
+}
