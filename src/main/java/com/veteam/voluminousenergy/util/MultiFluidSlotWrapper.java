@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * The view of a machine's tanks from one side. Output tanks refuse filling, and only enabled tanks
  * can be drained, input tanks only when {@code Allow Extraction from Input Tanks} is on. A transfer
- * without a tank index goes to the first tank that accepts it.
+ * without a tank index spreads over every tank that accepts it.
  */
 public class MultiFluidSlotWrapper implements ResourceHandler<FluidResource> {
     List<VERelationalTank> tanks;
@@ -88,17 +88,6 @@ public class MultiFluidSlotWrapper implements ResourceHandler<FluidResource> {
     }
 
     @Override
-    public int insert(FluidResource resource, int amount, TransactionContext transaction) {
-        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
-        for (int tank = 0; tank < tanks.size(); tank++) {
-            if (canFill(tank, resource)) {
-                return insert(tank, resource, amount, transaction);
-            }
-        }
-        return 0;
-    }
-
-    @Override
     public int extract(int tank, FluidResource resource, int amount, TransactionContext transaction) {
         TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
         if (!canDrain(tank, resource)) {
@@ -106,17 +95,6 @@ public class MultiFluidSlotWrapper implements ResourceHandler<FluidResource> {
         }
         markRecipeDirty();
         return tanks.get(tank).getTank().extract(0, resource, amount, transaction);
-    }
-
-    @Override
-    public int extract(FluidResource resource, int amount, TransactionContext transaction) {
-        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
-        for (int tank = 0; tank < tanks.size(); tank++) {
-            if (canDrain(tank, resource)) {
-                return extract(tank, resource, amount, transaction);
-            }
-        }
-        return 0;
     }
 
     private boolean canFill(int tank, FluidResource resource) {

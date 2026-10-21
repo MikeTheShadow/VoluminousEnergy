@@ -10,6 +10,8 @@ import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.recipe.processor.BasicProcessor;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
+import com.veteam.voluminousenergy.util.MultiFluidSlotWrapper;
+import com.veteam.voluminousenergy.util.TankType;
 import com.veteam.voluminousenergy.util.VEAttachments;
 import com.veteam.voluminousenergy.util.VEFluidTank;
 import com.veteam.voluminousenergy.util.VEItemCapabilities;
@@ -65,6 +67,7 @@ public class StorageTests {
         tests.add(GameTestDefinition.of("storage_battery_box_charges", 60, StorageTests::batteryBoxCharges));
         tests.add(GameTestDefinition.of("storage_stalled_recipe_resumes", 1200, StorageTests::stalledRecipeResumes));
         tests.add(GameTestDefinition.of("storage_owner_operations", 20, StorageTests::ownerOperations));
+        tests.add(GameTestDefinition.of("storage_fluid_multi_tank_transfer", 20, StorageTests::fluidMultiTankTransfer));
     }
 
     /**
@@ -401,5 +404,40 @@ public class StorageTests {
         energy.addEnergy(Integer.MAX_VALUE / 2);
         helper.assertValueEqual(energy.getAmountAsInt(), energy.getCapacity(), "energy after adding more than fits");
         GameTestLog.pass(helper, "storage_owner_operations", "");
+    }
+
+    private static void fluidMultiTankTransfer(GameTestHelper helper) {
+        VETileEntity unit = MachineKit.place(helper, MACHINE, VEBlocks.DISTILLATION_UNIT.block().get());
+        VEFluidTank firstTank = new VEFluidTank(1000);
+        VEFluidTank secondTank = new VEFluidTank(1000);
+        firstTank.setFluid(new FluidStack(Fluids.WATER, 900));
+        MultiFluidSlotWrapper fluids = new MultiFluidSlotWrapper(
+                List.of(multiTank(firstTank), multiTank(secondTank)), unit);
+
+        int inserted;
+        try (Transaction transaction = Transaction.openRoot()) {
+            inserted = fluids.insert(FluidResource.of(Fluids.WATER), 500, transaction);
+            transaction.commit();
+        }
+        helper.assertValueEqual(inserted, 500, "water inserted across both tanks");
+        helper.assertValueEqual(firstTank.getFluidAmount(), 1000, "water in the first tank after insert");
+        helper.assertValueEqual(secondTank.getFluidAmount(), 400, "water in the second tank after insert");
+
+        int extracted;
+        try (Transaction transaction = Transaction.openRoot()) {
+            extracted = fluids.extract(FluidResource.of(Fluids.WATER), 1200, transaction);
+            transaction.commit();
+        }
+        helper.assertValueEqual(extracted, 1200, "water extracted across both tanks");
+        helper.assertValueEqual(firstTank.getFluidAmount(), 0, "water in the first tank after extract");
+        helper.assertValueEqual(secondTank.getFluidAmount(), 200, "water in the second tank after extract");
+        GameTestLog.pass(helper, "storage_fluid_multi_tank_transfer", "");
+    }
+
+    private static VERelationalTank multiTank(VEFluidTank tank) {
+        VERelationalTank relationalTank = new VERelationalTank(tank, 0, 0, TankType.BOTH, "test:enabled");
+        relationalTank.setAllowAny(true);
+        relationalTank.setIgnoreDirection(true);
+        return relationalTank;
     }
 }
