@@ -67,7 +67,8 @@ public class StorageTests {
         tests.add(GameTestDefinition.of("storage_battery_box_charges", 60, StorageTests::batteryBoxCharges));
         tests.add(GameTestDefinition.of("storage_stalled_recipe_resumes", 1200, StorageTests::stalledRecipeResumes));
         tests.add(GameTestDefinition.of("storage_owner_operations", 20, StorageTests::ownerOperations));
-        tests.add(GameTestDefinition.of("storage_fluid_multi_tank_transfer", 20, StorageTests::fluidMultiTankTransfer));
+        tests.add(GameTestDefinition.of("storage_fluid_multi_tank_extract", 20, StorageTests::fluidMultiTankExtract));
+        tests.add(GameTestDefinition.of("storage_fluid_mixer_fill_routing", 40, StorageTests::fluidMixerFillRouting));
     }
 
     /**
@@ -406,32 +407,55 @@ public class StorageTests {
         GameTestLog.pass(helper, "storage_owner_operations", "");
     }
 
-    private static void fluidMultiTankTransfer(GameTestHelper helper) {
+    /**
+     * A drain without a tank index takes the fluid from every tank on the face that holds it.
+     */
+    private static void fluidMultiTankExtract(GameTestHelper helper) {
         VETileEntity unit = MachineKit.place(helper, MACHINE, VEBlocks.DISTILLATION_UNIT.block().get());
         VEFluidTank firstTank = new VEFluidTank(1000);
         VEFluidTank secondTank = new VEFluidTank(1000);
-        firstTank.setFluid(new FluidStack(Fluids.WATER, 900));
+        firstTank.setFluid(new FluidStack(Fluids.WATER, 400));
+        secondTank.setFluid(new FluidStack(Fluids.WATER, 1000));
         MultiFluidSlotWrapper fluids = new MultiFluidSlotWrapper(
                 List.of(multiTank(firstTank), multiTank(secondTank)), unit);
 
-        int inserted;
-        try (Transaction transaction = Transaction.openRoot()) {
-            inserted = fluids.insert(FluidResource.of(Fluids.WATER), 500, transaction);
-            transaction.commit();
-        }
-        helper.assertValueEqual(inserted, 500, "water inserted across both tanks");
-        helper.assertValueEqual(firstTank.getFluidAmount(), 1000, "water in the first tank after insert");
-        helper.assertValueEqual(secondTank.getFluidAmount(), 400, "water in the second tank after insert");
-
-        int extracted;
-        try (Transaction transaction = Transaction.openRoot()) {
-            extracted = fluids.extract(FluidResource.of(Fluids.WATER), 1200, transaction);
-            transaction.commit();
-        }
-        helper.assertValueEqual(extracted, 1200, "water extracted across both tanks");
+        helper.assertValueEqual(drain(fluids, Fluids.WATER, 1200), 1200, "water extracted across both tanks");
         helper.assertValueEqual(firstTank.getFluidAmount(), 0, "water in the first tank after extract");
         helper.assertValueEqual(secondTank.getFluidAmount(), 200, "water in the second tank after extract");
-        GameTestLog.pass(helper, "storage_fluid_multi_tank_transfer", "");
+        GameTestLog.pass(helper, "storage_fluid_multi_tank_extract", "");
+    }
+
+    /**
+     * A fill without a tank index stays in a Fluid Mixer's first input tank once it holds that fluid,
+     * so the second ingredient can still reach the second input tank.
+     */
+    private static void fluidMixerFillRouting(GameTestHelper helper) {
+        VETileEntity mixer = MachineKit.place(helper, MACHINE, VEBlocks.FLUID_MIXER.block().get());
+        helper.runAfterDelay(2, () -> {
+            ResourceHandler<FluidResource> fluids = MachineKit.capability(helper, Capabilities.Fluid.BLOCK, MACHINE, Direction.DOWN);
+            helper.assertTrue(fluids != null, "no fluid capability");
+            Fluid hydrogen = VEFluids.HYDROGEN_REG.get();
+
+            helper.assertValueEqual(fill(fluids, hydrogen, 5000), VETileEntity.DEFAULT_TANK_CAPACITY, "hydrogen accepted");
+            helper.assertValueEqual(mixer.getFluidStackFromTank(0).getAmount(), VETileEntity.DEFAULT_TANK_CAPACITY, "hydrogen in the first input tank");
+            helper.assertTrue(mixer.getFluidStackFromTank(1).isEmpty(), "hydrogen overflowed into the second input tank");
+
+            helper.assertValueEqual(fill(fluids, hydrogen, 1000), 0, "hydrogen accepted into a full first input tank");
+            helper.assertTrue(mixer.getFluidStackFromTank(1).isEmpty(), "hydrogen overflowed into the second input tank");
+
+            helper.assertValueEqual(fill(fluids, VEFluids.NITROGEN_REG.get(), 1000), 1000, "nitrogen accepted");
+            helper.assertValueEqual(mixer.getFluidStackFromTank(1).getAmount(), 1000, "nitrogen in the second input tank");
+            helper.assertValueEqual(mixer.getFluidStackFromTank(0).getAmount(), VETileEntity.DEFAULT_TANK_CAPACITY, "hydrogen in the first input tank after nitrogen");
+            GameTestLog.pass(helper, "storage_fluid_mixer_fill_routing", "");
+        });
+    }
+
+    private static int fill(ResourceHandler<FluidResource> fluids, Fluid fluid, int amount) {
+        try (Transaction transaction = Transaction.openRoot()) {
+            int filled = fluids.insert(FluidResource.of(fluid), amount, transaction);
+            transaction.commit();
+            return filled;
+        }
     }
 
     private static VERelationalTank multiTank(VEFluidTank tank) {
