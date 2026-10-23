@@ -8,8 +8,10 @@ context: |
   recipes, worldgen. Machines are factory-assembled (VEBlocks, VETileEntities, VEContainers, a screen,
   a recipe processor, an inventory validator); there are no per-machine tile or container classes.
   Configurable numbers come from tools/Config. JEI is optional and confined to compat/.
-  There are no unit tests or gametests. Verification is ./gradlew compileJava, ./gradlew runData
-  for datagen output, and an in-game check via ./gradlew runClient for behaviour, rendering, and GUI.
+  There are no unit tests. Gametests live in src/gametest/ and run with ./gradlew runGameTestServer;
+  optional ones mark known gaps. Verification is ./gradlew compileJava, ./gradlew runData for datagen
+  output, runGameTestServer for machine and tank changes, and an in-game check via ./gradlew runClient
+  for behaviour, rendering, and GUI.
 
 rules:
   proposal:
