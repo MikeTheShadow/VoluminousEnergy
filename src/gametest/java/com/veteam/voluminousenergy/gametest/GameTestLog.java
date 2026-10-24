@@ -32,4 +32,12 @@ public class GameTestLog {
     public static void value(String name, String key, Object value) {
         VoluminousEnergy.LOGGER.info("{} VALUE {} {}={}", PREFIX, name, key, value);
     }
+
+    /**
+     * Fails the test unless the actual value equals the expected one. Vanilla's
+     * {@code assertValueEqual} reports the two values the other way round.
+     */
+    public static <T> void assertEqual(GameTestHelper helper, T actual, T expected, String name) {
+        helper.assertTrue(actual.equals(expected), "Expected " + name + " to be " + expected + ", but was " + actual);
+    }
 }

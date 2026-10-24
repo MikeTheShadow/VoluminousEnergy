@@ -29,9 +29,17 @@ public class MachineKit {
      * The fluid handler a pipe on the given face of the machine would see.
      */
     public static IFluidHandler fluids(GameTestHelper helper, BlockPos pos, Direction side) {
+        return IFluidHandler.of(fluidResources(helper, pos, side));
+    }
+
+    /**
+     * The transfer handler behind {@link #fluids}, for requests that name a tank or hold a
+     * transaction open.
+     */
+    public static ResourceHandler<FluidResource> fluidResources(GameTestHelper helper, BlockPos pos, Direction side) {
         ResourceHandler<FluidResource> handler = helper.getLevel().getCapability(Capabilities.Fluid.BLOCK, helper.absolutePos(pos), side);
         helper.assertTrue(handler != null, "no fluid capability on the " + side + " face");
-        return IFluidHandler.of(handler);
+        return handler;
     }
 
     /**
