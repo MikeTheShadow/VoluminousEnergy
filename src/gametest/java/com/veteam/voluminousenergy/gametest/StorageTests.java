@@ -201,7 +201,8 @@ public class StorageTests {
     }
 
     /**
-     * T2.8: a Distillation Unit's input tank takes Crude Oil up to its capacity and refuses Lava.
+     * T2.8: a Distillation Unit's input tank takes Crude Oil up to its capacity and, once holding it,
+     * refuses Lava.
      */
     private static void fluidFillRules(GameTestHelper helper) {
         VETileEntity unit = MachineKit.place(helper, MACHINE, VEBlocks.DISTILLATION_UNIT.block().get());
