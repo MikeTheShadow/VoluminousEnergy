@@ -4,10 +4,11 @@ Always `./gradlew`, never a global `gradle`.
 - `compileJava` / `build`: compile check / jar.
 - `runClientData`: regenerates `src/generated/resources` (committed output).
 - `runClient`, `runServer`: dev game.
-- `runGameTestServer`: exists, but no gametests are written yet.
+- `runGameTestServer`: runs the gametests in `src/gametest/` (machine fluid transfer); optional failures mark known gaps.
 - `--stop`: run first if `clean` fails with "Unable to delete build".
 
 No unit tests, lint, or formatter. A task is done when:
 1. `./gradlew compileJava` passes.
 2. Registry, tag, loot, or model changes: `runClientData` run and its diff included.
-3. Rendering, GUI, or machine-behaviour changes: report that an in-game `runClient` check is still needed.
+3. Machine or tank changes: `runGameTestServer` passes.
+4. Rendering, GUI, or machine-behaviour changes: report that an in-game `runClient` check is still needed.
