@@ -198,7 +198,8 @@ There is no unit test suite. A task is done when:
    included.
 3. If the change touches machines, items, blocks, loot, or fluid deposits, `./gradlew runGameTestServer`
    passes. Worldgen changes also need `python3 -I src/gametest/autotest/autotest.py --dir <scratch dir> t3`,
-   which surveys throwaway worlds.
+   which surveys throwaway worlds. Optional tests may fail; each marks a known gap and becomes required
+   when the fix lands.
 4. For rendering, GUI, or machine-behaviour changes, say plainly that it needs an in-game check via
    `./gradlew runClient`. Do not claim it works without one.
 

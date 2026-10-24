@@ -34,10 +34,13 @@ import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.resource.ResourceStack;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -69,6 +72,21 @@ public class StorageTests {
         tests.add(GameTestDefinition.of("storage_owner_operations", 20, StorageTests::ownerOperations));
         tests.add(GameTestDefinition.of("storage_fluid_multi_tank_extract", 20, StorageTests::fluidMultiTankExtract));
         tests.add(GameTestDefinition.of("storage_fluid_mixer_fill_routing", 40, StorageTests::fluidMixerFillRouting));
+        tests.add(GameTestDefinition.of("storage_fluid_drain_disabled_side", 20, StorageTests::fluidDrainDisabledSide));
+        tests.add(GameTestDefinition.of("storage_fluid_electrolyzer_drains", 20, StorageTests::fluidElectrolyzerDrains));
+        tests.add(GameTestDefinition.of("storage_fluid_drain_amount_refuses_disabled_side", 20, StorageTests::fluidDrainAmountRefusesDisabledSide));
+        tests.add(GameTestDefinition.of("storage_fluid_zero_requests", 20, StorageTests::fluidZeroRequests));
+        tests.add(GameTestDefinition.of("storage_fluid_fill_last_millibucket", 20, StorageTests::fluidFillLastMillibucket));
+        tests.add(GameTestDefinition.of("storage_fluid_fill_largest_offer", 20, StorageTests::fluidFillLargestOffer));
+        tests.add(GameTestDefinition.of("storage_fluid_fill_named_tank", 20, StorageTests::fluidFillNamedTank));
+        tests.add(GameTestDefinition.of("storage_fluid_out_of_range_transfers", 20, StorageTests::fluidOutOfRangeTransfers));
+        tests.add(GameTestDefinition.of("storage_fluid_out_of_range_tank_index", 20, StorageTests::fluidOutOfRangeTankIndex));
+        tests.add(GameTestDefinition.of("storage_fluid_drain_spans_tanks", 20, StorageTests::fluidDrainSpansTanks));
+
+        tests.add(GameTestDefinition.optional("storage_fluid_fill_refuses_disabled_side", 20, StorageTests::fluidFillRefusesDisabledSide));
+        tests.add(GameTestDefinition.optional("storage_fluid_empty_machine_refuses_wrong_fluid", 20, StorageTests::fluidEmptyMachineRefusesWrongFluid));
+        tests.add(GameTestDefinition.optional("storage_fluid_mixer_second_ingredient_first", 20, StorageTests::fluidMixerSecondIngredientFirst));
+        tests.add(GameTestDefinition.optional("storage_fluid_combustion_oxidizer_routing", 20, StorageTests::fluidCombustionOxidizerRouting));
     }
 
     /**
@@ -450,11 +468,303 @@ public class StorageTests {
         });
     }
 
+    /**
+     * An output tank whose side is disabled refuses a drain naming its fluid.
+     */
+    private static void fluidDrainDisabledSide(GameTestHelper helper) {
+        VETileEntity unit = MachineKit.place(helper, MACHINE, VEBlocks.DISTILLATION_UNIT.block().get());
+        VERelationalTank output = unit.getRelationalTank(1);
+        output.getTank().setFluid(new FluidStack(VEFluids.NAPHTHA_REG.get(), 1000));
+        unit.updateTankPacketFromGui(false, output.getSlotNum());
+        ResourceHandler<FluidResource> fluids = MachineKit.capability(helper, Capabilities.Fluid.BLOCK, MACHINE, Direction.DOWN);
+
+        GameTestLog.assertEqual(helper, drain(fluids, VEFluids.NAPHTHA_REG.get(), 500), 0, "naphtha drained through a disabled side");
+        GameTestLog.assertEqual(helper, unit.getFluidStackFromTank(1).getAmount(), 1000, "naphtha in the output tank");
+        GameTestLog.pass(helper, "storage_fluid_drain_disabled_side", "");
+    }
+
+    /**
+     * A Fluid Electrolyzer's two output tanks drain by the fluid named, and a drain naming only an
+     * amount skips the protected input tank.
+     */
+    private static void fluidElectrolyzerDrains(GameTestHelper helper) {
+        VETileEntity electrolyzer = MachineKit.place(helper, MACHINE, VEBlocks.FLUID_ELECTROLYZER.block().get());
+        Fluid oxygen = VEFluids.OXYGEN_REG.get();
+        Fluid hydrogen = VEFluids.HYDROGEN_REG.get();
+        for (VERelationalTank tank : electrolyzer.getRelationalTanks()) {
+            electrolyzer.updateTankPacketFromGui(true, tank.getSlotNum());
+        }
+        electrolyzer.getRelationalTank(1).getTank().setFluid(new FluidStack(oxygen, 1000));
+        electrolyzer.getRelationalTank(2).getTank().setFluid(new FluidStack(hydrogen, 1000));
+        ResourceHandler<FluidResource> fluids = MachineKit.capability(helper, Capabilities.Fluid.BLOCK, MACHINE, Direction.DOWN);
+
+        GameTestLog.assertEqual(helper, drain(fluids, hydrogen, 600), 600, "hydrogen drained");
+        GameTestLog.assertEqual(helper, electrolyzer.getFluidStackFromTank(2).getAmount(), 400, "hydrogen left in the second output tank");
+        GameTestLog.assertEqual(helper, electrolyzer.getFluidStackFromTank(1).getAmount(), 1000, "oxygen after draining hydrogen");
+
+        GameTestLog.assertEqual(helper, drain(fluids, oxygen, 1500), 1000, "oxygen drained when asking for more than the tank holds");
+        helper.assertTrue(electrolyzer.getFluidStackFromTank(1).isEmpty(), "oxygen left after draining the whole tank");
+
+        electrolyzer.getRelationalTank(0).getTank().setFluid(new FluidStack(Fluids.WATER, 1000));
+        electrolyzer.getRelationalTank(1).getTank().setFluid(new FluidStack(oxygen, 1000));
+        withInputExtraction(false, () -> {
+            ResourceStack<FluidResource> drained = drainAny(fluids, 500);
+            helper.assertTrue(drained != null && drained.resource().is(oxygen), "a drain naming only an amount returned " + drained);
+            GameTestLog.assertEqual(helper, drained.amount(), 500, "oxygen drained by amount");
+        });
+        GameTestLog.assertEqual(helper, electrolyzer.getFluidStackFromTank(0).getAmount(), 1000, "water in the protected input tank");
+        GameTestLog.assertEqual(helper, electrolyzer.getFluidStackFromTank(2).getAmount(), 400, "hydrogen after a drain by amount");
+        GameTestLog.pass(helper, "storage_fluid_electrolyzer_drains", "");
+    }
+
+    /**
+     * A drain naming only an amount takes nothing from an output tank whose side is disabled.
+     */
+    private static void fluidDrainAmountRefusesDisabledSide(GameTestHelper helper) {
+        VETileEntity electrolyzer = MachineKit.place(helper, MACHINE, VEBlocks.FLUID_ELECTROLYZER.block().get());
+        VERelationalTank output = electrolyzer.getRelationalTank(1);
+        output.getTank().setFluid(new FluidStack(VEFluids.OXYGEN_REG.get(), 1000));
+        electrolyzer.updateTankPacketFromGui(false, output.getSlotNum());
+        ResourceHandler<FluidResource> fluids = MachineKit.capability(helper, Capabilities.Fluid.BLOCK, MACHINE, Direction.DOWN);
+        withInputExtraction(false, () -> {
+            ResourceStack<FluidResource> drained = drainAny(fluids, 500);
+            helper.assertTrue(drained == null, "a drain by amount took " + drained + " through a disabled side");
+        });
+        GameTestLog.assertEqual(helper, electrolyzer.getFluidStackFromTank(1).getAmount(), 1000, "oxygen in the output tank");
+        GameTestLog.pass(helper, "storage_fluid_drain_amount_refuses_disabled_side", "");
+    }
+
+    /**
+     * Requests for 0 mB move nothing.
+     */
+    private static void fluidZeroRequests(GameTestHelper helper) {
+        VETileEntity unit = MachineKit.place(helper, MACHINE, VEBlocks.DISTILLATION_UNIT.block().get());
+        Fluid crudeOil = VEFluids.CRUDE_OIL_REG.get();
+        unit.getRelationalTank(0).getTank().setFluid(new FluidStack(crudeOil, 1000));
+        unit.getRelationalTank(1).getTank().setFluid(new FluidStack(VEFluids.NAPHTHA_REG.get(), 1000));
+        for (VERelationalTank tank : unit.getRelationalTanks()) {
+            unit.updateTankPacketFromGui(true, tank.getSlotNum());
+        }
+        ResourceHandler<FluidResource> fluids = MachineKit.capability(helper, Capabilities.Fluid.BLOCK, MACHINE, Direction.DOWN);
+
+        GameTestLog.assertEqual(helper, fill(fluids, crudeOil, 0), 0, "0 mB of crude oil accepted");
+        GameTestLog.assertEqual(helper, drain(fluids, VEFluids.NAPHTHA_REG.get(), 0), 0, "naphtha returned by a drain of 0 mB");
+        helper.assertTrue(drainAny(fluids, 0) == null, "a drain of 0 mB naming only an amount returned fluid");
+        GameTestLog.assertEqual(helper, unit.getFluidStackFromTank(0).getAmount(), 1000, "crude oil in the input tank");
+        GameTestLog.assertEqual(helper, unit.getFluidStackFromTank(1).getAmount(), 1000, "naphtha in the output tank");
+        GameTestLog.pass(helper, "storage_fluid_zero_requests", "");
+    }
+
+    /**
+     * A Distillation Unit's input tank 1 mB short of full takes 1 mB of a 2 mB offer.
+     */
+    private static void fluidFillLastMillibucket(GameTestHelper helper) {
+        VETileEntity unit = MachineKit.place(helper, MACHINE, VEBlocks.DISTILLATION_UNIT.block().get());
+        Fluid crudeOil = VEFluids.CRUDE_OIL_REG.get();
+        unit.getRelationalTank(0).getTank().setFluid(new FluidStack(crudeOil, VETileEntity.DEFAULT_TANK_CAPACITY - 1));
+        helper.runAfterDelay(2, () -> {
+            ResourceHandler<FluidResource> fluids = MachineKit.capability(helper, Capabilities.Fluid.BLOCK, MACHINE, Direction.DOWN);
+            GameTestLog.assertEqual(helper, fill(fluids, crudeOil, 2), 1, "crude oil accepted into a tank 1 mB short of full");
+            GameTestLog.assertEqual(helper, unit.getFluidStackFromTank(0).getAmount(), VETileEntity.DEFAULT_TANK_CAPACITY, "crude oil in the input tank");
+            GameTestLog.pass(helper, "storage_fluid_fill_last_millibucket", "");
+        });
+    }
+
+    /**
+     * An offer of the largest possible amount fills an empty Distillation Unit's input tank only to
+     * its capacity.
+     */
+    private static void fluidFillLargestOffer(GameTestHelper helper) {
+        VETileEntity unit = MachineKit.place(helper, MACHINE, VEBlocks.DISTILLATION_UNIT.block().get());
+        helper.runAfterDelay(2, () -> {
+            ResourceHandler<FluidResource> fluids = MachineKit.capability(helper, Capabilities.Fluid.BLOCK, MACHINE, Direction.DOWN);
+            GameTestLog.assertEqual(helper, fill(fluids, VEFluids.CRUDE_OIL_REG.get(), Integer.MAX_VALUE), VETileEntity.DEFAULT_TANK_CAPACITY, "crude oil accepted from the largest offer");
+            GameTestLog.assertEqual(helper, unit.getFluidStackFromTank(0).getAmount(), VETileEntity.DEFAULT_TANK_CAPACITY, "crude oil in the input tank");
+            GameTestLog.pass(helper, "storage_fluid_fill_largest_offer", "");
+        });
+    }
+
+    /**
+     * A fill naming a Fluid Mixer's second input tank fills only that tank, and a fill naming its
+     * output tank is refused.
+     */
+    private static void fluidFillNamedTank(GameTestHelper helper) {
+        VETileEntity mixer = MachineKit.place(helper, MACHINE, VEBlocks.FLUID_MIXER.block().get());
+        helper.runAfterDelay(2, () -> {
+            ResourceHandler<FluidResource> fluids = MachineKit.capability(helper, Capabilities.Fluid.BLOCK, MACHINE, Direction.DOWN);
+            GameTestLog.assertEqual(helper, fill(fluids, 1, VEFluids.NITROGEN_REG.get(), 1000), 1000, "nitrogen accepted into the second input tank");
+            GameTestLog.assertEqual(helper, mixer.getFluidStackFromTank(1).getAmount(), 1000, "nitrogen in the second input tank");
+            helper.assertTrue(mixer.getFluidStackFromTank(0).isEmpty(), "a fill naming the second input tank changed the first");
+
+            GameTestLog.assertEqual(helper, fill(fluids, 2, VEFluids.AMMONIA_REG.get(), 1000), 0, "ammonia accepted into the output tank");
+            helper.assertTrue(mixer.getFluidStackFromTank(2).isEmpty(), "a fill naming the output tank changed it");
+            GameTestLog.pass(helper, "storage_fluid_fill_named_tank", "");
+        });
+    }
+
+    /**
+     * Fills and drains naming a tank before the first or after the last on a face move nothing.
+     */
+    private static void fluidOutOfRangeTransfers(GameTestHelper helper) {
+        VETileEntity unit = MachineKit.place(helper, MACHINE, VEBlocks.DISTILLATION_UNIT.block().get());
+        Fluid crudeOil = VEFluids.CRUDE_OIL_REG.get();
+        unit.getRelationalTank(0).getTank().setFluid(new FluidStack(crudeOil, 1000));
+        unit.updateTankPacketFromGui(true, unit.getRelationalTank(0).getSlotNum());
+        helper.runAfterDelay(2, () -> {
+            ResourceHandler<FluidResource> fluids = MachineKit.capability(helper, Capabilities.Fluid.BLOCK, MACHINE, Direction.DOWN);
+            for (int tank : new int[]{-1, fluids.size()}) {
+                GameTestLog.assertEqual(helper, fill(fluids, tank, crudeOil, 1000), 0, "crude oil accepted into tank " + tank);
+                GameTestLog.assertEqual(helper, drain(fluids, tank, crudeOil, 1000), 0, "crude oil drained from tank " + tank);
+            }
+            GameTestLog.assertEqual(helper, unit.getFluidStackFromTank(0).getAmount(), 1000, "crude oil in the input tank");
+            GameTestLog.pass(helper, "storage_fluid_out_of_range_transfers", "");
+        });
+    }
+
+    /**
+     * Asking whether a fluid is valid for a tank index the face does not have answers false.
+     */
+    private static void fluidOutOfRangeTankIndex(GameTestHelper helper) {
+        MachineKit.place(helper, MACHINE, VEBlocks.DISTILLATION_UNIT.block().get());
+        ResourceHandler<FluidResource> fluids = MachineKit.capability(helper, Capabilities.Fluid.BLOCK, MACHINE, Direction.DOWN);
+        FluidResource crudeOil = FluidResource.of(VEFluids.CRUDE_OIL_REG.get());
+        for (int tank : new int[]{-1, fluids.size()}) {
+            helper.assertFalse(fluids.isValid(tank, crudeOil), "tank " + tank + " reported crude oil as valid");
+        }
+        GameTestLog.pass(helper, "storage_fluid_out_of_range_tank_index", "");
+    }
+
+    /**
+     * A drain naming a fluid held in both of a Fluid Electrolyzer's output tanks takes from each in
+     * tank order until the requested amount is met.
+     */
+    private static void fluidDrainSpansTanks(GameTestHelper helper) {
+        VETileEntity electrolyzer = MachineKit.place(helper, MACHINE, VEBlocks.FLUID_ELECTROLYZER.block().get());
+        for (int tank = 1; tank <= 2; tank++) {
+            electrolyzer.updateTankPacketFromGui(true, electrolyzer.getRelationalTank(tank).getSlotNum());
+        }
+        electrolyzer.getRelationalTank(1).getTank().setFluid(new FluidStack(Fluids.WATER, 400));
+        electrolyzer.getRelationalTank(2).getTank().setFluid(new FluidStack(Fluids.WATER, 1000));
+        ResourceHandler<FluidResource> fluids = MachineKit.capability(helper, Capabilities.Fluid.BLOCK, MACHINE, Direction.DOWN);
+
+        GameTestLog.assertEqual(helper, drain(fluids, Fluids.WATER, 1200), 1200, "water drained across both output tanks");
+        helper.assertTrue(electrolyzer.getFluidStackFromTank(1).isEmpty(), "water left in the first output tank");
+        GameTestLog.assertEqual(helper, electrolyzer.getFluidStackFromTank(2).getAmount(), 200, "water left in the second output tank");
+        GameTestLog.pass(helper, "storage_fluid_drain_spans_tanks", "");
+    }
+
+    /**
+     * Optional: a disabled input side refuses fills, as a disabled item slot refuses hoppers.
+     */
+    private static void fluidFillRefusesDisabledSide(GameTestHelper helper) {
+        String name = "storage_fluid_fill_refuses_disabled_side";
+        VETileEntity unit = MachineKit.place(helper, MACHINE, VEBlocks.DISTILLATION_UNIT.block().get());
+        unit.updateTankPacketFromGui(false, unit.getRelationalTank(0).getSlotNum());
+        helper.runAfterDelay(2, () -> {
+            ResourceHandler<FluidResource> fluids = MachineKit.capability(helper, Capabilities.Fluid.BLOCK, MACHINE, Direction.DOWN);
+            int accepted = fill(fluids, VEFluids.CRUDE_OIL_REG.get(), 1000);
+            GameTestLog.value(name, "accepted", accepted);
+            GameTestLog.assertEqual(helper, accepted, 0, "crude oil accepted through a disabled side");
+            GameTestLog.pass(helper, name, "");
+        });
+    }
+
+    /**
+     * Optional: an empty Distillation Unit refuses Lava, which no Distillation Unit recipe takes.
+     */
+    private static void fluidEmptyMachineRefusesWrongFluid(GameTestHelper helper) {
+        String name = "storage_fluid_empty_machine_refuses_wrong_fluid";
+        MachineKit.place(helper, MACHINE, VEBlocks.DISTILLATION_UNIT.block().get());
+        helper.runAfterDelay(2, () -> {
+            ResourceHandler<FluidResource> fluids = MachineKit.capability(helper, Capabilities.Fluid.BLOCK, MACHINE, Direction.DOWN);
+            int accepted = fill(fluids, Fluids.LAVA, 1000);
+            GameTestLog.value(name, "accepted", accepted);
+            GameTestLog.assertEqual(helper, accepted, 0, "lava accepted into an empty input tank");
+            GameTestLog.pass(helper, name, "");
+        });
+    }
+
+    /**
+     * Optional: Nitrogen piped into an empty Fluid Mixer goes to the second input tank, where the
+     * recipe expects it, leaving the first free for Hydrogen.
+     */
+    private static void fluidMixerSecondIngredientFirst(GameTestHelper helper) {
+        String name = "storage_fluid_mixer_second_ingredient_first";
+        VETileEntity mixer = MachineKit.place(helper, MACHINE, VEBlocks.FLUID_MIXER.block().get());
+        helper.runAfterDelay(2, () -> {
+            fill(MachineKit.capability(helper, Capabilities.Fluid.BLOCK, MACHINE, Direction.DOWN), VEFluids.NITROGEN_REG.get(), 1000);
+            GameTestLog.value(name, "first_input", mixer.getFluidStackFromTank(0).getAmount() + " " + mixer.getFluidStackFromTank(0).getFluid());
+            GameTestLog.value(name, "second_input", mixer.getFluidStackFromTank(1).getAmount() + " " + mixer.getFluidStackFromTank(1).getFluid());
+            helper.assertTrue(mixer.getFluidStackFromTank(0).isEmpty(), "nitrogen went into the first input tank");
+            GameTestLog.assertEqual(helper, mixer.getFluidStackFromTank(1).getAmount(), 1000, "nitrogen in the second input tank");
+            GameTestLog.pass(helper, name, "");
+        });
+    }
+
+    /**
+     * Optional: Oxygen piped into an empty Combustion Generator goes to the oxidizer tank, not the fuel
+     * tank.
+     */
+    private static void fluidCombustionOxidizerRouting(GameTestHelper helper) {
+        String name = "storage_fluid_combustion_oxidizer_routing";
+        VETileEntity generator = MachineKit.place(helper, MACHINE, VEBlocks.COMBUSTION_GENERATOR.block().get());
+        helper.runAfterDelay(2, () -> {
+            fill(MachineKit.capability(helper, Capabilities.Fluid.BLOCK, MACHINE, Direction.DOWN), VEFluids.OXYGEN_REG.get(), 1000);
+            GameTestLog.value(name, "fuel_tank", generator.getFluidStackFromTank(0).getAmount() + " " + generator.getFluidStackFromTank(0).getFluid());
+            GameTestLog.value(name, "oxidizer_tank", generator.getFluidStackFromTank(1).getAmount() + " " + generator.getFluidStackFromTank(1).getFluid());
+            helper.assertTrue(generator.getFluidStackFromTank(0).isEmpty(), "oxygen went into the fuel tank");
+            GameTestLog.assertEqual(helper, generator.getFluidStackFromTank(1).getAmount(), 1000, "oxygen in the oxidizer tank");
+            GameTestLog.pass(helper, name, "");
+        });
+    }
+
     private static int fill(ResourceHandler<FluidResource> fluids, Fluid fluid, int amount) {
         try (Transaction transaction = Transaction.openRoot()) {
             int filled = fluids.insert(FluidResource.of(fluid), amount, transaction);
             transaction.commit();
             return filled;
+        }
+    }
+
+    private static int fill(ResourceHandler<FluidResource> fluids, int tank, Fluid fluid, int amount) {
+        try (Transaction transaction = Transaction.openRoot()) {
+            int filled = fluids.insert(tank, FluidResource.of(fluid), amount, transaction);
+            transaction.commit();
+            return filled;
+        }
+    }
+
+    private static int drain(ResourceHandler<FluidResource> fluids, int tank, Fluid fluid, int amount) {
+        try (Transaction transaction = Transaction.openRoot()) {
+            int drained = fluids.extract(tank, FluidResource.of(fluid), amount, transaction);
+            transaction.commit();
+            return drained;
+        }
+    }
+
+    /**
+     * Drains the first fluid the face lets go of, as a pipe pulling any fluid does.
+     */
+    @Nullable
+    private static ResourceStack<FluidResource> drainAny(ResourceHandler<FluidResource> fluids, int amount) {
+        try (Transaction transaction = Transaction.openRoot()) {
+            ResourceStack<FluidResource> drained = ResourceHandlerUtil.extractFirst(fluids, resource -> true, amount, transaction);
+            transaction.commit();
+            return drained;
+        }
+    }
+
+    /**
+     * Runs a check with the {@code Allow Extraction from Input Tanks} option set, then restores it
+     * before any other test can see the change.
+     */
+    private static void withInputExtraction(boolean allowed, Runnable check) {
+        boolean previous = Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get();
+        try {
+            Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.set(allowed);
+            check.run();
+        } finally {
+            Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.set(previous);
         }
     }
 

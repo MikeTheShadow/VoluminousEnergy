@@ -58,7 +58,7 @@ public class VEGameTests {
         Holder<TestEnvironmentDefinition<?>> environment = event.registerEnvironment(id("default"));
         for (GameTestDefinition test : all()) {
             TestData<Holder<TestEnvironmentDefinition<?>>> data = new TestData<>(environment, Level.OVERWORLD, id(test.structure()),
-                    test.maxTicks(), 0, true, Rotation.NONE, test.manualOnly(), 1, 1, false, 0);
+                    test.maxTicks(), 0, test.required(), Rotation.NONE, test.manualOnly(), 1, 1, false, 0);
             ResourceKey<Consumer<GameTestHelper>> function = ResourceKey.create(Registries.TEST_FUNCTION, id(test.name()));
             event.registerTest(id(test.name()), new FunctionGameTestInstance(function, data));
         }
