@@ -24,13 +24,13 @@ drainable tank on that face holding it until the requested amount is met.
 - **THEN** none of the Lava enters the tank
 
 #### Scenario: A full input tank does not overflow into the next
-- **WHEN** both of a Fluid Mixer's input tanks are on its bottom face, the first holds 4 000 mB of Hydrogen, the second is empty, and a pipe on the bottom face offers 1 000 mB of Hydrogen
+- **WHEN** both of a Fluid Mixer's input tanks are on its bottom face, the first holds 4,000 mB of Hydrogen, the second is empty, and a pipe on the bottom face offers 1,000 mB of Hydrogen
 - **THEN** none of the Hydrogen is accepted and the second input tank stays empty
 
 #### Scenario: The second ingredient reaches the second input tank
-- **WHEN** a Fluid Mixer's first input tank holds Hydrogen, its second is empty, both are on the bottom face, and a pipe on the bottom face offers 1 000 mB of Nitrogen
-- **THEN** the second input tank holds 1 000 mB of Nitrogen and the first is unchanged
+- **WHEN** a Fluid Mixer's first input tank holds Hydrogen, its second is empty, both are on the bottom face, and a pipe on the bottom face offers 1,000 mB of Nitrogen
+- **THEN** the second input tank holds 1,000 mB of Nitrogen and the first is unchanged
 
 #### Scenario: A drain spans tanks holding the fluid
-- **WHEN** two drainable tanks on one face hold 400 mB and 1 000 mB of Water and a pipe on that face pulls 1 200 mB of Water
-- **THEN** the pipe receives 1 200 mB, taken from both tanks
+- **WHEN** two drainable tanks on one face hold 400 mB and 1,000 mB of Water and a pipe on that face pulls 1,200 mB of Water
+- **THEN** the pipe receives 1,200 mB, taken from both tanks

@@ -15,12 +15,12 @@ build of the mod SHALL keep its slot contents, tank contents, and stored energy 
 opened with the 26.3 build.
 
 #### Scenario: Upgrading a world from 26.2
-- **WHEN** a Crusher holding 32 Iron Ore in its input slot and 10 000 FE is saved on the 26.2 build, and the world is opened with the 26.3 build
-- **THEN** the Crusher still holds 32 Iron Ore in its input slot and 10 000 FE
+- **WHEN** a Crusher holding 32 Iron Ore in its input slot and 10,000 FE is saved on the 26.2 build, and the world is opened with the 26.3 build
+- **THEN** the Crusher still holds 32 Iron Ore in its input slot and 10,000 FE
 
 #### Scenario: Upgrading a machine with tanks
-- **WHEN** a Centrifugal Agitator whose input tank holds 4 000 mB of Crude Oil is saved on the 26.2 build, and the world is opened with the 26.3 build
-- **THEN** its input tank still holds 4 000 mB of Crude Oil
+- **WHEN** a Centrifugal Agitator whose input tank holds 4,000 mB of Crude Oil is saved on the 26.2 build, and the world is opened with the 26.3 build
+- **THEN** its input tank still holds 4,000 mB of Crude Oil
 
 #### Scenario: Reloading on 26.3
 - **WHEN** a machine with items, fluid, and energy is saved and reloaded on the 26.3 build
@@ -49,6 +49,11 @@ allows, and drain its output tanks from the face each tank is assigned to when t
 enabled. Input tanks SHALL be drainable only when the `Allow Extraction from Input Tanks` startup
 config option is `true`.
 
+A fill that does not name a tank SHALL go into a single input tank: the first one on that face that
+holds the same fluid or is empty and accepts it. Fluid that does not fit there SHALL be refused, not
+moved into another input tank. A drain that does not name a tank SHALL take the fluid from every
+drainable tank on that face holding it until the requested amount is met.
+
 #### Scenario: Pipe fills the input tank
 - **WHEN** a fluid pipe connected to a Distillation Unit offers Crude Oil
 - **THEN** the Distillation Unit's input tank fills with Crude Oil
@@ -61,13 +66,25 @@ config option is `true`.
 - **WHEN** a pipe offers Lava to a machine whose recipes never take Lava in that tank
 - **THEN** none of the Lava enters the tank
 
+#### Scenario: A full input tank does not overflow into the next
+- **WHEN** both of a Fluid Mixer's input tanks are on its bottom face, the first holds 4,000 mB of Hydrogen, the second is empty, and a pipe on the bottom face offers 1,000 mB of Hydrogen
+- **THEN** none of the Hydrogen is accepted and the second input tank stays empty
+
+#### Scenario: The second ingredient reaches the second input tank
+- **WHEN** a Fluid Mixer's first input tank holds Hydrogen, its second is empty, both are on the bottom face, and a pipe on the bottom face offers 1,000 mB of Nitrogen
+- **THEN** the second input tank holds 1,000 mB of Nitrogen and the first is unchanged
+
+#### Scenario: A drain spans tanks holding the fluid
+- **WHEN** two drainable tanks on one face hold 400 mB and 1,000 mB of Water and a pipe on that face pulls 1,200 mB of Water
+- **THEN** the pipe receives 1,200 mB, taken from both tanks
+
 ### Requirement: Energy automation reaches every machine with an energy buffer
 Cables from other mods SHALL be able to insert energy into and extract energy from a machine's
 energy buffer, no faster per tick than the machine's configured transfer rate and never beyond its
 capacity or below zero.
 
 #### Scenario: Cable charges a machine
-- **WHEN** a cable delivering 1 000 FE per tick connects to an empty Electric Furnace
+- **WHEN** a cable delivering 1,000 FE per tick connects to an empty Electric Furnace
 - **THEN** the Electric Furnace's stored energy rises each tick until it is full
 
 ### Requirement: Simulated transfers do not change machines
@@ -85,4 +102,4 @@ tank as on 26.2.
 
 #### Scenario: Emptying a bucket into a tank
 - **WHEN** a Crude Oil Bucket is placed in a Distillation Unit's fluid input slot and the tank has room
-- **THEN** the tank gains 1 000 mB of Crude Oil and an empty bucket appears in the fluid output slot
+- **THEN** the tank gains 1,000 mB of Crude Oil and an empty bucket appears in the fluid output slot
