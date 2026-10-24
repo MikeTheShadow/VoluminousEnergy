@@ -210,6 +210,21 @@ public class CapabilityAdapters {
             return filled;
         }
 
+        /**
+         * Fills only the tank the wrapper picks, unlike the default that spreads over every tank, so
+         * one fluid never overflows into a second input tank meant for another ingredient.
+         */
+        @Override
+        public int insert(FluidResource resource, int amount, TransactionContext transaction) {
+            TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+            int filled = fluidHandler.fill(resource.toStack(amount), IFluidHandler.FluidAction.SIMULATE);
+            if (filled > 0) {
+                updateSnapshots(transaction);
+                fluidHandler.fill(resource.toStack(filled), IFluidHandler.FluidAction.EXECUTE);
+            }
+            return filled;
+        }
+
         @Override
         public int extract(int index, FluidResource resource, int amount, TransactionContext transaction) {
             TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
