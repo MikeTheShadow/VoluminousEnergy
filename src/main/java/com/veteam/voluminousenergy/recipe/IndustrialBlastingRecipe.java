@@ -22,8 +22,6 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 public class IndustrialBlastingRecipe extends VERecipe {
@@ -64,7 +62,7 @@ public class IndustrialBlastingRecipe extends VERecipe {
 
 
     private int minimumHeat;
-    private static List<Fluid> hotEnoughFluids;
+    private List<Fluid> hotEnoughFluids;
 
     public IndustrialBlastingRecipe() {
 
@@ -100,27 +98,16 @@ public class IndustrialBlastingRecipe extends VERecipe {
     }
 
     public List<Fluid> getHotEnoughFluids() {
-        HashSet<Fluid> fluidHashSet = new HashSet<>();
         if (hotEnoughFluids == null) {
-            for (Fluid fluid : BuiltInRegistries.FLUID) {
-                if (fluid.getFluidType().getTemperature() > minimumHeat)
-                    fluidHashSet.add(fluid);
-            }
-            hotEnoughFluids = fluidHashSet.stream().toList();
+            hotEnoughFluids = BuiltInRegistries.FLUID.stream().filter(this::isFluidHotEnough).toList();
         }
         return hotEnoughFluids;
     }
 
     @Override
     public List<FluidIngredient> getFluidIngredients() {
-        List<FluidStack> fluidStacks = new ArrayList<>();
-        for (Fluid fluid : getHotEnoughFluids()) {
-            if (fluid.getFluidType().getTemperature() > minimumHeat) {
-                fluidStacks.add(new FluidStack(fluid, Config.BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION.get()));
-            }
-        }
-        FluidIngredient fluidIngredient = FluidIngredient.of(fluidStacks.stream());
-        return List.of(fluidIngredient);
+        int consumption = Config.BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION.get();
+        return List.of(FluidIngredient.of(getHotEnoughFluids().stream().map(fluid -> new FluidStack(fluid, consumption))));
     }
 
     @Override
@@ -133,7 +120,7 @@ public class IndustrialBlastingRecipe extends VERecipe {
     }
 
     public boolean isFluidHotEnough(FluidType fluidType) {
-        return fluidType.getTemperature() > this.minimumHeat;
+        return fluidType.getTemperature() >= this.minimumHeat;
     }
 
 }
