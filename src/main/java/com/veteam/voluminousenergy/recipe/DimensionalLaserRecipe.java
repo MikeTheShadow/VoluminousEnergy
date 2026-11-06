@@ -28,13 +28,7 @@ public class DimensionalLaserRecipe extends VERecipe {
     public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.DIMENSIONAL_LASING.get();
 
     @ServerSideOnly
-    private ClimateData climateData;
-
-    @ServerSideOnly
     private IntPair minMaxAmounts;
-
-    @ServerSideOnly
-    private FluidMinMax fluidMinMax;
 
     private Fluid regionFluid;
     private int maximumAmount;
@@ -50,8 +44,8 @@ public class DimensionalLaserRecipe extends VERecipe {
     private float temperatureMax;
 
     public static final MapCodec<DimensionalLaserRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
-            VERecipeCodecs.VE_MIN_MAX_FLUID_CODEC.fieldOf("region_fluid").forGetter((getter) -> getter.fluidMinMax),
-            VERecipeCodecs.VE_CLIMATE_CODEC.fieldOf("climate").forGetter((getter) -> getter.climateData)
+            VERecipeCodecs.VE_MIN_MAX_FLUID_CODEC.fieldOf("region_fluid").forGetter(DimensionalLaserRecipe::fluidMinMax),
+            VERecipeCodecs.VE_CLIMATE_CODEC.fieldOf("climate").forGetter(DimensionalLaserRecipe::climateData)
     ).apply(instance, DimensionalLaserRecipe::new));
 
     private static final FluidSerializerHelper<DimensionalLaserRecipe> helper = new FluidSerializerHelper<>();
@@ -121,6 +115,19 @@ public class DimensionalLaserRecipe extends VERecipe {
         this.humidityMax = climateData.humidity().max();
         this.temperatureMin = climateData.temperature().min();
         this.temperatureMax = climateData.temperature().max();
+    }
+
+    private FluidMinMax fluidMinMax() {
+        return new FluidMinMax(this.regionFluid, this.minimumAmount, this.maximumAmount);
+    }
+
+    private ClimateData climateData() {
+        return new ClimateData(
+                new FloatPair(this.continentalnessMin, this.continentalnessMax),
+                new FloatPair(this.erosionMin, this.erosionMax),
+                new FloatPair(this.humidityMin, this.humidityMax),
+                new FloatPair(this.temperatureMin, this.temperatureMax)
+        );
     }
 
     private FluidClimateSpawn fluidClimateSpawn = null;

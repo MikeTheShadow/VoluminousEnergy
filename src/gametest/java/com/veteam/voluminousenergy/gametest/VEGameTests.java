@@ -33,6 +33,7 @@ public class VEGameTests {
         List<GameTestDefinition> tests = new ArrayList<>();
         tests.add(GameTestDefinition.of("smoke", 20, GameTestHelper::succeed));
         StorageTests.register(tests);
+        RecipeTests.register(tests);
         return tests;
     }
 
