@@ -58,14 +58,16 @@ public class Nitroglycerin {
             .canConvertToSource(false)
             .canSwim(false)
             .lightLevel(0)
-            .density(1)
+            .density(1600)
             .temperature(300)
-            .viscosity(1)
+            .viscosity(36000)
             .motionScale(0)
             .fallDistanceModifier(0)
             .rarity(Rarity.COMMON)
             .supportsBoating(false)
             .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY),
+            VEFluidPhysics.SYRUPY,
+            0x544C75,
             NITROGLYCERIN_STILL_TEXTURE,
             NITROGLYCERIN_FLOWING_TEXTURE
     );

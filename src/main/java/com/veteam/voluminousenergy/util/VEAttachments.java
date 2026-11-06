@@ -50,4 +50,8 @@ public class VEAttachments {
     public static final Supplier<AttachmentType<Boolean>> IS_RECIPE_AWAITING_COMPLETE = ATTACHMENT_TYPE_DEFERRED_REGISTER.register(
         "is_await_complete", () -> AttachmentType.builder((iAttachmentHolder)
             -> false).serialize(Codec.BOOL).build());
+
+    public static final Supplier<AttachmentType<Double>> GAS_VERTICAL_SPEED = ATTACHMENT_TYPE_DEFERRED_REGISTER.register(
+            "gas_vertical_speed", () -> AttachmentType.builder((iAttachmentHolder)
+                    -> Double.NaN).build());
 }

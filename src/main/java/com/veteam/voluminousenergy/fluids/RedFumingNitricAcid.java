@@ -21,6 +21,7 @@ public class RedFumingNitricAcid {
     public static final ResourceLocation RFNA_FLOWING_TEXTURE = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/rfna_flowing");
 
     public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
+    public static final float ACID_STRENGTH = 1.5F;
 
     public static FlowingFluid RED_FUMING_NITRIC_ACID;
     public static FlowingFluid FLOWING_RED_FUMING_NITRIC_ACID;
@@ -38,7 +39,7 @@ public class RedFumingNitricAcid {
     }
 
     public static FumingAcidFlowingFluidBlock FlowingRedFumingNitricAcidBlock() {
-        RED_FUMING_NITRIC_ACID_BLOCK = new FumingAcidFlowingFluidBlock(RED_FUMING_NITRIC_ACID, stdProp);
+        RED_FUMING_NITRIC_ACID_BLOCK = new FumingAcidFlowingFluidBlock(RED_FUMING_NITRIC_ACID, stdProp, ACID_STRENGTH);
         return RED_FUMING_NITRIC_ACID_BLOCK;
     }
 
@@ -58,14 +59,16 @@ public class RedFumingNitricAcid {
             .canConvertToSource(false)
             .canSwim(false)
             .lightLevel(0)
-            .density(1)
+            .density(1550)
             .temperature(300)
-            .viscosity(1)
+            .viscosity(1000)
             .motionScale(0)
             .fallDistanceModifier(0)
             .rarity(Rarity.COMMON)
             .supportsBoating(false)
             .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY),
+            VEFluidPhysics.WATERY,
+            0xFB7707,
             RFNA_STILL_TEXTURE,
             RFNA_FLOWING_TEXTURE
     );
