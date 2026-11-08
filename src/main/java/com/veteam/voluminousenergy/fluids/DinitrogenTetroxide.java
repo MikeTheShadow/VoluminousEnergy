@@ -58,14 +58,16 @@ public class DinitrogenTetroxide {
             .canConvertToSource(false)
             .canSwim(false)
             .lightLevel(0)
-            .density(1)
+            .density(1440)
             .temperature(300)
-            .viscosity(1)
+            .viscosity(420)
             .motionScale(0)
             .fallDistanceModifier(0)
             .rarity(Rarity.COMMON)
             .supportsBoating(false)
             .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY),
+            VEFluidPhysics.THIN,
+            0x8496E9,
             DINITROGEN_TETROXIDE_STILL_TEXTURE,
             DINITROGEN_TETROXIDE_FLOWING_TEXTURE
     );

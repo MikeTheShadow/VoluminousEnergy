@@ -57,14 +57,16 @@ public class Treethanol {
             .canConvertToSource(false)
             .canSwim(false)
             .lightLevel(0)
-            .density(1)
+            .density(789)
             .temperature(300)
-            .viscosity(1)
+            .viscosity(1200)
             .motionScale(0)
             .fallDistanceModifier(0)
             .rarity(Rarity.COMMON)
             .supportsBoating(false)
             .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY),
+            VEFluidPhysics.THIN,
+            0xBB9962,
             TREETHANOL_STILL_TEXTURE,
             TREETHANOL_FLOWING_TEXTURE
     );

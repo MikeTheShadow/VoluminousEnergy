@@ -78,6 +78,7 @@ public class Config {
     public static ModConfigSpec.IntValue SOLARIUM_PROTECTIVE_SHEATH_HITS;
     public static ModConfigSpec.DoubleValue SOLARIUM_SHEATH_REGENERATION_CHANCE;
     public static ModConfigSpec.IntValue DECREMENT_SPEED_ON_NO_POWER;
+    public static ModConfigSpec.IntValue MERCURY_POISON_DURATION;
 
     // Primitive Stirling Generator Variables
     public static ModConfigSpec.IntValue PRIMITIVE_STIRLING_GENERATOR_MAX_POWER;
@@ -380,16 +381,18 @@ public class Config {
     private static void setupGeneralSettings(){
         ALLOW_EXTRACTION_FROM_INPUT_TANKS = VE_STARTUP_CONFIG_BUILDER.comment("Allow pipes to extract fluids from fluid input tanks. Disabling this means that only fluid outputs can be extracted from Tile Entites")
                 .define("Allow Extraction from Input Tanks", false);
-        ACID_DAMAGE = VE_STARTUP_CONFIG_BUILDER.comment("Damage taken from standing in an acid.")
+        ACID_DAMAGE = VE_STARTUP_CONFIG_BUILDER.comment("Base damage taken from standing in an acid, scaled by the acid's strength.")
                 .defineInRange("Acid Damage", 3F, 0F, Float.MAX_VALUE);
-        ACID_FIRE_DURATION = VE_STARTUP_CONFIG_BUILDER.comment("Duration of fire on an entity for stepping into an acid.")
-                .defineInRange("Acid Fire Duration", 4, 0, Integer.MAX_VALUE);
+        ACID_FIRE_DURATION = VE_STARTUP_CONFIG_BUILDER.comment("Duration of fire in ticks on an entity for stepping into a fuming acid.")
+                .defineInRange("Acid Fire Duration", 80, 0, Integer.MAX_VALUE);
         SOLARIUM_PROTECTIVE_SHEATH_HITS = VE_STARTUP_CONFIG_BUILDER.comment("How many uses a Solarium tool can have before the protective sheath is depleted")
                 .defineInRange("Solarium Protective Sheath", 2560, 0, Integer.MAX_VALUE);
         SOLARIUM_SHEATH_REGENERATION_CHANCE = VE_STARTUP_CONFIG_BUILDER.comment("The percent chance (as a decimal) of a Solarium sheath regenerating on a tick when exposed to skylight")
                 .defineInRange("Solarium Sheath Regeneration Chance", 0.0175, 0, 1);
         DECREMENT_SPEED_ON_NO_POWER = VE_STARTUP_CONFIG_BUILDER.comment("Speed of which progress should be undone at a machine when the machine loses power/FE")
                 .defineInRange("Decrement Speed On No Power", 5, 1, 20);
+        MERCURY_POISON_DURATION = VE_STARTUP_CONFIG_BUILDER.comment("Duration of Poison in ticks on an entity for standing in Mercury, refreshed while it stays in contact.")
+                .defineInRange("Mercury Poison Duration", 100, 0, Integer.MAX_VALUE);
     }
 
     private static void setupFoodSettings(){
