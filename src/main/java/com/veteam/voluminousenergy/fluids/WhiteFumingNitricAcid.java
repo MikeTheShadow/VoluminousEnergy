@@ -22,6 +22,7 @@ public class WhiteFumingNitricAcid {
     public static final Identifier WFNA_FLOWING_TEXTURE = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/wfna_flowing");
 
     public static Block.Properties stdProp = Block.Properties.of().setId(VERegistryHelper.currentBlockId()).noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
+    public static final float ACID_STRENGTH = 1.25F;
     ;
 
     public static FlowingFluid WHITE_FUMING_NITRIC_ACID;
@@ -40,7 +41,7 @@ public class WhiteFumingNitricAcid {
     }
 
     public static FumingAcidFlowingFluidBlock FlowingWhiteFumingNitricAcidBlock() {
-        WHITE_FUMING_NITRIC_ACID_BLOCK = new FumingAcidFlowingFluidBlock(WHITE_FUMING_NITRIC_ACID, stdProp.setId(VERegistryHelper.currentBlockId()));
+        WHITE_FUMING_NITRIC_ACID_BLOCK = new FumingAcidFlowingFluidBlock(WHITE_FUMING_NITRIC_ACID, stdProp.setId(VERegistryHelper.currentBlockId()), ACID_STRENGTH);
         return WHITE_FUMING_NITRIC_ACID_BLOCK;
     }
 
@@ -60,14 +61,16 @@ public class WhiteFumingNitricAcid {
             .canConvertToSource(false)
             .canSwim(false)
             .lightLevel(0)
-            .density(1)
+            .density(1510)
             .temperature(300)
-            .viscosity(1)
+            .viscosity(760)
             .motionScale(0)
             .fallDistanceModifier(0)
             .rarity(Rarity.COMMON)
             .supportsBoating(false)
             .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY),
+            VEFluidPhysics.WATERY,
+            0xC7C7C7,
             WFNA_STILL_TEXTURE,
             WFNA_FLOWING_TEXTURE
     );

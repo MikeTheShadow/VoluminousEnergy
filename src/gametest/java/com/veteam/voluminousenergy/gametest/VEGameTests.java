@@ -34,6 +34,7 @@ public class VEGameTests {
         tests.add(GameTestDefinition.of("smoke", 20, GameTestHelper::succeed));
         StorageTests.register(tests);
         RecipeTests.register(tests);
+        FluidTests.register(tests);
         return tests;
     }
 
