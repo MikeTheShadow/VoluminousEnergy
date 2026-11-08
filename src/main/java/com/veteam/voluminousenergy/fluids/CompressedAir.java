@@ -61,12 +61,14 @@ public class CompressedAir {
             .lightLevel(0)
             .density(0)
             .temperature(300)
-            .viscosity(1)
+            .viscosity(18)
             .motionScale(0)
-            .fallDistanceModifier(0)
+            .fallDistanceModifier(1.0F)
             .rarity(Rarity.COMMON)
             .supportsBoating(false)
             .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY),
+            VEFluidPhysics.GAS,
+            0xC7C7C7,
             COMPRESSED_AIR_STILL_TEXTURE,
             COMPRESSED_AIR_FLOWING_TEXTURE
     );

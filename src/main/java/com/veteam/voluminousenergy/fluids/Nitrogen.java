@@ -54,7 +54,7 @@ public class Nitrogen {
     public static final VEFluidType NITROGEN_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
             .adjacentPathType(PathType.LAVA)
             .canConvertToSource(false)
-            .canDrown(false)
+            .canDrown(true)
             .canExtinguish(false)
             .canHydrate(false)
             .canPushEntity(false)
@@ -63,12 +63,14 @@ public class Nitrogen {
             .lightLevel(0)
             .density(0)
             .temperature(300)
-            .viscosity(1)
+            .viscosity(18)
             .motionScale(0)
-            .fallDistanceModifier(0)
+            .fallDistanceModifier(1.0F)
             .rarity(Rarity.COMMON)
             .supportsBoating(false)
             .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY),
+            VEFluidPhysics.GAS,
+            0x795EAB,
             NITROGEN_STILL_TEXTURE,
             NITROGEN_FLOWING_TEXTURE
     );

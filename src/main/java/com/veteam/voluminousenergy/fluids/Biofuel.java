@@ -58,14 +58,16 @@ public class Biofuel {
             .canConvertToSource(false)
             .canSwim(false)
             .lightLevel(0)
-            .density(1)
+            .density(880)
             .temperature(300)
-            .viscosity(1)
+            .viscosity(5000)
             .motionScale(0)
             .fallDistanceModifier(0)
             .rarity(Rarity.COMMON)
             .supportsBoating(false)
             .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY),
+            VEFluidPhysics.WATERY,
+            0x688100,
             BIOFUEL_STILL_TEXTURE,
             BIOFUEL_FLOWING_TEXTURE
     );

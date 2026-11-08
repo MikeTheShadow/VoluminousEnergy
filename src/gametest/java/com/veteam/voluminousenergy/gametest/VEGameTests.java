@@ -41,6 +41,7 @@ public class VEGameTests {
         DepositTests.register(tests);
         WorldgenTests.register(tests);
         CompatTests.register(tests);
+        FluidTests.register(tests);
         return tests;
     }
 

@@ -59,14 +59,16 @@ public class LiquefiedCoke {
             .canConvertToSource(false)
             .canSwim(false)
             .lightLevel(0)
-            .density(1)
+            .density(1250)
             .temperature(300)
-            .viscosity(1)
+            .viscosity(1000000)
             .motionScale(0)
             .fallDistanceModifier(0)
             .rarity(Rarity.COMMON)
             .supportsBoating(false)
             .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY),
+            VEFluidPhysics.STICKY,
+            0x313131,
             LIQUEFIED_COKE_STILL_TEXTURE,
             LIQUEFIED_COKE_FLOWING_TEXTURE
     );
