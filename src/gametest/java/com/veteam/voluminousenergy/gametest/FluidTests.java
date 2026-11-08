@@ -3,21 +3,31 @@ package com.veteam.voluminousenergy.gametest;
 import com.veteam.voluminousenergy.fluids.RedFumingNitricAcid;
 import com.veteam.voluminousenergy.fluids.SulfuricAcid;
 import com.veteam.voluminousenergy.fluids.VEFluids;
+import com.veteam.voluminousenergy.fluids.WhiteFumingNitricAcid;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.VEDamageTypes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.locale.Language;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Pig;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Husk;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.FluidState;
@@ -36,6 +46,12 @@ public class FluidTests {
     private static final BlockPos SHAFT = new BlockPos(2, 1, 2);
     private static final int TICKS = 100;
     private static final int FULL_EFFECT_TICKS = 1200;
+    private static final List<GasBlock> ASPHYXIANT_GASES = List.of(
+            new GasBlock("hydrogen", VEFluids.FLOWING_HYDROGEN_BLOCK_REG),
+            new GasBlock("natural_gas", VEFluids.FLOWING_NATURAL_GAS_BLOCK_REG),
+            new GasBlock("ammonia", VEFluids.FLOWING_AMMONIA_BLOCK_REG),
+            new GasBlock("nitrogen", VEFluids.FLOWING_NITROGEN_BLOCK_REG),
+            new GasBlock("light_fuel", VEFluids.FLOWING_LIGHT_FUEL_BLOCK_REG));
 
     private FluidTests() {
     }
@@ -45,15 +61,29 @@ public class FluidTests {
         tests.add(GameTestDefinition.of("fluid_sulfuric_acid_ignores_fire_resistance", TICKS, FluidTests::sulfuricAcidIgnoresFireResistance));
         tests.add(GameTestDefinition.of("fluid_red_fuming_acid_strongest_and_ignites", TICKS, FluidTests::redFumingAcidStrongestAndIgnites));
         tests.add(GameTestDefinition.of("fluid_mercury_poisons", TICKS, FluidTests::mercuryPoisons));
-        tests.add(GameTestDefinition.of("fluid_gas_asphyxiates_through_water_breathing", TICKS, FluidTests::gasAsphyxiatesThroughWaterBreathing));
+        for (GasBlock gas : ASPHYXIANT_GASES) {
+            addAsphyxiationTest(tests, gas, MobEffects.WATER_BREATHING, "water_breathing");
+        }
         tests.add(GameTestDefinition.of("fluid_oxygen_refills_air", TICKS, FluidTests::oxygenRefillsAir));
         tests.add(GameTestDefinition.of("fluid_undead_ignore_asphyxiation", TICKS, FluidTests::undeadIgnoreAsphyxiation));
         tests.add(GameTestDefinition.of("fluid_item_floats_in_mercury", TICKS, FluidTests::itemFloatsInMercury));
         tests.add(GameTestDefinition.of("fluid_item_sinks_in_gasoline", TICKS, FluidTests::itemSinksInGasoline));
         tests.add(GameTestDefinition.of("fluid_item_falls_through_gas", TICKS, FluidTests::itemFallsThroughGas));
+        tests.add(GameTestDefinition.of("fluid_gas_column_lifts_from_base", TICKS, FluidTests::gasColumnLiftsFromBase));
+        addAsphyxiationTest(tests, ASPHYXIANT_GASES.get(1), MobEffects.CONDUIT_POWER, "conduit_power");
+        tests.add(GameTestDefinition.of("fluid_respiration_slows_asphyxiation", TICKS, FluidTests::respirationSlowsAsphyxiation));
+        tests.add(GameTestDefinition.of("fluid_white_fuming_acid_ignites_for_fire_duration", TICKS, FluidTests::whiteFumingAcidIgnitesForFireDuration));
     }
 
     private record FluidValues(String name, Supplier<FluidType> type, int density, int viscosity) {
+    }
+
+    private record GasBlock(String name, Supplier<LiquidBlock> block) {
+    }
+
+    private static void addAsphyxiationTest(List<GameTestDefinition> tests, GasBlock gas, Holder<MobEffect> protection, String protectionName) {
+        String name = "fluid_" + gas.name() + "_asphyxiates_through_" + protectionName;
+        tests.add(GameTestDefinition.of(name, TICKS, helper -> asphyxiatesThroughEffect(helper, name, gas.block(), protection)));
     }
 
     /**
@@ -137,18 +167,41 @@ public class FluidTests {
     }
 
     /**
-     * A pig under Water Breathing with its head in Nitrogen runs out of air and takes asphyxiation
-     * damage.
+     * A pig under an underwater breathing effect with its head in an asphyxiant gas drains its remaining
+     * air and takes asphyxiation damage with the asphyxiation death message.
      */
-    private static void gasAsphyxiatesThroughWaterBreathing(GameTestHelper helper) {
-        fillShaft(helper, VEFluids.FLOWING_NITROGEN_BLOCK_REG, 1);
+    private static void asphyxiatesThroughEffect(GameTestHelper helper, String name, Supplier<LiquidBlock> gas, Holder<MobEffect> protection) {
+        fillShaft(helper, gas, 1);
         Pig pig = helper.spawnWithNoFreeWill(EntityType.PIG, SHAFT);
-        pig.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, FULL_EFFECT_TICKS));
-        pig.setAirSupply(0);
+        pig.addEffect(new MobEffectInstance(protection, FULL_EFFECT_TICKS));
+        pig.setAirSupply(10);
         helper.runAfterDelay(40, () -> {
             assertLastDamage(helper, pig, VEDamageTypes.ASPHYXIATION);
+            assertDeathMessage(helper, pig, "death.attack.voluminousenergy.asphyxiation");
             helper.assertValueEqual(pig.getHealth() < pig.getMaxHealth(), true, "hurt while asphyxiating");
-            GameTestLog.pass(helper, "fluid_gas_asphyxiates_through_water_breathing", "health=" + pig.getHealth());
+            GameTestLog.pass(helper, name, "health=" + pig.getHealth());
+        });
+    }
+
+    /**
+     * Respiration III makes a pig's air drain in Nitrogen markedly slower than one point per tick, without
+     * stopping it.
+     */
+    private static void respirationSlowsAsphyxiation(GameTestHelper helper) {
+        fillShaft(helper, VEFluids.FLOWING_NITROGEN_BLOCK_REG, 1);
+        Pig pig = helper.spawnWithNoFreeWill(EntityType.PIG, SHAFT);
+        Holder<Enchantment> respiration = helper.getLevel().registryAccess().registryOrThrow(Registries.ENCHANTMENT).getHolderOrThrow(Enchantments.RESPIRATION);
+        ItemStack helmet = new ItemStack(Items.IRON_HELMET);
+        helmet.enchant(respiration, 3);
+        pig.setItemSlot(EquipmentSlot.HEAD, helmet);
+        int startAir = pig.getMaxAirSupply();
+        pig.setAirSupply(startAir);
+        int ticks = 40;
+        helper.runAfterDelay(ticks, () -> {
+            int drained = startAir - pig.getAirSupply();
+            helper.assertValueEqual(drained > 0, true, "air drained with respiration");
+            helper.assertValueEqual(drained < ticks * 3 / 4, true, "air drain slowed by respiration");
+            GameTestLog.pass(helper, "fluid_respiration_slows_asphyxiation", "drained=" + drained + " over " + ticks + " ticks");
         });
     }
 
@@ -222,6 +275,53 @@ public class FluidTests {
     }
 
     /**
+     * A pig standing on the floor in the source block at the base of a rising Natural Gas column is lifted
+     * without jumping. The room is wider than the usual shaft because gas only rises once it can spread
+     * sideways.
+     */
+    private static void gasColumnLiftsFromBase(GameTestHelper helper) {
+        int ceiling = 4;
+        for (int y = 0; y <= ceiling; y++) {
+            for (int x = 0; x <= 4; x++) {
+                for (int z = 0; z <= 4; z++) {
+                    boolean inRoom = x > 0 && x < 4 && z > 0 && z < 4 && y > 0 && y < ceiling;
+                    helper.setBlock(new BlockPos(x, y, z), inRoom ? Blocks.AIR.defaultBlockState() : Blocks.STONE.defaultBlockState());
+                }
+            }
+        }
+        helper.setBlock(SHAFT, VEFluids.FLOWING_NATURAL_GAS_BLOCK_REG.get().defaultBlockState());
+        helper.runAfterDelay(30, () -> {
+            FluidState column = helper.getLevel().getFluidState(helper.absolutePos(SHAFT.above()));
+            helper.assertValueEqual(!column.isSource() && column.getType().isSame(VEFluids.NATURAL_GAS_REG.get()), true, "flowing gas above the source");
+            Pig pig = helper.spawnWithNoFreeWill(EntityType.PIG, SHAFT);
+            double floorY = pig.getY();
+            helper.runAfterDelay(40, () -> {
+                helper.assertValueEqual(pig.getY() > floorY + 1.0D, true, "pig rose from the column's base");
+                GameTestLog.pass(helper, "fluid_gas_column_lifts_from_base", "rise=" + (pig.getY() - floorY));
+            });
+        });
+    }
+
+    /**
+     * White Fuming Nitric Acid deals its acid damage through Fire Resistance and keeps an entity burning
+     * for at least the configured acid fire duration.
+     */
+    private static void whiteFumingAcidIgnitesForFireDuration(GameTestHelper helper) {
+        fillShaft(helper, VEFluids.FLOWING_WFNA_BLOCK_REG, 1);
+        Pig pig = helper.spawnWithNoFreeWill(EntityType.PIG, SHAFT);
+        pig.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, FULL_EFFECT_TICKS));
+        float expectedDamage = Config.ACID_DAMAGE.get().floatValue() * WhiteFumingNitricAcid.ACID_STRENGTH;
+        int fireDuration = Config.ACID_FIRE_DURATION.get();
+        helper.runAfterDelay(5, () -> {
+            assertLastDamage(helper, pig, VEDamageTypes.ACID);
+            assertDeathMessage(helper, pig, "death.attack.voluminousenergy.acid");
+            helper.assertValueEqual(pig.getMaxHealth() - pig.getHealth(), expectedDamage, "acid damage taken");
+            helper.assertValueEqual(pig.getRemainingFireTicks() >= fireDuration - 2, true, "fire ticks near the acid fire duration of " + fireDuration);
+            GameTestLog.pass(helper, "fluid_white_fuming_acid_ignites_for_fire_duration", "fire_ticks=" + pig.getRemainingFireTicks());
+        });
+    }
+
+    /**
      * Builds a stone shaft one block wide over {@link #SHAFT}, with a floor and a cap, and fills it with
      * source blocks of the fluid up to the given depth.
      */
@@ -241,5 +341,18 @@ public class FluidTests {
     private static void assertLastDamage(GameTestHelper helper, LivingEntity entity, ResourceKey<DamageType> type) {
         DamageSource lastDamage = entity.getLastDamageSource();
         helper.assertValueEqual(lastDamage != null && lastDamage.is(type), true, "last damage was " + type.location());
+    }
+
+    /**
+     * Asserts that the entity's death message from its last damage uses the given translation key and
+     * that the key has a translation.
+     */
+    private static void assertDeathMessage(GameTestHelper helper, LivingEntity entity, String key) {
+        DamageSource lastDamage = entity.getLastDamageSource();
+        boolean usesKey = lastDamage != null
+                && lastDamage.getLocalizedDeathMessage(entity).getContents() instanceof TranslatableContents translatable
+                && translatable.getKey().equals(key);
+        helper.assertValueEqual(usesKey, true, "death message uses " + key);
+        helper.assertValueEqual(Language.getInstance().has(key), true, "translation exists for " + key);
     }
 }

@@ -212,8 +212,15 @@ public class VEFluidType extends FluidType {
         }
     }
 
+    /**
+     * Whether the gas at {@code pos} is part of a rising column: flowing gas fed from the same gas below,
+     * or any gas, including the source at the column's base, feeding flowing gas above it.
+     */
     private static boolean isRisingGas(FluidState state, Level level, BlockPos pos) {
-        return !state.isSource() && level.getFluidState(pos.below()).getType().isSame(state.getType());
+        FluidState above = level.getFluidState(pos.above());
+        boolean feedsColumnAbove = !above.isSource() && above.getType().isSame(state.getType());
+        boolean fedFromBelow = !state.isSource() && level.getFluidState(pos.below()).getType().isSame(state.getType());
+        return feedsColumnAbove || fedFromBelow;
     }
 
     private double buoyantAcceleration(Entity entity, double gravity) {

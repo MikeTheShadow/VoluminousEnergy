@@ -1,10 +1,12 @@
+# fluids/movement Specification
+
 ## Purpose
 
 Defines how entities and dropped items move inside Voluminous Energy fluids, so that each fluid moves
 like the substance it represents: gases barely hinder movement, oils and tars are sticky, and dense
 liquids hold entities up.
 
-## ADDED Requirements
+## Requirements
 
 ### Requirement: Fluid types report real density and viscosity
 Every Voluminous Energy fluid type SHALL report a density and viscosity derived from the real substance,
@@ -102,6 +104,10 @@ A gas source block on its own, with no rising column, SHALL NOT lift.
 #### Scenario: Standing in a rising Natural Gas column
 - **WHEN** a player stands without input inside a Natural Gas column rising from an emptied bucket
 - **THEN** the player drifts slowly upward through the column
+
+#### Scenario: Standing at the base of a gas column
+- **WHEN** a player stands without input on the floor in the source block of a Natural Gas column rising from an emptied bucket
+- **THEN** the player starts drifting upward without jumping
 
 #### Scenario: Descending through a gas column
 - **WHEN** the same player holds sneak inside the column

@@ -97,11 +97,14 @@ passes them, so each fluid's choice sits next to its other properties. `VEFluidT
 - **GAS.** It uses `LivingEntity.handleRelativeFrictionAndCalculateMovement(input, friction)`, the
   public part of vanilla air travel. It then applies gravity and air drag like the vanilla ground and air
   branch, with an extra 0.98 horizontal retention.
-- **Gas lift.** Lift applies when the gas at the entity's feet is a flowing (non-source) state and
-  the block below holds the same gas. The entity gets an upward acceleration that slightly exceeds
-  gravity, capped at a slow rise speed, so it drifts upward through the column. Sneaking withholds the
-  lift, so the entity falls. A stagnant pocket of source gas, such as a
-  worldgen reservoir, does not lift. This mirrors how only falling water drags entities down.
+- **Gas lift.** Lift applies when the gas at the entity's feet is part of a rising column: either it
+  is a flowing (non-source) state with the same gas below, or the block above holds flowing gas of the
+  same type. The second case covers the source at the column's base, where an entity standing on the
+  floor starts rising without jumping, as falling water drags an entity down. The entity gets an
+  upward acceleration that slightly exceeds gravity, capped at a slow rise speed, so it drifts upward
+  through the column. Sneaking withholds the lift, so the entity falls. A stagnant pocket of source
+  gas, such as a worldgen reservoir, does not lift. This mirrors how only falling water drags entities
+  down.
   - A geometric test is used rather than the `FALLING` flag, because `VEFlowingGasFluid` sets that flag
     from inverted downward-flow logic that is not reliable for "this column is rising".
 - **Jumping in gas.** Any non-air fluid type at the entity's position makes vanilla call NeoForge's

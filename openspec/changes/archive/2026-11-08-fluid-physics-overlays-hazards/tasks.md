@@ -37,13 +37,15 @@
 - [x] 6.1 Add `FluidTests` registered from `VEGameTests.all()` with required tests: every fluid type reports the spec's density and viscosity; a pig under Fire Resistance in Sulfuric Acid takes 3 acid damage and is not on fire; Red Fuming Nitric Acid deals 4.5 and ignites; a pig in Mercury is poisoned and keeps full air; verify with `./gradlew runGameTestServer`
 - [x] 6.2 Add required breathing tests: a pig with Water Breathing and its head in Nitrogen loses air; a pig with half air and its head in Oxygen gains air; a zombie with its head in Nitrogen keeps full health for 200 ticks; verify with `./gradlew runGameTestServer`
 - [x] 6.3 Add required item tests: an iron ingot dropped into Mercury ends above its start height, one dropped into Gasoline sinks, and one dropped into the top of a Hydrogen column falls; verify with `./gradlew runGameTestServer`
+- [x] 6.4 Add a required lift test: a pig standing in the source block at the base of a Natural Gas column in a 3×3 room rises more than a block without jumping; verify with `./gradlew runGameTestServer`
+- [x] 6.5 Extend the hazard tests: Water Breathing does not stop asphyxiation in any of the five asphyxiant gases, nor Conduit Power in Natural Gas; Respiration III slows the air drain in Nitrogen without stopping it; White Fuming Nitric Acid deals its acid damage through Fire Resistance and burns for at least `Acid Fire Duration`; asphyxiation and acid damage carry translated `death.attack.voluminousenergy.*` messages; verify with `./gradlew runGameTestServer`
 
 ## 7. Verification
 
 - [x] 7.1 `./gradlew compileJava` succeeds
 - [x] 7.2 `./gradlew runGameTestServer` passes with all new tests required
 - [x] 7.3 `./gradlew runData` produces no unexpected diff in `src/generated/resources`
-- [ ] 7.4 In-game check via `./gradlew runClient`, movement:
+- [x] 7.4 In-game check via `./gradlew runClient`, movement:
   - wade through Crude Oil (about a third of walking speed, smooth) and climb out of a 1-deep pool
   - swim in Diesel and in Sulfuric Acid (Sulfuric clearly slower; floats you)
   - try to dive in Mercury (cannot stay under)
@@ -52,14 +54,14 @@
   - rise in a Natural Gas column from a bucket, and descend while sneaking
   - fall 20 blocks through Hydrogen (full fall damage)
   - tune the `VEFluidPhysics` numbers until each matches the spec
-- [ ] 7.5 In-game check via `./gradlew runClient`, overlays:
+- [x] 7.5 In-game check via `./gradlew runClient`, overlays:
   - purple fog in Natural Gas, and deep blue fog in Hydrogen next to cyan in Ammonia
   - even amber tint in Diesel with no texture
   - grey tinted water texture in Sulfuric Acid
   - near-black view in Crude Oil at noon
   - no darkening as a spectator
   - HUD and inventory drawn over the effect
-- [ ] 7.6 In-game check via `./gradlew runClient`, hazards:
+- [x] 7.6 In-game check via `./gradlew runClient`, hazards:
   - asphyxiation in a 2-tall room with Nitrogen against the ceiling, with no bubbles and "asphyxiated" in chat
   - Water Breathing does not help in Natural Gas
   - Oxygen refills air
@@ -67,4 +69,4 @@
   - White Fuming Nitric Acid sets you alight for about 4 seconds
   - Mercury poisons you
   - a netherite ingot dissolves in acid
-- [ ] 7.7 Start `./gradlew runServer` (dedicated) with the change and confirm it reaches "Done" with no client-class errors
+- [x] 7.7 Start `./gradlew runServer` (dedicated) with the change and confirm it reaches "Done" with no client-class errors
