@@ -449,5 +449,10 @@
   "jei.voluminousenergy.fluid.fuel": "Fuel",
   "jei.voluminousenergy.fluid.oxidizer": "Oxidizer",
   "_comment": "JEI Misc",
-  "jei.voluminousenergy.volumetric_energy": "Volumetric Energy"
+  "jei.voluminousenergy.volumetric_energy": "Volumetric Energy",
+  "_comment": "Death Messages",
+  "death.attack.voluminousenergy.asphyxiation": "%1$s asphyxiated",
+  "death.attack.voluminousenergy.asphyxiation.player": "%1$s asphyxiated while trying to escape %2$s",
+  "death.attack.voluminousenergy.acid": "%1$s was burned by acid",
+  "death.attack.voluminousenergy.acid.player": "%1$s was burned by acid while trying to escape %2$s"
 }
