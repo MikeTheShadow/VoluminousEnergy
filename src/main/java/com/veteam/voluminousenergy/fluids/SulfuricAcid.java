@@ -69,7 +69,7 @@ public class SulfuricAcid {
             .supportsBoating(false)
             .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY),
             VEFluidPhysics.SYRUPY,
-            0xB1B1B1,
+            0xDDDE9A,
             SULFURIC_ACID_STILL_TEXTURE,
             SULFURIC_ACID_FLOWING_TEXTURE
     );
