@@ -7,4 +7,4 @@
 - [x] 2.1 `./gradlew compileJava` succeeds on `26.2-dev`
 - [x] 2.2 In-game check via `./gradlew runClient` on 26.2: with your head in Sulfuric Acid in daylight, the fog and the underwater texture are pale yellow-beige, matching the placed fluid, and darken in an unlit cave
 - [x] 2.3 Merge into `26.3-dev` and `./gradlew compileJava` succeeds
-- [ ] 2.4 The same in-game check passes on 26.3 (outstanding at archive)
+- [x] 2.4 The same in-game check passes on 26.3
