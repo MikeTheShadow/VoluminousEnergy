@@ -19,7 +19,7 @@ for its fog and screen effect:
 | Ammonia | `#00afd6` | Ammonium Nitrate Solution | `#7f71db` |
 | Nitrogen | `#795eab` | White Fuming Nitric Acid | `#c7c7c7` |
 | Oxygen | `#a5bcbc` | Red Fuming Nitric Acid | `#fb7707` |
-| Compressed Air | `#c7c7c7` | Sulfuric Acid | `#b1b1b1` |
+| Compressed Air | `#c7c7c7` | Sulfuric Acid | `#ddde9a` |
 | Light Fuels | `#afb05a` | Nitroglycerin | `#544c75` |
 | Gasoline | `#c7cb4f` | Crude Oil | `#08040e` |
 | Naphtha | `#afaf6d` | Tree Sap | `#5d430f` |
@@ -60,7 +60,7 @@ liquids and about 1 block in Mercury.
 
 #### Scenario: Head in sulfuric acid
 - **WHEN** a player's head is submerged in Sulfuric Acid
-- **THEN** a grey-tinted underwater texture is drawn over the view and terrain beyond about 3 blocks is hidden
+- **THEN** a pale yellow-beige underwater texture is drawn over the view and terrain beyond about 3 blocks is hidden
 
 ### Requirement: Sticky liquids black out the view
 With the camera inside a Sticky liquid, the view SHALL be dark: a strong overlay in the liquid's overlay
