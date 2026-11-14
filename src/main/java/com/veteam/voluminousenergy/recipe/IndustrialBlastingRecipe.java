@@ -7,7 +7,6 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.recipe.parser.BasicParser;
 import com.veteam.voluminousenergy.recipe.parser.IndustrialBlastFurnaceParser;
 import com.veteam.voluminousenergy.recipe.serializer.IngredientSerializerHelper;
-import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -38,7 +37,8 @@ public class IndustrialBlastingRecipe extends VERecipe {
                 VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
                 VERecipeCodecs.VE_OUTPUT_ITEM_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.results),
                 Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime),
-                Codec.INT.fieldOf("minimum_heat_kelvin").forGetter(IndustrialBlastingRecipe::getMinimumHeat)
+                Codec.INT.fieldOf("minimum_heat_kelvin").forGetter(IndustrialBlastingRecipe::getMinimumHeat),
+                Codec.intRange(0, 4000).optionalFieldOf("heat_source_consumption", 0).forGetter(IndustrialBlastingRecipe::getHeatSourceConsumption)
         ).apply(instance, IndustrialBlastingRecipe::new));
 
         private static final IngredientSerializerHelper<IndustrialBlastingRecipe> helper = new IngredientSerializerHelper<>();
@@ -55,6 +55,7 @@ public class IndustrialBlastingRecipe extends VERecipe {
                 @Override
                 public void encode(@NotNull RegistryFriendlyByteBuf buf, @NotNull IndustrialBlastingRecipe recipe) {
                     buf.writeInt(recipe.getMinimumHeat());
+                    buf.writeInt(recipe.getHeatSourceConsumption());
                     helper.toNetwork(buf, recipe);
                 }
 
@@ -63,6 +64,7 @@ public class IndustrialBlastingRecipe extends VERecipe {
                 public IndustrialBlastingRecipe decode(@NotNull RegistryFriendlyByteBuf buffer) {
                     IndustrialBlastingRecipe recipe = new IndustrialBlastingRecipe();
                     recipe.setMinimumHeat(buffer.readInt());
+                    recipe.setHeatSourceConsumption(buffer.readInt());
                     return helper.fromNetwork(recipe, buffer);
                 }
             };
@@ -72,15 +74,17 @@ public class IndustrialBlastingRecipe extends VERecipe {
 
 
     private int minimumHeat;
+    private int heatSourceConsumption;
     private List<Fluid> hotEnoughFluids;
 
     public IndustrialBlastingRecipe() {
 
     }
 
-    public IndustrialBlastingRecipe(List<VERecipeCodecs.RegistryIngredient> i, List<ItemStack> oi, int processTime, int minimumHeat) {
+    public IndustrialBlastingRecipe(List<VERecipeCodecs.RegistryIngredient> i, List<ItemStack> oi, int processTime, int minimumHeat, int heatSourceConsumption) {
         super(i, List.of(), List.of(), oi, processTime);
         this.minimumHeat = minimumHeat;
+        this.heatSourceConsumption = heatSourceConsumption;
     }
 
     @Override
@@ -107,6 +111,18 @@ public class IndustrialBlastingRecipe extends VERecipe {
         return minimumHeat;
     }
 
+    public void setHeatSourceConsumption(int heatSourceConsumption) {
+        this.heatSourceConsumption = heatSourceConsumption;
+    }
+
+    /**
+     * Returns the mB of heat-source fluid one operation drains. At 0 the recipe needs a hot-enough
+     * fluid in the tank but consumes none of it.
+     */
+    public int getHeatSourceConsumption() {
+        return heatSourceConsumption;
+    }
+
     public List<Fluid> getHotEnoughFluids() {
         if (hotEnoughFluids == null) {
             hotEnoughFluids = BuiltInRegistries.FLUID.stream().filter(this::isFluidHotEnough).toList();
@@ -114,10 +130,18 @@ public class IndustrialBlastingRecipe extends VERecipe {
         return hotEnoughFluids;
     }
 
+    /**
+     * Returns the hot-enough fluids as stacks of this recipe's consumption, or of 1 mB when it consumes
+     * none, since a 0 mB stack is empty and would match no fluid.
+     */
+    public List<FluidStack> getHeatSourceStacks() {
+        int stackAmount = Math.max(heatSourceConsumption, 1);
+        return getHotEnoughFluids().stream().map(fluid -> new FluidStack(fluid, stackAmount)).toList();
+    }
+
     @Override
     public List<FluidIngredient> getFluidIngredients() {
-        int consumption = Config.BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION.get();
-        return List.of(FluidIngredient.of(getHotEnoughFluids().stream().map(fluid -> new FluidStack(fluid, consumption))));
+        return List.of(FluidIngredient.of(getHeatSourceStacks().stream()));
     }
 
     @Override
