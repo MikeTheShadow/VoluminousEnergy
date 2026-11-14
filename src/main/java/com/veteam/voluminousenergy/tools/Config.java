@@ -170,7 +170,6 @@ public class Config {
     public static ModConfigSpec.IntValue BLAST_FURNACE_MAX_POWER;
     public static ModConfigSpec.IntValue BLAST_FURNACE_POWER_USAGE;
     public static ModConfigSpec.IntValue BLAST_FURNACE_TRANSFER;
-    public static ModConfigSpec.IntValue BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION;
 
     // Sawmill Variables
     public static ModConfigSpec.IntValue SAWMILL_MAX_POWER;
@@ -607,8 +606,6 @@ public class Config {
                 .defineInRange("Power Consumption", 256, 0, Integer.MAX_VALUE);
         BLAST_FURNACE_TRANSFER = VE_STARTUP_CONFIG_BUILDER.comment("Power I/O per tick for the Blast Furnace")
                 .defineInRange("Maximum Transfer", 10_000, 0, Integer.MAX_VALUE);
-        BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION = VE_STARTUP_CONFIG_BUILDER.comment("Amount of fluid that is consumed per blasting operation for heat")
-                .defineInRange("Heat Source Consumption", 50, 0, 4_000);
     }
 
     private static void setupSawmill(){

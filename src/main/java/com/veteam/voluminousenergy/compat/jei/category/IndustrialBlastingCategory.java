@@ -5,7 +5,6 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.IndustrialBlastingRecipe;
-import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IIngredientAcceptor;
@@ -25,8 +24,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -81,7 +78,7 @@ public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBla
         slotDrawable.draw(matrixStack, 5, 10);
 
         TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, "mB:", -17, 32, VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Config.BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION.get() + "", 5, 32, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getHeatSourceConsumption() + "", 5, 32, VEContainerScreen.GREY_TEXT_STYLE);
 
         TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font,
                 recipe.getMinimumHeat() + " K (" + (recipe.getMinimumHeat() - 273) + " \u00B0C; " +
@@ -101,11 +98,7 @@ public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBla
         ArrayList<ItemStack> secondInputStack = new ArrayList<>(Arrays.asList(recipe.getIngredient(1).getItems()));
         secondInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, secondInputStack);
 
-        ArrayList<FluidStack> hotEnoughFluidStacks = new ArrayList<>();
-        for (Fluid fluid : recipe.getHotEnoughFluids()) {
-            hotEnoughFluidStacks.add(new FluidStack(fluid, Config.BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION.get()));
-        }
-        heatFluidAcceptor.addIngredients(NeoForgeTypes.FLUID_STACK, hotEnoughFluidStacks);
+        heatFluidAcceptor.addIngredients(NeoForgeTypes.FLUID_STACK, recipe.getHeatSourceStacks());
 
         // Output
         ItemStack resultStack = recipe.getResult(0).copy();
