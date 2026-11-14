@@ -7,7 +7,7 @@
 - [x] 2.1 Add `Cactchar` and `CaneCharcoal` in `items/solid_fuels/` (burn time 1600) and register `CACTCHAR` (`cactchar`) and `CANE_CHARCOAL` (`cane_charcoal`) at the bottom of `// Misc` in `VEItems`; verify `./gradlew compileJava`
 - [x] 2.2 Add `TinyCactchar` and `TinyCaneCharcoal` in `items/solid_fuels/tiny/` (burn time 200) and register `TINY_CACTCHAR` and `TINY_CANE_CHARCOAL` at the bottom of `//Tiny fuels` in `VEItems`; verify `./gradlew compileJava`
 - [x] 2.3 Add `item/handheld` models for the four items, matching `coalcoke.json` and `tiny_charcoal.json`, and their names at the bottom of the `"Items"` group in `en_us.json` ("Cactchar", "Cane Charcoal", "Tiny Cactchar", "Tiny Cane Charcoal"); verify the JSON parses with `python3 -m json.tool`
-- [ ] 2.4 Maintainer: draw `cactchar.png`, `cane_charcoal.png`, `tiny_cactchar.png`, and `tiny_cane_charcoal.png` in GIMP from the vanilla charcoal palette; verify the four files exist under `textures/item/`
+- [x] 2.4 Maintainer: draw `cactchar.png`, `cane_charcoal.png`, `tiny_cactchar.png`, and `tiny_cane_charcoal.png` in GIMP from the vanilla charcoal palette; verify the four files exist under `textures/item/`
 
 ## 3. Tags
 
@@ -33,4 +33,4 @@
 - [x] 6.1 `./gradlew compileJava` succeeds
 - [x] 6.2 `./gradlew runGameTestServer` passes with every required test green, including the three new ones
 - [x] 6.3 `./gradlew runData` leaves no diff under `src/generated/resources` (every new file here is hand-written); confirm with `git status`
-- [ ] 6.4 In-game check via `./gradlew runClient` with JEI: a Primitive Blast Furnace chars an oak log into charcoal in 40 s, does not light with 15 sugar cane and starts on the 16th, turns 7 cactus into 2 Cactchar with 1 left over; JEI shows 16 sugar cane and 3 cactus on the furnace pages; Cactchar in a vanilla furnace smelts 8 items; Tiny Cane Charcoal runs a Primitive Stirling Generator for 10 s; 1 Cactchar plus a stick crafts 4 torches and with soul sand 4 soul torches; 1 Coal Coke plus a stick crafts 8 torches and 1 Petcoke 10, and Rosin still 2; 1 Tiny Cactchar plus a stick crafts 1 torch; all four textures render in hand and in the creative tab
+- [x] 6.4 In-game check via `./gradlew runClient` with JEI: a Primitive Blast Furnace chars an oak log into charcoal in 40 s, does not light with 15 sugar cane and starts on the 16th, turns 7 cactus into 2 Cactchar with 1 left over; JEI shows 16 sugar cane and 3 cactus on the furnace pages; Cactchar in a vanilla furnace smelts 8 items; Tiny Cane Charcoal runs a Primitive Stirling Generator for 10 s; 1 Cactchar plus a stick crafts 4 torches and with soul sand 4 soul torches; 1 Coal Coke plus a stick crafts 8 torches and 1 Petcoke 10, and Rosin still 2; 1 Tiny Cactchar plus a stick crafts 1 torch; all four textures render in hand and in the creative tab
