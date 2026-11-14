@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#",
+    "*",
+    "1"
+  ],
+  "key": {
+    "#": "#voluminousenergy:charcoal_grade_fuels",
+    "*": "minecraft:stick",
+    "1": "#minecraft:soul_fire_base_blocks"
+  },
+  "result": {
+    "id": "minecraft:soul_torch",
+    "count": 4
+  }
+}

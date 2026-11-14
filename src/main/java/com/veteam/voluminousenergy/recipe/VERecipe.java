@@ -174,6 +174,11 @@ public abstract class VERecipe implements Recipe<RecipeInput> {
         if (slot >= this.getIngredients().size()) {
             return 0;
         }
+        // Ingredients hold item holders without stack sizes, so the count lives only on the decoded
+        // registry ingredient; a recipe received over the network has none and falls back to one.
+        if (this.registryIngredients != null && slot < this.registryIngredients.size()) {
+            return this.registryIngredients.get(slot).count();
+        }
         return IngredientUtil.getItems(this.getIngredients().get(slot)).length > 0
                 ? IngredientUtil.getItems(this.ingredients.get(slot))[0].getCount()
                 : 0;

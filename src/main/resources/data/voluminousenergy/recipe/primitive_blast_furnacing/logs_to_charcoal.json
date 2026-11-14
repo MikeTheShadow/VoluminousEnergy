@@ -1,0 +1,16 @@
+{
+  "type": "voluminousenergy:primitive_blast_furnacing",
+  "ingredients": [
+    {
+      "tag": "minecraft:logs_that_burn",
+      "count": 1
+    }
+  ],
+  "process_time": 800,
+  "item_results": [
+    {
+      "item": "minecraft:charcoal",
+      "count": 1
+    }
+  ]
+}
