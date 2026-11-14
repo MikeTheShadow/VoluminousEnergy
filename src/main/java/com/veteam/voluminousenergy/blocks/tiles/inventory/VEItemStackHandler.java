@@ -60,6 +60,14 @@ public class VEItemStackHandler extends ItemStackHandler {
         }
     }
 
+    /**
+     * Runs the same handling as a set slot for a stack that was changed in place, which menus report
+     * through {@code Slot#setChanged} instead of setting the slot.
+     */
+    public void onStackChangedInPlace(int slot) {
+        onContentsChanged(slot);
+    }
+
     @Override
     public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
         if (validator != null)
