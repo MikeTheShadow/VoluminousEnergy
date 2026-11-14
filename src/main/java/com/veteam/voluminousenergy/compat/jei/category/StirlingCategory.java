@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.compat.jei.category;
 
-import com.veteam.voluminousenergy.util.recipe.IngredientUtil;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
@@ -77,7 +76,7 @@ public class StirlingCategory implements IRecipeCategory<StirlingGeneratorRecipe
     }
 
     public void ingredientHandler(StirlingGeneratorRecipe recipe, IIngredientAcceptor itemInputAcceptor) {
-        itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, Arrays.stream(IngredientUtil.getItems(recipe.getIngredient(0))).toList());
+        itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, Arrays.stream(recipe.getIngredientStacks(0)).toList());
     }
 
     @Override

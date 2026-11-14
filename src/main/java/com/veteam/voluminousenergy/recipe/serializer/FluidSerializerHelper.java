@@ -3,10 +3,9 @@ package com.veteam.voluminousenergy.recipe.serializer;
 import com.veteam.voluminousenergy.recipe.VERNGRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
-import net.minecraft.core.NonNullList;
+import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,11 +19,11 @@ public class FluidSerializerHelper<T extends VERecipe> {
 
         // Read ingredients
         int ingredientSize = buffer.readInt();
-        NonNullList<Ingredient> ingredients = NonNullList.create();
+        List<VERecipeCodecs.RegistryIngredient> ingredients = new ArrayList<>();
         for (int i = 0; i < ingredientSize; i++) {
-            ingredients.add(Ingredient.CONTENTS_STREAM_CODEC.decode(buffer));
+            ingredients.add(VERecipeCodecs.VE_LAZY_INGREDIENT_STREAM_CODEC.decode(buffer));
         }
-        recipe.setIngredients(ingredients);
+        recipe.setRegistryIngredients(ingredients);
 
         // Read fluid ingredients
         int fluidIngredientSize = buffer.readInt();
@@ -65,9 +64,9 @@ public class FluidSerializerHelper<T extends VERecipe> {
     }
 
     public void toNetwork(RegistryFriendlyByteBuf buffer, T recipe) {
-        buffer.writeInt(recipe.getIngredients().size());
-        for (Ingredient ingredient : recipe.getIngredients()) {
-            Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, ingredient);
+        buffer.writeInt(recipe.getRegistryIngredients().size());
+        for (VERecipeCodecs.RegistryIngredient ingredient : recipe.getRegistryIngredients()) {
+            VERecipeCodecs.VE_LAZY_INGREDIENT_STREAM_CODEC.encode(buffer, ingredient);
         }
 
         buffer.writeInt(recipe.getFluidIngredients().size());

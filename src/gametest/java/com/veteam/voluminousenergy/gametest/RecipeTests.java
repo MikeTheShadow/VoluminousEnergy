@@ -13,10 +13,13 @@ import com.veteam.voluminousenergy.recipe.IndustrialBlastingRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.recipe.parser.BasicParser;
 import com.veteam.voluminousenergy.tools.Config;
+import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
@@ -27,6 +30,7 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.block.entity.FuelValues;
@@ -34,6 +38,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +58,7 @@ public class RecipeTests {
     private static final ResourceKey<Recipe<?>> LOG_CHARRING = ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "primitive_blast_furnacing/logs_to_charcoal"));
     private static final String TORCH_RECIPE_PATH = "vanilla_crafting/torch/";
     private static final int TICKS_PER_TORCH = 400;
+    private static final int CHARRING_TICKS = 200;
 
     private RecipeTests() {
     }
@@ -61,9 +67,10 @@ public class RecipeTests {
         tests.add(GameTestDefinition.of("recipe_lasing_codec_round_trip", 20, RecipeTests::lasingCodecRoundTrip));
         tests.add(GameTestDefinition.of("recipe_blasting_heat_fluids_per_recipe", 20, RecipeTests::blastingHeatFluidsPerRecipe));
         tests.add(GameTestDefinition.of("recipe_blasting_heat_source_drain", 20, RecipeTests::blastingHeatSourceDrain));
-        tests.add(GameTestDefinition.of("recipe_primitive_charring_counts", 400, RecipeTests::primitiveCharringCounts));
+        tests.add(GameTestDefinition.of("recipe_primitive_charring_counts", 3 * CHARRING_TICKS, RecipeTests::primitiveCharringCounts));
         tests.add(GameTestDefinition.of("recipe_primitive_charring_logs", 20, RecipeTests::primitiveCharringLogs));
         tests.add(GameTestDefinition.of("recipe_torch_yield_matches_burn_time", 20, RecipeTests::torchYieldMatchesBurnTime));
+        tests.add(GameTestDefinition.of("recipe_ingredient_counts_survive_network", 20, RecipeTests::ingredientCountsSurviveNetwork));
     }
 
     /**
@@ -141,8 +148,8 @@ public class RecipeTests {
     }
 
     /**
-     * A Primitive Blast Furnace holding one item fewer than a charring recipe needs stays idle, and
-     * one more item lets it consume the whole count for a single fuel.
+     * A Primitive Blast Furnace holding one item fewer than a charring recipe needs stays idle past
+     * the recipe's process time, and one more item lets it consume the whole count for a single fuel.
      */
     private static void primitiveCharringCounts(GameTestHelper helper) {
         VETileEntity caneFurnace = MachineKit.place(helper, CANE_FURNACE, VEBlocks.PRIMITIVE_BLAST_FURNACE.block().get());
@@ -151,7 +158,7 @@ public class RecipeTests {
             caneFurnace.getInventory().setStackInSlot(0, new ItemStack(Items.SUGAR_CANE, 15));
             cactusFurnace.getInventory().setStackInSlot(0, new ItemStack(Items.CACTUS, 2));
         });
-        helper.runAfterDelay(42, () -> {
+        helper.runAfterDelay(CHARRING_TICKS + 12, () -> {
             assertIdle(helper, caneFurnace, 15, "sugar cane");
             assertIdle(helper, cactusFurnace, 2, "cactus");
             caneFurnace.getInventory().setStackInSlot(0, new ItemStack(Items.SUGAR_CANE, 16));
@@ -215,6 +222,40 @@ public class RecipeTests {
             assertTorchYield(helper, yields, VEItems.PETCOKE.get(), 10);
         }
         GameTestLog.pass(helper, "recipe_torch_yield_matches_burn_time", "fuels=" + checked);
+    }
+
+    /**
+     * Every Voluminous Energy machine recipe keeps each ingredient's count when sent to a client, so a
+     * single-player world, whose client copies replace the server's, still needs the full count.
+     */
+    private static void ingredientCountsSurviveNetwork(GameTestHelper helper) {
+        RegistryAccess registryAccess = helper.getLevel().registryAccess();
+        List<String> mismatches = new ArrayList<>();
+        int checked = 0;
+
+        for (RecipeHolder<?> holder : helper.getLevel().getServer().getRecipeManager().getRecipes()) {
+            if (!(holder.value() instanceof VERecipe loaded)) {
+                continue;
+            }
+            VERecipe received = (VERecipe) sendToClient(loaded.getSerializer(), loaded, registryAccess);
+            for (int ingredient = 0; loaded.hasIngredient(ingredient); ingredient++) {
+                int expected = loaded.getIngredientCount(ingredient);
+                int actual = received.getIngredientCount(ingredient);
+                if (actual != expected) {
+                    mismatches.add(holder.id().identifier() + " ingredient " + ingredient + ": " + actual + " instead of " + expected);
+                }
+                checked++;
+            }
+        }
+        helper.assertTrue(mismatches.isEmpty(), mismatches.size() + " ingredient counts changed over the network, first: " + mismatches.stream().findFirst().orElse(""));
+        GameTestLog.pass(helper, "recipe_ingredient_counts_survive_network", "ingredients=" + checked);
+    }
+
+    @SuppressWarnings({"unchecked", "deprecation"})
+    private static <T extends Recipe<?>> T sendToClient(RecipeSerializer<T> serializer, Recipe<?> recipe, RegistryAccess registryAccess) {
+        RegistryFriendlyByteBuf buffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), registryAccess);
+        serializer.streamCodec().encode(buffer, (T) recipe);
+        return serializer.streamCodec().decode(buffer);
     }
 
     private static void assertIdle(GameTestHelper helper, VETileEntity furnace, int inputCount, String input) {

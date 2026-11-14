@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.compat.jei.category;
 
-import com.veteam.voluminousenergy.util.recipe.IngredientUtil;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
@@ -113,13 +112,13 @@ public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe
                                   IIngredientAcceptor rng0OutputAcceptor,
                                   IIngredientAcceptor rng1OutputAcceptor,
                                   IIngredientAcceptor rng2OutputAcceptor) {
-        ArrayList<ItemStack> inputStacks = new ArrayList<>(Arrays.asList(IngredientUtil.getItems(recipe.getIngredient(0))));
+        ArrayList<ItemStack> inputStacks = new ArrayList<>(Arrays.asList(recipe.getIngredientStacks(0)));
 
         itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, inputStacks);
 
         Ingredient bucketIngredient = recipe.getIngredient(1);
         if (bucketIngredient != null && !bucketIngredient.isEmpty()) {
-            ItemStack bucketStack = new ItemStack(Items.BUCKET, IngredientUtil.getItems(bucketIngredient)[0].getCount());
+            ItemStack bucketStack = new ItemStack(Items.BUCKET, recipe.getIngredientCount(1));
             bucketInputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, bucketStack);
         }
 
