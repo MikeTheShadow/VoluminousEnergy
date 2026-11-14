@@ -27,6 +27,7 @@ public class VEGameTests {
         StorageTests.register(tests);
         RecipeTests.register(tests);
         FluidTests.register(tests);
+        ItemTests.register(tests);
         return tests;
     }
 
