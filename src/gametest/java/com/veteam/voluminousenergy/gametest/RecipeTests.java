@@ -7,6 +7,7 @@ import com.mojang.serialization.JsonOps;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
+import com.veteam.voluminousenergy.blocks.tiles.inventory.VEItemStackHandler;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.DimensionalLaserRecipe;
 import com.veteam.voluminousenergy.recipe.IndustrialBlastingRecipe;
@@ -59,6 +60,8 @@ public class RecipeTests {
     private static final String TORCH_RECIPE_PATH = "vanilla_crafting/torch/";
     private static final int TICKS_PER_TORCH = 400;
     private static final int CHARRING_TICKS = 200;
+    private static final BlockPos ELECTROLYZER = new BlockPos(1, 1, 2);
+    private static final BlockPos SEPARATOR = new BlockPos(3, 1, 2);
 
     private RecipeTests() {
     }
@@ -71,6 +74,7 @@ public class RecipeTests {
         tests.add(GameTestDefinition.of("recipe_primitive_charring_logs", 20, RecipeTests::primitiveCharringLogs));
         tests.add(GameTestDefinition.of("recipe_torch_yield_matches_burn_time", 20, RecipeTests::torchYieldMatchesBurnTime));
         tests.add(GameTestDefinition.of("recipe_ingredient_counts_survive_network", 20, RecipeTests::ingredientCountsSurviveNetwork));
+        tests.add(GameTestDefinition.of("recipe_ingredient_counts_enforced", 20, RecipeTests::ingredientCountsEnforced));
     }
 
     /**
@@ -249,6 +253,60 @@ public class RecipeTests {
         }
         helper.assertTrue(mismatches.isEmpty(), mismatches.size() + " ingredient counts changed over the network, first: " + mismatches.stream().findFirst().orElse(""));
         GameTestLog.pass(helper, "recipe_ingredient_counts_survive_network", "ingredients=" + checked);
+    }
+
+    /**
+     * The Electrolyzer and Centrifugal Separator refuse a recipe one item short of any ingredient's
+     * count and consume exactly that count, both with the server's recipe and with the copy a client
+     * receives, which a single-player world runs its machines on.
+     */
+    private static void ingredientCountsEnforced(GameTestHelper helper) {
+        VETileEntity electrolyzer = MachineKit.place(helper, ELECTROLYZER, VEBlocks.ELECTROLYZER.block().get());
+        VETileEntity separator = MachineKit.place(helper, SEPARATOR, VEBlocks.CENTRIFUGAL_SEPARATOR.block().get());
+        helper.runAfterDelay(2, () -> {
+            assertCountEnforced(helper, electrolyzer, "electrolyzing/bauxite", 0,
+                    new ItemStack(VEItems.BAUXITE_DUST.get(), 12));
+            assertCountEnforced(helper, electrolyzer, "electrolyzing/copper_carbonate", 1,
+                    new ItemStack(VEItems.COPPER_CARBONATE_DUST.get()), new ItemStack(Items.BUCKET, 2));
+            assertCountEnforced(helper, separator, "centrifugal_separation/basalt_dust", 0,
+                    new ItemStack(VEItems.BASALT_DUST.get(), 16));
+            GameTestLog.pass(helper, "recipe_ingredient_counts_enforced", "");
+        });
+    }
+
+    /**
+     * Loads {@code inputs} into the machine's first slots, one short in {@code shortSlot}, and checks
+     * the recipe only completes with the full count and then leaves every input slot empty.
+     */
+    private static void assertCountEnforced(GameTestHelper helper, VETileEntity machine, String recipePath, int shortSlot, ItemStack... inputs) {
+        Optional<RecipeHolder<?>> holder = helper.getLevel().recipeAccess().byKey(ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, recipePath)));
+        helper.assertTrue(holder.isPresent(), recipePath + " not loaded");
+        VERecipe loaded = (VERecipe) holder.get().value();
+        VERecipe received = (VERecipe) sendToClient(loaded.getSerializer(), loaded, helper.getLevel().registryAccess());
+
+        for (VERecipe recipe : List.of(loaded, received)) {
+            String label = recipePath + (recipe == loaded ? " on the server" : " as a client receives it");
+            BasicParser parser = recipe.getParser();
+            loadInputs(machine, inputs);
+            ItemStack shortStack = inputs[shortSlot].copyWithCount(inputs[shortSlot].getCount() - 1);
+            machine.getInventory().setStackInSlot(shortSlot, shortStack);
+            helper.assertFalse(parser.isCompleteRecipe(machine), label + " started with " + shortStack);
+
+            loadInputs(machine, inputs);
+            helper.assertTrue(parser.isCompleteRecipe(machine), label + " did not start with its full inputs");
+            parser.completeRecipe(machine);
+            for (int slot = 0; slot < inputs.length; slot++) {
+                ItemStack left = machine.getInventory().getStackInSlot(slot);
+                helper.assertTrue(left.isEmpty(), label + " left " + left + " in slot " + slot);
+            }
+        }
+    }
+
+    private static void loadInputs(VETileEntity machine, ItemStack... inputs) {
+        VEItemStackHandler inventory = machine.getInventory();
+        for (int slot = 0; slot < inventory.getSlots(); slot++) {
+            inventory.setStackInSlot(slot, slot < inputs.length ? inputs[slot].copy() : ItemStack.EMPTY);
+        }
     }
 
     @SuppressWarnings({"unchecked", "deprecation"})
