@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.gametest;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.veteam.voluminousenergy.VoluminousEnergy;
@@ -22,7 +23,6 @@ import com.veteam.voluminousenergy.recipe.parser.BasicParser;
 import com.veteam.voluminousenergy.recipe.processor.BasicProcessor;
 import com.veteam.voluminousenergy.recipe.processor.CombustionGeneratorProcessor;
 import com.veteam.voluminousenergy.recipe.processor.GeneratorProcessor;
-import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
@@ -61,6 +61,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -120,6 +121,7 @@ public class RecipeTests {
         tests.add(GameTestDefinition.of("recipe_lasing_codec_round_trip", 20, RecipeTests::lasingCodecRoundTrip));
         tests.add(GameTestDefinition.of("recipe_blasting_heat_fluids_per_recipe", 20, RecipeTests::blastingHeatFluidsPerRecipe));
         tests.add(GameTestDefinition.of("recipe_blasting_heat_source_drain", 20, RecipeTests::blastingHeatSourceDrain));
+        tests.add(GameTestDefinition.of("recipe_blasting_heat_source_codec", 20, RecipeTests::blastingHeatSourceCodec));
         tests.add(GameTestDefinition.of("recipe_primitive_charring_counts", 3 * CHARRING_TICKS, RecipeTests::primitiveCharringCounts));
         tests.add(GameTestDefinition.of("recipe_primitive_charring_logs", 20, RecipeTests::primitiveCharringLogs));
         tests.add(GameTestDefinition.of("recipe_torch_yield_matches_burn_time", 20, RecipeTests::torchYieldMatchesBurnTime));
@@ -402,20 +404,20 @@ public class RecipeTests {
     }
 
     /**
-     * The steel recipe needs at least the configured heat-source amount in the Blast Furnace's heat
+     * The shipped steel recipe needs at least its 50 mB heat-source amount in the Blast Furnace's heat
      * tank and drains exactly that amount when it completes.
      */
     private static void blastingHeatSourceDrain(GameTestHelper helper) {
-        int consumption = Config.BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION.get();
         Optional<RecipeHolder<?>> steelHolder = helper.getLevel().recipeAccess().byKey(STEEL_BLASTING);
         helper.assertTrue(steelHolder.isPresent(), "steel blasting recipe not loaded");
         IndustrialBlastingRecipe steel = (IndustrialBlastingRecipe) steelHolder.get().value();
+        int consumption = steel.getHeatSourceConsumption();
+        helper.assertValueEqual(consumption, 50, "steel heat source consumption");
         BasicParser parser = steel.getParser();
 
         VETileEntity furnace = MachineKit.place(helper, MACHINE, VEBlocks.BLAST_FURNACE.block().get());
         helper.runAfterDelay(2, () -> {
-            furnace.getInventory().setStack(2, ingredientStack(steel, 0));
-            furnace.getInventory().setStack(3, ingredientStack(steel, 1));
+            loadBlastingIngredients(furnace, steel);
 
             furnace.getRelationalTank(0).getTank().setFluid(new FluidStack(Fluids.LAVA, consumption - 10));
             helper.assertFalse(parser.isCompleteRecipe(furnace), "steel started with less lava than one operation consumes");
@@ -425,6 +427,41 @@ public class RecipeTests {
             parser.completeRecipe(furnace);
             GameTestLog.assertEqual(helper, furnace.getFluidStackFromTank(0).getAmount(), 1000 - consumption, "lava left after one operation");
             GameTestLog.pass(helper, "recipe_blasting_heat_source_drain", "consumption=" + consumption);
+        });
+    }
+
+    /**
+     * Blasting JSON without a heat-source consumption, or with 0, needs a hot-enough fluid in the tank
+     * but drains none of it; 250 needs and drains 250 mB and survives the trip to a client; a negative
+     * amount fails to decode.
+     */
+    private static void blastingHeatSourceCodec(GameTestHelper helper) {
+        RegistryOps<JsonElement> ops = helper.getLevel().registryAccess().createSerializationContext(JsonOps.INSTANCE);
+        IndustrialBlastingRecipe omitted = parseBlasting(ops, null);
+        IndustrialBlastingRecipe zero = parseBlasting(ops, 0);
+        IndustrialBlastingRecipe costly = parseBlasting(ops, 250);
+        helper.assertValueEqual(omitted.getHeatSourceConsumption(), 0, "consumption with the field omitted");
+        helper.assertValueEqual(zero.getHeatSourceConsumption(), 0, "consumption with the field at 0");
+        helper.assertValueEqual(costly.getHeatSourceConsumption(), 250, "consumption with the field at 250");
+        helper.assertTrue(IndustrialBlastingRecipe.VE_RECIPE_CODEC.codec().parse(ops, blastingJson(-1)).error().isPresent(), "negative heat source consumption decoded");
+        IndustrialBlastingRecipe received = (IndustrialBlastingRecipe) sendToClient(costly.getSerializer(), costly, helper.getLevel().registryAccess());
+        helper.assertValueEqual(received.getHeatSourceConsumption(), 250, "consumption after sending to a client");
+        helper.assertValueEqual(received.getMinimumHeat(), 900, "minimum heat after sending to a client");
+
+        VETileEntity furnace = MachineKit.place(helper, MACHINE, VEBlocks.BLAST_FURNACE.block().get());
+        helper.runAfterDelay(2, () -> {
+            assertDrainsNoHeat(helper, furnace, omitted, "omitted");
+            assertDrainsNoHeat(helper, furnace, zero, "zero");
+
+            BasicParser parser = costly.getParser();
+            loadBlastingIngredients(furnace, costly);
+            furnace.getRelationalTank(0).getTank().setFluid(new FluidStack(Fluids.LAVA, 200));
+            helper.assertFalse(parser.isCompleteRecipe(furnace), "250 mB recipe started with 200 mB of lava");
+            furnace.getRelationalTank(0).getTank().setFluid(new FluidStack(Fluids.LAVA, 1000));
+            helper.assertTrue(parser.isCompleteRecipe(furnace), "250 mB recipe did not start with 1000 mB of lava");
+            parser.completeRecipe(furnace);
+            helper.assertValueEqual(furnace.getFluidStackFromTank(0).getAmount(), 750, "lava left after a 250 mB operation");
+            GameTestLog.pass(helper, "recipe_blasting_heat_source_codec", "");
         });
     }
 
@@ -660,6 +697,44 @@ public class RecipeTests {
         IndustrialBlastingRecipe recipe = new IndustrialBlastingRecipe();
         recipe.setMinimumHeat(minimumHeat);
         return recipe;
+    }
+
+    private static void assertDrainsNoHeat(GameTestHelper helper, VETileEntity furnace, IndustrialBlastingRecipe recipe, String label) {
+        BasicParser parser = recipe.getParser();
+        helper.assertTrue(recipe.getFluidIngredient(0).test(new FluidStack(Fluids.LAVA, 1)), label + ": heat fluid ingredient rejects lava");
+
+        loadBlastingIngredients(furnace, recipe);
+        furnace.getRelationalTank(0).getTank().setFluid(FluidStack.EMPTY);
+        helper.assertFalse(parser.isCompleteRecipe(furnace), label + ": started with an empty heat tank");
+        furnace.getRelationalTank(0).getTank().setFluid(new FluidStack(Fluids.LAVA, 10));
+        helper.assertTrue(parser.isCompleteRecipe(furnace), label + ": did not start with 10 mB of lava");
+        parser.completeRecipe(furnace);
+        helper.assertValueEqual(furnace.getFluidStackFromTank(0).getAmount(), 10, label + ": lava left after an operation");
+    }
+
+    private static IndustrialBlastingRecipe parseBlasting(RegistryOps<JsonElement> ops, @Nullable Integer heatSourceConsumption) {
+        return IndustrialBlastingRecipe.VE_RECIPE_CODEC.codec().parse(ops, blastingJson(heatSourceConsumption)).getOrThrow();
+    }
+
+    private static JsonObject blastingJson(@Nullable Integer heatSourceConsumption) {
+        JsonObject json = JsonParser.parseString("""
+                {
+                  "type": "voluminousenergy:industrial_blasting",
+                  "ingredients": [{"tag": "c:ingots/iron", "count": 1}, {"tag": "c:ingots/carbon", "count": 1}],
+                  "process_time": 200,
+                  "item_results": [{"item": "voluminousenergy:steel_ingot", "count": 1}],
+                  "minimum_heat_kelvin": 900
+                }
+                """).getAsJsonObject();
+        if (heatSourceConsumption != null) {
+            json.addProperty("heat_source_consumption", heatSourceConsumption);
+        }
+        return json;
+    }
+
+    private static void loadBlastingIngredients(VETileEntity furnace, VERecipe recipe) {
+        furnace.getInventory().setStack(2, ingredientStack(recipe, 0));
+        furnace.getInventory().setStack(3, ingredientStack(recipe, 1));
     }
 
     private static ItemStack ingredientStack(VERecipe recipe, int index) {
