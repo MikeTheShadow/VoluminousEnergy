@@ -6,7 +6,6 @@ import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.StirlingGeneratorRecipe;
 import com.veteam.voluminousenergy.util.TextUtil;
-import com.veteam.voluminousenergy.util.recipe.IngredientUtil;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IIngredientAcceptor;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -76,7 +75,7 @@ public class StirlingCategory implements IRecipeCategory<StirlingGeneratorRecipe
     }
 
     public void ingredientHandler(StirlingGeneratorRecipe recipe, IIngredientAcceptor itemInputAcceptor) {
-        itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, Arrays.stream(IngredientUtil.getItems(recipe.getIngredient(0))).toList());
+        itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, Arrays.stream(recipe.getIngredientStacks(0)).toList());
     }
 
     @Override

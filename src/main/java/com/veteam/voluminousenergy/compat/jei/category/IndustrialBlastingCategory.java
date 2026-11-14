@@ -7,7 +7,6 @@ import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.IndustrialBlastingRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.TextUtil;
-import com.veteam.voluminousenergy.util.recipe.IngredientUtil;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IIngredientAcceptor;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -101,10 +100,10 @@ public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBla
                                   IIngredientAcceptor heatFluidAcceptor,
                                   IIngredientAcceptor outputItemAcceptor) {
         // Inputs
-        ArrayList<ItemStack> firstInputStacks = new ArrayList<>(Arrays.asList(IngredientUtil.getItems(recipe.getIngredient(0))));
+        ArrayList<ItemStack> firstInputStacks = new ArrayList<>(Arrays.asList(recipe.getIngredientStacks(0)));
         firstInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, firstInputStacks);
 
-        ArrayList<ItemStack> secondInputStack = new ArrayList<>(Arrays.asList(IngredientUtil.getItems(recipe.getIngredient(1))));
+        ArrayList<ItemStack> secondInputStack = new ArrayList<>(Arrays.asList(recipe.getIngredientStacks(1)));
         secondInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, secondInputStack);
 
         ArrayList<FluidStack> hotEnoughFluidStacks = new ArrayList<>();

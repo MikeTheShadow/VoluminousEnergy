@@ -6,7 +6,6 @@ import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.HydroponicIncubatorRecipe;
 import com.veteam.voluminousenergy.util.TextUtil;
-import com.veteam.voluminousenergy.util.recipe.IngredientUtil;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IIngredientAcceptor;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -128,7 +127,7 @@ public class HydroponicIncubatorCategory implements IRecipeCategory<HydroponicIn
                                   IIngredientAcceptor rng2OutputAccepter) {
 
         // INPUT
-        itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, List.of(IngredientUtil.getItems(recipe.getIngredient(0))));
+        itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, List.of(recipe.getIngredientStacks(0)));
         fluidInputAcceptor.addIngredients(NeoForgeTypes.FLUID_STACK, List.of(recipe.getFluidIngredient(0).getFluids()));
 
         // OUTPUT

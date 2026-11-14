@@ -8,7 +8,6 @@ import com.veteam.voluminousenergy.recipe.SawmillRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.RegistryLookups;
 import com.veteam.voluminousenergy.util.TextUtil;
-import com.veteam.voluminousenergy.util.recipe.IngredientUtil;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IIngredientAcceptor;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -136,7 +135,7 @@ public class SawmillCategory implements IRecipeCategory<SawmillRecipe> {
             }
         } else if (!recipe.isLogRecipe()) {
             // Primary Input (Typically logs)
-            ArrayList<ItemStack> inputStacks = new ArrayList<>(Arrays.asList(IngredientUtil.getItems(recipe.getIngredient(0))));
+            ArrayList<ItemStack> inputStacks = new ArrayList<>(Arrays.asList(recipe.getIngredientStacks(0)));
             inputItemAcceptor.addIngredients(VanillaTypes.ITEM_STACK, inputStacks);
 
             // First Item Output (Typically Planks)

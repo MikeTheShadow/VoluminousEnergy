@@ -169,17 +169,25 @@ public abstract class VERecipe implements Recipe<RecipeInput> {
         return this.results.get(slot).getCount();
     }
 
+    /**
+     * Returns one stack per item the ingredient at {@code slot} matches, each sized to the count the
+     * recipe needs.
+     */
+    public ItemStack[] getIngredientStacks(int slot) {
+        ItemStack[] stacks = IngredientUtil.getItems(this.getIngredient(slot));
+        for (ItemStack stack : stacks) {
+            stack.setCount(this.getIngredientCount(slot));
+        }
+        return stacks;
+    }
+
     public int getIngredientCount(int slot) {
         if (slot >= this.getIngredients().size()) {
             return 0;
         }
-        // Ingredients hold item holders without stack sizes, so the count lives only on the decoded
-        // registry ingredient; a recipe received over the network has none and falls back to one.
-        if (this.registryIngredients != null && slot < this.registryIngredients.size()) {
-            return this.registryIngredients.get(slot).count();
-        }
-        ItemStack[] matchingStacks = IngredientUtil.getItems(this.getIngredients().get(slot));
-        return matchingStacks.length > 0 ? matchingStacks[0].getCount() : 0;
+        // Ingredients hold item holders without stack sizes, so the count lives only on the registry
+        // ingredient.
+        return this.registryIngredients.get(slot).count();
     }
 
     public int getProcessTime() {
@@ -244,8 +252,13 @@ public abstract class VERecipe implements Recipe<RecipeInput> {
         return ingredients;
     }
 
-    public void setIngredients(NonNullList<Ingredient> ingredients) {
-        this.ingredients = ingredients;
+    public List<VERecipeCodecs.RegistryIngredient> getRegistryIngredients() {
+        return this.registryIngredients;
+    }
+
+    public void setRegistryIngredients(List<VERecipeCodecs.RegistryIngredient> registryIngredients) {
+        this.registryIngredients = registryIngredients;
+        this.ingredients = null;
     }
 
     public static List<VERecipe> getCachedRecipes(RecipeType<?> recipeType) {
