@@ -9,6 +9,8 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.blocks.tiles.inventory.VEItemStackHandler;
+import com.veteam.voluminousenergy.fluids.CrudeOil;
+import com.veteam.voluminousenergy.fluids.NaturalGas;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.DimensionalLaserRecipe;
 import com.veteam.voluminousenergy.recipe.IndustrialBlastingRecipe;
@@ -18,6 +20,7 @@ import com.veteam.voluminousenergy.recipe.processor.BasicProcessor;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.RegistryOps;
@@ -30,6 +33,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.GameType;
@@ -60,6 +64,12 @@ public class RecipeTests {
     private static final int CHARRING_TICKS = 200;
     private static final BlockPos ELECTROLYZER = new BlockPos(1, 1, 2);
     private static final BlockPos SEPARATOR = new BlockPos(3, 1, 2);
+    private static final List<ResourceLocation> NATURAL_GAS_LASING = List.of(
+            ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "dimensional_lasing/natural_gas"),
+            ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "dimensional_lasing/natural_gas_hot_eroded_humid"));
+    private static final List<ResourceLocation> REMOVED_LIGHT_FUEL_LASING = List.of(
+            ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "dimensional_lasing/light_fuel"),
+            ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "dimensional_lasing/light_fuel_hot_eroded_humid"));
 
     private RecipeTests() {
     }
@@ -74,6 +84,7 @@ public class RecipeTests {
         tests.add(GameTestDefinition.of("recipe_torch_yield_matches_burn_time", 20, RecipeTests::torchYieldMatchesBurnTime));
         tests.add(GameTestDefinition.of("recipe_ingredient_counts_enforced", 20, RecipeTests::ingredientCountsEnforced));
         tests.add(GameTestDefinition.of("recipe_shift_click_top_up_starts_recipe", 20, RecipeTests::shiftClickTopUpStartsRecipe));
+        tests.add(GameTestDefinition.of("recipe_lasing_region_fluids", 20, RecipeTests::lasingRegionFluids));
     }
 
     /**
@@ -303,6 +314,33 @@ public class RecipeTests {
             helper.assertTrue(processor.isRecipeReady(), "electrolyzer did not start after 2 bauxite dust were shift-clicked onto 10");
             GameTestLog.pass(helper, "recipe_shift_click_top_up_starts_recipe", "");
         });
+    }
+
+    /**
+     * Every loaded dimensional lasing recipe yields crude oil or Natural Gas, the two Natural Gas
+     * recipes carry their 125 to 155 mB deposit, and the light fuel recipes they replaced are gone.
+     */
+    private static void lasingRegionFluids(GameTestHelper helper) {
+        RecipeManager recipeManager = helper.getLevel().getRecipeManager();
+        for (ResourceLocation id : NATURAL_GAS_LASING) {
+            Optional<RecipeHolder<?>> holder = recipeManager.byKey(id);
+            helper.assertTrue(holder.isPresent(), id + " not loaded");
+            DimensionalLaserRecipe recipe = (DimensionalLaserRecipe) holder.get().value();
+            helper.assertTrue(recipe.getRegionFluid().isSame(NaturalGas.NATURAL_GAS), id + " does not yield natural gas");
+            helper.assertValueEqual(recipe.getMinimumAmount(), 125, id + " minimum amount");
+            helper.assertValueEqual(recipe.getMaximumAmount(), 155, id + " maximum amount");
+        }
+        for (ResourceLocation id : REMOVED_LIGHT_FUEL_LASING) {
+            helper.assertFalse(recipeManager.byKey(id).isPresent(), id + " is still loaded");
+        }
+
+        List<RecipeHolder<VERecipe>> recipes = recipeManager.getAllRecipesFor(DimensionalLaserRecipe.RECIPE_TYPE);
+        for (RecipeHolder<VERecipe> holder : recipes) {
+            Fluid regionFluid = ((DimensionalLaserRecipe) holder.value()).getRegionFluid();
+            helper.assertTrue(regionFluid.isSame(CrudeOil.CRUDE_OIL) || regionFluid.isSame(NaturalGas.NATURAL_GAS),
+                    holder.id() + " yields " + BuiltInRegistries.FLUID.getKey(regionFluid) + ", not raw petroleum");
+        }
+        GameTestLog.pass(helper, "recipe_lasing_region_fluids", "recipes=" + recipes.size());
     }
 
     private static int menuSlotHolding(AbstractContainerMenu menu, ItemStack stack) {
