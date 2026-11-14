@@ -17,5 +17,6 @@
       "count": 1
     }
   ],
-  "minimum_heat_kelvin": 900
+  "minimum_heat_kelvin": 900,
+  "heat_source_consumption": 50
 }
