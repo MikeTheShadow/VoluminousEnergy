@@ -19,6 +19,7 @@ import com.veteam.voluminousenergy.recipe.IndustrialBlastingRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.recipe.VERecipes;
 import com.veteam.voluminousenergy.recipe.parser.BasicParser;
+import com.veteam.voluminousenergy.recipe.processor.BasicProcessor;
 import com.veteam.voluminousenergy.recipe.processor.CombustionGeneratorProcessor;
 import com.veteam.voluminousenergy.recipe.processor.GeneratorProcessor;
 import com.veteam.voluminousenergy.tools.Config;
@@ -40,6 +41,8 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -50,6 +53,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
@@ -121,6 +125,7 @@ public class RecipeTests {
         tests.add(GameTestDefinition.of("recipe_torch_yield_matches_burn_time", 20, RecipeTests::torchYieldMatchesBurnTime));
         tests.add(GameTestDefinition.of("recipe_ingredient_counts_survive_network", 20, RecipeTests::ingredientCountsSurviveNetwork));
         tests.add(GameTestDefinition.of("recipe_ingredient_counts_enforced", 20, RecipeTests::ingredientCountsEnforced));
+        tests.add(GameTestDefinition.of("recipe_shift_click_top_up_starts_recipe", 20, RecipeTests::shiftClickTopUpStartsRecipe));
     }
 
     private static void recipe(List<GameTestDefinition> tests, String machine, Supplier<Block> block, Supplier<? extends RecipeType<?>> type,
@@ -555,6 +560,43 @@ public class RecipeTests {
                     new ItemStack(VEItems.BASALT_DUST.get(), 16));
             GameTestLog.pass(helper, "recipe_ingredient_counts_enforced", "");
         });
+    }
+
+    /**
+     * Shift-clicking the missing items onto a partial input stack in an open Electrolyzer menu makes
+     * the machine pick up the now complete recipe, as placing them by hand does.
+     */
+    private static void shiftClickTopUpStartsRecipe(GameTestHelper helper) {
+        VETileEntity electrolyzer = MachineKit.place(helper, ELECTROLYZER, VEBlocks.ELECTROLYZER.block().get());
+        BasicProcessor processor = (BasicProcessor) electrolyzer.getRecipeProcessor();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        AbstractContainerMenu[] menu = new AbstractContainerMenu[1];
+        helper.runAfterDelay(2, () -> {
+            electrolyzer.getInventory().setStack(0, new ItemStack(VEItems.BAUXITE_DUST.get(), 10));
+            menu[0] = electrolyzer.createMenu(1, player.getInventory(), player);
+        });
+        helper.runAfterDelay(4, () -> {
+            helper.assertFalse(processor.isRecipeReady(), "electrolyzer started with 10 bauxite dust");
+            ItemStack topUp = new ItemStack(VEItems.BAUXITE_DUST.get(), 2);
+            player.getInventory().setItem(9, topUp);
+            int menuSlot = menuSlotHolding(menu[0], topUp);
+            helper.assertTrue(menuSlot > electrolyzer.getSlotManagers().size(), "player inventory slot not found in the menu");
+            menu[0].quickMoveStack(player, menuSlot);
+            helper.assertValueEqual(electrolyzer.getInventory().getStack(0).getCount(), 12, "bauxite dust after the shift-click");
+        });
+        helper.runAfterDelay(6, () -> {
+            helper.assertTrue(processor.isRecipeReady(), "electrolyzer did not start after 2 bauxite dust were shift-clicked onto 10");
+            GameTestLog.pass(helper, "recipe_shift_click_top_up_starts_recipe", "");
+        });
+    }
+
+    private static int menuSlotHolding(AbstractContainerMenu menu, ItemStack stack) {
+        for (int slot = 0; slot < menu.slots.size(); slot++) {
+            if (menu.slots.get(slot).getItem() == stack) {
+                return slot;
+            }
+        }
+        return -1;
     }
 
     /**
