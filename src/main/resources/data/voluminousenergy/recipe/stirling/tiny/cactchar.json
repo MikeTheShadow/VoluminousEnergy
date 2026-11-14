@@ -1,0 +1,11 @@
+{
+  "type": "voluminousenergy:stirling",
+  "ingredients": [
+    {
+      "tag": "c:tiny/cactchar",
+      "count": 1
+    }
+  ],
+  "process_time": 200,
+  "energy_per_tick": 128
+}

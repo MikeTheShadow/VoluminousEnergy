@@ -1,0 +1,16 @@
+{
+  "type": "voluminousenergy:primitive_blast_furnacing",
+  "ingredients": [
+    {
+      "tag": "voluminousenergy:charrable/cactus",
+      "count": 3
+    }
+  ],
+  "process_time": 200,
+  "item_results": [
+    {
+      "item": "voluminousenergy:cactchar",
+      "count": 1
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "*"
+  ],
+  "key": {
+    "*": "#c:cane_charcoal"
+  },
+  "result": {
+    "id": "voluminousenergy:tiny_cane_charcoal",
+    "count": 8
+  }
+}

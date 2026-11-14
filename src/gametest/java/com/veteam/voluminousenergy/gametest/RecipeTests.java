@@ -30,36 +30,53 @@ import com.veteam.voluminousenergy.util.VERelationalTank;
 import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 
+import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
  * Runs one real recipe through every kind of recipe processor (test plan T2.17 and T2.18), and checks
- * recipe encoding and Blast Furnace heat-source rules (specs machines/dimensional-laser and
- * machines/blast-furnace).
+ * recipe encoding, Blast Furnace heat-source rules, Primitive Blast Furnace charring, and torch yields
+ * (specs machines/dimensional-laser, machines/blast-furnace, machines/primitive-blast-furnace, and
+ * items/solid-fuels).
  */
 public class RecipeTests {
     private static final BlockPos MACHINE = new BlockPos(4, 1, 1);
     private static final Identifier PLAINS_LASING = Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "dimensional_lasing/crude_oil_plains");
     private static final ResourceKey<Recipe<?>> STEEL_BLASTING = ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "industrial_blasting/steel"));
+    private static final BlockPos CANE_FURNACE = new BlockPos(1, 1, 2);
+    private static final BlockPos CACTUS_FURNACE = new BlockPos(3, 1, 2);
+    private static final ResourceKey<Recipe<?>> LOG_CHARRING = ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(VoluminousEnergy.MODID, "primitive_blast_furnacing/logs_to_charcoal"));
+    private static final BlockPos FUEL_FURNACE = new BlockPos(2, 1, 2);
+    private static final String TORCH_RECIPE_PATH = "vanilla_crafting/torch/";
+    private static final int TICKS_PER_TORCH = 400;
 
     private RecipeTests() {
     }
@@ -91,6 +108,9 @@ public class RecipeTests {
         tests.add(GameTestDefinition.of("recipe_lasing_codec_round_trip", 20, RecipeTests::lasingCodecRoundTrip));
         tests.add(GameTestDefinition.of("recipe_blasting_heat_fluids_per_recipe", 20, RecipeTests::blastingHeatFluidsPerRecipe));
         tests.add(GameTestDefinition.of("recipe_blasting_heat_source_drain", 20, RecipeTests::blastingHeatSourceDrain));
+        tests.add(GameTestDefinition.of("recipe_primitive_charring_counts", 400, RecipeTests::primitiveCharringCounts));
+        tests.add(GameTestDefinition.of("recipe_primitive_charring_logs", 20, RecipeTests::primitiveCharringLogs));
+        tests.add(GameTestDefinition.of("recipe_torch_yield_matches_burn_time", 20, RecipeTests::torchYieldMatchesBurnTime));
     }
 
     private static void recipe(List<GameTestDefinition> tests, String machine, Supplier<Block> block, Supplier<? extends RecipeType<?>> type,
@@ -391,6 +411,109 @@ public class RecipeTests {
             GameTestLog.assertEqual(helper, furnace.getFluidStackFromTank(0).getAmount(), 1000 - consumption, "lava left after one operation");
             GameTestLog.pass(helper, "recipe_blasting_heat_source_drain", "consumption=" + consumption);
         });
+    }
+
+    /**
+     * A Primitive Blast Furnace holding one item fewer than a charring recipe needs stays idle, and
+     * one more item lets it consume the whole count for a single fuel.
+     */
+    private static void primitiveCharringCounts(GameTestHelper helper) {
+        VETileEntity caneFurnace = MachineKit.place(helper, CANE_FURNACE, VEBlocks.PRIMITIVE_BLAST_FURNACE.block().get());
+        VETileEntity cactusFurnace = MachineKit.place(helper, CACTUS_FURNACE, VEBlocks.PRIMITIVE_BLAST_FURNACE.block().get());
+        helper.runAfterDelay(2, () -> {
+            caneFurnace.getInventory().setStack(0, new ItemStack(Items.SUGAR_CANE, 15));
+            cactusFurnace.getInventory().setStack(0, new ItemStack(Items.CACTUS, 2));
+        });
+        helper.runAfterDelay(42, () -> {
+            assertIdle(helper, caneFurnace, 15, "sugar cane");
+            assertIdle(helper, cactusFurnace, 2, "cactus");
+            caneFurnace.getInventory().setStack(0, new ItemStack(Items.SUGAR_CANE, 16));
+            cactusFurnace.getInventory().setStack(0, new ItemStack(Items.CACTUS, 3));
+            helper.succeedWhen(() -> {
+                assertCharred(helper, caneFurnace, VEItems.CANE_CHARCOAL.get(), "16 sugar cane");
+                assertCharred(helper, cactusFurnace, VEItems.CACTCHAR.get(), "3 cactus");
+                GameTestLog.note("recipe_primitive_charring_counts", "");
+            });
+        });
+    }
+
+    /**
+     * The log charring recipe takes burnable logs and wood, not nether stems, and runs for 800 ticks.
+     */
+    private static void primitiveCharringLogs(GameTestHelper helper) {
+        Optional<RecipeHolder<?>> logHolder = helper.getLevel().recipeAccess().byKey(LOG_CHARRING);
+        helper.assertTrue(logHolder.isPresent(), "log charring recipe not loaded");
+        VERecipe logCharring = (VERecipe) logHolder.get().value();
+        Ingredient logs = logCharring.getIngredient(0);
+
+        helper.assertTrue(logs.test(new ItemStack(Items.OAK_LOG)), "oak log not accepted");
+        helper.assertTrue(logs.test(new ItemStack(Items.STRIPPED_BIRCH_WOOD)), "stripped birch wood not accepted");
+        helper.assertFalse(logs.test(new ItemStack(Items.CRIMSON_STEM)), "crimson stem accepted");
+        helper.assertValueEqual(logCharring.getProcessTime(), 800, "log charring process time");
+        helper.assertTrue(logCharring.getResult(0).is(Items.CHARCOAL), "log charring does not give charcoal");
+        GameTestLog.pass(helper, "recipe_primitive_charring_logs", "");
+    }
+
+    /**
+     * Every Voluminous Energy torch and soul torch recipe gives one torch per 400 ticks of its fuel's
+     * burn time, and at least one.
+     */
+    private static void torchYieldMatchesBurnTime(GameTestHelper helper) {
+        Map<Item, Integer> torchYields = new HashMap<>();
+        Map<Item, Integer> soulTorchYields = new HashMap<>();
+        helper.setBlock(FUEL_FURNACE, Blocks.FURNACE);
+        AbstractFurnaceBlockEntity furnace = helper.getBlockEntity(FUEL_FURNACE, AbstractFurnaceBlockEntity.class);
+        int checked = 0;
+
+        for (RecipeHolder<?> holder : helper.getLevel().getServer().getRecipeManager().getRecipes()) {
+            Identifier id = holder.id().identifier();
+            if (!id.getNamespace().equals(VoluminousEnergy.MODID) || !id.getPath().startsWith(TORCH_RECIPE_PATH)) {
+                continue;
+            }
+            ShapedRecipe recipe = (ShapedRecipe) holder.value();
+            ItemStack result = recipe.assemble(CraftingInput.EMPTY);
+            Map<Item, Integer> yields = result.is(Items.SOUL_TORCH) ? soulTorchYields : torchYields;
+
+            for (Item fuel : recipe.getIngredients().getFirst().orElseThrow().items().map(Holder::value).toList()) {
+                int expected = Math.max(1, furnaceBurnTicks(helper, furnace, fuel) / TICKS_PER_TORCH);
+                helper.assertValueEqual(result.getCount(), expected, id + " yield for " + fuel);
+                yields.put(fuel, result.getCount());
+                checked++;
+            }
+        }
+
+        for (Map<Item, Integer> yields : List.of(torchYields, soulTorchYields)) {
+            assertTorchYield(helper, yields, VEItems.CACTCHAR.get(), 4);
+            assertTorchYield(helper, yields, VEItems.CANE_CHARCOAL.get(), 4);
+            assertTorchYield(helper, yields, VEItems.COALCOKE.get(), 8);
+            assertTorchYield(helper, yields, VEItems.PETCOKE.get(), 10);
+        }
+        GameTestLog.pass(helper, "recipe_torch_yield_matches_burn_time", "fuels=" + checked);
+    }
+
+    private static int furnaceBurnTicks(GameTestHelper helper, AbstractFurnaceBlockEntity furnace, Item fuel) {
+        try {
+            Method burnDuration = AbstractFurnaceBlockEntity.class.getDeclaredMethod("getBurnDuration", ServerLevel.class, ItemStack.class);
+            burnDuration.setAccessible(true);
+            return (int) burnDuration.invoke(furnace, helper.getLevel(), new ItemStack(fuel));
+        } catch (ReflectiveOperationException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    private static void assertIdle(GameTestHelper helper, VETileEntity furnace, int inputCount, String input) {
+        helper.assertValueEqual(furnace.getInventory().getStack(0).getCount(), inputCount, input + " left with too few to char");
+        helper.assertTrue(furnace.getInventory().getStack(1).isEmpty(), "charred with only " + inputCount + " " + input);
+    }
+
+    private static void assertCharred(GameTestHelper helper, VETileEntity furnace, Item fuel, String input) {
+        ItemStack output = furnace.getInventory().getStack(1);
+        helper.assertTrue(furnace.getInventory().getStack(0).isEmpty(), input + " not fully consumed");
+        helper.assertTrue(output.is(fuel) && output.getCount() == 1, input + " gave " + output + " instead of 1 " + fuel);
+    }
+
+    private static void assertTorchYield(GameTestHelper helper, Map<Item, Integer> yields, Item fuel, int expected) {
+        helper.assertValueEqual(yields.get(fuel), expected, "torch recipe yield for " + fuel);
     }
 
     private static IndustrialBlastingRecipe blastingAt(int minimumHeat) {
