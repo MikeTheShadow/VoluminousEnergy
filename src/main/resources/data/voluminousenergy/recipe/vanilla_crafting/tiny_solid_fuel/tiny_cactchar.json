@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "*"
+  ],
+  "key": {
+    "*": "#c:cactchar"
+  },
+  "result": {
+    "id": "voluminousenergy:tiny_cactchar",
+    "count": 8
+  }
+}

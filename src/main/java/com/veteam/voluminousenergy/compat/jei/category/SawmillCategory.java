@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.compat.jei.category;
 
-import com.veteam.voluminousenergy.util.recipe.IngredientUtil;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
@@ -137,7 +136,7 @@ public class SawmillCategory implements IRecipeCategory<SawmillRecipe> {
             }
         } else if (!recipe.isLogRecipe()) {
             // Primary Input (Typically logs)
-            ArrayList<ItemStack> inputStacks = new ArrayList<>(Arrays.asList(IngredientUtil.getItems(recipe.getIngredient(0))));
+            ArrayList<ItemStack> inputStacks = new ArrayList<>(Arrays.asList(recipe.getIngredientStacks(0)));
             inputItemAcceptor.addIngredients(VanillaTypes.ITEM_STACK, inputStacks);
 
             // First Item Output (Typically Planks)

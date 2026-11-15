@@ -6,9 +6,12 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.core.component.DataComponentPatch;
@@ -41,6 +44,12 @@ public class VERecipeCodecs {
             Codec.STRING.optionalFieldOf("item", "").forGetter(t -> t.item),
             Codec.INT.optionalFieldOf("count",1).forGetter(t -> t.count)
     ).apply(instance, RegistryIngredient::new));
+
+    public static final StreamCodec<ByteBuf, RegistryIngredient> VE_LAZY_INGREDIENT_STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.STRING_UTF8, RegistryIngredient::tag,
+            ByteBufCodecs.STRING_UTF8, RegistryIngredient::item,
+            ByteBufCodecs.VAR_INT, RegistryIngredient::count,
+            RegistryIngredient::new);
 
     public record RegistryIngredient(String tag, String item, int count) {
         public Ingredient getIngredient() {
@@ -118,9 +127,9 @@ public class VERecipeCodecs {
 
     public static final Codec<ClimateData> VE_CLIMATE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
             VE_MIN_MAX_CODEC.fieldOf("continentalness").forGetter(ClimateData::continentalness),
-            VE_MIN_MAX_CODEC.fieldOf("erosion").forGetter(ClimateData::continentalness),
-            VE_MIN_MAX_CODEC.fieldOf("humidity").forGetter(ClimateData::continentalness),
-            VE_MIN_MAX_CODEC.fieldOf("temperature").forGetter(ClimateData::continentalness)
+            VE_MIN_MAX_CODEC.fieldOf("erosion").forGetter(ClimateData::erosion),
+            VE_MIN_MAX_CODEC.fieldOf("humidity").forGetter(ClimateData::humidity),
+            VE_MIN_MAX_CODEC.fieldOf("temperature").forGetter(ClimateData::temperature)
     ).apply(instance, ClimateData::new));
 
     public static final Codec<RegistryFluidValue> REGISTRY_COMBUSTION_FLUID_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
