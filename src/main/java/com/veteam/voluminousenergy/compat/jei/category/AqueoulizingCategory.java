@@ -6,7 +6,6 @@ import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.AqueoulizerRecipe;
 import com.veteam.voluminousenergy.util.TextUtil;
-import com.veteam.voluminousenergy.util.recipe.IngredientUtil;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IIngredientAcceptor;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -95,7 +94,7 @@ public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> 
                                   IIngredientAcceptor fluidOutputAcceptor) {
 
         // INPUT
-        itemInputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, List.of(IngredientUtil.getItems(recipe.getIngredient(0))).get(0));
+        itemInputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, List.of(recipe.getIngredientStacks(0)).get(0));
 
         fluidInputAcceptor.addIngredient(NeoForgeTypes.FLUID_STACK, List.of(recipe.getFluidIngredient(0).getFluids()).get(0));
 

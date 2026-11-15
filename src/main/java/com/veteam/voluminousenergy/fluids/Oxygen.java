@@ -61,12 +61,14 @@ public class Oxygen {
             .lightLevel(0)
             .density(0)
             .temperature(300)
-            .viscosity(1)
+            .viscosity(20)
             .motionScale(0)
-            .fallDistanceModifier(0)
+            .fallDistanceModifier(1.0F)
             .rarity(Rarity.COMMON)
             .supportsBoating(false)
             .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY),
+            VEFluidPhysics.GAS,
+            0xA5BCBC,
             OXYGEN_STILL_TEXTURE,
             OXYGEN_FLOWING_TEXTURE
     );

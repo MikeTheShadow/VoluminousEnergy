@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.blocks.containers;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.iolisteners.SlotWithIOListener;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntityFactory.*;
+import com.veteam.voluminousenergy.blocks.tiles.inventory.VEItemStackHandler;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.SlotType;
 import net.minecraft.core.BlockPos;
@@ -151,6 +152,16 @@ public class VEContainerFactory {
         public void set(@NotNull ItemStack stack) {
             if (listener != null) listener.onSet(stack, getSlotIndex(), getItemHandler(), isClientSide);
             super.set(stack);
+        }
+
+        // SlotItemHandler reports setChanged to an empty container, so a stack that shift-click grows
+        // in place would otherwise never reach the machine.
+        @Override
+        public void setChanged() {
+            super.setChanged();
+            if (getItemHandler() instanceof VEItemStackHandler handler) {
+                handler.onStackChangedInPlace(getSlotIndex());
+            }
         }
 
         public void preQuickMoveStack(ItemStack stack) {
