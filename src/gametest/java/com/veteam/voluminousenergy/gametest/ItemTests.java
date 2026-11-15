@@ -71,6 +71,10 @@ public class ItemTests {
         fuels.put(VEItems.TINY_COAL_COKE, 200);
         fuels.put(VEItems.TINY_PETCOKE, 200);
         fuels.put(VEItems.TINY_ROSIN, 200);
+        fuels.put(VEItems.CACTCHAR, 1600);
+        fuels.put(VEItems.CANE_CHARCOAL, 1600);
+        fuels.put(VEItems.TINY_CACTCHAR, 200);
+        fuels.put(VEItems.TINY_CANE_CHARCOAL, 200);
         return fuels;
     }
 

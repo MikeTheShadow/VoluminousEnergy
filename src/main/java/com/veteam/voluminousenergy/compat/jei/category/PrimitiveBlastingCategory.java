@@ -5,7 +5,6 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.PrimitiveBlastFurnaceRecipe;
 import com.veteam.voluminousenergy.util.TextUtil;
-import com.veteam.voluminousenergy.util.recipe.IngredientUtil;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IIngredientAcceptor;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -84,7 +83,7 @@ public class PrimitiveBlastingCategory implements IRecipeCategory<PrimitiveBlast
                                   IIngredientAcceptor itemOutputAcceptor) {
 
         // Input
-        ArrayList<ItemStack> inputStacks = new ArrayList<>(Arrays.asList(IngredientUtil.getItems(recipe.getIngredient(0))));
+        ArrayList<ItemStack> inputStacks = new ArrayList<>(Arrays.asList(recipe.getIngredientStacks(0)));
 
         itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, inputStacks);
 

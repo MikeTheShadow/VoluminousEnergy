@@ -59,14 +59,16 @@ public class LiquefiedCoal {
             .canConvertToSource(false)
             .canSwim(false)
             .lightLevel(0)
-            .density(1)
+            .density(1200)
             .temperature(300)
-            .viscosity(1)
+            .viscosity(1000000)
             .motionScale(0)
             .fallDistanceModifier(0)
             .rarity(Rarity.COMMON)
             .supportsBoating(false)
             .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY),
+            VEFluidPhysics.STICKY,
+            0x272727,
             LIQUEFIED_COAL_STILL_TEXTURE,
             LIQUEFIED_COAL_FLOWING_TEXTURE
     );

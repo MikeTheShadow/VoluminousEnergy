@@ -52,21 +52,23 @@ public class NaturalGas {
     public static final VEFluidType NATURAL_GAS_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
             .adjacentPathType(PathType.LAVA)
             .canConvertToSource(false)
-            .canDrown(false)
+            .canDrown(true)
             .canExtinguish(false)
             .canHydrate(false)
             .canPushEntity(false)
             .canConvertToSource(false)
             .canSwim(false)
             .lightLevel(0)
-            .density(0)
+            .density(-1)
             .temperature(300)
-            .viscosity(1)
+            .viscosity(11)
             .motionScale(0)
-            .fallDistanceModifier(0)
+            .fallDistanceModifier(1.0F)
             .rarity(Rarity.COMMON)
             .supportsBoating(false)
             .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY),
+            VEFluidPhysics.GAS,
+            0x7F3596,
             NATURAL_GAS_STILL_TEXTURE,
             NATURAL_GAS_FLOWING_TEXTURE
     );

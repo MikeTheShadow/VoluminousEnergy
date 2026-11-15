@@ -3,10 +3,9 @@ package com.veteam.voluminousenergy.recipe.serializer;
 import com.veteam.voluminousenergy.recipe.VERNGExperienceRecipe;
 import com.veteam.voluminousenergy.recipe.VERNGRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
-import net.minecraft.core.NonNullList;
+import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -18,11 +17,11 @@ public class IngredientSerializerHelper<T extends VERecipe> {
     public T fromNetwork(T recipe, RegistryFriendlyByteBuf buffer) {
         // Read ingredients
         int ingredientSize = buffer.readInt();
-        NonNullList<Ingredient> ingredients = NonNullList.create();
+        List<VERecipeCodecs.RegistryIngredient> ingredients = new ArrayList<>();
         for (int i = 0; i < ingredientSize; i++) {
-            ingredients.add(Ingredient.CONTENTS_STREAM_CODEC.decode(buffer));
+            ingredients.add(VERecipeCodecs.VE_LAZY_INGREDIENT_STREAM_CODEC.decode(buffer));
         }
-        recipe.setIngredients(ingredients);
+        recipe.setRegistryIngredients(ingredients);
 
 
         int outputItemSize = buffer.readInt();
@@ -52,9 +51,9 @@ public class IngredientSerializerHelper<T extends VERecipe> {
     }
 
     public void toNetwork(RegistryFriendlyByteBuf buffer, T recipe) {
-        buffer.writeInt(recipe.getIngredients().size());
-        for (Ingredient ingredient : recipe.getIngredients()) {
-            Ingredient.CONTENTS_STREAM_CODEC.encode(buffer,ingredient);
+        buffer.writeInt(recipe.getRegistryIngredients().size());
+        for (VERecipeCodecs.RegistryIngredient ingredient : recipe.getRegistryIngredients()) {
+            VERecipeCodecs.VE_LAZY_INGREDIENT_STREAM_CODEC.encode(buffer, ingredient);
         }
 
         buffer.writeInt(recipe.getResults().size());

@@ -59,14 +59,16 @@ public class Ammonia {
             .canConvertToSource(false)
             .canSwim(false)
             .lightLevel(0)
-            .density(1)
+            .density(-1)
             .temperature(300)
-            .viscosity(1)
+            .viscosity(10)
             .motionScale(0)
-            .fallDistanceModifier(0)
+            .fallDistanceModifier(1.0F)
             .rarity(Rarity.COMMON)
             .supportsBoating(false)
             .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY),
+            VEFluidPhysics.GAS,
+            0x00AFD6,
             AMMONIA_STILL_TEXTURE,
             AMMONIA_FLOWING_TEXTURE
     );

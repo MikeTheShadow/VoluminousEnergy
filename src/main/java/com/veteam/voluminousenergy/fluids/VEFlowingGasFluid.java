@@ -360,6 +360,16 @@ public class VEFlowingGasFluid extends BaseFlowingFluid {
         return false;
     }
 
+    /**
+     * Reports every gas block as full for entities, breathing, and the camera. Gas is drawn hanging from
+     * the ceiling while {@link #getOwnHeight} measures from the floor, and gas diffuses through its block
+     * anyway; rendering and spreading read {@link #getOwnHeight} and are unaffected.
+     */
+    @Override
+    public float getHeight(FluidState fluidState, BlockGetter getter, BlockPos pos) {
+        return 1.0F;
+    }
+
     @Override
     public int getAmount(FluidState fluidState) {
         return this.flowWidth;

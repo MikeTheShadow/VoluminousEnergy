@@ -18,6 +18,8 @@ import com.veteam.voluminousenergy.items.plates.CarbonPlate;
 import com.veteam.voluminousenergy.items.plates.SolariumPlate;
 import com.veteam.voluminousenergy.items.plates.TitaniumPlate;
 import com.veteam.voluminousenergy.items.solid_fuels.AnimalFat;
+import com.veteam.voluminousenergy.items.solid_fuels.Cactchar;
+import com.veteam.voluminousenergy.items.solid_fuels.CaneCharcoal;
 import com.veteam.voluminousenergy.items.solid_fuels.CoalCoke;
 import com.veteam.voluminousenergy.items.solid_fuels.Petcoke;
 import com.veteam.voluminousenergy.items.solid_fuels.Rosin;
@@ -51,6 +53,8 @@ public class VEItems {
     public static Supplier<AnimalFat> ANIMAL_FAT = VERegistryHelper.registerItem(VE_ITEM_REGISTRY, "animal_fat", AnimalFat::new);
     public static Supplier<Dough> DOUGH = VERegistryHelper.registerItem(VE_ITEM_REGISTRY, "dough", Dough::new);
     public static Supplier<Bitumen> BITUMEN = VERegistryHelper.registerItem(VE_ITEM_REGISTRY, "bitumen", Bitumen::new);
+    public static Supplier<Item> CACTCHAR = VERegistryHelper.registerItem(VE_ITEM_REGISTRY, "cactchar", Cactchar::new);
+    public static Supplier<Item> CANE_CHARCOAL = VERegistryHelper.registerItem(VE_ITEM_REGISTRY, "cane_charcoal", CaneCharcoal::new);
 
     // Raw Ore
     public static Supplier<RawBauxite> RAW_BAUXITE = VERegistryHelper.registerItem(VE_ITEM_REGISTRY, "raw_bauxite", RawBauxite::new);
@@ -158,4 +162,6 @@ public class VEItems {
     public static Supplier<Item> TINY_COAL_COKE = VERegistryHelper.registerItem(VE_ITEM_REGISTRY, "tiny_coal_coke", TinyCoalCoke::new);
     public static Supplier<Item> TINY_PETCOKE = VERegistryHelper.registerItem(VE_ITEM_REGISTRY, "tiny_petcoke", TinyPetcoke::new);
     public static Supplier<Item> TINY_ROSIN = VERegistryHelper.registerItem(VE_ITEM_REGISTRY, "tiny_rosin", TinyRosin::new);
+    public static Supplier<Item> TINY_CACTCHAR = VERegistryHelper.registerItem(VE_ITEM_REGISTRY, "tiny_cactchar", TinyCactchar::new);
+    public static Supplier<Item> TINY_CANE_CHARCOAL = VERegistryHelper.registerItem(VE_ITEM_REGISTRY, "tiny_cane_charcoal", TinyCaneCharcoal::new);
 }
