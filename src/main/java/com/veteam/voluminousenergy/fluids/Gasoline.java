@@ -58,14 +58,16 @@ public class Gasoline {
             .canConvertToSource(false)
             .canSwim(false)
             .lightLevel(0)
-            .density(1)
+            .density(740)
             .temperature(300)
-            .viscosity(1)
+            .viscosity(600)
             .motionScale(0)
             .fallDistanceModifier(0)
             .rarity(Rarity.COMMON)
             .supportsBoating(false)
             .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY),
+            VEFluidPhysics.THIN,
+            0xC7CB4F,
             GASOLINE_STILL_TEXTURE,
             GASOLINE_FLOWING_TEXTURE
     );

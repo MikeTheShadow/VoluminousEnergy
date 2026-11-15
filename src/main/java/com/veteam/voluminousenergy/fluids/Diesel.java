@@ -58,14 +58,16 @@ public class Diesel {
             .canConvertToSource(false)
             .canSwim(false)
             .lightLevel(0)
-            .density(1)
+            .density(840)
             .temperature(300)
-            .viscosity(1)
+            .viscosity(3000)
             .motionScale(0)
             .fallDistanceModifier(0)
             .rarity(Rarity.COMMON)
             .supportsBoating(false)
             .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY),
+            VEFluidPhysics.WATERY,
+            0xCC933E,
             DIESEL_STILL_TEXTURE,
             DIESEL_FLOWING_TEXTURE
     );

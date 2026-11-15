@@ -18,6 +18,8 @@ import com.veteam.voluminousenergy.items.plates.CarbonPlate;
 import com.veteam.voluminousenergy.items.plates.SolariumPlate;
 import com.veteam.voluminousenergy.items.plates.TitaniumPlate;
 import com.veteam.voluminousenergy.items.solid_fuels.AnimalFat;
+import com.veteam.voluminousenergy.items.solid_fuels.Cactchar;
+import com.veteam.voluminousenergy.items.solid_fuels.CaneCharcoal;
 import com.veteam.voluminousenergy.items.solid_fuels.CoalCoke;
 import com.veteam.voluminousenergy.items.solid_fuels.Petcoke;
 import com.veteam.voluminousenergy.items.solid_fuels.Rosin;
@@ -50,6 +52,8 @@ public class VEItems {
     public static Supplier<AnimalFat> ANIMAL_FAT = VE_ITEM_REGISTRY.register("animal_fat", AnimalFat::new);
     public static Supplier<Dough> DOUGH = VE_ITEM_REGISTRY.register("dough", Dough::new);
     public static Supplier<Bitumen> BITUMEN = VE_ITEM_REGISTRY.register("bitumen", Bitumen::new);
+    public static Supplier<Item> CACTCHAR = VE_ITEM_REGISTRY.register("cactchar", Cactchar::new);
+    public static Supplier<Item> CANE_CHARCOAL = VE_ITEM_REGISTRY.register("cane_charcoal", CaneCharcoal::new);
 
     // Raw Ore
     public static Supplier<RawBauxite> RAW_BAUXITE = VE_ITEM_REGISTRY.register("raw_bauxite", RawBauxite::new);
@@ -157,4 +161,6 @@ public class VEItems {
     public static Supplier<Item> TINY_COAL_COKE = VE_ITEM_REGISTRY.register("tiny_coal_coke", TinyCoalCoke::new);
     public static Supplier<Item> TINY_PETCOKE = VE_ITEM_REGISTRY.register("tiny_petcoke", TinyPetcoke::new);
     public static Supplier<Item> TINY_ROSIN = VE_ITEM_REGISTRY.register("tiny_rosin", TinyRosin::new);
+    public static Supplier<Item> TINY_CACTCHAR = VE_ITEM_REGISTRY.register("tiny_cactchar", TinyCactchar::new);
+    public static Supplier<Item> TINY_CANE_CHARCOAL = VE_ITEM_REGISTRY.register("tiny_cane_charcoal", TinyCaneCharcoal::new);
 }

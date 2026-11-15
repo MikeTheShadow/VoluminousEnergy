@@ -1,7 +1,8 @@
 package com.veteam.voluminousenergy.fluids;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.VEFlowingFluidBlock;
+import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.PoisonousFlowingFluidBlock;
+import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.BucketItem;
@@ -24,7 +25,7 @@ public class Mercury {
 
     public static FlowingFluid MERCURY;
     public static FlowingFluid FLOWING_MERCURY;
-    public static VEFlowingFluidBlock MERCURY_BLOCK;
+    public static PoisonousFlowingFluidBlock MERCURY_BLOCK;
     public static Item MERCURY_BUCKET;
 
     public static FlowingFluid MercuryFluid() {
@@ -37,8 +38,8 @@ public class Mercury {
         return FLOWING_MERCURY;
     }
 
-    public static VEFlowingFluidBlock FlowingMercuryBlock() {
-        MERCURY_BLOCK = new VEFlowingFluidBlock(MERCURY, stdProp);
+    public static PoisonousFlowingFluidBlock FlowingMercuryBlock() {
+        MERCURY_BLOCK = new PoisonousFlowingFluidBlock(MERCURY, stdProp, Config.MERCURY_POISON_DURATION);
         return MERCURY_BLOCK;
     }
 
@@ -51,21 +52,23 @@ public class Mercury {
     public static final VEFluidType MERCURY_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
             .adjacentPathType(PathType.WATER)
             .canConvertToSource(false)
-            .canDrown(true)
+            .canDrown(false)
             .canExtinguish(false)
             .canHydrate(false)
             .canPushEntity(false)
             .canConvertToSource(false)
             .canSwim(false)
             .lightLevel(0)
-            .density(1)
+            .density(13534)
             .temperature(300)
-            .viscosity(1)
+            .viscosity(1530)
             .motionScale(0)
             .fallDistanceModifier(0)
             .rarity(Rarity.COMMON)
             .supportsBoating(false)
             .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY),
+            VEFluidPhysics.MERCURY,
+            0xC7C7C7,
             MERCURY_STILL_TEXTURE,
             MERCURY_FLOWING_TEXTURE
     );

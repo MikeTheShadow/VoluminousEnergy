@@ -4,14 +4,18 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.client.renderers.entity.LaserBlockEntityRenderer;
+import com.veteam.voluminousenergy.fluids.VEFluidType;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.batteries.VEEnergyItem;
 import com.veteam.voluminousenergy.items.tools.multitool.MuiltiToolFluidHandler;
 import com.veteam.voluminousenergy.items.tools.multitool.VEMultitoolItems;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyItemStorage;
 import com.veteam.voluminousenergy.tools.networking.packets.*;
+import com.veteam.voluminousenergy.util.VEDamageTypes;
 import com.veteam.voluminousenergy.util.VEDataComponents;
 import com.veteam.voluminousenergy.world.feature.VEFluidReservoirFeature;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -20,6 +24,8 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.event.entity.living.LivingBreatheEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDrownEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
@@ -27,6 +33,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 
 @EventBusSubscriber(modid = VoluminousEnergy.MODID)
 public class VEGenericListener {
+    private static final int OPEN_AIR_REFILL_PER_TICK = 4;
 
     @SubscribeEvent
     private static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
@@ -103,5 +110,41 @@ public class VEGenericListener {
     @SubscribeEvent
     public static void onLevelUnload(LevelEvent.Unload event) {
         VEFluidReservoirFeature.forgetLevel(event.getLevel());
+    }
+
+    /**
+     * Makes Voluminous Energy gases breathable or asphyxiating. An asphyxiant gas overrides the
+     * protection NeoForge grants for Water Breathing and Conduit Power, and a breathable gas refills air
+     * as open air does, which NeoForge withholds for every non-air fluid.
+     */
+    @SubscribeEvent
+    public static void onLivingBreathe(LivingBreatheEvent event) {
+        LivingEntity entity = event.getEntity();
+        if (!(entity.getEyeInFluidType() instanceof VEFluidType fluidType) || !fluidType.getPhysics().isGas()) {
+            return;
+        }
+        if (!entity.canDrownInFluidType(fluidType)) {
+            event.setCanBreathe(true);
+            event.setRefillAirAmount(OPEN_AIR_REFILL_PER_TICK);
+            return;
+        }
+        if (entity instanceof Player player && player.getAbilities().invulnerable) {
+            return;
+        }
+        event.setCanBreathe(false);
+    }
+
+    @SubscribeEvent
+    public static void onLivingDrown(LivingDrownEvent event) {
+        LivingEntity entity = event.getEntity();
+        if (!(entity.getEyeInFluidType() instanceof VEFluidType fluidType) || !fluidType.getPhysics().isGas()) {
+            return;
+        }
+        event.setBubbleCount(0);
+        float damage = event.getDamageAmount();
+        event.setDamageAmount(0.0F);
+        if (event.isDrowning() && damage > 0.0F) {
+            entity.hurt(VEDamageTypes.asphyxiation(entity.level()), damage);
+        }
     }
 }

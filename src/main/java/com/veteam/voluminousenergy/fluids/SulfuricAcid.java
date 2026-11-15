@@ -21,6 +21,7 @@ public class SulfuricAcid {
     public static final ResourceLocation SULFURIC_ACID_FLOWING_TEXTURE = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "block/fluids/sulfuric_acid_flowing");
 
     public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
+    public static final float ACID_STRENGTH = 1.0F;
 
     public static FlowingFluid SULFURIC_ACID;
     public static FlowingFluid FLOWING_SULFURIC_ACID;
@@ -38,7 +39,7 @@ public class SulfuricAcid {
     }
 
     public static AcidFlowingFluidBlock FlowingSulfuricAcidBlock() {
-        SULFURIC_ACID_BLOCK = new AcidFlowingFluidBlock(SULFURIC_ACID, stdProp);
+        SULFURIC_ACID_BLOCK = new AcidFlowingFluidBlock(SULFURIC_ACID, stdProp, ACID_STRENGTH);
         return SULFURIC_ACID_BLOCK;
     }
 
@@ -58,14 +59,16 @@ public class SulfuricAcid {
             .canConvertToSource(false)
             .canSwim(false)
             .lightLevel(0)
-            .density(1)
+            .density(1830)
             .temperature(300)
-            .viscosity(1)
+            .viscosity(24600)
             .motionScale(0)
             .fallDistanceModifier(0)
             .rarity(Rarity.COMMON)
             .supportsBoating(false)
             .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY),
+            VEFluidPhysics.SYRUPY,
+            0xB1B1B1,
             SULFURIC_ACID_STILL_TEXTURE,
             SULFURIC_ACID_FLOWING_TEXTURE
     );

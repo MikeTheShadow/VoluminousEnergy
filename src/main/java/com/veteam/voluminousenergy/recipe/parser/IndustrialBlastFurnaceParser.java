@@ -20,7 +20,8 @@ public class IndustrialBlastFurnaceParser extends BasicParser {
     @Override
     public boolean isCompleteRecipe(VETileEntity tile) {
         FluidStack tankFluid = tile.getFluidStackFromTank(0);
-        if(tankFluid.getFluid().getFluidType().getTemperature() < blastingRecipe.getMinimumHeat()) {
+        if (!blastingRecipe.isFluidHotEnough(tankFluid.getFluid())
+                || tankFluid.getAmount() < blastingRecipe.getHeatSourceConsumption()) {
             return false;
         }
         return super.isCompleteRecipe(tile);
@@ -28,7 +29,10 @@ public class IndustrialBlastFurnaceParser extends BasicParser {
 
     @Override
     public void completeRecipe(VETileEntity tile) {
-        tile.getRelationalTank(0).getTank().drain(250, IFluidHandler.FluidAction.EXECUTE);
+        int consumption = blastingRecipe.getHeatSourceConsumption();
+        if (consumption > 0) {
+            tile.getRelationalTank(0).getTank().drain(consumption, IFluidHandler.FluidAction.EXECUTE);
+        }
         super.completeRecipe(tile);
     }
 

@@ -1,0 +1,16 @@
+{
+  "type": "voluminousenergy:primitive_blast_furnacing",
+  "ingredients": [
+    {
+      "tag": "voluminousenergy:charrable/sugar_cane",
+      "count": 16
+    }
+  ],
+  "process_time": 200,
+  "item_results": [
+    {
+      "item": "voluminousenergy:cane_charcoal",
+      "count": 1
+    }
+  ]
+}

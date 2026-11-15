@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#",
+    "*"
+  ],
+  "key": {
+    "#": {
+      "tag": "c:coal_coke"
+    },
+    "*": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "id": "minecraft:torch",
+    "count": 8
+  }
+}

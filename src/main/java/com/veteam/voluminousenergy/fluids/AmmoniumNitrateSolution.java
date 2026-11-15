@@ -57,14 +57,16 @@ public class AmmoniumNitrateSolution {
             .canConvertToSource(false)
             .canSwim(false)
             .lightLevel(0)
-            .density(1)
+            .density(1230)
             .temperature(300)
-            .viscosity(1)
+            .viscosity(2500)
             .motionScale(0)
             .fallDistanceModifier(0)
             .rarity(Rarity.COMMON)
             .supportsBoating(false)
             .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY),
+            VEFluidPhysics.WATERY,
+            0x7F71DB,
             AMMONIUM_NITRATE_SOLUTION_STILL_TEXTURE,
             AMMONIUM_NITRATE_SOLUTION_FLOWING_TEXTURE
     );

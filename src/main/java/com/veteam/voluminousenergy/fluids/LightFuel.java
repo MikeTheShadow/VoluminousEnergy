@@ -51,7 +51,7 @@ public class LightFuel {
     public static final VEFluidType LIGHT_FUEL_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
             .adjacentPathType(PathType.LAVA)
             .canConvertToSource(false)
-            .canDrown(false)
+            .canDrown(true)
             .canExtinguish(false)
             .canHydrate(false)
             .canPushEntity(false)
@@ -60,12 +60,14 @@ public class LightFuel {
             .lightLevel(0)
             .density(0)
             .temperature(300)
-            .viscosity(1)
+            .viscosity(8)
             .motionScale(0)
-            .fallDistanceModifier(0)
+            .fallDistanceModifier(1.0F)
             .rarity(Rarity.COMMON)
             .supportsBoating(false)
             .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY),
+            VEFluidPhysics.GAS,
+            0xAFB05A,
             LIGHT_FUEL_STILL_TEXTURE,
             LIGHT_FUEL_FLOWING_TEXTURE
     );

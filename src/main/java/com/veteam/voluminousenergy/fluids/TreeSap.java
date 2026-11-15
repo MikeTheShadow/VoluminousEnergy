@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.fluids;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.CrudeOilFlowingFluidBlock;
+import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.VEFlowingFluidBlock;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.BucketItem;
@@ -24,7 +24,7 @@ public class TreeSap {
 
     public static FlowingFluid TREE_SAP;
     public static FlowingFluid FLOWING_TREE_SAP;
-    public static CrudeOilFlowingFluidBlock TREE_SAP_BLOCK;
+    public static VEFlowingFluidBlock TREE_SAP_BLOCK;
     public static Item TREE_SAP_BUCKET;
 
     public static FlowingFluid TreeSapFluid() {
@@ -37,8 +37,8 @@ public class TreeSap {
         return FLOWING_TREE_SAP;
     }
 
-    public static CrudeOilFlowingFluidBlock FlowingTreeSapBlock() {
-        TREE_SAP_BLOCK = new CrudeOilFlowingFluidBlock(TREE_SAP, stdProp);
+    public static VEFlowingFluidBlock FlowingTreeSapBlock() {
+        TREE_SAP_BLOCK = new VEFlowingFluidBlock(TREE_SAP, stdProp);
         return TREE_SAP_BLOCK;
     }
 
@@ -58,14 +58,16 @@ public class TreeSap {
             .canConvertToSource(false)
             .canSwim(false)
             .lightLevel(0)
-            .density(1)
+            .density(1050)
             .temperature(300)
-            .viscosity(1)
+            .viscosity(2000000)
             .motionScale(0)
             .fallDistanceModifier(0)
             .rarity(Rarity.COMMON)
             .supportsBoating(false)
             .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY),
+            VEFluidPhysics.STICKY,
+            0x5D430F,
             TREE_SAP_STILL_TEXTURE,
             TREE_SAP_FLOWING_TEXTURE
     );

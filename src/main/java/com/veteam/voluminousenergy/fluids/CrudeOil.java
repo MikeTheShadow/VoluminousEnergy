@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.fluids;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.CrudeOilFlowingFluidBlock;
+import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.VEFlowingFluidBlock;
 import com.veteam.voluminousenergy.fluids.flowingFluidSource.CrudeOilFlowingFluidSource;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -25,7 +25,7 @@ public class CrudeOil {
 
     public static FlowingFluid CRUDE_OIL;
     public static FlowingFluid FLOWING_CRUDE_OIL;
-    public static CrudeOilFlowingFluidBlock CRUDE_OIL_BLOCK;
+    public static VEFlowingFluidBlock CRUDE_OIL_BLOCK;
     public static Item CRUDE_OIL_BUCKET;
 
     public static FlowingFluid CrudeOilFluid() { // Create custom source here to adjust tick rate for spread speed
@@ -38,8 +38,8 @@ public class CrudeOil {
         return FLOWING_CRUDE_OIL;
     }
 
-    public static CrudeOilFlowingFluidBlock FlowingCrudeOilBlock() { // Create a custom block here for block modifications
-        CRUDE_OIL_BLOCK = new CrudeOilFlowingFluidBlock(CRUDE_OIL, stdProp);
+    public static VEFlowingFluidBlock FlowingCrudeOilBlock() { // Create a custom block here for block modifications
+        CRUDE_OIL_BLOCK = new VEFlowingFluidBlock(CRUDE_OIL, stdProp);
         return CRUDE_OIL_BLOCK;
     }
 
@@ -58,9 +58,9 @@ public class CrudeOil {
             .canConvertToSource(false)
             .canSwim(false)
             .lightLevel(0)
-            .density(1)
+            .density(900)
             .temperature(300)
-            .viscosity(1)
+            .viscosity(5000000)
             .motionScale(0)
             .fallDistanceModifier(0)
             .rarity(Rarity.COMMON)
@@ -68,6 +68,8 @@ public class CrudeOil {
             .sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL_LAVA)
             .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY_LAVA)
             .sound(SoundActions.FLUID_VAPORIZE, SoundEvents.GENERIC_EXPLODE.value()),
+            VEFluidPhysics.STICKY,
+            0x08040E,
             CRUDE_OIL_STILL_TEXTURE,
             CRUDE_OIL_FLOWING_TEXTURE
     );
