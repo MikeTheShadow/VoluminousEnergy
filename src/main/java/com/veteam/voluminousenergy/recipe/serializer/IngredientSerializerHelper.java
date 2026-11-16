@@ -47,7 +47,6 @@ public class IngredientSerializerHelper<T extends VERecipe> {
             int max = buffer.readInt();
             iExperienceRecipe.setExperience(min, max);
         }
-        VERecipe.addRecipeToCacheClient(recipe);
         return recipe;
     }
 
