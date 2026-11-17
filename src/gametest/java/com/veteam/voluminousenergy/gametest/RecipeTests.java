@@ -13,10 +13,12 @@ import com.veteam.voluminousenergy.fluids.CrudeOil;
 import com.veteam.voluminousenergy.fluids.NaturalGas;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.DimensionalLaserRecipe;
+import com.veteam.voluminousenergy.recipe.DistillationRecipe;
 import com.veteam.voluminousenergy.recipe.IndustrialBlastingRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.recipe.parser.BasicParser;
 import com.veteam.voluminousenergy.recipe.processor.BasicProcessor;
+import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
@@ -25,6 +27,7 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
@@ -42,6 +45,8 @@ import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,6 +75,9 @@ public class RecipeTests {
     private static final List<ResourceLocation> REMOVED_LIGHT_FUEL_LASING = List.of(
             ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "dimensional_lasing/light_fuel"),
             ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "dimensional_lasing/light_fuel_hot_eroded_humid"));
+    private static final ResourceLocation CRUDE_OIL_DISTILLING = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, "distilling/crude_oil");
+    private static final String COMBUSTION_FUEL_DATA = "fluid_data/combustion";
+    private static final ResourceLocation DIESEL_FUEL = ResourceLocation.fromNamespaceAndPath(VoluminousEnergy.MODID, COMBUSTION_FUEL_DATA + "/diesel.json");
 
     private RecipeTests() {
     }
@@ -85,6 +93,9 @@ public class RecipeTests {
         tests.add(GameTestDefinition.of("recipe_ingredient_counts_enforced", 20, RecipeTests::ingredientCountsEnforced));
         tests.add(GameTestDefinition.of("recipe_shift_click_top_up_starts_recipe", 20, RecipeTests::shiftClickTopUpStartsRecipe));
         tests.add(GameTestDefinition.of("recipe_lasing_region_fluids", 20, RecipeTests::lasingRegionFluids));
+        tests.add(GameTestDefinition.of("recipe_fluid_ingredient_codec_round_trip", 20, RecipeTests::fluidIngredientCodecRoundTrip));
+        tests.add(GameTestDefinition.of("recipe_combustion_fuel_codec_round_trip", 20, RecipeTests::combustionFuelCodecRoundTrip));
+        tests.add(GameTestDefinition.of("recipe_decoding_leaves_cache_unchanged", 20, RecipeTests::decodingLeavesCacheUnchanged));
     }
 
     /**
@@ -343,6 +354,73 @@ public class RecipeTests {
         GameTestLog.pass(helper, "recipe_lasing_region_fluids", "recipes=" + recipes.size());
     }
 
+    /**
+     * Every loaded recipe with fluid ingredients encodes and decodes back to the same fluid ingredients,
+     * each written with its own amount.
+     */
+    private static void fluidIngredientCodecRoundTrip(GameTestHelper helper) {
+        RegistryOps<JsonElement> ops = helper.getLevel().registryAccess().createSerializationContext(JsonOps.INSTANCE);
+        int checked = 0;
+        for (RecipeHolder<?> holder : helper.getLevel().getRecipeManager().getRecipes()) {
+            if (!(holder.value() instanceof VERecipe loaded) || loaded.registryFluidIngredients == null || loaded.registryFluidIngredients.isEmpty()) {
+                continue;
+            }
+            JsonElement encoded = Recipe.CODEC.encodeStart(ops, loaded).getOrThrow(message -> new IllegalStateException(holder.id() + ": " + message));
+            VERecipe decoded = (VERecipe) Recipe.CODEC.parse(ops, encoded).getOrThrow(message -> new IllegalStateException(holder.id() + ": " + message));
+            helper.assertValueEqual(decoded.registryFluidIngredients, loaded.registryFluidIngredients, holder.id() + " fluid ingredients");
+
+            if (holder.id().equals(CRUDE_OIL_DISTILLING)) {
+                JsonObject crudeOil = encoded.getAsJsonObject().getAsJsonArray("fluid_ingredients").get(0).getAsJsonObject();
+                helper.assertValueEqual(crudeOil.get("amount").getAsInt(), 250, CRUDE_OIL_DISTILLING + " encoded crude oil amount");
+            }
+            checked++;
+        }
+        helper.assertTrue(checked > 0, "no recipes with fluid ingredients loaded");
+        GameTestLog.pass(helper, "recipe_fluid_ingredient_codec_round_trip", "recipes=" + checked);
+    }
+
+    /**
+     * Every shipped combustion fuel entry encodes and decodes back to the same tag or fluid and FE/t.
+     */
+    private static void combustionFuelCodecRoundTrip(GameTestHelper helper) {
+        Map<ResourceLocation, Resource> entries = helper.getLevel().getServer().getResourceManager()
+                .listResources(COMBUSTION_FUEL_DATA, path -> path.getPath().endsWith(".json"));
+        helper.assertFalse(entries.isEmpty(), "no combustion fuel data loaded");
+
+        for (Map.Entry<ResourceLocation, Resource> entry : entries.entrySet()) {
+            ResourceLocation id = entry.getKey();
+            VERecipeCodecs.RegistryFluidValue loaded = VERecipeCodecs.REGISTRY_COMBUSTION_FLUID_CODEC.parse(JsonOps.INSTANCE, readJson(id, entry.getValue()))
+                    .getOrThrow(message -> new IllegalStateException(id + ": " + message));
+            JsonElement encoded = VERecipeCodecs.REGISTRY_COMBUSTION_FLUID_CODEC.encodeStart(JsonOps.INSTANCE, loaded).getOrThrow();
+            VERecipeCodecs.RegistryFluidValue decoded = VERecipeCodecs.REGISTRY_COMBUSTION_FLUID_CODEC.parse(JsonOps.INSTANCE, encoded).getOrThrow();
+            helper.assertValueEqual(decoded, loaded, id + " after encoding");
+
+            if (id.equals(DIESEL_FUEL)) {
+                helper.assertValueEqual(encoded.getAsJsonObject().get("energy_per_tick").getAsFloat(), 160.0F, id + " encoded energy per tick");
+            }
+        }
+        GameTestLog.pass(helper, "recipe_combustion_fuel_codec_round_trip", "fuels=" + entries.size());
+    }
+
+    /**
+     * Decoding a distilling recipe from JSON and from its network form leaves the distilling recipes
+     * that machines look up unchanged.
+     */
+    private static void decodingLeavesCacheUnchanged(GameTestHelper helper) {
+        RegistryAccess registryAccess = helper.getLevel().registryAccess();
+        RegistryOps<JsonElement> ops = registryAccess.createSerializationContext(JsonOps.INSTANCE);
+        Optional<RecipeHolder<?>> holder = helper.getLevel().getRecipeManager().byKey(CRUDE_OIL_DISTILLING);
+        helper.assertTrue(holder.isPresent(), CRUDE_OIL_DISTILLING + " not loaded");
+        List<VERecipe> cachedBefore = List.copyOf(VERecipe.getCachedRecipes(DistillationRecipe.RECIPE_TYPE));
+        helper.assertTrue(cachedBefore.contains(holder.get().value()), CRUDE_OIL_DISTILLING + " missing from the recipe cache");
+
+        JsonElement encoded = Recipe.CODEC.encodeStart(ops, holder.get().value()).getOrThrow();
+        Recipe<?> decoded = Recipe.CODEC.parse(ops, encoded).getOrThrow();
+        sendToClient(decoded.getSerializer(), decoded, registryAccess);
+        helper.assertValueEqual(VERecipe.getCachedRecipes(DistillationRecipe.RECIPE_TYPE), cachedBefore, "cached distilling recipes after decoding one");
+        GameTestLog.pass(helper, "recipe_decoding_leaves_cache_unchanged", "recipes=" + cachedBefore.size());
+    }
+
     private static int menuSlotHolding(AbstractContainerMenu menu, ItemStack stack) {
         for (int slot = 0; slot < menu.slots.size(); slot++) {
             if (menu.slots.get(slot).getItem() == stack) {
@@ -469,6 +547,14 @@ public class RecipeTests {
         helper.assertValueEqual(actual.getHumidityMax(), expected.getHumidityMax(), id + " humidity maximum");
         helper.assertValueEqual(actual.getTemperatureMin(), expected.getTemperatureMin(), id + " temperature minimum");
         helper.assertValueEqual(actual.getTemperatureMax(), expected.getTemperatureMax(), id + " temperature maximum");
+    }
+
+    private static JsonElement readJson(ResourceLocation id, Resource resource) {
+        try (BufferedReader reader = resource.openAsReader()) {
+            return JsonParser.parseReader(reader);
+        } catch (IOException e) {
+            throw new IllegalStateException("Unable to read " + id, e);
+        }
     }
 
     private static void assertRange(GameTestHelper helper, JsonObject climate, String name, float minimum, float maximum) {
