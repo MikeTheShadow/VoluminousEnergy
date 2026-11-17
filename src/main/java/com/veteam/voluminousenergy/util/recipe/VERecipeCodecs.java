@@ -105,7 +105,7 @@ public class VERecipeCodecs {
             Codec.STRING.optionalFieldOf("fluid", "")
                     .forGetter(RegistryFluidIngredient::fluid),
             Codec.INT.fieldOf("amount")
-                    .forGetter((ingredient) -> 1)
+                    .forGetter(RegistryFluidIngredient::amount)
     ).apply(instance, RegistryFluidIngredient::new));
 
     public static final Codec<FloatPair> VE_MIN_MAX_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
@@ -134,7 +134,7 @@ public class VERecipeCodecs {
     public static final Codec<RegistryFluidValue> REGISTRY_COMBUSTION_FLUID_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
             Codec.STRING.optionalFieldOf("tag", "").forGetter(RegistryFluidValue::tag),
             Codec.STRING.optionalFieldOf("fluid", "").forGetter(RegistryFluidValue::fluid),
-            Codec.FLOAT.fieldOf("energy_per_tick").forGetter((ingredient) -> 1f)
+            Codec.FLOAT.fieldOf("energy_per_tick").forGetter(RegistryFluidValue::value)
     ).apply(instance, RegistryFluidValue::new));
 
     public static final Codec<RegistryOxidizerValue> REGISTRY_OXIDIZER_FLUID_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
